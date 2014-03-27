@@ -1,1 +1,1 @@
-mrm: modeld-based reference monitor
+mrm: model-based reference monitor
