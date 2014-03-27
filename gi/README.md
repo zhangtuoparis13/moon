@@ -1,3 +1,3 @@
 gi
 =================================
- graphic interface to access mrm
+graphic interface to access mrm
