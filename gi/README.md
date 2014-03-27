@@ -1,1 +1,3 @@
-gi: graphic interface to access mrm
+gi
+=================================
+ graphic interface to access mrm
