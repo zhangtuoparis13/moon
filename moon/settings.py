@@ -17,7 +17,7 @@ TEMPLATE_DIRS = (BASE_DIR,)
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'sp4y+)r&!nwp8elb7j-x)we+2=ew0ilpu474*^p1&fjq=r!snx'
+SECRET_KEY = 'keep your secret secret...'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -61,7 +61,7 @@ DATABASES = {
         #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'NAME': "moon",
         'USER': "moonuser",
-        'PASSWORD': "P@ssw0rd",
+        'PASSWORD': "set a password here",
         'HOST': "",
         'PORT': ""
     }
