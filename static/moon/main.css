@@ -1,0 +1,32 @@
+/**
+* General config
+*/
+body {
+    background: #ffffff;
+}
+
+.title {
+    background: -webkit-linear-gradient(left top, #ffffff, #ffb445, #ffffff); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(bottom right, #ffffff, #ffb445, #ffffff); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(bottom right, #ffffff, #ffb445, #ffffff); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to bottom right, #ffffff, #ffb445, #ffffff); /* Standard syntax */
+    margin: 5px;
+    padding: 5px;
+}
+
+.box {
+    border: 1px dotted #ffb445;
+    margin: 5px;
+    padding: 5px;
+}
+
+#leftpanel {
+    float:left;
+    width: 200px;
+}
+
+#authpanel {
+    float:left;
+    width: 400px;
+    margin-left:320px;
+}

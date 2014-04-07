@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-
+TEMPLATE_DIRS = (BASE_DIR,)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
@@ -47,9 +47,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'gi.urls'
+ROOT_URLCONF = 'moon.urls'
 
-WSGI_APPLICATION = 'gi.wsgi.application'
+WSGI_APPLICATION = 'moon.wsgi.application'
 
 
 # Database
@@ -86,9 +86,14 @@ SITE_ID = 1
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+    '/var/www/static/',
+)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
+    'openstack_auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
@@ -101,3 +106,23 @@ INSTALLED_APPS = (
     "mrm",
     #"repositery",
 )
+
+OPENSTACK_KEYSTONE_URL = "http://localhost:5000/v3"
+
+AUTHENTICATION_BACKENDS = ('openstack_auth.backend.KeystoneBackend',)
+
+#ROOT_URLCONF = 'openstack_auth.tests.urls'
+
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = "/admin/"
+
+OPENSTACK_API_VERSIONS = {
+    "identity": 3
+}
+
+OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = False
+
+OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = 'Default'
+
+# NOTE(saschpe): The openstack_auth.user.Token object isn't JSON-serializable ATM
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
