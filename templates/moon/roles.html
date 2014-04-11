@@ -1,0 +1,15 @@
+{% extends "moon/base_site.html" %}
+
+{% block tcontent %}Roles
+{% endblock %}
+{% block pcontent %}
+    {% if roles %}
+        <ul>
+        {% for r in roles %}
+            <li><a href="/roles/{{ r.id }}/">{{ r.name }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No role available.</p>
+    {% endif %}
+{% endblock %}

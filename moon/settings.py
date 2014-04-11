@@ -12,12 +12,12 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-TEMPLATE_DIRS = (BASE_DIR,)
+TEMPLATE_DIRS = (BASE_DIR, os.path.join(BASE_DIR, 'templates'))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'keep your secret secret...'
+SECRET_KEY = '<select id>'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -61,7 +61,7 @@ DATABASES = {
         #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'NAME': "moon",
         'USER': "moonuser",
-        'PASSWORD': "set a password here",
+        'PASSWORD': "<set password>",
         'HOST': "",
         'PORT': ""
     }
@@ -88,7 +88,6 @@ SITE_ID = 1
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
-    '/var/www/static/',
 )
 
 INSTALLED_APPS = (
@@ -103,6 +102,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    "gi",
     "mrm",
     #"repositery",
 )
@@ -114,7 +114,7 @@ AUTHENTICATION_BACKENDS = ('openstack_auth.backend.KeystoneBackend',)
 #ROOT_URLCONF = 'openstack_auth.tests.urls'
 
 LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = "/admin/"
+LOGIN_URL = "/auth/login/"
 
 OPENSTACK_API_VERSIONS = {
     "identity": 3

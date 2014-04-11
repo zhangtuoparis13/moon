@@ -1,0 +1,43 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Moon</title>
+        {% load staticfiles %}
+        <link rel="stylesheet" href="{% static "moon/main.css" %}" />
+    </head>
+    <body>
+        <div id="ptitle">
+            {% block ptitle %}{{ title }} {% trans 'Moon: an other RBAC system' %}{% endblock %}
+        </div>
+        <div id="plogout"><a href="/auth/logout">Logout</a></div>
+
+        <div id="pmain">
+            {% block pmain %}{% endblock %}
+            <div id="pmenu">
+                <h1>Menu</h1>
+                {% block pmenu %}
+                    <ul>
+                        <li><a href="/users">Users</a></li>
+                        <li><a href="/projects">Projects</a></li>
+                        <li><a href="/roles">Roles</a></li>
+                    </ul>
+                {% endblock %}
+
+            </div>
+            <div id="pcontent">
+                <h1>{% block tcontent %}Content{% endblock %}</h1>
+                {% block pcontent %}{% endblock %}
+
+            </div>
+            <div id="plogs">
+                {% block plogs %}
+                    <h1>LOGS</h1>
+                {% endblock %}
+
+            </div>
+        </div>
+
+
+    </body>
+</html>
