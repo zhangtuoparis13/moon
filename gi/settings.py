@@ -7,12 +7,12 @@ https://docs.djangoproject.com/en/1.6/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
-
+from moon import settings as moon_settings
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-TEMPLATE_DIRS = (BASE_DIR, os.path.join(BASE_DIR, 'templates'))
+TEMPLATE_DIRS = (BASE_DIR, os.path.join(BASE_DIR, 'gi/templates'))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
@@ -47,9 +47,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'moon.urls'
+ROOT_URLCONF = 'gi.urls'
 
-WSGI_APPLICATION = 'moon.wsgi.application'
+WSGI_APPLICATION = 'gi.wsgi.application'
 
 
 # Database
@@ -61,7 +61,7 @@ DATABASES = {
         #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'NAME': "moon",
         'USER': "moonuser",
-        'PASSWORD': "<set password>",
+        'PASSWORD': "P4ssw0rd",
         'HOST': "",
         'PORT': ""
     }
@@ -87,7 +87,7 @@ SITE_ID = 1
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "gi/static"),
 )
 
 INSTALLED_APPS = (
@@ -103,11 +103,12 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     "gi",
-    "mrm",
+    "crm",
     #"repositery",
 )
 
-OPENSTACK_KEYSTONE_URL = "http://localhost:5000/v3"
+# OPENSTACK_KEYSTONE_URL = "http://localhost:5000/v3"
+OPENSTACK_KEYSTONE_URL = getattr(moon_settings, "OPENSTACK_KEYSTONE_URL")
 
 AUTHENTICATION_BACKENDS = ('openstack_auth.backend.KeystoneBackend',)
 

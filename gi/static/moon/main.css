@@ -67,3 +67,17 @@ body {
 #pmain h1 {
     font-size: 1em;
 }
+
+#useradd {
+    clear:right;
+    margin: 5px;
+    padding: 5px;
+    float: right;
+    background-color: #ffb445;
+}
+
+#user_actions {
+    margin: 5px;
+    padding: 5px;
+    float: right;
+}
