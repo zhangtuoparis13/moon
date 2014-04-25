@@ -3,6 +3,7 @@ import os
 import sys
 import argparse
 # from core.pap.core import PAP
+from moon.core.pip.sync_db import create_tables, populate_dbs
 import logging
 
 LOG_LEVEL = logging.INFO
@@ -13,7 +14,7 @@ logging.addLevelName(logging.INFO, "\033[1;32m%s" % logging.getLevelName(logging
 logging.addLevelName(logging.WARNING, "\033[1;31m%s" % logging.getLevelName(logging.WARNING))
 logging.addLevelName(logging.ERROR, "\033[1;41m%s" % logging.getLevelName(logging.ERROR))
 
-from moon.user_repository import driver_dispatcher as dd
+# from moon.info_repository import driver_dispatcher as dd
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -26,15 +27,16 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.dbcreate:
-        # TODO: put the sync in core.PIP
-        dd.create_tables()
+        create_tables()
         if args.userpass:
-            dd.populate_dbs(args.username, args.userpass)
+            populate_dbs(username=args.username, password=args.userpass)
         elif args.username:
-            dd.populate_dbs(args.username)
+            populate_dbs(username=args.username)
         else:
-            dd.populate_dbs()
+            populate_dbs()
     elif args.run:
+        # Re-create table because the server is starting
+        create_tables()
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gi.settings")
         from django.core.management import execute_from_command_line
         d_args = [sys.argv[0]]

@@ -52,7 +52,7 @@ def user(request, id=None):
     Render one user retrieve from OpenStack Keystone server
     """
     pap = PAP(kclient=get_keystone_client(request))
-    user = pap.get_user(id)
+    user = pap.get_user(uuid=id)
     return render(request, "moon/users.html", {"user": user})
 
 

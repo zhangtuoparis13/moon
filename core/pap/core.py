@@ -1,7 +1,7 @@
 """
 """
 import logging
-from moon.user_repository.driver_dispatcher import Users, get_user, get_role
+from moon.info_repository.driver_dispatcher import Users, get_user, get_role
 logger = logging.getLogger("moon.pap")
 
 
@@ -19,7 +19,7 @@ class PAP:
         self.users = Users(self.kclient)
 
     def get_user(self, name=None, uuid=None):
-        return get_user(name, uuid)
+        return get_user(name=name, uuid=uuid)
 
     def get_role(self, name=None, uuid=None, project_uuid=None):
         return get_role(name, uuid, project_uuid)

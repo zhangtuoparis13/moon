@@ -1,7 +1,8 @@
 """
 Policy information Point
+Database synchronisation between Keystone and Moon
 """
-from moon.user_repository import driver_dispatcher
+from moon.info_repository import driver_dispatcher
 from moon import settings
 import logging
 
@@ -12,7 +13,8 @@ def create_tables():
     """
     Create all tables in database.
     """
-    driver_dispatcher.create_tables()
+    # driver_dispatcher.build_class_from_dict(cls=getattr(settings, "INITIAL_DB"))
+    driver_dispatcher.create_tables(cls=getattr(settings, "INITIAL_DB"))
 
 
 def populate_dbs(username="admin", password=None, domain="Default"):
@@ -39,12 +41,12 @@ def populate_dbs(username="admin", password=None, domain="Default"):
         # debug=settings.DEBUG
     )
     c.management_url = getattr(settings, 'OPENSTACK_KEYSTONE_URL', "")
-    for u in c.users.list():
-        driver_dispatcher.add_user_to_userdb(u)
-        # logger.debug("User {}".format(dir(u)))
-    for r in c.roles.list():
-        for u in c.users.list():
-            for t in c.projects.list(user=u):
-                driver_dispatcher.add_role_to_userdb(role=r, project=t)
-                driver_dispatcher.add_userroleassignment_to_userdb(user=u, role=r)
+    for user in c.users.list():
+        driver_dispatcher.add_element_from_keystone(user)
+    for role in c.roles.list():
+        for user in c.users.list():
+            for tenant in c.projects.list(user=user):
+                driver_dispatcher.add_element_from_keystone(role=role, tenant=tenant)
+                # driver_dispatcher.add_role_to_userdb(role=role, project=tenant)
+                # driver_dispatcher.add_userroleassignment_to_userdb(user=user, role=role)
 

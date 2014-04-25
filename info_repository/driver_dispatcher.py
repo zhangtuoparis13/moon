@@ -1,7 +1,9 @@
 import logging
 from moon import settings
 import importlib
-import json
+from moon.info_repository import models
+from keystoneclient.v3.users import User
+from keystoneclient.v3.roles import Role
 
 logger = logging.getLogger("moon.driver_dispatcher")
 
@@ -40,19 +42,29 @@ class Users:
             description=description,
             enabled=enabled
         )
-        muser = driver.User(
-            name=name,
-            password=password,
-            uuid=kuser.id,
-            domain=domain,
-            project=project,
-            email=email,
-            description=description,
-            enabled=enabled
-        )
+        # muser = driver.User(
+        #     name=name,
+        #     password=password,
+        #     uuid=kuser.id,
+        #     domain=domain,
+        #     project=project,
+        #     email=email,
+        #     description=description,
+        #     enabled=enabled
+        # )
+        muser = create_element(values={
+            'name': name,
+            'password': password,
+            'uuid': kuser.id,
+            'domain': domain,
+            'project': project,
+            'mail': email,
+            'description': description,
+            'enabled': enabled
+        })
         logger.info("Add {}".format(str(muser)))
         # TODO: check if Keystone creation was successfull
-        driver.add_user_to_userdb(kuser)
+        # driver.add_user_to_userdb(muser)
         return muser
 
     def list(self, sort=True):
@@ -82,6 +94,50 @@ class Users:
         return user
 
 
+def create_element(type='Subject', values={}):
+    return driver.add_element(table=type, elem=values)
+
+
+def add_user_from_keystone(obj=None):
+    table = "Subject"
+    values = dict()
+    values['uuid'] = obj.id
+    values['name'] = obj.name
+    values['password'] = "<Unknown>"
+    values['enabled'] = obj.enabled
+    driver.add_element(table=table, elem=values)
+
+
+def add_role_from_keystone(obj=None, tenant=None):
+    table = "Role"
+    values = dict()
+    values['uuid'] = obj.id
+    values['name'] = obj.name
+    values['tenant_uuid'] = tenant.id
+    values['enabled'] = True
+    driver.add_element(table=table, elem=values)
+
+
+def add_userroleassignment_from_keystone(user=None, role=None):
+    table = "SubjectRoleAssignment"
+    values = dict()
+    values['user_uuid'] = user.id
+    values['role_uuid'] = role.id
+    driver.add_element(table=table, elem=values)
+
+
+def add_element_from_keystone(user=None, role=None, tenant=None):
+    """
+    Add an object in a database table based on Keystone object
+    """
+    if user and role:
+        add_userroleassignment_from_keystone(user=user, role=role)
+    elif user and not role:
+        add_user_from_keystone(obj=user)
+    elif not user and role:
+        add_role_from_keystone(obj=role, tenant=tenant)
+
+
 def get_user_session():
     """
     Return the session associated with the User DB
@@ -89,23 +145,24 @@ def get_user_session():
     return driver.UserSession()
 
 
-def create_tables():
+def create_tables(cls=None):
     """
     Create all tables in database.
     """
+    build_class_from_dict(cls)
     driver.create_tables()
 
 
-def add_user_to_userdb(user=None):
-    driver.add_user_to_userdb(user=user)
-
-
-def add_role_to_userdb(role=None, project=None):
-    driver.add_role_to_userdb(role=role, project=project)
-
-
-def add_userroleassignment_to_userdb(user=None, role=None):
-    driver.add_userroleassignment_to_userdb(user=user, role=role)
+# def add_user_to_userdb(user=None):
+#     driver.add_user_to_userdb(user=user)
+#
+#
+# def add_role_to_userdb(role=None, project=None):
+#     driver.add_role_to_userdb(role=role, project=project)
+#
+#
+# def add_userroleassignment_to_userdb(user=None, role=None):
+#     driver.add_userroleassignment_to_userdb(user=user, role=role)
 
 
 #def get_user(uuid=None):
@@ -150,13 +207,25 @@ def update_request_attributes(
           )
         }
     """
-    # TODO: send a JSON Object
+    # TODO: send a JSON Object ???
     attributes['s_attrs'] = driver.get_user(uuid=subject)
     return attributes
+
+
+def build_class_from_dict(cls):
+    models.build_class_from_dict(cls)
+    driver.build_class_from_dict(cls)
+
+
+def get_user(name=None, uuid=None):
+    """
+    Get a user with his name or UUID
+    """
+    return driver.get_element({'uuid': uuid}, type="Subject")
 
 
 def get_role(uuid=None, name=None, project_uuid=None):
     """
     Get a role with his name or UUID on a specific project
     """
-    return driver.get_role(uuid=uuid, name=name, project_uuid=project_uuid)
+    return driver.get_element({'uuid':uuid, 'tenant_uuid':project_uuid}, type="Role")
