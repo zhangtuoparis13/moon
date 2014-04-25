@@ -1,0 +1,83 @@
+/**
+* General config
+*/
+body {
+    background: #ffffff;
+}
+
+.title {
+    background: -webkit-linear-gradient(left top, #ffffff, #ffb445, #ffffff); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(bottom right, #ffffff, #ffb445, #ffffff); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(bottom right, #ffffff, #ffb445, #ffffff); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to bottom right, #ffffff, #ffb445, #ffffff); /* Standard syntax */
+    margin: 5px;
+    padding: 5px;
+}
+
+.box {
+    border: 1px dotted #ffb445;
+    margin: 5px;
+    padding: 5px;
+}
+
+#ptitle {
+    width: 80%;
+    text-align: center;
+    font-weight: bold;
+}
+
+#plogout {
+    position:fixed;
+    top:10px;
+    right:5px;
+}
+
+#pmain {
+    margin: 5px;
+    padding: 5px;
+}
+
+#pmenu {
+    border: 1px dotted #ffb445;
+    margin: 5px;
+    float:left;
+    width: 20%;
+    min-height: 200px;
+    padding: 5px;
+}
+
+#pcontent {
+    margin: 5px;
+    border: 1px dotted #ffb445;
+    float:left;
+    width: 60%;
+    min-height: 200px;
+    padding: 5px;
+}
+
+#plogs {
+    margin: 5px;
+    border: 1px dotted #ffb445;
+    float:left;
+    width: 15%;
+    min-height: 200px;
+    padding: 5px;
+}
+
+#pmain h1 {
+    font-size: 1em;
+}
+
+#useradd {
+    clear:right;
+    margin: 5px;
+    padding: 5px;
+    float: right;
+    background-color: #ffb445;
+}
+
+#user_actions {
+    margin: 5px;
+    padding: 5px;
+    float: right;
+}

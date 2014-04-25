@@ -1,0 +1,35 @@
+{% extends "moon/base_site.html" %}
+
+{% block tcontent %}Users
+{% endblock %}
+{% block pcontent %}
+    <div id="user_actions">
+        <a href="#" onclick="show_user_add_actions()">Add User</a>
+    </div><br>
+    <div id="useradd">
+        <form method="post" action="add">
+            {{ form.as_p }}
+            <input type="hidden" name='csrfmiddlewaretoken' value="{{ csrf_token }}"/>
+            <input type="submit" value="Add"/>
+        </form>
+    </div>
+    {% if result %}
+        <em>{{ result }}</em>
+    {% endif %}
+    {% if users %}
+        <ul>
+        {% for u in users %}
+            <li><a href="/users/{{ u.id }}/">{{ u.name }}</a></li>
+        {% endfor %}
+        </ul>
+    {% elif user %}
+        <b>Name: {{user.name}}</b><br>
+        Mail: {{user.mail}}<br>
+        Domain: {{user.domain}}<br>
+        Project: {{user.project}}<br>
+        Description: {{user.description}}<br>
+        Enabled: {{user.enabled}}<br>
+    {% else %}
+        <p>No user available.</p>
+    {% endif %}
+{% endblock %}
