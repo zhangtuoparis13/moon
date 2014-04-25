@@ -4,7 +4,7 @@ from sqlalchemy import Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from moon import settings
-from moon.user_repository import models
+from moon.info_repository import models
 import logging
 
 logger = logging.getLogger('moon.mysql_driver')

@@ -6,7 +6,7 @@
 # from gi import settings
 import logging
 
-logger = logging.getLogger('moon.user_repository')
+logger = logging.getLogger('moon.info_repository')
 
 
 class User:

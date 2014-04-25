@@ -1,6 +1,7 @@
 import logging
 from moon import settings
 import importlib
+import json
 
 logger = logging.getLogger("moon.driver_dispatcher")
 
@@ -64,12 +65,12 @@ class Users:
             users = self.kclient.users.list()
         return users
 
-    def get_user(self, name=None, uuid=None):
+    def get_user(self, uuid=None):
         """
         Return a specific user from the Keystone service.
         """
         user = ()
-        # TODO: add search by name
+        # TODO: connect to moon DB
         for _user in self.kclient.users.list():
             if _user.id == uuid:
                 user = _user
@@ -95,61 +96,63 @@ def create_tables():
     driver.create_tables()
 
 
-def populate_dbs(username="admin", password=None, domain="Default"):
-    """
-    Populated for the first time the User DB with the content of the Keystone DB.
-    """
-    logger.info("Populate Database with information from Keystone server")
-    if not password:
-        import getpass
-        password = getpass.getpass("Keystone password for {user} on [{url}]:".format(
-            user=username,
-            url=getattr(settings, 'OPENSTACK_KEYSTONE_URL', "")
-        ))
-    from keystoneclient.v3 import client
-    c = client.Client(
-        username=username,
-        password=password,
-        user_domain_name=domain,
-        region_name="regionOne",
-        #endpoint=getattr(settings, 'OPENSTACK_KEYSTONE_URL', ""),
-        # insecure=True,
-        # cacert=None,
-        auth_url=getattr(settings, 'OPENSTACK_KEYSTONE_URL', ""),
-        # debug=settings.DEBUG
-    )
-    c.management_url = getattr(settings, 'OPENSTACK_KEYSTONE_URL', "")
-    for u in c.users.list():
-        driver.add_user_to_userdb(u)
-        # logger.debug("User {}".format(dir(u)))
-    for r in c.roles.list():
-        for u in c.users.list():
-            for t in c.projects.list(user=u):
-                # try:
-                    # logger.info("{user} {role} {tenant}, {bool}".format(
-                    #     user=u,
-                    #     role=r,
-                    #     tenant=t,
-                    #     bool=c.roles.check(r, user=u, project=t))
-                    # )
-                driver.add_role_to_userdb(role=r, project=t)
-                driver.add_userroleassignment_to_userdb(user=u, role=r)
-                # except: pass
+def add_user_to_userdb(user=None):
+    driver.add_user_to_userdb(user=user)
 
 
-def sync_user_db():
-    """
-    Synchronise when needed from the remote Keystone DB to the local User DB.
-    """
-    # TODO: define arguments and add synchronisation.
-    pass
+def add_role_to_userdb(role=None, project=None):
+    driver.add_role_to_userdb(role=role, project=project)
 
 
-def get_user(uuid=None, name=None):
+def add_userroleassignment_to_userdb(user=None, role=None):
+    driver.add_userroleassignment_to_userdb(user=user, role=role)
+
+
+#def get_user(uuid=None):
+def update_request_attributes(
+        subject=None,
+        action=None,
+        object_name=None,
+        tenant=None,
+        attributes=None):
     """
-    Get a user with his name or UUID
+    Get user information:
+        - user attributes (name, description, ...)
+        - roles in specific tenants
+    Example:
+        - User(name=John, description=...)
+        - Tenant1, RoleAdmin, RoleUser
+        - Tenant2, RoleUser
+    Return a JSON Object:
+        { 'user':
+            {'name': "John", 'description': "a user..."},
+          'tenants':
+          (
+            {
+                'name': "tenant1",
+                'description': "..."
+                'attributes':
+                {
+                    'attribute_name': "attribute_value",
+                    'role': ( "admin", "user" ),
+                    'group': ( 'group1', 'group2' )
+                }
+            },
+            {
+                'name': "tenant2",
+                'description': "..."
+                'attributes':
+                {
+                    'attribute_name': "attribute_value",
+                    'domain': ( "domain1", "domain2" )
+                }
+            },
+          )
+        }
     """
-    return driver.get_user(uuid=uuid, name=name)
+    # TODO: send a JSON Object
+    attributes['s_attrs'] = driver.get_user(uuid=subject)
+    return attributes
 
 
 def get_role(uuid=None, name=None, project_uuid=None):
