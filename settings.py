@@ -4,15 +4,15 @@ DATABASES = {
         'ENGINE': 'moon.info_repository.mysql_driver',
         'NAME': "user_db",
         'USER': "moonuser",
-        'PASSWORD': "set a password here",
+        'PASSWORD': "",
         'HOST': "",
         'PORT': ""
     },
     'tenant_db': {
-        'ENGINE': 'moon.tenant_repository.mysql_driver',
-        'NAME': "tenant_db",
-        'USER': "moonuser",
-        'PASSWORD': "set a password here",
+        'ENGINE': 'moon.tenant_repository.shelve_driver',
+        'NAME': "/etc/moon/tenant.db",
+        'USER': "",
+        'PASSWORD': "",
         'HOST': "",
         'PORT': ""
     }

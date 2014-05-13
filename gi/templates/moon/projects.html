@@ -3,13 +3,52 @@
 {% block tcontent %}Projects
 {% endblock %}
 {% block pcontent %}
-    {% if projects %}
+    {% if project %}
+        <h2>Description</h2>
+        <p>
+            <b>Name: {{ project.name }}</b><br>
+            ID: {{ project.uuid }}<br>
+            Domain: {{project.domain}}<br>
+            Enabled: {{user.enabled}}<br>
+        </p>
+        <h2>Relationships</h2>
+        <p>
+            Parent:
+                {% for p in projects %}
+                    {% if p.uuid == project.parent %}
+                    <b>{{ p.name }}</b>
+                    {% endif %}
+                {% endfor %}
+            {{ project.parent }}<br>
+            Children:<br>
+            {% for child in project.children %}
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                {% for p in projects %}
+                    {% if p.uuid == child %}
+                    <b>{{ p.name }}</b>
+                    {% endif %}
+                {% endfor %}
+                ({{ child }})<br>
+            {% endfor %}
+        </p>
+        <form method="post" >
+            {{ form.as_p }}
+            <input type="hidden" name='csrfmiddlewaretoken' value="{{ csrf_token }}"/>
+            <button type="submit" name="Add">Add</button>
+            <button type="submit" name="Delete">Delete</button>
+        </form>
+    {% elif projects %}
         <ul>
         {% for p in projects %}
-            <li><a href="/users/{{ p.id }}/">{{ p.name }}</a></li>
+            <li><a href="/projects/{{ p.uuid }}/">{{ p.name }}</a></li>
         {% endfor %}
         </ul>
     {% else %}
         <p>No project available.</p>
+    {% endif %}
+    {% if graph %}
+        <object data="/static/{{ graph }}" type="image/svg+xml" width="400" height="300">
+            <embed src="/static/{{ graph }}" type="image/svg+xml" width="400" height="300" />
+        </object>
     {% endif %}
 {% endblock %}
