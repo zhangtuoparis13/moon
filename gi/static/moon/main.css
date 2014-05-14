@@ -81,3 +81,17 @@ body {
     padding: 5px;
     float: right;
 }
+
+#tenantadd {
+    clear:right;
+    margin: 5px;
+    padding: 5px;
+    float: right;
+    background-color: #ffb445;
+}
+
+#tenants_actions {
+    margin: 5px;
+    padding: 5px;
+    float: right;
+}

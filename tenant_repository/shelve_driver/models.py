@@ -1,4 +1,4 @@
-from tenant_repository import models
+from tenant_repository.models import Tenant
 import shelve
 from moon import settings
 import logging
@@ -34,18 +34,18 @@ def get_db_filename():
 #     return dbhandler
 
 
-class Tenant(models.Tenant):
-    """
-    Database Model for a Tenant / Project
-    """
-    __tablename__ = 'tenant'
-    uuid = str()
-    name = str()
-    domain = str()
-    description = str()
-    parent = str()
-    children = list()
-    enabled = bool()
+# class Tenant(models.Tenant):
+#     """
+#     Database Model for a Tenant / Project
+#     """
+#     __tablename__ = 'tenant'
+#     uuid = str()
+#     name = str()
+#     domain = str()
+#     description = str()
+#     parent = str()
+#     children = list()
+#     enabled = bool()
 
 
 def create_tables():
@@ -55,20 +55,23 @@ def create_tables():
 
 
 def add_project_to_tenantdb(tenant=None):
-    # if not dbhandler:
-    #     open_db()
     with closing(shelve.open(get_db_filename())) as dbhandler:
         logger.debug("Add tenant {}".format(tenant.name))
-        t = Tenant()
-        t.uuid = tenant.id
-        t.name = tenant.name
-        t.domain = tenant.domain_id
-        t.enabled = tenant.enabled
-        t.children = list()
-        t.parent = ""
-        dbhandler[str(t.uuid)] = t
+        # t = Tenant()
+        # t.uuid = tenant.uuid
+        # t.name = tenant.name
+        # t.domain = tenant.domain_id
+        # t.enabled = tenant.enabled
+        # t.children = list()
+        # t.parent = ""
+        dbhandler[str(tenant.uuid)] = tenant
         dbhandler.sync()
 
+
+def set_tenant(tenant):
+    with closing(shelve.open(get_db_filename())) as dbhandler:
+        dbhandler[tenant.uuid] = tenant
+        dbhandler.sync()
 
 # def save_to_db(tenant_uuid="", tenant_obj=None):
 #     with closing(shelve.open(get_db_filename())) as dbhandler:
@@ -103,7 +106,6 @@ def get_tenant(uuid=None):
 
 
 def set_tenant_relationship(tenant_up="", tenant_bottom=""):
-    # TODO: search for circular connections
     tenant_up_uuid = str(tenant_up)
     tenant_bottom_uuid = str(tenant_bottom)
     tenant_up_obj = None

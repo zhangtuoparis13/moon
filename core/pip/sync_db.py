@@ -48,7 +48,8 @@ def populate_dbs(username="admin", password=None, domain="Default"):
         for user in c.users.list():
             for tenant in c.projects.list(user=user):
                 user_dd.add_element_from_keystone(role=role, tenant=tenant)
-                tenant_dd.add_element_from_keystone(tenant=tenant)
-                # driver_dispatcher.add_role_to_userdb(role=role, project=tenant)
-                # driver_dispatcher.add_userroleassignment_to_userdb(user=user, role=role)
+                # tenant_dd.add_element_from_keystone(tenant=tenant)
+    for tenant in c.projects.list(user=None):
+        logger.info("add tenant {}".format(tenant.name))
+        tenant_dd.add_element_from_keystone(tenant=tenant)
 

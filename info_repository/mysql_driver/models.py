@@ -152,6 +152,24 @@ def add_element(table=None, elem={}):
     return obj
 
 
+def get_elements(type="Subject"):
+    """
+    Return all elements of type "type"
+    """
+    logger.info(__list__)
+    cls = eval("__list__['{name}']".format(name=type))
+    s = get_user_session()
+    query = s.query(cls)
+    elements = []
+    attrs = filter(lambda x: not x.startswith("_"), dir(cls))
+    for instance in query:
+        __mycls = cls()
+        for attr in attrs:
+            setattr(__mycls, attr, eval("instance.{}".format(attr)))
+        elements.append(__mycls)
+    return elements
+
+
 def get_element(uuids={}, type="Subject"):
     """
     Return an element (subject, Role, ...) given its UUID

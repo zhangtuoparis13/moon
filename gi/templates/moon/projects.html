@@ -3,6 +3,16 @@
 {% block tcontent %}Projects
 {% endblock %}
 {% block pcontent %}
+    <div id="tenants_actions">
+        <a href="#" onclick="show_tenant_add_actions()">Add Tenant</a>
+    </div><br>
+    <div id="tenantadd">
+        <form method="post" action="add">
+            {{ tenantform.as_p }}
+            <input type="hidden" name='csrfmiddlewaretoken' value="{{ csrf_token }}"/>
+            <input type="submit" value="Add"/>
+        </form>
+    </div>
     {% if project %}
         <h2>Description</h2>
         <p>
@@ -47,8 +57,8 @@
         <p>No project available.</p>
     {% endif %}
     {% if graph %}
-        <object data="/static/{{ graph }}" type="image/svg+xml" width="400" height="300">
-            <embed src="/static/{{ graph }}" type="image/svg+xml" width="400" height="300" />
+        <object data="/static/{{ graph }}" type="image/svg+xml" width="600" height="500">
+            <embed src="/static/{{ graph }}" type="image/svg+xml" width="600" height="500" />
         </object>
     {% endif %}
 {% endblock %}

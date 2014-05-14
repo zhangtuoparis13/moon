@@ -1,6 +1,7 @@
 import logging
 from moon import settings
 import importlib
+from models import Tenant
 
 logger = logging.getLogger("moon.driver_dispatcher")
 
@@ -18,6 +19,10 @@ class Tenants:
     """
     def __init__(self, kclient):
         self.kclient = kclient
+        __tenants = driver.get_tenants()
+        self.tenants = {}
+        for tenant in __tenants:
+            self.tenants[tenant.uuid] = tenant
 
     def create(self,
                name="",
@@ -25,89 +30,118 @@ class Tenants:
                description="",
                enabled=True):
         """
-        Create the user in Moon database and Keystone database
+        Create the tenant in Moon database and Keystone database
         """
-        mtenant = driver.Tenant(
+        ktenant = self.kclient.projects.create(
             name=name,
             domain=domain,
             description=description,
             enabled=enabled
         )
-        kuser = self.kclient.create(name, domain, description, enabled)
-        # TODO: check if Keystone creation was successfull
-        driver.add_user_to_userdb(mtenant)
-        return None
+        mtenant = Tenant(
+            name=name,
+            domain=domain,
+            uuid=ktenant.id,
+            description=description,
+            enabled=enabled
+        )
+        driver.set_tenant(mtenant)
+        # TODO: check if Keystone creation was successful
+        logger.info("Add tenant {}".format(str(mtenant)))
+        self.tenants[mtenant.uuid] = mtenant
+        return mtenant
 
     def list(self, sort=True):
         """
         Return all users from the Keystone service.
         """
-        # if sort:
-        #     users = sorted(self.kclient.users.list(), key=lambda _user: _user.name)
-        # else:
-        #     users = self.kclient.users.list()
-        return []
+        if sort:
+            tenants = sorted(self.tenants.values(), key=lambda _tenant: _tenant.name)
+        else:
+            tenants = self.tenants.values()
+        return tenants
 
     def get_tenant(self, name=None, uuid=None):
         """
-        Return a specific user from the Keystone service.
+        Return a specific user.
         """
-        # user = ()
-        # # TODO: add search by name
-        # for _user in self.kclient.users.list():
-        #     if _user.id == uuid:
-        #         user = _user
-        # user.project = user.default_project_id
-        # for _project in self.kclient.projects.list():
-        #     if user.default_project_id == _project.id:
-        #         user.project = _project.name
-        # user.domain = user.domain_id
-        return None
+        __tenant = None
+        if uuid and uuid in self.tenants.keys():
+            __tenant = self.tenants[uuid]
+        elif name and name in self.tenants.keys():
+            __tenant = self.tenants[name]
+        else:
+            for tenant in self.tenants.values():
+                if name and name == tenant.name:
+                    __tenant = tenant
+        return __tenant
 
+    def create_tables(self):
+        """
+        Create all tables in database.
+        """
+        driver.create_tables()
 
-# def get_user_session():
-#     """
-#     Return the session associated with the User DB
-#     """
-#     return driver.UserSession()
+    def add_element_from_keystone(self, tenant=None):
+        """
+        Add an object in a database table based on Keystone object
+        """
+        t = Tenant()
+        t.uuid = tenant.id
+        t.name = tenant.name
+        t.domain = tenant.domain_id
+        t.enabled = tenant.enabled
+        t.children = list()
+        t.parent = ""
+        self.tenants[tenant.id] = t
+        driver.add_project_to_tenantdb(tenant=t)
 
+    # def get_tenant(self, uuid=None):
+    #     return driver.get_tenant(uuid=uuid)
+    #
+    def get_tenants(self):
+        return self.tenants.values()
+        # return driver.get_tenants()
 
-def create_tables():
-    """
-    Create all tables in database.
-    """
-    driver.create_tables()
+    def set_tenant_relationship(self, tenant_up="", tenant_bottom=""):
+        """
+        Set relationship between 2 tenants
+        Attributes can be uuid or name
+        """
+        # TODO: search for circular connections
+        tenant_up_obj = self.get_tenant(tenant_up)
+        if not tenant_up_obj:
+            raise Exception("Error in setting relationship tenant {} is unknown...".format(tenant_up))
+        tenant_bottom_obj = self.get_tenant(tenant_bottom)
+        if not tenant_bottom_obj:
+            raise Exception("Error in setting relationship tenant {} is unknown...".format(tenant_bottom))
+        __children = tenant_up_obj.children
+        __children.append(tenant_bottom)
+        tenant_up_obj.children = __children
+        tenant_bottom_obj.parent = tenant_up
+        driver.set_tenant_relationship(tenant_up=tenant_up, tenant_bottom=tenant_bottom)
+
+    def unset_tenant_relationship(self, tenant_up="", tenant_bottom=""):
+        """
+        Unset relationship between 2 tenants
+        Attributes can be uuid or name
+        """
+        driver.unset_tenant_relationship(tenant_up=tenant_up, tenant_bottom=tenant_bottom)
 
 
 def add_element_from_keystone(tenant=None):
     """
     Add an object in a database table based on Keystone object
     """
-    driver.add_project_to_tenantdb(tenant=tenant)
-
-
-def get_tenant(uuid=None):
-    return driver.get_tenant(uuid=uuid)
-
-
-def get_tenants():
-    return driver.get_tenants()
-
-
-def set_tenant_relationship(tenant_up="", tenant_bottom=""):
-    """
-    Set relationship between 2 tenants
-    Attributes can be uuid or name
-    """
-    driver.set_tenant_relationship(tenant_up=tenant_up, tenant_bottom=tenant_bottom)
-
-
-def unset_tenant_relationship(tenant_up="", tenant_bottom=""):
-    """
-    Unset relationship between 2 tenants
-    Attributes can be uuid or name
-    """
-    driver.unset_tenant_relationship(tenant_up=tenant_up, tenant_bottom=tenant_bottom)
+    t = Tenant()
+    t.uuid = tenant.id
+    t.name = tenant.name
+    t.domain = tenant.domain_id
+    t.enabled = tenant.enabled
+    t.children = list()
+    t.parent = ""
+    driver.add_project_to_tenantdb(tenant=t)
+    print("add tenant {}".format(t.name))
 
 # def populate_dbs(username="admin", password=None, domain="Default"):
 #     """

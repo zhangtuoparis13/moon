@@ -4,6 +4,7 @@ import os
 import logging
 from keystoneclient.v3 import client
 from keystoneclient.v3.users import User
+from keystoneclient.v3.projects import Project
 from gi import settings
 from core.pap.core import PAP
 
@@ -49,8 +50,8 @@ def user(request, id=None):
     Render one user retrieve from OpenStack Keystone server
     """
     pap = PAP(kclient=get_keystone_client(request))
-    user = pap.get_user(uuid=id)
-    return render(request, "moon/users.html", {"user": user})
+    user_obj = pap.users.get_user(uuid=id)
+    return render(request, "moon/users.html", {"user": user_obj})
 
 
 @login_required(login_url='/auth/login/')
@@ -92,18 +93,6 @@ def users(request):
     return render(request, "moon/users.html", {"users": all_users, "form": form, "result": result})
 
 
-@login_required(login_url='/auth/login/')
-def projects(request):
-    """
-    Users interface
-    Render all (or some) users retrieve from OpenStack Keystone server
-    """
-    pap = PAP(kclient=get_keystone_client(request))
-    all_projects = pap.get_projects()
-    svg_graph = draw_tenant_tree(tenants=pap.get_projects())
-    return render(request, "moon/projects.html", {"projects": all_projects, "graph": svg_graph})
-
-
 class TenantChildAddForm(forms.Form):
     """
     Definition of the form which allow the selection a a child for a tenant
@@ -115,6 +104,13 @@ class TenantChildAddForm(forms.Form):
         print(tenants)
         super(TenantChildAddForm, self).__init__(query)
         self.fields['projects'].choices = tenants
+
+
+class TenantAddForm(forms.Form):
+    name = forms.CharField(max_length=100)
+    domain = forms.CharField(max_length=100, initial="Default")
+    description = forms.CharField(max_length=100, required=False)
+    enable = forms.BooleanField(initial=True)
 
 
 def draw_tenant_tree(tenants=(), selected_tenant_uuid=None):
@@ -140,26 +136,59 @@ def draw_tenant_tree(tenants=(), selected_tenant_uuid=None):
 
 
 @login_required(login_url='/auth/login/')
+def projects(request):
+    """
+    Users interface
+    Render all (or some) users retrieve from OpenStack Keystone server
+    """
+    pap = PAP(kclient=get_keystone_client(request))
+    form = TenantAddForm()
+    if request.method == 'POST':
+        form = TenantAddForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            domain = form.cleaned_data['domain']
+            description = form.cleaned_data['description']
+            enable = form.cleaned_data['enable']
+            result = pap.tenants.create(
+                name=name,
+                domain=domain,
+                description=description,
+                enabled=enable
+            )
+            if type(result) is Project:
+                result = "Project Created"
+        else:
+            raise forms.ValidationError("Form is not complete.")
+    all_projects = pap.tenants.list() #get_projects()
+    svg_graph = draw_tenant_tree(tenants=all_projects)
+    return render(request, "moon/projects.html", {
+        "projects": all_projects,
+        "graph": svg_graph,
+        "tenantform": form})
+
+
+@login_required(login_url='/auth/login/')
 def project(request, id=None):
     """
     project interface
     Render one user retrieve from Tenant Repositery
     """
     pap = PAP(kclient=get_keystone_client(request))
-    projects = pap.get_projects()
-    form = TenantChildAddForm(tenants=pap.get_projects())
+    # projects = pap.tenants.list() #get_projects()
+    form = TenantChildAddForm(tenants=pap.tenants.list())
     if request.method == 'POST':
-        form = TenantChildAddForm(query=request.POST, tenants=pap.get_projects())
+        form = TenantChildAddForm(query=request.POST, tenants=pap.tenants.list())
         if form.is_valid():
             __projects = form.cleaned_data['projects']
             if "Add" in request.POST.keys():
-                pap.set_tenant_relationship(tenant_up=id, tenant_bottom=__projects)
+                pap.tenants.set_tenant_relationship(tenant_up=id, tenant_bottom=__projects)
             elif "Delete" in request.POST.keys():
-                pap.unset_tenant_relationship(tenant_up=id, tenant_bottom=__projects)
+                pap.tenants.unset_tenant_relationship(tenant_up=id, tenant_bottom=__projects)
         else:
             raise forms.ValidationError("Form is not complete.")
-    project = pap.get_project(uuid=id)
-    svg_graph = draw_tenant_tree(tenants=pap.get_projects(), selected_tenant_uuid=id)
+    project = pap.tenants.get_tenant(uuid=id)
+    svg_graph = draw_tenant_tree(tenants=pap.tenants.list(), selected_tenant_uuid=id)
     return render(request, "moon/projects.html", {
         "project": project,
         "projects": projects,

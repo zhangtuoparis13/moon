@@ -16,8 +16,17 @@ class Tenant:
     children = list()
     enabled = bool()
 
-    def __init__(self):
-        pass
+    def __init__(self,
+            name="",
+            domain="",
+            uuid="",
+            description="",
+            enabled=True):
+        self.name = name,
+        self.domain = domain,
+        self.uuid = uuid,
+        self.description = description,
+        self.enabled = enabled
 
     def __repr__(self):
         return "Tenant: {name} ({uuid}) {description} {enabled} parent={parent} children={children}".format(

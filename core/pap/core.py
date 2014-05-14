@@ -2,7 +2,14 @@
 """
 import logging
 from moon.info_repository.driver_dispatcher import Users, get_user, get_role
-from moon.tenant_repository.driver_dispatcher import set_tenant_relationship, unset_tenant_relationship, get_tenant, get_tenants
+from moon.tenant_repository.driver_dispatcher import Tenants
+# from moon.tenant_repository.driver_dispatcher import \
+#     set_tenant_relationship, \
+#     unset_tenant_relationship, \
+#     get_tenant, \
+#     get_tenants, \
+#     Tenants
+
 logger = logging.getLogger("moon.pap")
 
 
@@ -18,24 +25,25 @@ class PAP:
         else:
             self.kclient = kclient
         self.users = Users(self.kclient)
+        self.tenants = Tenants(self.kclient)
 
-    def get_user(self, name=None, uuid=None):
-        return get_user(name=name, uuid=uuid)
-
-    def get_role(self, name=None, uuid=None, project_uuid=None):
-        return get_role(name, uuid, project_uuid)
-
-    def set_tenant_relationship(self, tenant_up="", tenant_bottom=""):
-        set_tenant_relationship(tenant_up=tenant_up, tenant_bottom=tenant_bottom)
-
-    def unset_tenant_relationship(self, tenant_up="", tenant_bottom=""):
-        unset_tenant_relationship(tenant_up=tenant_up, tenant_bottom=tenant_bottom)
-
-    def get_project(self, uuid=None):
-        return get_tenant(uuid=uuid)
-
-    def get_projects(self):
-        return get_tenants()
+    # def get_user(self, name=None, uuid=None):
+    #     return get_user(name=name, uuid=uuid)
+    #
+    # def get_role(self, name=None, uuid=None, project_uuid=None):
+    #     return get_role(name, uuid, project_uuid)
+    #
+    # def set_tenant_relationship(self, tenant_up="", tenant_bottom=""):
+    #     set_tenant_relationship(tenant_up=tenant_up, tenant_bottom=tenant_bottom)
+    #
+    # def unset_tenant_relationship(self, tenant_up="", tenant_bottom=""):
+    #     unset_tenant_relationship(tenant_up=tenant_up, tenant_bottom=tenant_bottom)
+    #
+    # def get_project(self, uuid=None):
+    #     return get_tenant(uuid=uuid)
+    #
+    # def get_projects(self):
+    #     return get_tenants()
 
 # class Users:
 #

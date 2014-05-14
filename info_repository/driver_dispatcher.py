@@ -2,8 +2,8 @@ import logging
 from moon import settings
 import importlib
 from moon.info_repository import models
-from keystoneclient.v3.users import User
-from keystoneclient.v3.roles import Role
+# from keystoneclient.v3.users import User
+# from keystoneclient.v3.roles import Role
 
 logger = logging.getLogger("moon.driver_dispatcher")
 
@@ -21,6 +21,14 @@ class Users:
     """
     def __init__(self, kclient):
         self.kclient = kclient
+        self.users = {}
+        subjects = driver.get_elements(type="Subject")
+        # attrs = filter(lambda x: not x.startswith("_"), dir(User))
+        for subject in subjects:
+            # __user = User()
+            # for attr in attrs:
+            #     setattr(__user, attr, eval("subject.{}".format(attr)))
+            self.users[subject.uuid] = subject
 
     def create(self,
                name="",
@@ -42,16 +50,6 @@ class Users:
             description=description,
             enabled=enabled
         )
-        # muser = driver.User(
-        #     name=name,
-        #     password=password,
-        #     uuid=kuser.id,
-        #     domain=domain,
-        #     project=project,
-        #     email=email,
-        #     description=description,
-        #     enabled=enabled
-        # )
         muser = create_element(values={
             'name': name,
             'password': password,
@@ -62,12 +60,13 @@ class Users:
             'description': description,
             'enabled': enabled
         })
-        logger.info("Add {}".format(str(muser)))
-        # TODO: check if Keystone creation was successfull
+        logger.info("Add user {}".format(str(muser)))
+        # TODO: check if Keystone creation was successful
         # driver.add_user_to_userdb(muser)
+        self.users[kuser.id] = muser
         return muser
 
-    def list(self, sort=True):
+    def list_from_keystone(self, sort=True):
         """
         Return all users from the Keystone service.
         """
@@ -75,6 +74,16 @@ class Users:
             users = sorted(self.kclient.users.list(), key=lambda _user: _user.name)
         else:
             users = self.kclient.users.list()
+        return users
+
+    def list(self, sort=True):
+        """
+        Return all users from the local database.
+        """
+        if sort:
+            users = sorted(self.users.values(), key=lambda _user: _user.name)
+        else:
+            users = self.users.values()
         return users
 
     def get_user(self, uuid=None):
@@ -94,7 +103,7 @@ class Users:
         return user
 
 
-def create_element(type='Subject', values={}):
+def create_element(type='Subject', values=dict()):
     return driver.add_element(table=type, elem=values)
 
 

@@ -4,9 +4,13 @@
 
 $( document ).ready(function() {
     $("#useradd").hide();
-
+    $("#tenantadd").hide();
 });
 
 function show_user_add_actions() {
     $("#useradd").show();
+};
+
+function show_tenant_add_actions() {
+    $("#tenantadd").show();
 };
