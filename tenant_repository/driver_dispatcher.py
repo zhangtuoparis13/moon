@@ -126,6 +126,21 @@ class Tenants:
         Unset relationship between 2 tenants
         Attributes can be uuid or name
         """
+        tenant_up_obj = self.get_tenant(tenant_up)
+        if not tenant_up_obj:
+            raise Exception("Error in setting relationship tenant {} is unknown...".format(tenant_up))
+        tenant_bottom_obj = self.get_tenant(tenant_bottom)
+        if not tenant_bottom_obj:
+            raise Exception("Error in setting relationship tenant {} is unknown...".format(tenant_bottom))
+        __children = tenant_up_obj.children
+        try:
+            __children.remove(tenant_bottom)
+            tenant_up_obj.children = __children
+        except ValueError:
+            #tenant_bottom_uuid not in __chidren
+            pass
+        if tenant_bottom_obj.parent == tenant_up:
+            tenant_bottom_obj.parent = ""
         driver.unset_tenant_relationship(tenant_up=tenant_up, tenant_bottom=tenant_bottom)
 
 
