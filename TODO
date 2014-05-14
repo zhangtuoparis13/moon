@@ -1,8 +1,0 @@
-Add a testing framework
-Add a logging system
-Add a documentation system
-
-1) Add Moon Core
-2) Redirect keystone auth to Moon
-3) create an admin interface on Django
-4) lighten client interface on Horizon
