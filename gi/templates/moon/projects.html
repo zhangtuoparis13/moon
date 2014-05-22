@@ -57,8 +57,10 @@
         <p>No project available.</p>
     {% endif %}
     {% if graph %}
-        <object data="/static/{{ graph }}" type="image/svg+xml" width="600" height="500">
-            <embed src="/static/{{ graph }}" type="image/svg+xml" width="600" height="500" />
-        </object>
+        <h2>Diagram:</h2>
+        <img src="/static/{{ graph }}" width="800px"/>
+{#        <object data="/static/{{ graph }}" type="image/svg+xml" width="600" height="500">#}
+{#            <embed src="/static/{{ graph }}" type="image/svg+xml" width="600" height="500" />#}
+{#        </object>#}
     {% endif %}
 {% endblock %}

@@ -372,7 +372,7 @@ def userdb(request):
                 columns = get_attrs_list(selected_table)
         if selected_table:
             addcolumns = filter(lambda x: x not in ("id", "uuid"), get_attrs_list(selected_table))
-    graph = get_db_diag()
+    graph = get_db_diag(selected_table=selected_table)
     return render(request, "moon/userdb.html", {
         "tables": tables,
         "selected_table": selected_table,

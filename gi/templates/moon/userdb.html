@@ -5,9 +5,7 @@
 {% block pmenu %}
     {{ block.super }}
     {% if graph %}
-        <object data="/static/{{ graph }}" type="image/svg+xml" width="300" height="1200">
-            <embed src="/static/{{ graph }}" type="image/svg+xml" width="300" height="1200" />
-        </object>
+        <img src="/static/{{ graph }}" width="300"/>
     {% endif %}
 {% endblock %}
 {% block pcontent %}

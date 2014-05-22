@@ -162,22 +162,25 @@ def get_attrs_list(type='Subject'):
     return driver.get_attrs_list(type=type)
 
 
-def get_db_diag(filename="db_diag.svg"):
+def get_db_diag(filename="db_diag.svg", selected_table=None):
     static_dir = getattr(gi_settings, 'STATICFILES_DIRS', "")[0]
     import pygraphviz as pgv
     graph = pgv.AGraph(directed=True, rankdir="LR")
     __dict = {}
     for table in get_tables():
         __dict[table.lower()] = {}
-        label = "<f0> " + table + " |"
-        attr_list =[]
-        cpt = 1
-        for attr in get_attrs_list(type=table):
-            attr_list.append("<f{cpt}> {attr}".format(cpt=cpt, attr=attr))
-            __dict[table.lower()][attr] = "f{}".format(cpt)
-            cpt += 1
-        label += "|".join(attr_list)
-        graph.add_node(table, label=label, shape="record")
+        if table != selected_table:
+            graph.add_node(table, color="lightgray", shape="box")
+        else:
+            label = "<f0> " + table + " |"
+            attr_list =[]
+            cpt = 1
+            for attr in get_attrs_list(type=table):
+                attr_list.append("<f{cpt}> {attr}".format(cpt=cpt, attr=attr))
+                __dict[table.lower()][attr] = "f{}".format(cpt)
+                cpt += 1
+            label += "|".join(attr_list)
+            graph.add_node(table, label=label, shape="record")
     for table in get_tables():
         if "Assignment" in table:
             for column in get_attrs_list(type=table):
