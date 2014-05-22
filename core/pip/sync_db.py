@@ -18,7 +18,7 @@ def create_tables():
     user_dd.create_tables(cls=getattr(settings, "INITIAL_DB"))
 
 
-def populate_dbs(username="admin", password=None, domain="Default"):
+def populate_dbs(username="admin", password=None, domain="Default", test_only=False):
     """
     Populated for the first time the User DB with the content of the Keystone DB.
     """
@@ -43,15 +43,22 @@ def populate_dbs(username="admin", password=None, domain="Default"):
     )
     c.management_url = getattr(settings, 'OPENSTACK_KEYSTONE_URL', "")
     for user in c.users.list():
-        user_dd.add_element_from_keystone(user)
+        if not test_only:
+            user_dd.add_element_from_keystone(user)
     for role in c.roles.list():
+        # logger.info("Role {}".format(role.name))
+        user_dd.add_element_from_keystone(role=role)
         for user in c.users.list():
+            # logger.info("\tUser {}".format(user.name))
             for tenant in c.projects.list(user=user):
-                user_dd.add_element_from_keystone(role=role, tenant=tenant)
+                if not test_only:
+                    user_dd.add_element_from_keystone(user=user, role=role, tenant=tenant)
+                logger.info("Add cnx between {}/{} and tenant {}".format(user.name, role.name, tenant.name))
                 # tenant_dd.add_element_from_keystone(tenant=tenant)
     for tenant in c.projects.list(user=None):
         logger.info("add tenant {}".format(tenant.name))
-        tenant_dd.add_element_from_keystone(tenant=tenant)
+        if not test_only:
+            tenant_dd.add_element_from_keystone(tenant=tenant)
 
 
 def delete_tables():

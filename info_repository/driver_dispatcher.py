@@ -211,16 +211,18 @@ def add_role_from_keystone(obj=None, tenant=None):
     values = dict()
     values['uuid'] = obj.id
     values['name'] = obj.name
-    values['tenant_uuid'] = tenant.id
+    # values['tenant_uuid'] = tenant.id
     values['enabled'] = True
     driver.add_element(table=table, elem=values)
 
 
-def add_userroleassignment_from_keystone(user=None, role=None):
+def add_userroleassignment_from_keystone(user=None, role=None, tenant=None):
     table = "SubjectRoleAssignment"
     values = dict()
-    values['user_uuid'] = user.id
+    values['uuid'] = str(uuid.uuid4()).replace("-", "")
+    values['subject_uuid'] = user.id
     values['role_uuid'] = role.id
+    values['tenant_uuid'] = tenant.id
     driver.add_element(table=table, elem=values)
 
 
@@ -228,12 +230,12 @@ def add_element_from_keystone(user=None, role=None, tenant=None):
     """
     Add an object in a database table based on Keystone object
     """
-    if user and role:
-        add_userroleassignment_from_keystone(user=user, role=role)
-    elif user and not role:
+    if user and role and tenant:
+        add_userroleassignment_from_keystone(user=user, role=role, tenant=tenant)
+    elif user and not role and not tenant:
         add_user_from_keystone(obj=user)
-    elif not user and role:
-        add_role_from_keystone(obj=role, tenant=tenant)
+    elif role and not user and not tenant:
+        add_role_from_keystone(obj=role)
 
 
 def get_user_session():

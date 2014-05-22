@@ -142,7 +142,10 @@ def add_element(table=None, elem={}):
         q = s.query(cls).filter_by(**param)
     if q.count() > 0:
         record = q.first()
-        logger.debug("Updating {}".format(elem["name"]))
+        try:
+            logger.debug("Updating {}/{}".format(table, elem["name"]))
+        except KeyError:
+            logger.debug("Updating {}/{}".format(table, elem))
         for key in elem.keys():
             # Warning security hazard
             # TODO: check for integrity of elem and key
@@ -158,7 +161,7 @@ def add_element(table=None, elem={}):
         obj = eval("__list__['{name}']({param})".format(name=table, param=param))
         s.add(obj)
     s.commit()
-    # s.close()
+    s.close()
     return obj
 
 
@@ -177,6 +180,7 @@ def get_elements(type="Subject"):
         for attr in attrs:
             setattr(__mycls, attr, eval("instance.{}".format(attr)))
         elements.append(__mycls)
+    s.close()
     return elements
 
 
@@ -195,6 +199,7 @@ def get_element(attributes=dict(), type="Subject"):
         for attr in attrs:
             setattr(__mycls, attr, eval("instance.{}".format(attr)))
         elements.append(__mycls)
+    s.close()
     return elements
 
 

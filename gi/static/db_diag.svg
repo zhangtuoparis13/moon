@@ -281,26 +281,28 @@
 </g>
 <!-- SubjectRoleAssignment -->
 <g id="node25" class="node"><title>SubjectRoleAssignment</title>
-<polygon fill="none" stroke="black" points="10.5,-645 10.5,-775 187.5,-775 187.5,-645 10.5,-645"/>
-<text text-anchor="middle" x="99" y="-758.4" font-family="Times Roman,serif" font-size="14.00">SubjectRoleAssignment</text>
-<polyline fill="none" stroke="black" points="10.5,-749 187.5,-749 "/>
-<text text-anchor="middle" x="99" y="-732.4" font-family="Times Roman,serif" font-size="14.00">id</text>
-<polyline fill="none" stroke="black" points="10.5,-723 187.5,-723 "/>
-<text text-anchor="middle" x="99" y="-706.4" font-family="Times Roman,serif" font-size="14.00">uuid</text>
-<polyline fill="none" stroke="black" points="10.5,-697 187.5,-697 "/>
-<text text-anchor="middle" x="99" y="-680.4" font-family="Times Roman,serif" font-size="14.00">subject_uuid</text>
-<polyline fill="none" stroke="black" points="10.5,-671 187.5,-671 "/>
-<text text-anchor="middle" x="99" y="-654.4" font-family="Times Roman,serif" font-size="14.00">role_uuid</text>
+<polygon fill="none" stroke="black" points="10.5,-626 10.5,-782 187.5,-782 187.5,-626 10.5,-626"/>
+<text text-anchor="middle" x="99" y="-765.4" font-family="Times Roman,serif" font-size="14.00">SubjectRoleAssignment</text>
+<polyline fill="none" stroke="black" points="10.5,-756 187.5,-756 "/>
+<text text-anchor="middle" x="99" y="-739.4" font-family="Times Roman,serif" font-size="14.00">id</text>
+<polyline fill="none" stroke="black" points="10.5,-730 187.5,-730 "/>
+<text text-anchor="middle" x="99" y="-713.4" font-family="Times Roman,serif" font-size="14.00">uuid</text>
+<polyline fill="none" stroke="black" points="10.5,-704 187.5,-704 "/>
+<text text-anchor="middle" x="99" y="-687.4" font-family="Times Roman,serif" font-size="14.00">subject_uuid</text>
+<polyline fill="none" stroke="black" points="10.5,-678 187.5,-678 "/>
+<text text-anchor="middle" x="99" y="-661.4" font-family="Times Roman,serif" font-size="14.00">role_uuid</text>
+<polyline fill="none" stroke="black" points="10.5,-652 187.5,-652 "/>
+<text text-anchor="middle" x="99" y="-635.4" font-family="Times Roman,serif" font-size="14.00">tenant_uuid</text>
 </g>
 <!-- SubjectRoleAssignment&#45;&gt;Subject -->
 <g id="edge22" class="edge"><title>SubjectRoleAssignment&#45;&gt;Subject</title>
-<path fill="none" stroke="black" d="M161.453,-775.139C184.308,-798.977 209.932,-825.704 231.894,-848.61"/>
-<polygon fill="black" stroke="black" points="229.441,-851.109 238.888,-855.905 234.494,-846.264 229.441,-851.109"/>
+<path fill="none" stroke="black" d="M171.712,-782.185C191.769,-803.751 213.149,-826.741 231.871,-846.872"/>
+<polygon fill="black" stroke="black" points="229.535,-849.499 238.908,-854.438 234.66,-844.732 229.535,-849.499"/>
 </g>
 <!-- SubjectRoleAssignment&#45;&gt;Role -->
 <g id="edge24" class="edge"><title>SubjectRoleAssignment&#45;&gt;Role</title>
-<path fill="none" stroke="black" d="M187.642,-688.554C200.017,-685.56 212.495,-682.542 224.197,-679.71"/>
-<polygon fill="black" stroke="black" points="225.363,-683.029 234.259,-677.276 223.717,-676.226 225.363,-683.029"/>
+<path fill="none" stroke="black" d="M187.642,-685.414C200.017,-682.819 212.495,-680.203 224.197,-677.749"/>
+<polygon fill="black" stroke="black" points="225.19,-681.117 234.259,-675.639 223.754,-674.266 225.19,-681.117"/>
 </g>
 </g>
 </svg>

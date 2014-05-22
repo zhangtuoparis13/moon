@@ -25,16 +25,17 @@ if __name__ == "__main__":
     parser.add_argument("--username", "-u", type=str, help="Username for Keystone remote database")
     parser.add_argument("--userpass", "-p", type=str, help="Password for Keystone remote database")
     parser.add_argument("--unittest", action='store_true', help="Execute tests")
+    parser.add_argument("--testonly", action='store_true', help="Check for Keystone connection and show what it would do.")
     args = parser.parse_args()
 
     if args.dbcreate:
         create_tables()
         if args.userpass:
-            populate_dbs(username=args.username, password=args.userpass)
+            populate_dbs(username=args.username, password=args.userpass, test_only=args.testonly)
         elif args.username:
-            populate_dbs(username=args.username)
+            populate_dbs(username=args.username, test_only=args.testonly)
         else:
-            populate_dbs()
+            populate_dbs(test_only=args.testonly)
     elif args.dbdrop:
         delete_tables()
     elif args.run:

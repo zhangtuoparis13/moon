@@ -256,7 +256,8 @@ def get_item(dictionary, key):
     value = eval("dictionary.{}".format(key))
     if "tenant_uuid" in key:
         pap = PAP()
-        value = pap.tenants.get_tenant(uuid=value).name
+        if value:
+            value = pap.tenants.get_tenant(uuid=value).name
     elif "_uuid" in key:
         element = get_element(type=table, attributes={"uuid": value})
         value = element[0].name
