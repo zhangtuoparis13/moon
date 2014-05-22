@@ -3,7 +3,7 @@ import os
 import sys
 import argparse
 # from core.pap.core import PAP
-from moon.core.pip.sync_db import create_tables, populate_dbs
+from moon.core.pip.sync_db import create_tables, populate_dbs, delete_tables
 import logging
 
 LOG_LEVEL = logging.INFO
@@ -20,6 +20,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("djangoargs", nargs='*', help="Set Django specific arguments")
     parser.add_argument("--dbcreate", action='store_true', help="Create local DBs and populate them")
+    parser.add_argument("--dbdrop", action='store_true', help="Delete local DBs")
     parser.add_argument("--run", action='store_true', help="Create local DBs and populate them")
     parser.add_argument("--username", "-u", type=str, help="Username for Keystone remote database")
     parser.add_argument("--userpass", "-p", type=str, help="Password for Keystone remote database")
@@ -34,6 +35,8 @@ if __name__ == "__main__":
             populate_dbs(username=args.username)
         else:
             populate_dbs()
+    elif args.dbdrop:
+        delete_tables()
     elif args.run:
         # Re-create table because the server is starting
         create_tables()

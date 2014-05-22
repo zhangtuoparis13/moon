@@ -2,6 +2,7 @@ import logging
 from moon import settings
 import importlib
 from models import Tenant
+import json
 
 logger = logging.getLogger("moon.driver_dispatcher")
 
@@ -60,6 +61,19 @@ class Tenants:
         else:
             tenants = self.tenants.values()
         return tenants
+
+    def dict(self):
+        return self.tenants
+
+    def json(self):
+        tenants = {}
+        for tenant_uuid in self.tenants:
+            _tenant = {}
+            attrs = filter(lambda x: not x.startswith("_"), dir(self.tenants[tenant_uuid]))
+            for attr in attrs:
+                _tenant[attr] = eval("self.tenants['{}'].{}".format(tenant_uuid, attr))
+            tenants[tenant_uuid] = _tenant
+        return json.dumps(tenants)
 
     def get_tenant(self, name=None, uuid=None):
         """
@@ -156,7 +170,7 @@ def add_element_from_keystone(tenant=None):
     t.children = list()
     t.parent = ""
     driver.add_project_to_tenantdb(tenant=t)
-    print("add tenant {}".format(t.name))
+    logger.debug("add tenant {}".format(t.name))
 
 # def populate_dbs(username="admin", password=None, domain="Default"):
 #     """

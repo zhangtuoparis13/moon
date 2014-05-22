@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, Sequence #noqa
 from sqlalchemy import Boolean #noqa
+from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from moon import settings
@@ -48,6 +49,13 @@ def create_tables():
     """
     logger.info("Creating DB tables")
     base_user_db.metadata.create_all(engine_user_db)
+
+
+def get_tables():
+    """
+    Return all tables of the user DB.
+    """
+    return base_user_db.metadata.tables.keys()
 
 
 template_key = """
@@ -107,13 +115,14 @@ def build_class_from_dict(cls={}):
             attrdef=', '.join(map(lambda x: "{x}=self.{x}".format(x=x['name']), cls[key]['attributes'])),
         )
         constructor += "__list__['{name}'] = {name}".format(name=key)
-    print(constructor)
+    # print(constructor)
     # Warning: possible security hazard here!!!
     # TODO: check for integrity of cls
     exec constructor
 
 
 def add_element(table=None, elem={}):
+    logger.info("Add element: {} {}".format(table, elem))
     query = ""
     obj = None
     q = None
@@ -149,6 +158,7 @@ def add_element(table=None, elem={}):
         obj = eval("__list__['{name}']({param})".format(name=table, param=param))
         s.add(obj)
     s.commit()
+    # s.close()
     return obj
 
 
@@ -156,7 +166,7 @@ def get_elements(type="Subject"):
     """
     Return all elements of type "type"
     """
-    logger.info(__list__)
+    # logger.info(__list__)
     cls = eval("__list__['{name}']".format(name=type))
     s = get_user_session()
     query = s.query(cls)
@@ -170,18 +180,37 @@ def get_elements(type="Subject"):
     return elements
 
 
-def get_element(uuids={}, type="Subject"):
+def get_element(attributes=dict(), type="Subject"):
     """
-    Return an element (subject, Role, ...) given its UUID
+    Return an element (subject, Role, ...) given its attributes
     """
     # TODO: check if type is a valid object (ie defined in settings or elsewhere)
-    logger.info(__list__)
     cls = eval("__list__['{name}']".format(name=type))
     s = get_user_session()
-    q = s.query(cls).filter_by(**uuids)
-    record = q.first()
-    # TODO: we have to deals with multiple results
-    return record
+    query = s.query(cls).filter_by(**attributes)
+    elements = []
+    attrs = filter(lambda x: not x.startswith("_"), dir(cls))
+    for instance in query:
+        __mycls = cls()
+        for attr in attrs:
+            setattr(__mycls, attr, eval("instance.{}".format(attr)))
+        elements.append(__mycls)
+    return elements
+
+
+def get_attrs_list(type='Subject'):
+    """Return the attribute list for an specific object (ie its columns)
+    """
+    cls = eval("__list__['{name}']".format(name=type))
+    return map(lambda x: str(x).split(".")[-1], cls.__table__.columns)
+
+
+def delete_element(table="Subject", attributes=dict()):
+    """Delete a specific element of the database.
+    """
+    cls = eval("__list__['{name}']".format(name=table))
+    with engine_user_db.begin() as cnx:
+        cnx.execute(cls.__table__.delete().where(cls.uuid == attributes["uuid"]))
 
 
 def check_assignment(uuids={}, type="SubjectRoleAssignment"):
@@ -198,170 +227,8 @@ def check_assignment(uuids={}, type="SubjectRoleAssignment"):
     return record
 
 
-
-# class Subject(models.Subject, base_user_db):
-#     """
-#     Database Model for a User
-#     """
-#     __tablename__ = 'user'
-#     id = Column(Integer, Sequence('user_id_seq'), primary_key=True)
-#     name = Column(String(50))
-#     uuid = Column(String(32))
-#     password = Column(String(50))
-#     email = Column(String(100))
-#     description = Column(String(250))
-#     enabled = Column(Boolean)
-#
-#     def __repr__(self):
-#         return "Subject: {user} ({uuid}) {email} {description} {enabled}".format(
-#             user=self.name,
-#             uuid=self.uuid,
-#             email=self.email,
-#             description=self.description,
-#             enabled=self.enabled
-#         )
-#
-#
-# class Role(models.Role, base_user_db):
-#     """
-#     Database Model for a Role
-#     """
-#     __tablename__ = 'role'
-#     id = Column(Integer, primary_key=True)
-#     name = Column(String(50))
-#     uuid = Column(String(32))
-#     tenant_uuid = Column(String(32))
-#     description = Column(String(250))
-#     enabled = Column(Boolean)
-#
-#     def __repr__(self):
-#         return "Role: {role} ({uuid}) {tenant_uuid} {description} {enabled}".format(
-#             role=self.name,
-#             uuid=self.uuid,
-#             tenant_uuid=self.tenant_uuid,
-#             description=self.description,
-#             enabled=self.enabled
-#         )
-#
-#
-# class UserRoleAssignment(models.UserRoleAssignment, base_user_db):
-#     """
-#     Database Model for relations between User and Role
-#     """
-#     __tablename__ = 'user_role_assignment'
-#     id = Column(Integer, primary_key=True)
-#     user_uuid = Column(String(32))
-#     role_uuid = Column(String(32))
-#
-#     def __repr__(self):
-#         return "{user_uuid}, {role_uuid}".format(
-#             user_uuid=self.user_uuid,
-#             role_uuid=self.role_uuid,
-#         )
-
-
-# def add_user_to_userdb(user):
-#     """
-#     Add a user in User DB from a Keystone User
-#     """
-#     s = get_user_session()
-#     try:
-#         email = user.email
-#     except TypeError:
-#         email = ""
-#     except AttributeError:
-#         email = ""
-#     u = Subject(
-#         name=user.name,
-#         password="<Unknown>",
-#         uuid=user.id,
-#         email=email,
-#         enabled=user.enabled
-#     )
-#     q = s.query(Subject).filter_by(uuid=user.id)
-#     if q.count() > 0:
-#         record = q.first()
-#         logger.debug("Updating {}".format(user.name))
-#         record.name = user.name
-#         record.email = email
-#         record.enabled = user.enabled
-#     else:
-#         logger.debug("Adding {}".format(user.name))
-#         s.add(u)
-#     s.commit()
-#
-#
-# def add_role_to_userdb(role, project):
-#     """
-#     Add a role in User DB from a Keystone Role
-#     """
-#     s = get_user_session()
-#     r = Role(
-#         name=role.name,
-#         uuid=role.id,
-#         tenant_uuid=project.id,
-#         # description=role.description,
-#         # enabled=role.enabled
-#     )
-#     q = s.query(Role).filter_by(uuid=role.id, tenant_uuid=project.id)
-#     if q.count() > 0:
-#         record = q.first()
-#         # logger.info("Updating {}/{}".format(role.name, project.id))
-#         record.name = role.name
-#     else:
-#         # logger.info("Adding {}/{}".format(role.name, project.id))
-#         s.add(r)
-#     s.commit()
-#
-#
-# def add_userroleassignment_to_userdb(user, role):
-#     """
-#     Add a user role assignment in User DB from Keystone information
-#     """
-#     s = get_user_session()
-#     # logger.info("Adding role {role} to user {user} to User DB".format(
-#     #     role=role.name,
-#     #     user=user.name,
-#     # ))
-#     r = UserRoleAssignment(
-#         role_uuid=role.id,
-#         user_uuid=user.id,
-#     )
-#     q = s.query(UserRoleAssignment).filter_by(
-#         role_uuid=role.id,
-#         user_uuid=user.id,
-#     )
-#     if q.count() == 0:
-#         # logger.info("Count = 0")
-#         s.add(r)
-#         s.commit()
-
-# def get_user(uuid=None, name=None):
-#     """
-#     Get a user with his name or UUID
-#     """
-#     s = get_user_session()
-#     q = None
-#     if uuid:
-#         q = s.query(Subject).filter_by(uuid=uuid)
-#     else:
-#         q = s.query(Subject).filter_by(name=name)
-#     record = q.first()
-#     # TODO: we have to deals with multiple results
-#     return record
-#
-#
-# def get_role(uuid=None, name=None, project_uuid=None):
-#     """
-#     Get a role with his name or UUID on a specific project
-#     """
-#     s = get_user_session()
-#     q = None
-#     if uuid:
-#         q = s.query(Role).filter_by(uuid=uuid, project_uuid=project_uuid)
-#     else:
-#         q = s.query(Role).filter_by(name=name, project_uuid=project_uuid)
-#     record = q.first()
-#     # TODO: we have to deals with multiple results
-#     return record
-
+def delete_tables():
+    """ Delete all tables for cleaning purposes.
+    """
+    logger.warning("Drop all tables")
+    base_user_db.metadata.drop_all(engine_user_db)

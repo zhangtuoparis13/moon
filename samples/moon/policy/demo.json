@@ -1,0 +1,32 @@
+{
+    "RULES": {
+        "rule1":
+            [
+                ["s_attrs", "role", "admin"],
+                ["s_attrs", "group", "group1"],
+                ["o_attrs", "type", "vm"]
+            ],
+        "rule2":
+            [
+                ["s_attrs", "role", "admin"],
+                ["s_attrs", "group", "group2"],
+                ["o_attrs", "type", "vm"]
+            ]
+    },
+
+    "METADATA": {
+        "s_attrs": {
+            "role": ["Admin", "User"],
+            "group": ["group1"]
+        },
+        "o_attrs": {
+            "type": ["compute", "log", "storage", "network"],
+            "size": ["small", "medium", "big"],
+            "security": ["public", "private", "confidential"]
+        },
+        "a_attrs": {
+            "activity": ["manage", "use"],
+            "security": ["normal", "ssl"]
+        }
+    }
+}

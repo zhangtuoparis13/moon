@@ -53,3 +53,6 @@ def populate_dbs(username="admin", password=None, domain="Default"):
         logger.info("add tenant {}".format(tenant.name))
         tenant_dd.add_element_from_keystone(tenant=tenant)
 
+
+def delete_tables():
+    user_dd.delete_tables()

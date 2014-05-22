@@ -4,9 +4,9 @@ DATABASES = {
         'ENGINE': 'moon.info_repository.mysql_driver',
         'NAME': "user_db",
         'USER': "moonuser",
-        'PASSWORD': "",
-        'HOST': "",
-        'PORT': ""
+        'PASSWORD': "<set password here>",
+        'HOST': "127.0.0.1",
+        'PORT': "3306"
     },
     'tenant_db': {
         'ENGINE': 'moon.tenant_repository.shelve_driver',
@@ -17,6 +17,8 @@ DATABASES = {
         'PORT': ""
     }
 }
+
+POLICY_PLUGIN_TABLE = "/etc/moon/policy_tables.json"
 
 OPENSTACK_KEYSTONE_URL = "http://openstackserver:5000/v3"
 
@@ -32,7 +34,7 @@ INITIAL_DB = {
                 {'name': "domain", "type": "String", "length": 254},
                 {'name': "project", "type": "String", "length": 254},
                 {'name': "enabled", "type": "Boolean"},
-                ),
+        ),
         'type': "AttrKey",
         'description': "A user in the system.",
     },
@@ -43,7 +45,7 @@ INITIAL_DB = {
                 {'name': "tenant_uuid", "type": "String", "length": 32},
                 {'name': "description", "type": "String", "length": 254},
                 {'name': "enabled", "type": "Boolean"},
-                ),
+        ),
         'type': "AttrValue",
         'description': "A role taken by a user.",
     },
@@ -54,23 +56,25 @@ INITIAL_DB = {
                 {'name': "tenant_uuid", "type": "String", "length": 32},
                 {'name': "description", "type": "String", "length": 254},
                 {'name': "enabled", "type": "Boolean"},
-                ),
+        ),
         'type': "AttrValue",
         'description': "A group of users.",
     },
     'SubjectRoleAssignment': {
         'attributes': (
+                {'name': "uuid", "type": "String", "length": 32},
                 {'name': "subject_uuid", "type": "String", "length": 32},
                 {'name': "role_uuid", "type": "String", "length": 32},
-                ),
+        ),
         'type': "AttrValue",
         'description': "Mapping between User and role.",
     },
     'SubjectGroupAssignment': {
         'attributes': (
+                {'name': "uuid", "type": "String", "length": 32},
                 {'name': "subject_uuid", "type": "String", "length": 32},
                 {'name': "group_uuid", "type": "String", "length": 32},
-                ),
+        ),
         'type': "AttrValue",
         'description': "Mapping between User and Group.",
     },
@@ -81,7 +85,7 @@ INITIAL_DB = {
                 {'name': "name", "type": "String", "length": 254},
                 {'name': "description", "type": "String", "length": 254},
                 {'name': "enabled", "type": "Boolean"},
-                ),
+        ),
         'type': "AttrKey",
         'description': "A possible Object in the system.",
     },
@@ -91,7 +95,7 @@ INITIAL_DB = {
                 {'name': "name", "type": "String", "length": 254},
                 {'name': "description", "type": "String", "length": 254},
                 {'name': "enabled", "type": "Boolean"},
-                ),
+        ),
         'type': "AttrValue",
         'description': "A type of possible Object in the system.",
     },
@@ -103,23 +107,25 @@ INITIAL_DB = {
                 {'name': "unit", "type": "String", "length": 32},
                 {'name': "description", "type": "String", "length": 254},
                 {'name': "enabled", "type": "Boolean"},
-                ),
+        ),
         'type': "AttrValue",
         'description': "Size of a storage or of a network connection.",
     },
     'ObjectTypeAssignment': {
         'attributes': (
-                {'name': "action_uuid", "type": "String", "length": 32},
+                {'name': "uuid", "type": "String", "length": 32},
+                {'name': "object_uuid", "type": "String", "length": 32},
                 {'name': "type_uuid", "type": "String", "length": 32},
-                ),
+        ),
         'type': "AttrValue",
         'description': "Mapping between Object and Type.",
     },
     'ObjectSizeAssignment': {
         'attributes': (
-                {'name': "action_uuid", "type": "String", "length": 32},
+                {'name': "uuid", "type": "String", "length": 32},
+                {'name': "object_uuid", "type": "String", "length": 32},
                 {'name': "size_uuid", "type": "String", "length": 32},
-                ),
+        ),
         'type': "AttrValue",
         'description': "Mapping between Object and Size.",
     },
@@ -130,7 +136,7 @@ INITIAL_DB = {
                 {'name': "name", "type": "String", "length": 254},
                 {'name': "description", "type": "String", "length": 254},
                 {'name': "enabled", "type": "Boolean"},
-                ),
+        ),
         'type': "AttrKey",
         'description': "A possible Action in the system.",
     },
@@ -140,7 +146,7 @@ INITIAL_DB = {
                 {'name': "name", "type": "String", "length": 254},
                 {'name': "description", "type": "String", "length": 254},
                 {'name': "enabled", "type": "Boolean"},
-                ),
+        ),
         'type': "AttrValue",
         'description': "A type/activity of possible Action in the system.",
     },
@@ -152,23 +158,25 @@ INITIAL_DB = {
                 {'name': "unit", "type": "String", "length": 32},
                 {'name': "description", "type": "String", "length": 254},
                 {'name': "enabled", "type": "Boolean"},
-                ),
+        ),
         'type': "AttrValue",
         'description': "Size of a storage or of a network connection.",
     },
     'ActionActivityAssignment': {
         'attributes': (
+                {'name': "uuid", "type": "String", "length": 32},
                 {'name': "action_uuid", "type": "String", "length": 32},
-                {'name': "type_uuid", "type": "String", "length": 32},
-                ),
+                {'name': "activity_uuid", "type": "String", "length": 32},
+        ),
         'type': "AttrValue",
         'description': "Mapping between Action and Activity.",
     },
     'ActionSecurityAssignment': {
         'attributes': (
+                {'name': "uuid", "type": "String", "length": 32},
                 {'name': "action_uuid", "type": "String", "length": 32},
-                {'name': "size_uuid", "type": "String", "length": 32},
-                ),
+                {'name': "security_uuid", "type": "String", "length": 32},
+        ),
         'type': "AttrValue",
         'description': "Mapping between Action and Security.",
     },

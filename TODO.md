@@ -4,9 +4,9 @@ TODO
 Global things to do
 -------------------
 
-- [-] Add a testing framework
+- [] Add a testing framework
 - [X] Add a logging system
-- [-] Add a documentation system
+- [] Add a documentation system
 
 Specific modifications for moon
 -------------------------------
@@ -36,9 +36,10 @@ Legend:
 
 ###Admin interface on Django
 
-|Module       | Description            | Percentage of work |
-|------------ | ---------------------- | ------------------ |
-|GI (Users)   | Users administration   | 70%                |
-|GI (Tenants) | Tenants administration | 70%                |
-|GI (Roles)   | Roles administration   | 10%                |
-|GI (Policy)  | Policy administration  | 0%                 |
+|Module       | Description                              | Percentage of work |
+|------------ | ---------------------------------------- | ------------------ |
+|GI (Users)   | Users administration                     | 70%                |
+|GI (Tenants) | Tenants administration                   | 70%                |
+|GI (Roles)   | Roles administration                     | 10%                |
+|GI (Userdb)  | Administration of all objects of user_db | 90%                |
+|GI (Policy)  | Policy administration                    | 0%                 |

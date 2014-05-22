@@ -1,3 +1,4 @@
+import json
 # Default rules for testing
 RULES = (
     (
@@ -32,14 +33,17 @@ ATTRS = {
 
 class PolicyPlugin:
     def __init__(self, filename=""):
-        f = open(filename)
+        try:
+            tables = json.loads(open(filename).read())
+        except IOError:
+            raise Exception("[{}] Unable to read file {}".format(__name__, filename))
         # parse file
 
         # self.rules = ()
-        self.rules = RULES
+        self.rules = tables["RULES"]
 
         # self.attributes = {'s_attrs': {}, 'a_attrs': {}, 'o_attrs': {}, 'other_attrs':{}}
-        self.attributes = ATTRS
+        self.attributes = tables["METADATA"]
 
         self.pointer = self
 

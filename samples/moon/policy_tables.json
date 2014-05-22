@@ -1,0 +1,5 @@
+{
+	"admin": "/etc/moon/policy/admin.json",
+	"demo*": "/etc/moon/policy/demo.json",
+	"test*": "/etc/moon/policy/demo.json"
+}

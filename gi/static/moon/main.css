@@ -2,7 +2,7 @@
 * General config
 */
 body {
-    background: #ffffff;
+    background: #a8a8a8;
 }
 
 .title {
@@ -11,7 +11,11 @@ body {
     background: -moz-linear-gradient(bottom right, #ffffff, #ffb445, #ffffff); /* For Firefox 3.6 to 15 */
     background: linear-gradient(to bottom right, #ffffff, #ffb445, #ffffff); /* Standard syntax */
     margin: 5px;
+    margin-left: 300px;
     padding: 5px;
+    border-radius:25px;
+    width: 60%;
+    text-align: center;
 }
 
 .box {
@@ -38,17 +42,19 @@ body {
 }
 
 #pmenu {
-    border: 1px dotted #ffb445;
+    /*border: 1px dotted #ffb445;*/
     margin: 5px;
     float:left;
-    width: 20%;
-    min-height: 200px;
+    width: 300px;
+    /*min-height: 200px;*/
     padding: 5px;
+    background: #dcdcdc;
+    border-radius:25px;
 }
 
 #pcontent {
     margin: 5px;
-    border: 1px dotted #ffb445;
+    /*border: 1px dotted #ffb445;*/
     float:left;
     width: 60%;
     min-height: 200px;
@@ -57,14 +63,14 @@ body {
 
 #plogs {
     margin: 5px;
-    border: 1px dotted #ffb445;
+    /*border: 1px dotted #ffb445;*/
     float:left;
     width: 15%;
     min-height: 200px;
     padding: 5px;
 }
 
-#pmain h1 {
+#pmain {
     font-size: 1em;
 }
 
@@ -94,4 +100,42 @@ body {
     margin: 5px;
     padding: 5px;
     float: right;
+}
+
+#elementadd {
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #ffb445;
+    background: #dcdcdc;
+    border-radius:5px;
+}
+
+#tablesselection {
+    border: 1px solid #ffb445;
+    margin: 10px;
+    padding: 10px;
+    background: #dcdcdc;
+    border-radius:5px;
+}
+
+a {
+    color: #855928;
+}
+
+table {
+    border-collapse:collapse;
+    background: #dcdcdc;
+    padding: 10px;
+}
+
+td {
+    padding: 5px;
+}
+
+th {
+    background: #ffb445;
+}
+
+tr.row1 {
+    background: #cccccc;
 }

@@ -14,5 +14,7 @@ urlpatterns = patterns('gi.views',
     url(r'^projects/(?P<id>\w{32})/$', 'project'),
     url(r'^projects/', 'projects'),
     url(r'^roles/', 'roles'),
+    url(r'^userdb/', 'userdb'),
     url(r"^auth/", include('openstack_auth.urls')),
+    url(r"^mrm/", include('mrm.urls')),
 )

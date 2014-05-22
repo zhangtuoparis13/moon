@@ -1,7 +1,10 @@
 import logging
+from moon.gi import settings as gi_settings
 from moon import settings
 import importlib
 from moon.info_repository import models
+import os
+import uuid
 # from keystoneclient.v3.users import User
 # from keystoneclient.v3.roles import Role
 
@@ -103,8 +106,94 @@ class Users:
         return user
 
 
+true_values = ("true", "y", "yes", "oui", "on")
+
+
 def create_element(type='Subject', values=dict()):
+    if "uuid" not in values:
+        values["uuid"] = str(uuid.uuid4()).replace("-", "")
+    if "enabled" in values:
+        if values["enabled"].lower() in true_values:
+            values["enabled"] = 1
+        else:
+            values["enabled"] = 0
     return driver.add_element(table=type, elem=values)
+
+
+def delete_element(table='Subject', values=dict()):
+    return driver.delete_element(table=table, attributes=values)
+
+
+def get_tables():
+    """
+    Return the list of all tables contained in the DB
+    :returns: list of strings
+    """
+    return driver.get_tables()
+
+
+def get_elements(type='Subject'):
+    """Return all elements for a specific DB table
+
+    :param type: (str) name of the table to search in (default: Subject)
+
+    :returns: list of strings
+
+    """
+    return get_element(type=type, attributes={})
+
+
+def get_element(type='Subject', attributes=dict()):
+    """Return filtered elements for a specific DB table
+
+    :param type: (str) name of the table to search in (default: Subject)
+    :param attributes: (dict) attributes for filtering (default empty dict)
+                       example of attributes {'uuid': "123456", 'tenant_uuid': "123456"}
+
+    :returns: list of strings
+
+    """
+    return driver.get_element(attributes=attributes, type=type)
+
+
+def get_attrs_list(type='Subject'):
+    """Return the attribute list for an specific object (ie its columns)
+    """
+    return driver.get_attrs_list(type=type)
+
+
+def get_db_diag(filename="db_diag.svg"):
+    static_dir = getattr(gi_settings, 'STATICFILES_DIRS', "")[0]
+    import pygraphviz as pgv
+    graph = pgv.AGraph(directed=True, rankdir="LR")
+    __dict = {}
+    for table in get_tables():
+        __dict[table.lower()] = {}
+        label = "<f0> " + table + " |"
+        attr_list =[]
+        cpt = 1
+        for attr in get_attrs_list(type=table):
+            attr_list.append("<f{cpt}> {attr}".format(cpt=cpt, attr=attr))
+            __dict[table.lower()][attr] = "f{}".format(cpt)
+            cpt += 1
+        label += "|".join(attr_list)
+        graph.add_node(table, label=label, shape="record")
+    for table in get_tables():
+        if "Assignment" in table:
+            for column in get_attrs_list(type=table):
+                if column.split("_")[0] in __dict.keys():
+                    node1 = "{}".format(table)
+                    node2 = "{}".format(column.split("_")[0].title())
+                    # node1 = "{}:{}".format(table, __dict[column.split("_")[0]][column.split("_")[1]])
+                    # node2 = "{}:{}".format(column.split("_")[0], __dict[table.lower()][column])
+                    graph.add_edge(node1, node2)
+    graph.draw(os.path.join(static_dir, filename), format="svg", prog="dot")
+    return filename
+
+
+def delete_tables():
+    build_class_from_dict(getattr(settings, "INITIAL_DB"))
+    driver.delete_tables()
 
 
 def add_user_from_keystone(obj=None):
@@ -218,6 +307,8 @@ def update_request_attributes(
     """
     # TODO: send a JSON Object ???
     attributes['s_attrs'] = driver.get_user(uuid=subject)
+    # attributes['o_attrs'] = driver.get_user(uuid=subject)
+    # attributes['a_attrs'] = driver.get_user(uuid=subject)
     return attributes
 
 

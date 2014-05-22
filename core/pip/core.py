@@ -3,7 +3,7 @@ Policy information Point
 Information gathering from the infrastructure
 """
 from moon.info_repository import driver_dispatcher as dd
-from moon import settings
+# from moon import settings
 import logging
 
 logger = logging.getLogger("moon.pip")
@@ -21,5 +21,5 @@ def update_request_attributes(
     Example for 'role': ( "admin", "user" )
 
     """
-    attributes = dd.update_request_attributes(subject,action,object_name,tenant, attributes)
+    attributes = dd.update_request_attributes(subject, action, object_name, tenant, attributes)
     return attributes

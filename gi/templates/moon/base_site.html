@@ -9,9 +9,9 @@
         <script type="text/javascript" src="{% static "moon/main.js" %}"></script>
     </head>
     <body>
-        <div id="ptitle">
+        <div id="title"><h1 class="title">
             {% block ptitle %}{{ title }} {% trans 'Moon: an other RBAC system' %}{% endblock %}
-        </div>
+        </h1></div>
         <div id="plogout"><a href="/auth/logout">Logout</a></div>
 
         <div id="pmain">
@@ -23,6 +23,7 @@
                         <li><a href="/users">Users</a></li>
                         <li><a href="/projects">Projects</a></li>
                         <li><a href="/roles">Roles</a></li>
+                        <li><a href="/userdb">Administration</a></li>
                     </ul>
                 {% endblock %}
 
@@ -32,12 +33,12 @@
                 {% block pcontent %}{% endblock %}
 
             </div>
-            <div id="plogs">
-                {% block plogs %}
-                    <h1>LOGS</h1>
-                {% endblock %}
-
-            </div>
+{#            <div id="plogs">#}
+{#                {% block plogs %}#}
+{#                    <h1>LOGS</h1>#}
+{#                {% endblock %}#}
+{##}
+{#            </div>#}
         </div>
 
 

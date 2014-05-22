@@ -1,1 +1,1 @@
-__author__ = 'vdsq3226'
+from keystone.contrib.moon.moon_hook import *
