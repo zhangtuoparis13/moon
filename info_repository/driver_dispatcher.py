@@ -1,8 +1,9 @@
-import logging
 from moon.gi import settings as gi_settings
+from moon.tenant_repository.driver_dispatcher import Tenants
+from moon.info_repository import models
 from moon import settings
 import importlib
-from moon.info_repository import models
+import logging
 import os
 import uuid
 # from keystoneclient.v3.users import User
@@ -95,15 +96,24 @@ class Users:
         """
         user = ()
         # TODO: connect to moon DB
-        for _user in self.kclient.users.list():
-            if _user.id == uuid:
+        # for _user in self.kclient.users.list():
+        for _user in driver.get_elements(type="Subject"):
+            if _user.uuid == uuid:
                 user = _user
-        user.project = user.default_project_id
-        for _project in self.kclient.projects.list():
-            if user.default_project_id == _project.id:
-                user.project = _project.name
-        user.domain = user.domain_id
-        return user
+        # user.project = user.project
+        # for _project in self.kclient.projects.list():
+        # tenants = Tenants(kclient=None)
+        # for _project in tenants.list():
+        #     if user.project == _project.uuid:
+        #         user.project = _project.name
+        # user.domain = user.domain
+        try:
+            return user[0]
+        except IndexError:
+            # logger.warning("User with uuid={} not found!".format(uuid))
+            return None
+        except TypeError:
+            return user
 
 
 true_values = ("true", "y", "yes", "oui", "on")
@@ -208,6 +218,15 @@ def add_user_from_keystone(obj=None):
     values['name'] = obj.name
     values['password'] = "<Unknown>"
     values['enabled'] = obj.enabled
+    values['domain'] = obj.domain_id
+    try:
+        values['project'] = obj.default_project_id
+    except AttributeError:
+        values['project'] = "<Not set>"
+    try:
+        values['mail'] = obj.email
+    except AttributeError:
+        values['mail'] = "<Not set>"
     driver.add_element(table=table, elem=values)
 
 
@@ -315,6 +334,7 @@ def update_request_attributes(
     metadata = attributes
     attributes = {}
     # Get main attributes
+    # TODO: must add only "enabled" element !
     s_attrs = driver.get_element(type="Subject", attributes={"uuid": subject})
     o_attrs = driver.get_element(type="Object", attributes={"name": object_name})
     a_attrs = driver.get_element(type="Action", attributes={"name": action})

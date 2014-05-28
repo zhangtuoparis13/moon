@@ -1,17 +1,51 @@
 {
     "RULES": {
         "rule1":
-            [
-                ["s_attrs", "role", "admin"],
-                ["s_attrs", "group", "group1"],
-                ["o_attrs", "type", "vm"]
-            ],
+            {
+                "s_attrs": ["Role", "admin"],
+                "a_attrs": ["Action", "get"],
+                "o_attrs": ["Object", "tenant"],
+                "desc": "List tenants"
+            },
         "rule2":
-            [
-                ["s_attrs", "role", "admin"],
-                ["s_attrs", "group", "group2"],
-                ["o_attrs", "type", "vm"]
-            ]
+            {
+                "s_attrs": ["Subject", "admin"],
+                "a_attrs": ["Action", "get"],
+                "o_attrs": ["Object", "tenant"],
+                "desc": "List tenants"
+            },
+        "rule3":
+            {
+                "s_attrs": ["Subject", "*"],
+                "a_attrs": ["Action", "post"],
+                "o_attrs": ["Object", "token"],
+                "desc": "authentication"
+            },
+        "rule4":
+            {
+                "s_attrs": ["Subject", "*"],
+                "a_attrs": ["Action", "delete"],
+                "o_attrs": ["Object", "token"],
+                "desc": "Delete a token"
+            },
+        "rule5":
+            {
+                "s_attrs": ["Subject", "*"],
+                "a_attrs": ["Action", "os-ksadm"],
+                "o_attrs": ["Object", "roles"]
+            },
+        "rule6":
+            {
+                "s_attrs": ["Subject", "admin"],
+                "a_attrs": ["Action", "list"],
+                "o_attrs": ["Object", "users"]
+            },
+        "rule7":
+            {
+                "s_attrs": ["Subject", "nova"],
+                "a_attrs": ["Action", "validate_token"],
+                "o_attrs": ["Object", "token"]
+            }
     },
 
     "METADATA": {

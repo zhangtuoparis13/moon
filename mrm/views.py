@@ -9,6 +9,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 # TODO: this must be authenticated!!!
 # TODO: this must be CSRF protected!!!
 @csrf_exempt
@@ -20,15 +21,19 @@ def tenants(request, id=None):
         # response_data = json.dumps(pap.tenants.json())
         # try:
         manager = Manager()
-        authz = manager.authz(
+        authz, tenant_name = manager.authz(
             subject=request.POST["Subject"],
             action=request.POST["Action"],
             object_name=request.POST["Object"],
             object_tenant=request.POST["Object_Tenant"],
             subject_tenant=request.POST["Subject_Tenant"]
         )
+        tenant = request.POST.get("Subject_Tenant", "None")
         # TODO: need to check authorisation
-        print("\t\033[41m" + str(authz) + "\033[m")
+        if not authz:
+            print("\t\033[41m" + tenant_name + "/" + str(authz) + "\033[m")
+        else:
+            print("\t\033[33m" + tenant_name + "/" + str(authz) + "\033[m")
         # response_data["auth"] = authz
         if authz:
             response_data["auth"] = True
