@@ -64,6 +64,7 @@
                 {% if edit_uuid and element|get_item:"uuid" == edit_uuid %}
                     <td>
                         <input type="submit" name="submit" value="Update"/>
+                        <input type="hidden" name='uuid' value="{{ edit_uuid }}"/>
                     </td>
                     {% for column in addcolumns %}
 {#                        <td><input type="text" name="{{ column }}" value="{{ element|get_item:column }}"/></td>#}
