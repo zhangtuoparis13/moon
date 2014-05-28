@@ -53,7 +53,7 @@
             <table border="1">
             {% if addcolumns %}
                 <tr>
-                    <th>Edit</th>
+                    <th>Actions</th>
                     {% for column in addcolumns %}
                     <th>{{ column }}</th>
                     {% endfor %}
@@ -65,13 +65,15 @@
                     <td>
                         <input type="submit" name="submit" value="Update"/>
                     </td>
-                    {% for column in columns %}
+                    {% for column in addcolumns %}
 {#                        <td><input type="text" name="{{ column }}" value="{{ element|get_item:column }}"/></td>#}
                         <td>{{ column|get_widget:element }}</td>
                     {% endfor %}
                 {% else %}
                     <td>
-                        <a href="?edit&uuid={{ element|get_item:"uuid" }}&table={{ selected_table }}">Edit</a>
+                        {% if "Assignment" not in selected_table%}
+                            <a href="?edit&uuid={{ element|get_item:"uuid" }}&table={{ selected_table }}">Edit</a>
+                        {% endif %}
                         <a href="?delete&uuid={{ element|get_item:"uuid" }}&table={{ selected_table }}">Delete</a>
                     </td>
                     {% for column in addcolumns %}
