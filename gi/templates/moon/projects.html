@@ -48,11 +48,30 @@
             <button type="submit" name="Delete">Delete</button>
         </form>
     {% elif projects %}
-        <ul>
+        <table border="1">
+        <tr>
+            <th>Actions</th>
+            <th>Name</th>
+            <th>Domain</th>
+            <th>Parent</th>
+            <th>Children</th>
+            <th>Enabled</th>
+        </tr>
         {% for p in projects %}
-            <li><a href="/projects/{{ p.uuid }}/">{{ p.name }}</a></li>
+            <tr>
+                <td><a href="/projects/{{ p.uuid }}/">Edit</a></td>
+                <td>{{ p.name }}</td>
+                <td>{{ p.domain }}</td>
+                <td>{{ p|get_item:"parent" }}</td>
+                <td>
+                    {% for child in p|get_item:"children" %}
+                        {{ child }}<br/>
+                    {% endfor %}
+                </td>
+                <td>{{ p.enabled }}</td>
+            </tr>
         {% endfor %}
-        </ul>
+        </table>
     {% else %}
         <p>No project available.</p>
     {% endif %}

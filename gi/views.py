@@ -254,10 +254,15 @@ def get_item(dictionary, key):
     value = ""
     table = key.split("_")[0].title()
     value = eval("dictionary.{}".format(key))
-    if "tenant_uuid" in key:
+    if key in ("tenant_uuid", "parent", "children"):
         pap = PAP()
-        if value:
+        if value and type(value) in (str, unicode):
             value = pap.tenants.get_tenant(uuid=str(value)).name
+        elif value and type(value) in (list, tuple):
+            ret = []
+            for v in value:
+                ret.append(pap.tenants.get_tenant(uuid=str(v)).name)
+            value = ret
     elif "_uuid" in key:
         element = get_element(type=table, attributes={"uuid": value})
         value = element[0].name
