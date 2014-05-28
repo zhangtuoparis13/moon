@@ -129,11 +129,12 @@ table {
 }
 
 td {
-    padding: 5px;
+    padding: 10px;
 }
 
 th {
     background: #ffb445;
+    padding: 10px;
 }
 
 tr.row1 {
