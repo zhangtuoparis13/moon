@@ -33,7 +33,7 @@ engine_user_db = create_engine(
 
 base_user_db = declarative_base()
 
-UserSession = sessionmaker()
+UserSession = sessionmaker(expire_on_commit=False)
 UserSession.configure(bind=engine_user_db)
 
 
