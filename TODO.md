@@ -4,9 +4,9 @@ TODO
 Global things to do
 -------------------
 
-- [] Add a testing framework
+- [ ] Add a testing framework
 - [x] Add a logging system
-- [] Add a documentation system
+- [ ] Add a documentation system
 
 Specific modifications for moon
 -------------------------------
