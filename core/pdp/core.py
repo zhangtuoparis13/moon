@@ -26,7 +26,7 @@ class PDP:
         self.__attributes = attributes
 
     def authz(self, subject=None, action=None, object_name=None):
-        self.update_request_attributes(subject, action, object_name)
+        self.__attributes = self.update_request_attributes(subject, action, object_name)
         return self.__policy_plugin_pointer.authz(
             subject=subject,
             action=action,
@@ -40,11 +40,11 @@ class PDP:
         and values in user_db
         """
         self.__attributes = pip.update_request_attributes(subject,
-                                                           action,
-                                                           object_name,
-                                                           self.tenant_name,
-                                                           self.__attributes)
-
+                                                          action,
+                                                          object_name,
+                                                          self.tenant_name,
+                                                          self.__attributes)
+        return self.__attributes
 
 # def authz(
 #         subject=None,

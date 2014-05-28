@@ -49,9 +49,8 @@ def get_db_filename():
 
 
 def create_tables():
-    pass
-    # if not dbhandler:
-    #     open_db()
+    s = shelve.open(get_db_filename())
+    s.close()
 
 
 def add_project_to_tenantdb(tenant=None):

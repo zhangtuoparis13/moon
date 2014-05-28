@@ -6,8 +6,11 @@ from moon.info_repository import driver_dispatcher as user_dd
 from moon.tenant_repository import driver_dispatcher as tenant_dd
 from moon import settings
 import logging
+import json
 
 logger = logging.getLogger("moon.pip")
+
+API = json.loads(file(getattr(settings, "OPENSTACK_API")).read())
 
 
 def create_tables():
@@ -53,12 +56,35 @@ def populate_dbs(username="admin", password=None, domain="Default", test_only=Fa
             for tenant in c.projects.list(user=user):
                 if not test_only:
                     user_dd.add_element_from_keystone(user=user, role=role, tenant=tenant)
+                    # print("\033[31m")
+                    # print(tenant)
+                    # print("\033[m")
                 logger.info("Add cnx between {}/{} and tenant {}".format(user.name, role.name, tenant.name))
                 # tenant_dd.add_element_from_keystone(tenant=tenant)
     for tenant in c.projects.list(user=None):
         logger.info("add tenant {}".format(tenant.name))
         if not test_only:
             tenant_dd.add_element_from_keystone(tenant=tenant)
+    # object_created = []
+    # action_created = []
+    for action in API["actions"]: #getattr(settings, 'ACTIONS', ""):
+        # if len(action["action"]) > 0 and action["action"] not in action_created:
+        user_dd.create_element(table="Action", values={
+            "name": action,
+            "description": action,
+            "enabled": True
+        })
+            # action_created.append(action["action"])
+    for obj in API["objects"]:
+        # if len(action["object"]) > 0 and action["object"] not in object_created:
+        if type(obj) in (list, tuple):
+            obj = obj[0]
+        user_dd.create_element(table="Object", values={
+            "name": obj,
+            "description": obj,
+            "enabled": True
+        })
+            # object_created.append(action["object"])
 
 
 def delete_tables():

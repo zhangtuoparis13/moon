@@ -257,12 +257,11 @@ def get_item(dictionary, key):
     if "tenant_uuid" in key:
         pap = PAP()
         if value:
-            value = pap.tenants.get_tenant(uuid=value).name
+            value = pap.tenants.get_tenant(uuid=str(value)).name
     elif "_uuid" in key:
         element = get_element(type=table, attributes={"uuid": value})
         value = element[0].name
     return value
-
 
 
 @register.filter

@@ -31,7 +31,7 @@ class PAP:
 
     def add_element(self, table="Subject", attributes=dict()):
         # print("pap.add_element " + str(table) + " " + str(attributes))
-        return create_element(type=table, values=attributes)
+        return create_element(table=table, values=attributes)
 
     def delete_element(self, table="Subject", attributes=dict()):
         return delete_element(table=table, values=attributes)

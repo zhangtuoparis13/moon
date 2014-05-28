@@ -105,12 +105,12 @@ def build_class_from_dict(cls):
                 attr['length'] = 32
             _type = attr["type"].\
                 replace("String", "str").\
-                replace("Int", "int").\
+                replace("ForeignKey", "str").\
+                replace("Integer", "int").\
                 replace("Boolean", "bool")
             constructor += template_value.format(
                 name=attr["name"],
-                type=_type,
-                length=attr['length']
+                type=_type
             )
         constructor += template_service.format(
             attrkey=key,

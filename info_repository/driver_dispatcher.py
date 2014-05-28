@@ -109,15 +109,17 @@ class Users:
 true_values = ("true", "y", "yes", "oui", "on")
 
 
-def create_element(type='Subject', values=dict()):
+def create_element(table='Subject', values=dict()):
     if "uuid" not in values:
         values["uuid"] = str(uuid.uuid4()).replace("-", "")
     if "enabled" in values:
-        if values["enabled"].lower() in true_values:
+        if type(values["enabled"]) is str and values["enabled"].lower() in true_values:
+            values["enabled"] = 1
+        elif type(values["enabled"]) is bool and values["enabled"]:
             values["enabled"] = 1
         else:
             values["enabled"] = 0
-    return driver.add_element(table=type, elem=values)
+    return driver.add_element(table=table, elem=values)
 
 
 def delete_element(table='Subject', values=dict()):
@@ -310,10 +312,47 @@ def update_request_attributes(
           )
         }
     """
-    # TODO: send a JSON Object ???
-    attributes['s_attrs'] = driver.get_user(uuid=subject)
-    # attributes['o_attrs'] = driver.get_user(uuid=subject)
-    # attributes['a_attrs'] = driver.get_user(uuid=subject)
+    metadata = attributes
+    attributes = {}
+    # Get main attributes
+    s_attrs = driver.get_element(type="Subject", attributes={"uuid": subject})
+    o_attrs = driver.get_element(type="Object", attributes={"name": object_name})
+    a_attrs = driver.get_element(type="Action", attributes={"name": action})
+    # Get related attributes
+    for table in get_tables():
+        if "Assignment" in table:
+            if "Subject" in table:
+                table2 = table.replace("Subject", "").replace("Assignment", "")
+                # print(table2, metadata["s_attrs"])
+                if table2 in metadata["s_attrs"]:
+                    for element in driver.get_element(
+                                        type=table,
+                                        attributes={"subject_uuid": subject}):
+                        s_attrs.extend(driver.get_element(
+                            type=table2,
+                            attributes={"uuid": getattr(element, "{}_uuid".format(table2.lower()))}))
+            if "Object" in table:
+                table2 = table.replace("Object", "").replace("Assignment", "")
+                if table2 in metadata["o_attrs"]:
+                    for element in driver.get_element(
+                                        type=table,
+                                        attributes={"object_uuid": subject}):
+                        o_attrs.extend(driver.get_element(
+                            type=table2,
+                            attributes={"uuid": getattr(element, "{}_uuid".format(table2.lower()))}))
+            if "Action" in table:
+                table2 = table.replace("Action", "").replace("Assignment", "")
+                if table2 in metadata["a_attrs"]:
+                    for element in driver.get_element(
+                                        type=table,
+                                        attributes={"action_uuid": subject}):
+                        a_attrs.extend(driver.get_element(
+                            type=table2,
+                            attributes={"uuid": getattr(element, "{}_uuid".format(table2.lower()))}))
+    attributes['s_attrs'] = s_attrs
+    attributes['o_attrs'] = o_attrs
+    attributes['a_attrs'] = a_attrs
+    # print(attributes)
     return attributes
 
 

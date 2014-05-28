@@ -4,6 +4,9 @@ from moon.tenant_repository.driver_dispatcher import Tenants
 from moon.core.pdp import PDP
 from moon import settings
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Manager:
@@ -59,7 +62,10 @@ class Manager:
         Return: boolean
         """
         auth = False
-        if subject_tenant == object_tenant:
+        if not subject_tenant or subject_tenant == "None":
+            # subject_tenant is None when for example action is "token"
+            auth = self.pdps["None"].authz(subject, action, object_name)
+        elif subject_tenant == object_tenant:
             # intra tenant access control
             # check pdp_i
             auth = self.pdps[subject_tenant].authz(subject, action, object_name)
@@ -68,6 +74,10 @@ class Manager:
             # check tenant_tree
             # check pdp_i tenant1
             # check pdp_i tenant2
+            logger.warning("Inter-tenant access control validation not developed ! (s:{}/o:{})".format(
+                subject_tenant,
+                object_tenant
+            ))
             pass
         return auth
 

@@ -15,18 +15,8 @@
     },
 
     "METADATA": {
-        "s_attrs": {
-            "role": ["Admin", "User"],
-            "group": ["group1"]
-        },
-        "o_attrs": {
-            "type": ["compute", "log", "storage", "network"],
-            "size": ["small", "medium", "big"],
-            "security": ["public", "private", "confidential"]
-        },
-        "a_attrs": {
-            "activity": ["manage", "use"],
-            "security": ["normal", "ssl"]
-        }
+        "s_attrs": ["Role", "Group"],
+        "o_attrs": ["Type", "Size"],
+        "a_attrs": ["Activity", "Security"]
     }
 }

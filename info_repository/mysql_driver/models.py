@@ -1,7 +1,8 @@
 from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, String, Sequence #noqa
+from sqlalchemy import Column, Integer, String, Sequence, ForeignKey #noqa
 from sqlalchemy import Boolean #noqa
 from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy.dialects.mysql import INTEGER as Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from moon import settings
@@ -64,12 +65,13 @@ class {name}(models.__list__['{name}'], base_user_db):
     {desc}
     \"\"\"
     __tablename__ = "{name}"
-    __attrtype__ = "{attrtype}"
-    id = Column(Integer, primary_key=True) """
-template_value = "    {name} = Column({type}({length}))\n"
+    __attrtype__ = "{attrtype}" """
+#    id = Column(Integer(32), primary_key=True) """
+template_value = "    {name} = Column({type}({parameters}){pkey})\n"
 template_service = """\n    def __repr__(self):
         return "{attrkey}: {attrvalues}".format({attrdef})
 """
+pkey = ", primary_key=True"
 
 __list__ = {}
 
@@ -83,8 +85,8 @@ def build_class_from_dict(cls={}):
         # Subject attributes
           'Subject': {
             'attributes': (
-                    {'name': "uuid", "type": "String", "length": 32},
-                    {'name': "name", "type": "String", "length": 254},
+                    {'name': "uuid", "type": "String", "parameters": (32, )},
+                    {'name': "name", "type": "String", "parameters": (254, )},
                     ),
             'type': "AttrKey",
             'description': "A user in the system.",
@@ -101,12 +103,27 @@ def build_class_from_dict(cls={}):
             )
         )
         for attr in cls[key]['attributes']:
-            if "length" not in attr.keys():
-                attr['length'] = 32
+            _pkey = ""
+            if "parameters" not in attr.keys():
+                attr['parameters'] = list()
+            parameters = []
+            for param in attr['parameters']:
+                if type(param) is str:
+                    parameters.append("'{}'".format(param))
+                else:
+                    parameters.append(str(param))
+            if attr["type"] == "ForeignKey":
+                attr["type"] = "String(32), ForeignKey"
+            if attr["name"] == "uuid":
+                _pkey = pkey
+                attr["type"] = "String"
+            # else:
+            #     _pkey = ""
             constructor += template_value.format(
                 name=attr["name"],
                 type=attr["type"],
-                length=attr['length']
+                parameters=",".join(parameters),
+                pkey=_pkey
             )
         # print(cls[key]['attributes'])
         constructor += template_service.format(
