@@ -51,10 +51,10 @@
             <input type="hidden" name='csrfmiddlewaretoken' value="{{ csrf_token }}"/>
             <input type="hidden" name='selected_table' value="{{ selected_table }}"/>
             <table border="1">
-            {% if columns %}
+            {% if addcolumns %}
                 <tr>
                     <th>Edit</th>
-                    {% for column in columns %}
+                    {% for column in addcolumns %}
                     <th>{{ column }}</th>
                     {% endfor %}
                 </tr>
@@ -74,7 +74,7 @@
                         <a href="?edit&uuid={{ element|get_item:"uuid" }}&table={{ selected_table }}">Edit</a>
                         <a href="?delete&uuid={{ element|get_item:"uuid" }}&table={{ selected_table }}">Delete</a>
                     </td>
-                    {% for column in columns %}
+                    {% for column in addcolumns %}
                         <td>{{ element|get_item:column }}</td>
                     {% endfor %}
                 {% endif %}
