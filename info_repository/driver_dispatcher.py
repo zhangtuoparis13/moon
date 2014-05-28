@@ -123,7 +123,7 @@ def create_element(table='Subject', values=dict()):
     if "uuid" not in values:
         values["uuid"] = str(uuid.uuid4()).replace("-", "")
     if "enabled" in values:
-        if type(values["enabled"]) is str and values["enabled"].lower() in true_values:
+        if type(values["enabled"]) in (str, unicode) and values["enabled"].lower() in true_values:
             values["enabled"] = 1
         elif type(values["enabled"]) is bool and values["enabled"]:
             values["enabled"] = 1
@@ -335,9 +335,9 @@ def update_request_attributes(
     attributes = {}
     # Get main attributes
     # TODO: must add only "enabled" element !
-    s_attrs = driver.get_element(type="Subject", attributes={"uuid": subject})
-    o_attrs = driver.get_element(type="Object", attributes={"name": object_name})
-    a_attrs = driver.get_element(type="Action", attributes={"name": action})
+    s_attrs = driver.get_element(type="Subject", attributes={"uuid": subject, "enabled": 1})
+    o_attrs = driver.get_element(type="Object", attributes={"name": object_name, "enabled": 1})
+    a_attrs = driver.get_element(type="Action", attributes={"name": action, "enabled": 1})
     # Get related attributes
     for table in get_tables():
         if "Assignment" in table:
@@ -347,7 +347,7 @@ def update_request_attributes(
                 if table2 in metadata["s_attrs"]:
                     for element in driver.get_element(
                                         type=table,
-                                        attributes={"subject_uuid": subject}):
+                                        attributes={"subject_uuid": subject, "enabled": 1}):
                         s_attrs.extend(driver.get_element(
                             type=table2,
                             attributes={"uuid": getattr(element, "{}_uuid".format(table2.lower()))}))
@@ -356,7 +356,7 @@ def update_request_attributes(
                 if table2 in metadata["o_attrs"]:
                     for element in driver.get_element(
                                         type=table,
-                                        attributes={"object_uuid": subject}):
+                                        attributes={"object_uuid": subject, "enabled": 1}):
                         o_attrs.extend(driver.get_element(
                             type=table2,
                             attributes={"uuid": getattr(element, "{}_uuid".format(table2.lower()))}))
@@ -365,10 +365,10 @@ def update_request_attributes(
                 if table2 in metadata["a_attrs"]:
                     for element in driver.get_element(
                                         type=table,
-                                        attributes={"action_uuid": subject}):
+                                        attributes={"action_uuid": subject, "enabled": 1}):
                         a_attrs.extend(driver.get_element(
                             type=table2,
-                            attributes={"uuid": getattr(element, "{}_uuid".format(table2.lower()))}))
+                            attributes={"uuid": getattr(element, "{}_uuid".format(table2.lower())), "enabled": 1}))
     attributes['s_attrs'] = s_attrs
     attributes['o_attrs'] = o_attrs
     attributes['a_attrs'] = a_attrs
