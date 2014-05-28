@@ -4,9 +4,9 @@ TODO
 Global things to do
 -------------------
 
-- [] Add a testing framework
-- [X] Add a logging system
-- [] Add a documentation system
+[] Add a testing framework
+[X] Add a logging system
+[] Add a documentation system
 
 Specific modifications for moon
 -------------------------------
@@ -19,19 +19,19 @@ Legend:
 
 | Module            | Description                               | Percentage of work |
 | ----------------- | ----------------------------------------- | ------------------ |
-| PAP               | Policy Administration Point               | 25%                |
-| PIP               | Policy Information Point                  | 25%                |
-| PDP               | Policy Decision Point                     | 25%                |
+| PAP               | Policy Administration Point               | 50%                |
+| PIP               | Policy Information Point                  | 50%                |
+| PDP               | Policy Decision Point                     | 50%                |
 | Info Repository   | DB for objects                            | 90%                |
 | Tenant Repository | DB for tenants and relations between them | 90%                |
-| Policy Repository | DB for Policy authorization               | 0%                 |
-| MRM               | model-based reference monitor             | 10%                |
+| Policy Repository | DB for Policy authorization               | 50%                |
+| MRM               | model-based reference monitor             | 80%                |
 
 ###Redirect keystone Auth to Moon
 
 | Module        | Description                               | Percentage of work |
 | ------------- | ----------------------------------------- | ------------------ |
-| moon_hook     | Hook Keystone authorization               | 20%                |
+| moon_hook     | Hook Keystone authorization               | 70%                |
 | keystone_sync | Synchronisation between Moon and Keystone | 0%                 |
 
 ###Admin interface on Django
@@ -42,4 +42,4 @@ Legend:
 |GI (Tenants) | Tenants administration                   | 70%                |
 |GI (Roles)   | Roles administration                     | 10%                |
 |GI (Userdb)  | Administration of all objects of user_db | 90%                |
-|GI (Policy)  | Policy administration                    | 0%                 |
+|GI (Policy)  | Policy administration                    | 30%                |
