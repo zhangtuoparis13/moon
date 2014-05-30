@@ -24,6 +24,8 @@ OPENSTACK_KEYSTONE_URL = "http://openstackserver:5000/v3"
 
 OPENSTACK_API = "/etc/moon/api.json"
 
+CNX_PASSWORD = "P4ssw0rd"
+
 INITIAL_DB = {
     # Subject attributes
     'Subject': {
