@@ -12,6 +12,7 @@ from gi import settings
 from core.pap.core import PAP
 from moon.info_repository.driver_dispatcher import get_tables, get_elements, get_db_diag, get_attrs_list, get_element
 from moon.core.pdp import Manager
+from moon.log_repository import LOGS
 
 
 logger = logging.getLogger("moon.django")
@@ -253,7 +254,6 @@ def delete_element(table, columns, uuid, kclient=None):
 
 @register.filter
 def get_item(dictionary, key):
-    print("get_item", dictionary, key)
     value = ""
     table = key.split("_")[0].title()
     value = eval("dictionary.{}".format(key))
@@ -393,8 +393,8 @@ def userdb(request):
 
 @register.filter
 def get_len(element, value=""):
-    # print("get_len of {} is {}".format(element[value], len(element[value])))
     return len(element[value])
+
 
 @login_required(login_url='/auth/login/')
 def policy_repository(request):
@@ -415,4 +415,18 @@ def policy_repository(request):
         "policies": policies.values(),
         "policy": policy,
         "rules": rules
+        })
+
+
+@login_required(login_url='/auth/login/')
+def logs_repository(request):
+    """
+    User DB administration interface
+    """
+    # c = get_keystone_client(request)
+    # manager = Manager()
+    logs = LOGS.read()
+    print(logs)
+    return render(request, "moon/logs.html", {
+        "logs": logs,
         })

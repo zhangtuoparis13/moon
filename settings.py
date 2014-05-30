@@ -15,6 +15,14 @@ DATABASES = {
         'PASSWORD': "",
         'HOST': "",
         'PORT': ""
+    },
+    'log': {
+        'ENGINE': 'moon.log_repository.shelve_driver',
+        'NAME': "/var/log/moon/log.db",
+        'USER': "",
+        'PASSWORD': "",
+        'HOST': "",
+        'PORT': ""
     }
 }
 

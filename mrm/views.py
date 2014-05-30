@@ -3,6 +3,7 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 import json
 from django.http import HttpResponse
 from moon.core.pdp import Manager
+from moon.log_repository import LOGS
 import hashlib
 from moon import settings
 # from moon.core.pap.core import PAP
@@ -39,15 +40,26 @@ def tenants(request, id=None):
         # TODO: need to check authorisation
         if not authz:
             # print("\t\033[41m" + tenant_name + "/" + str(authz) + " for (" + "\033[m")
-            print("\t\033[41m{tname}/{authz} for ({subject} - {action} - {object})\033[m".format(
+            log = "Unauthorized for {tname}/{authz} for ({subject} - {action} - {object})".format(
                 tname=tenant_name,
                 authz=authz,
                 subject=request.POST["Subject"],
                 action=request.POST["Action"],
                 object=request.POST["Object"]
-            ))
+            )
+            print("\t\033[41m"+log+"\033[m")
+            LOGS.write(line=log)
         else:
-            print("\t\033[33m" + tenant_name + "/" + str(authz) + "\033[m")
+            log = "Authorized for {tname}/{authz} for ({subject} - {action} - {object})".format(
+                tname=tenant_name,
+                authz=authz,
+                subject=request.POST["Subject"],
+                action=request.POST["Action"],
+                object=request.POST["Object"]
+            )
+            print("\t\033[33m"+log+"\033[m")
+            LOGS.write(line=log)
+
         # response_data["auth"] = authz
         if authz:
             response_data["auth"] = True

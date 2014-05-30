@@ -125,6 +125,10 @@ body {
     border-radius:5px;
 }
 
+.logs {
+    font-size: 0.8em;
+}
+
 a {
     color: #855928;
 }
