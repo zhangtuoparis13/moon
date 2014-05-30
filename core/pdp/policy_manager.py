@@ -89,7 +89,7 @@ class Manager:
         tenant_name = "None"
         auth = False
         object_tenant = self.tenants.get_tenant(uuid=object_tenant)
-        object_tenant_name = "Unknown"
+        object_tenant_name = "None"
         if not subject_tenant or subject_tenant == "None":
             if subject:
                 pap = PAP(kclient=None)
@@ -104,7 +104,7 @@ class Manager:
             object_tenant_name = object_tenant.name
         except AttributeError:
             pass
-        subject_tenant_name = "Unknown"
+        subject_tenant_name = "None"
         subject_tenant = self.tenants.get_tenant(uuid=subject_tenant)
         if not subject_tenant:
             subject_tenant = self.tenants.get_tenant(name=subject_tenant)
@@ -114,14 +114,15 @@ class Manager:
             pass
         if not subject_tenant or subject_tenant == "None":
             # subject_tenant is None when for example action is "get" and object is "token" ie authentication
-            auth = self.pdps["None"].authz(subject, action, object_name)
+            # auth = self.pdps["None"].authz(subject, action, object_name)
+            auth = self.__check_policy(subject, action, object_name, "None")
         elif subject_tenant == object_tenant:
-            # intra tenant access control
+            logger.info("intra tenant access control")
             # check pdp_i
             auth = self.__check_policy(subject, action, object_name, subject_tenant_name)
             tenant_name = subject_tenant_name
         else:
-            # inter tenant access control
+            logger.info("inter tenant access control")
             # check tenant_tree
             child = False
             child = self.is_child(tenant_parent=subject_tenant, tenant_child=object_tenant)
