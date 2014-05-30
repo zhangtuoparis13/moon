@@ -1803,7 +1803,14 @@
             "method": "GET", 
             "name": "/v2.0/tokens/{tokenId}", 
             "desc": "Validates a token and confirms that it belongs to a specified tenant."
-        }, 
+        },
+        {
+            "action": "delete",
+            "object": "token",
+            "method": "DELETE",
+            "name": "/v2.0/tokens/{tokenId}",
+            "desc": "Deletes a token."
+        },
         {
             "action": "get", 
             "object": "endpoint", 
