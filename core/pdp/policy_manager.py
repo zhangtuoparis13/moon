@@ -37,6 +37,9 @@ class Manager:
     #     pdp_i = PDP(tenant_uuid, tenant_name, policy_plugin_pointer, attributes)
     #     self.pdps[tenant_name] = pdp_i
 
+    def get_policies(self):
+        return self.pdps
+
     def is_child(self, tenant_parent=None, tenant_child=None):
         """Return True if tenant_child is a child of tenant_parent.
         """

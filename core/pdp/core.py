@@ -18,12 +18,20 @@ class PDP:
         self.user_uuid = user_uuid
         self.tenant_name = tenant_name
         self.__policy_plugin_pointer = policy_plugin_pointer
+        self.enabled = True
+        self.description = self.__policy_plugin_pointer.get_description()
         get_tables()
         #self.__s_attrs = attributes['s_attrs']
         #self.__a_attrs = attributes['a_attrs']
         #self.__o_attrs = attributes['o_attrs']
         #self.__other_attrs = attributes['other_attrs']
         self.__attributes = attributes
+
+    def get_rules(self):
+        return self.__policy_plugin_pointer.rules
+
+    def get_metadata(self):
+        return self.__policy_plugin_pointer.attributes
 
     def authz(self, subject=None, action=None, object_name=None):
         self.__attributes = self.update_request_attributes(subject, action, object_name)

@@ -46,7 +46,12 @@ class PolicyPlugin:
         # self.attributes = {'s_attrs': {}, 'a_attrs': {}, 'o_attrs': {}, 'other_attrs':{}}
         self.attributes = tables["METADATA"]
 
+        self.description = tables.get("DESCRIPTION", "")
+
         self.pointer = self
+
+    def get_description(self):
+        return self.description
 
     def authz(self, subject=None, action=None, object_name=None, attributes=None):
         authz = [False, False, False]

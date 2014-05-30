@@ -5,28 +5,28 @@
                 "s_attrs": ["Role", "admin"],
                 "a_attrs": ["Action", "get"],
                 "o_attrs": ["Object", "tenant"],
-                "desc": "List tenants"
+                "description": "List tenants"
             },
         "rule2":
             {
                 "s_attrs": ["Subject", "admin"],
                 "a_attrs": ["Action", "get"],
                 "o_attrs": ["Object", "tenant"],
-                "desc": "List tenants"
+                "description": "List tenants"
             },
         "rule3":
             {
                 "s_attrs": ["Subject", "*"],
                 "a_attrs": ["Action", "post"],
                 "o_attrs": ["Object", "token"],
-                "desc": "authentication"
+                "description": "authentication"
             },
         "rule4":
             {
                 "s_attrs": ["Subject", "*"],
                 "a_attrs": ["Action", "delete"],
                 "o_attrs": ["Object", "token"],
-                "desc": "Delete a token"
+                "description": "Delete a token"
             },
         "rule5":
             {
