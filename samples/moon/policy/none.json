@@ -52,5 +52,7 @@
         "s_attrs": ["Role", "Group"],
         "o_attrs": ["Type", "Size"],
         "a_attrs": ["Activity", "Security"]
-    }
+    },
+
+    "DESCRIPTION": "Policy file when tenant is unknown (for example during authentication)"
 }
