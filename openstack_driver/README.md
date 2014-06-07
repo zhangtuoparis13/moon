@@ -18,16 +18,20 @@ Go to your Keystone server and put and modify in the file `/etc/keystone/keyston
     pipeline = access_log sizelimit url_normalize token_auth admin_token_auth moon xml_body json_body ec2_extension s3_extension service_v3
     ...
 
-Then, in the directory `/opt/stack/keystone/keystone/contrib/moon/`, add those files:
+If you use a `Devstack` environment, go in the directory `/opt/stack/keystone/keystone/contrib/moon/`.
+If you use an Icehouse environment, go in the directory `/usr/lib/python2.7/dist-packages/keystone/contrib/moon/`.
+Copy those files in it:
 - __init__.py
 - moon_hook.py
 - keystone_sync.py
+
+Create a directory `/etc/moon` and copie in it the file `api.json`.
 
 Endly modify the file `moon_hook.py` the dictionary MOON_SERVER_IP to map to your infrastructure:
 
     MOON_SERVER_IP = {
         "HOST": "<ip address of moon server>",
         "PORT": "8080",
-        "BASEURL": "crm"
+        "BASEURL": "mrm"
     }
 
