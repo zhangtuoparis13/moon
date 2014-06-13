@@ -1,5 +1,6 @@
 import logging
 import json
+from uuid import uuid4
 from moon import settings
 import importlib
 from models import Extension
@@ -62,29 +63,7 @@ class IntraExtensions:
                 exts.append(self.extensions[uuid])
             return exts
 
-    # def sync_extension(self, tenant_uuid, users, roles, groups):
-    #     for ext in self.db.list():
-    #         if ext["tenant"]["uuid"] == tenant_uuid:
-    #             print("found extension", tenant_uuid)
-
     def new_from_json(self, json_data):
-        # name = json_data["name"]
-        # subjects = json_data["perimeter"]["subjects"]
-        # objects = json_data["perimeter"]["objects"]
-        # metadata = json_data["configuration"]["metadata"]
-        # rules = json_data["configuration"]["rules"]
-        # profiles = json_data["profiles"]
-        # description = json_data["description"]
-        # # print(json.dumps(json_data, indent=4))
-        # return self.db.new_extension(
-        #     uuid=None,
-        #     name=name,
-        #     subjects=subjects,
-        #     objects=objects,
-        #     metadata=metadata,
-        #     rules=rules,
-        #     profiles=profiles,
-        #     description=description)
         all_tenants = map(lambda x: x.tenant["uuid"], self.extensions.values())
         if json_data["tenant"]["uuid"] not in all_tenants:
             ext = Extension(
@@ -103,26 +82,6 @@ class IntraExtensions:
             return ext
         else:
             return None
-
-    # def set(
-    #         self,
-    #         name="",
-    #         uuid=None,
-    #         subjects=None,
-    #         objects=None,
-    #         metadata=None,
-    #         rules=None,
-    #         profiles=None,
-    #         description=""):
-    #     return self.db.set_extension(
-    #         uuid=uuid,
-    #         name=name,
-    #         subjects=subjects,
-    #         objects=objects,
-    #         metadata=metadata,
-    #         rules=rules,
-    #         profiles=profiles,
-    #         description=description)
 
     def new(
             self,
@@ -224,15 +183,46 @@ class IntraExtensions:
         :param description: string describing the new extension.
         :return the created UUID
         """
-        return self.db.new_extension(
-            uuid=uuid,
-            name=name,
-            subjects=subjects,
-            objects=objects,
-            metadata=metadata,
-            rules=rules,
-            profiles=profiles,
-            description=description)
+        filename = getattr(settings, "DEFAULT_EXTENSION_TABLE")
+        json_data = json.loads(file(filename).read())
+        all_tenants = map(lambda x: x.tenant["uuid"], self.extensions.values())
+        if uuid:
+            json_data["uuid"] = uuid
+        else:
+            json_data["uuid"] = str(uuid4()).replace("-", "")
+        if name:
+            json_data["name"] = name
+        if subjects:
+            json_data["perimeter"]["subjects"] = subjects
+        if objects:
+            json_data["perimeter"]["objects"] = objects
+        if metadata:
+            json_data["configuration"]["metadata"] = metadata
+        if rules:
+            json_data["configuration"]["rules"] = rules
+        if profiles:
+            json_data["profiles"] = profiles
+        if description:
+            json_data["description"] = description
+        json_data["tenant"] = {}
+        json_data["tenant"]["uuid"] = str(uuid4()).replace("-", "")
+        if json_data["tenant"]["uuid"] not in all_tenants:
+            ext = Extension(
+                name=json_data["name"],
+                uuid=json_data["uuid"],
+                subjects=json_data["perimeter"]["subjects"],
+                objects=json_data["perimeter"]["objects"],
+                metadata=json_data["configuration"]["metadata"],
+                rules=json_data["configuration"]["rules"],
+                profiles=json_data["profiles"],
+                description=json_data["description"],
+                tenant=json_data["tenant"]
+            )
+            ext.sync(self.db)
+            self.extensions[json_data["uuid"]] = ext
+            return ext
+        else:
+            return None
 
     # def add_user(self, user):
     #     return self.db.add_user(user)
