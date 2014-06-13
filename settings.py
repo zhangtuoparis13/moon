@@ -1,15 +1,31 @@
 
 DATABASES = {
     'user_db': {
-        'ENGINE': 'moon.info_repository.mysql_driver',
+        'ENGINE': 'moon.tools.driver.mysql',
         'NAME': "user_db",
         'USER': "moonuser",
         'PASSWORD': "P4ssw0rd",
         'HOST': "127.0.0.1",
         'PORT': "3306"
     },
+    'intra-extensions': {
+        'ENGINE': 'moon.tools.driver.mongodb',
+        'NAME': "moon",
+        'USER': "",
+        'PASSWORD': "",
+        'HOST': "127.0.0.1",
+        'PORT': "27017"
+    },
+    'inter-extensions': {
+        'ENGINE': 'moon.tools.driver.mongodb',
+        'NAME': "moon",
+        'USER': "",
+        'PASSWORD': "",
+        'HOST': "127.0.0.1",
+        'PORT': "27017"
+    },
     'tenant_db': {
-        'ENGINE': 'moon.tenant_repository.shelve_driver',
+        'ENGINE': 'moon.tools.driver.mongodb',
         'NAME': "/etc/moon/tenant.db",
         'USER': "",
         'PASSWORD': "",
@@ -17,7 +33,7 @@ DATABASES = {
         'PORT': ""
     },
     'log': {
-        'ENGINE': 'moon.log_repository.shelve_driver',
+        'ENGINE': 'moon.tools.driver.shelve',
         'NAME': "/var/log/moon/log.db",
         'USER': "",
         'PASSWORD': "",
@@ -26,9 +42,13 @@ DATABASES = {
     }
 }
 
-POLICY_PLUGIN_TABLE = "/etc/moon/policy_tables.json"
+# POLICY_PLUGIN_TABLE = "/etc/moon/policy_tables.json"
+
+DEFAULT_EXTENSION_TABLE = "/etc/moon/policy/intra_ext_example.json"
 
 OPENSTACK_KEYSTONE_URL = "http://openstackserver:5000/v3"
+# OPENSTACK_KEYSTONE_URL = "http://p-trustedcloud3:5000/v3"
+# OPENSTACK_KEYSTONE_URL = "http://192.168.1.22:5000/v3"
 
 OPENSTACK_API = "/etc/moon/api.json"
 

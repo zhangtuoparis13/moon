@@ -1,1 +1,1 @@
-__author__ = 'vdsq3226'
+from core import get_pip

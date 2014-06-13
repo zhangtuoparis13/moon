@@ -2,7 +2,7 @@
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 import json
 from django.http import HttpResponse
-from moon.core.pdp import Manager
+from moon.core.pdp import get_manager
 from moon.log_repository import LOGS
 import hashlib
 from moon import settings
@@ -28,34 +28,37 @@ def tenants(request, id=None):
         # print(pap.tenants.json())
         # response_data = json.dumps(pap.tenants.json())
         # try:
-        manager = Manager()
-        authz, tenant_name = manager.authz(
+        manager = get_manager()
+        authz = manager.authz(
             subject=request.POST["Subject"],
             action=request.POST["Action"],
             object_name=request.POST["Object"],
+            object_type=request.POST["ObjectType"],
             object_tenant=request.POST["Object_Tenant"],
             subject_tenant=request.POST["Subject_Tenant"]
         )
         tenant = request.POST.get("Subject_Tenant", "None")
         # TODO: need to check authorisation
-        if not authz:
+        if not authz["auth"]:
             # print("\t\033[41m" + tenant_name + "/" + str(authz) + " for (" + "\033[m")
-            log = "Unauthorized for {tname}/{authz} for ({subject} - {action} - {object})".format(
-                tname=tenant_name,
-                authz=authz,
+            log = "Unauthorized for {tname} for ({subject} - {action} - {objecttype}/{object})".format(
+                tname=authz["tenant_name"],
+                authz=authz["auth"],
                 subject=request.POST["Subject"],
                 action=request.POST["Action"],
-                object=request.POST["Object"]
+                object=request.POST["Object"],
+                objecttype=request.POST["ObjectType"]
             )
             print("\t\033[41m"+log+"\033[m")
             LOGS.write(line=log)
         else:
-            log = "Authorized for {tname}/{authz} for ({subject} - {action} - {object})".format(
-                tname=tenant_name,
-                authz=authz,
+            log = "Authorized for {tname} for ({subject} - {action} - {objecttype}/{object})".format(
+                tname=authz["tenant_name"],
+                authz=authz["auth"],
                 subject=request.POST["Subject"],
                 action=request.POST["Action"],
-                object=request.POST["Object"]
+                object=request.POST["Object"],
+                objecttype=request.POST["ObjectType"]
             )
             print("\t\033[33m"+log+"\033[m")
             LOGS.write(line=log)
