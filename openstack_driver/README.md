@@ -1,7 +1,7 @@
 Hook for Moon authorization framework
 =====================================
 
-Howto install it
+How to install it
 ----------------
 Go to your Keystone server and put and modify in the file `/etc/keystone/keystone-api.ini` the following lines:
 
