@@ -1,4 +1,8 @@
 from uuid import uuid4
+try:
+    from django.utils.safestring import mark_safe
+except ImportError:
+    mark_safe = str
 
 
 class Extension:
@@ -16,9 +20,9 @@ class Extension:
             tenant=None):
         self.name = name,
         if not uuid:
-            self.uuid = str(uuid4())
+            self.uuid = str(uuid4()).replace("-", "")
         else:
-            self.uuid = str(uuid)
+            self.uuid = str(uuid).replace("-", "")
         self.subjects = subjects
         self.objects = objects
         self.metadata = metadata
@@ -140,6 +144,9 @@ class Extension:
     def sync(self, db=None):
         if db:
             self.db = db
+        #TODO: self.name is modified from a string to a list; I don't know why
+        if type(self.name) in (tuple, list):
+            self.name = self.name[0]
         self.db.new_extension(
             uuid=self.uuid,
             name=self.name,
@@ -150,3 +157,29 @@ class Extension:
             profiles=self.profiles,
             description=self.description,
             tenant=self.tenant)
+
+    def html(self):
+        #TODO: self.name is modified from a string to a list; I don't know why
+        if type(self.name) in (tuple, list):
+            self.name = self.name[0]
+        return mark_safe("""<b>Extension</b> {} for <b>tenant {}</b><br/><br/>
+        <b>Subjects:</b> <ul>{}</ul><br>
+        <b>Objects:</b> <ul>{}</ul>
+        """.format(
+            self.name,
+            self.tenant["name"],
+            "".join(map(lambda x: "<li>"+x["name"]+"</li>", self.subjects)),
+            "".join(map(lambda x: "<li>"+x["name"]+"</li>", self.objects)),
+        ))
+
+    def __repr__(self):
+        return """Extension {} ({}) for tenant {}
+        Subjects: {}
+        Objects: {}
+        """.format(
+            self.name,
+            self.uuid,
+            self.tenant["name"],
+            map(lambda x: x["name"], self.subjects),
+            map(lambda x: x["name"], self.objects),
+        )

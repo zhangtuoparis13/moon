@@ -1,7 +1,6 @@
 from intra_extension_manager import get_dispatcher as get_intra_dispatcher
 from inter_extension_manager import get_dispatcher as get_inter_dispatcher
 import logging
-import re
 
 logger = logging.getLogger(__name__)
 
@@ -15,18 +14,18 @@ class AuthzManager:
         self.inter_pdps = self.inter_dispatcher.extensions
         self.tenants = self.inter_dispatcher.tenants
 
-    def __check_policy(self, subject, action, object_name, tenant_name=""):
-        auth = False
-        tenant_name = tenant_name.replace("*", ".*")
-        policy_found = False
-        for key in self.intra_pdps.keys():
-            if re.match(key, tenant_name):
-                auth = self.intra_pdps[key].authz(subject, action, object_name)
-                policy_found = True
-                break
-        if not policy_found:
-            logger.warning("No policy found for tenant {}".format(tenant_name))
-        return auth
+    # def __check_policy(self, subject, action, object_name, tenant_name=""):
+    #     auth = False
+    #     tenant_name = tenant_name.replace("*", ".*")
+    #     policy_found = False
+    #     for key in self.intra_pdps.keys():
+    #         if re.match(key, tenant_name):
+    #             auth = self.intra_pdps[key].authz(subject, action, object_name)
+    #             policy_found = True
+    #             break
+    #     if not policy_found:
+    #         logger.warning("No policy found for tenant {}".format(tenant_name))
+    #     return auth
 
     def authz(
             self,

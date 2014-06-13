@@ -1,8 +1,9 @@
 """
 """
 import logging
-from moon.info_repository.driver_dispatcher import Users, create_element, delete_element
-from moon.tenant_repository.driver_dispatcher import Tenants
+from moon.core.pdp import get_admin_manager
+# from moon.info_repository.driver_dispatcher import Users, create_element, delete_element
+# from moon.tenant_repository.driver_dispatcher import Tenants
 # from moon.core.pdp.policy_manager import Manager
 # from moon.tenant_repository.driver_dispatcher import \
 #     set_tenant_relationship, \
@@ -25,16 +26,17 @@ class PAP:
             # TODO: need authentication
         else:
             self.kclient = kclient
-        self.users = Users(self.kclient)
-        self.tenants = Tenants(self.kclient)
+        self.admin_manager = get_admin_manager()
+        # self.users = Users(self.kclient)
+        # self.tenants = Tenants(self.kclient)
         # self.policy_manager = Manager()
 
-    def add_element(self, table="Subject", attributes=dict()):
-        # print("pap.add_element " + str(table) + " " + str(attributes))
-        return create_element(table=table, values=attributes)
-
-    def delete_element(self, table="Subject", attributes=dict()):
-        return delete_element(table=table, values=attributes)
+    # def add_element(self, table="Subject", attributes=dict()):
+    #     # print("pap.add_element " + str(table) + " " + str(attributes))
+    #     return create_element(table=table, values=attributes)
+    #
+    # def delete_element(self, table="Subject", attributes=dict()):
+    #     return delete_element(table=table, values=attributes)
 
 
     # def get_user(self, name=None, uuid=None):

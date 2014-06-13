@@ -1,6 +1,0 @@
-{
-	"admin": "/etc/moon/policy/admin.json",
-	"None": "/etc/moon/policy/none.json",
-	"demo*": "/etc/moon/policy/demo.json",
-	"test*": "/etc/moon/policy/demo.json"
-}

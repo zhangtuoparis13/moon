@@ -1,3 +1,1 @@
-from driver_dispatcher import Logs
-
-LOGS = Logs()
+from driver_dispatcher import get_log_manager

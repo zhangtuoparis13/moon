@@ -1,0 +1,71 @@
+{% extends "moon/base_site.html" %}
+
+{% block tcontent %}Intra Extension administration page
+{% endblock %}
+{% block pmenu %}
+    {{ block.super }}
+    {% if graph %}
+        <img src="/static/{{ graph }}" width="300"/>
+    {% endif %}
+{% endblock %}
+{% block pcontent %}
+    {% if extension %}
+        <b>uuid:</b> {{ extension.uuid }}<br/>
+        <b>name:</b> {{ extension.name }}<br/>
+        <b>description:</b> {{ extension.description  }}<br/>
+        <b>tenant:</b> {{ extension.tenant.name }} ({{ extension.tenant.uuid }})<br/>
+        <b>subjects:</b> <ul>
+        {% for subject in extension.subjects %}
+            <li>{{ subject.name }}</li>
+        {% endfor %}
+        </ul>
+        <b>objects:</b> <ul>
+        {% for object in extension.objects %}
+            <li>{{ object.name }}</li>
+        {% endfor %}
+        </ul>
+        <b>metadata:</b> <ul>
+        {% for data in extension.metadata %}
+            <li>{{ data }}</li>
+        {% endfor %}
+        </ul>
+        <b>rules:</b>
+        <table border="1">
+        <tr>
+            <th>Name</th>
+            <th colspan="2">s_attr</th>
+            <th colspan="2">o_attr</th>
+            <th colspan="2">a_attr</th>
+            <th colspan="2">description</th>
+        </tr>
+        {% for rule in extension.rules %}
+            <tr class="{% cycle 'row1' 'row2' %}">
+                <td>{{ rule.name }}</td>
+                <td>{{ rule.s_attr.category }}</td><td>{{ rule.s_attr.value }}</td>
+                <td>{{ rule.o_attr.category }}</td><td>{{ rule.o_attr.value }}</td>
+                <td>{{ rule.a_attr.category }}</td><td>{{ rule.a_attr.value }}</td>
+                <td>{{ rule.description }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% elif extensions %}
+        <div id="intra_extensions_list">
+            <table border="1">
+                <tr>
+                    <th>UUID</th>
+                    <th>Description</th>
+                </tr>
+                {% for ext in extensions %}
+                <tr>
+                    <td>
+                        <a href="/intra-extensions/{{ ext.uuid }}/">{{ ext.uuid }}</a>
+                    </td>
+                    <td>
+                        {{ ext.html }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,6 +1,6 @@
 from moon import settings
 import importlib
-import time
+from datetime import datetime
 
 
 DATABASES = getattr(settings, "DATABASES")
@@ -15,11 +15,10 @@ driver.create_tables()
 class Log:
     def __init__(self, date=None, value=None):
         if not date:
-            self.date = time.time()
+            self.date = datetime.now()
         else:
             self.date = date
         self.value = value
-        print("Add log", value)
 
 
 class Logs:
@@ -38,3 +37,9 @@ class Logs:
         log = Log(value=line)
         self.list.append(log)
         driver.write(log)
+
+log_manager = Logs()
+
+
+def get_log_manager():
+    return log_manager

@@ -1,7 +1,7 @@
     {
         "name": "Intra-Example",
         "description": "This is an example of how an intra extension would be defined",
-        "tenant": "tenant_uuid",
+        "tenant": {},
         "perimeter": {
             "subjects": [],
             "objects": []

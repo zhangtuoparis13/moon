@@ -22,7 +22,6 @@ class IntraExtensions:
         # print(self.db.list(type="extension"))
         self.extensions = {}
         for ext in self.db.list(type="extension"):
-            # print("__init__ {}".format(str(ext)))
             self.extensions[ext["uuid"]] = Extension(
                 name=ext["name"],
                 uuid=ext["uuid"],
@@ -39,10 +38,29 @@ class IntraExtensions:
         # return self.db.list(type="extensions")
         return self.extensions.values()
 
-    def get(self, uuid=None, attributes=dict()):
-        if uuid:
-            attributes = {"uuid": uuid}
-        return tuple(self.db.get(attributes=attributes))
+    def get(self, uuid=None, name=None, attributes=dict()):
+        """
+        :param uuid: uuid of the extension
+        :param name: name of the extension
+        :param attributes: other attributes to look for
+        :return: a list of extensions
+        """
+        if not uuid and not name:
+            return self.extensions
+        elif uuid:
+            return [self.extensions[uuid], ]
+        elif name:
+            for ext in self.extensions.values():
+                if ext.name == name:
+                    return [ext, ]
+        else:
+            #TODO: delete this part ?
+            logger.warning("intra_extension_manager in get/else")
+            uuids = map(lambda x: x["uuid"], tuple(self.db.get(attributes=attributes)))
+            exts = []
+            for uuid in uuids:
+                exts.append(self.extensions[uuid])
+            return exts
 
     # def sync_extension(self, tenant_uuid, users, roles, groups):
     #     for ext in self.db.list():

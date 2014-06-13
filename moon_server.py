@@ -4,8 +4,10 @@ import sys
 import argparse
 from moon.core.pip import get_pip
 import logging
+from moon.log_repository import get_log_manager
 
 LOG_LEVEL = logging.INFO
+LOGS = get_log_manager()
 
 FORMAT = "%(name)s-%(levelname)s %(message)s\033[1;m"
 logging.basicConfig(format=FORMAT, level=LOG_LEVEL)
@@ -30,6 +32,7 @@ if __name__ == "__main__":
     if args.dbdrop:
         pip.delete_tables()
     elif args.run:
+        LOGS.write("Starting application")
         if args.keystone_sync:
             pip.sync_db_with_keystone()
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gi.settings")

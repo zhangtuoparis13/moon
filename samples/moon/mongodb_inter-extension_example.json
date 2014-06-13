@@ -1,0 +1,41 @@
+{
+    "tenants": [
+        {
+            "uuid": "tenant_uuid1",
+            "name": "admin",
+            "description": "The admin tenant",
+            "enabled": true,
+            "domain": "Default"
+        },
+        {
+            "uuid": "tenant_uuid2",
+            "name": "demo",
+            "description": "The demo tenant",
+            "enabled": true,
+            "domain": "Default"
+        },
+        {
+            "uuid": "tenant_uuid3",
+            "name": "demo3",
+            "description": "The demo3 tenant",
+            "enabled": true,
+            "domain": "Default"
+        }
+    ],
+    "assignments": [
+        {
+            "uuid": "assign_uuid1",
+            "requesting": "tenant_uuid1",
+            "requested": "tenant_uuid2",
+            "type": "trust",
+            "category": "vent_uuid1"
+        },
+        {
+            "uuid": "assign_uuid2",
+            "requesting": "tenant_uuid2",
+            "requested": "tenant_uuid3",
+            "type": "coordinate",
+            "category": "vent_uuid2"
+        }
+    ]
+}

@@ -50,13 +50,27 @@ class InterExtensions:
         else:
             return self.extensions.values()
 
-    def get(self, uuid=None, attributes=dict()):
-        if uuid:
+    def get(self, uuid=None, name=None, attributes=dict()):
+        """
+        :param uuid: uuid of the extension
+        :param name: name of the extension
+        :param attributes: other attributes to look for
+        :return: a list of extensions
+        """
+        if not uuid and not name:
+            return self.extensions
+        elif uuid:
             try:
-                return self.extensions[uuid]
+                return [self.extensions[uuid], ]
             except KeyError:
-                return self.tenants[uuid]
+                return [self.tenants[uuid], ]
+        elif name:
+            for ext in self.extensions.values():
+                if ext.name == name:
+                    return [ext, ]
         else:
+            #TODO: delete this part ?
+            logger.warning("intra_extension_manager in get/else")
             uuids = map(lambda x: x["uuid"], tuple(self.db.get(attributes=attributes)))
             exts = []
             for uuid in uuids:
@@ -88,7 +102,7 @@ class InterExtensions:
             domain="",
             uuid=None):
         if not uuid:
-            uuid = str(uuid4())
+            uuid = str(uuid4()).replace("-", "")
         answer = self.db.add_tenant(
             attributes=attributes,
             name=name,

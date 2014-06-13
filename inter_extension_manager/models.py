@@ -19,7 +19,7 @@ class Tenant:
         elif uuid and type(uuid) is UUID:
             self.uuid = str(uuid)
         else:
-            self.uuid = str(uuid4())
+            self.uuid = str(uuid4()).replace("-", "")
 
     def create(self,
                name="",
@@ -79,7 +79,7 @@ class Extension:
         elif uuid and type(uuid) is UUID:
             self.uuid = uuid
         else:
-            self.uuid = uuid4()
+            self.uuid = uuid4().replace("-", "")
         self.requesting_tenant = requesting_tenant,
         self.requested_tenant = requested_tenant,
         self.connection_type = connection_type,
@@ -100,3 +100,12 @@ class Extension:
         post['connection_type'] = self.connection_type
         post['category'] = self.category
         db.add(attributes=post)
+
+    def __repr__(self):
+        return "Extension {} ({}) enabled: {} ({}->{}:{}/{})".format(
+            self.name,
+            self.uuid,
+            self.requesting_tenant,
+            self.requested_tenant,
+            self.connection_type,
+            self.category)

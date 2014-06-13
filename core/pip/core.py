@@ -123,7 +123,7 @@ class PIP:
             users = self.get_subjects(tenant_uuid)
         for user in users:
             assignment = {}
-            _uuid = str(uuid.uuid4())
+            _uuid = str(uuid.uuid4()).replace("-", "")
             assignment[_uuid] = {}
             assignment[_uuid]["object"] = user["uuid"]
             assignment[_uuid]["description"] = "Role assignment for {}".format(user["name"])
@@ -140,7 +140,7 @@ class PIP:
             users = self.get_subjects(tenant_uuid)
         for user in users:
             assignments = {}
-            _uuid = str(uuid.uuid4())
+            _uuid = str(uuid.uuid4()).replace("-", "")
             assignments[_uuid] = {}
             assignments[_uuid]["object"] = user["uuid"]
             assignments[_uuid]["description"] = "Group assignment for {}".format(user["name"])
@@ -226,7 +226,7 @@ class PIP:
             filename = getattr(settings, "DEFAULT_EXTENSION_TABLE")
             json_data = json.loads(file(filename).read())
         # for tenant in client.projects.list():
-        json_data["uuid"] = uuid.uuid4()
+        json_data["uuid"] = str(uuid.uuid4()).replace("-", "")
         json_data["tenant"] = {"uuid": tenant["uuid"], "name": tenant["name"]}
         json_data["perimeter"]["subjects"] = list(self.get_subjects(tenant=tenant))
         json_data["perimeter"]["objects"] = list(self.get_objects(tenant=tenant))
