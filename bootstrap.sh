@@ -15,26 +15,28 @@ mysql-server-5.5 mysql-server/root_password seen true
 mysql-server-5.5 mysql-server/root_password_again password ${MySQLPASSWD}
 mysql-server-5.5 mysql-server/root_password_again seen true
 " | debconf-set-selections
-apt-get install -y --force-yes mysql-server
 
-apt-get install -y --force-yes python-minimal python-mysqldb python-django python-dev python-pip graphviz python-sqlalchemy python-pygraphviz
+apt-get install -y --force-yes \
+    mysql-server \
+    python-minimal \
+    python-mysqldb \
+    python-django \
+    python-dev \
+    python-pip \
+    graphviz \
+    python-sqlalchemy \
+    python-pygraphviz \
+    mongodb-server
 
 pip install django_openstack_auth
 pip install python-keystoneclient
 pip install python-novaclient
-
-mysql -uroot -p$MySQLPASSWD <<EOF
-create database user_db;
-create user moonuser identified by '$MySQLPASSWD';
-grant all privileges on user_db.* to 'moonuser'@'localhost' identified by "$MySQLPASSWD" with grant option;
-create database moon;
-grant all privileges on moon.* to 'moonuser'@'localhost' identified by "$MySQLPASSWD" with grant option;
-EOF
-
+pip install pymongo
 
 ln -s /vagrant/ /usr/local/lib/python2.7/dist-packages/moon
-
 ln -s /vagrant/samples/moon /etc/moon
 
 mkdir /var/log/moon/
 chown vagrant /var/log/moon/
+
+python /vagrant/moon_server.py --run syncdb --noinput
