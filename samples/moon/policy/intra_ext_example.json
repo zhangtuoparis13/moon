@@ -15,6 +15,7 @@
                 ],
                 "object": [
                     "type",
+                    "action",
                     "security",
                     "size"
                 ]
@@ -22,9 +23,13 @@
             "rules": [
                 {
                     "name": "rule_token",
-                    "s_attr": { "category": "role", "value": "*" },
-                    "o_attr": { "category": "type", "value": "token" },
-                    "a_attr": { "category": "action", "value": "*" },
+                    "s_attr": [
+                        { "category": "role", "value": "*" }
+                    ],
+                    "o_attr": [
+                        { "category": "type", "value": "token" },
+                        { "category": "action", "value": "*" }
+                    ],
                     "description": "Authorize all token manipulations for authentication purposes."
                 }
             ]
