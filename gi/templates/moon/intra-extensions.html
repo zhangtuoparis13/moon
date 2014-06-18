@@ -33,19 +33,27 @@
         <table border="1">
         <tr>
             <th>Name</th>
-            <th colspan="2">s_attr</th>
-            <th colspan="2">o_attr</th>
-            <th colspan="2">a_attr</th>
-            <th colspan="2">description</th>
+            <th colspan="3">Attribute rules</th>
+            <th>description</th>
         </tr>
         {% for rule in extension.rules %}
-            <tr class="{% cycle 'row1' 'row2' %}">
-                <td>{{ rule.name }}</td>
-                <td>{{ rule.s_attr.category }}</td><td>{{ rule.s_attr.value }}</td>
-                <td>{{ rule.o_attr.category }}</td><td>{{ rule.o_attr.value }}</td>
-                <td>{{ rule.a_attr.category }}</td><td>{{ rule.a_attr.value }}</td>
-                <td>{{ rule.description }}</td>
+            {% cycle 'row1' 'row2' as divcolors%}
+            {% for orule in rule.s_attr %}
+            <tr class={{ divcolors }}>
+                {% if forloop.first %}
+                <td rowspan="{{ rule|rule_length }}">{{ rule.name }}</td>
+                {% endif %}
+                <td>Subject:</td><td>{{ orule.category }}</td><td>{{ orule.value }}</td>
+                {% if forloop.first %}
+                <td rowspan="{{ rule|rule_length }}">{{ rule.description }}</td>
+                {% endif %}
             </tr>
+            {% endfor %}
+            {% for orule in rule.o_attr %}
+            <tr class={{ divcolors }}>
+                <td>Object:</td><td>{{ orule.category }}</td><td>{{ orule.value }}</td>
+            </tr>
+            {% endfor %}
         {% endfor %}
         </table>
     {% elif extensions %}
