@@ -14,6 +14,7 @@ class Tenant:
         self.description = description
         self.enabled = enabled
         self.domain = domain
+        self.type = "tenant"
         if uuid and type(uuid) in (str, unicode):
             self.uuid = uuid
         elif uuid and type(uuid) is UUID:
@@ -56,6 +57,7 @@ class Tenant:
         post["description"] = self.description
         post["enabled"] = self.enabled
         post["domain"] = self.domain
+        post["type"] = self.type
         db.add(attributes=post)
 
     def __repr__(self):
@@ -73,13 +75,22 @@ class Extension:
             connection_type=None,
             category=None
     ):
+        """ Create a relation between 2 tenants
+        :param name: str: name of the relation
+        :param uuid: str: uuid of the relation
+        :param requesting_tenant: dict: source tenant of the relation (where subject is)
+        :param requested_tenant: dict: destination tenant of the relation (where the object is)
+        :param connection_type: str: type of connection (example trust, coordinate, ...)
+        :param category: str: link to the Virtual entity
+        :return: the extension
+        """
         self.name = name
-        if uuid and type(uuid) is str:
-            self.uuid = UUID(uuid)
+        if uuid and type(uuid) in (str, unicode):
+            self.uuid = uuid.replace("-", "")
         elif uuid and type(uuid) is UUID:
-            self.uuid = uuid
+            self.uuid = str(uuid).replace("-", "")
         else:
-            self.uuid = uuid4().replace("-", "")
+            self.uuid = str(uuid4()).replace("-", "")
         self.requesting_tenant = requesting_tenant,
         self.requested_tenant = requested_tenant,
         self.connection_type = connection_type,
