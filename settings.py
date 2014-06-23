@@ -50,6 +50,8 @@ OPENSTACK_API = "/etc/moon/api.json"
 
 CNX_PASSWORD = "P4ssw0rd"
 
+BLOCK_UNKNOWN_TENANT = False
+
 OS_USERNAME = "admin"
 OS_PASSWORD = "set a password here"
 OS_TENANT_NAME = "admin"
