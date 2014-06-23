@@ -12,6 +12,7 @@ from keystoneclient.v3.projects import Project
 
 from gi import settings
 from moon.core.pap.core import PAP
+from django.utils.safestring import mark_safe
 # from moon.info_repository.driver_dispatcher import get_tables, get_elements, get_db_diag, get_attrs_list, get_element
 from moon.core.pdp import get_admin_manager, get_authz_manager
 from moon.log_repository import get_log_manager
@@ -50,7 +51,9 @@ def intra_extensions(request):
     """
     pap = PAP(kclient=get_keystone_client(request))
     extensions = pap.admin_manager.get_intra_extensions()
-    return render(request, "moon/intra-extensions.html", {"extensions": extensions})
+    return render(request, "moon/intra-extensions.html", {
+        "extensions": extensions
+    })
 
 
 @login_required(login_url='/auth/login/')
@@ -61,7 +64,15 @@ def intra_extension(request, id=None):
     """
     pap = PAP(kclient=get_keystone_client(request))
     extension = pap.admin_manager.get_intra_extensions(uuid=id)
-    return render(request, "moon/intra-extensions.html", {"extension": extension})
+    return render(request, "moon/intra-extensions.html", {
+        "extension": extension,
+        "roles": pap.get_roles(extension_uuid=id),
+        "groups": pap.get_groups(extension_uuid=id),
+        "types": pap.get_object_attributes(extension_uuid=id, category="type"),
+        "actions": pap.get_object_attributes(extension_uuid=id, category="action"),
+        "securities": pap.get_object_attributes(extension_uuid=id, category="security"),
+        "size": pap.get_object_attributes(extension_uuid=id, category="size"),
+    })
 
 
 @login_required(login_url='/auth/login/')
@@ -92,393 +103,58 @@ def inter_extension(request, id=None):
 def get_log(dictionary, key):
     value = eval("dictionary.{}".format(key))
     return value
-# class UserAddForm(forms.Form):
-#     username = forms.CharField(max_length=100)
-#     password1 = forms.CharField(widget=forms.PasswordInput)
-#     password2 = forms.CharField(widget=forms.PasswordInput)
-#     domain = forms.CharField(max_length=100, initial="Default")
-#     project = forms.CharField(max_length=100, required=False)
-#     email = forms.EmailField(max_length=100, required=False)
-#     description = forms.CharField(max_length=100, required=False)
-#     enable = forms.BooleanField(initial=True)
-#
-#
-# @login_required(login_url='/auth/login/')
-# def user(request, id=None):
-#     """
-#     User interface
-#     Render one user retrieve from OpenStack Keystone server
-#     """
-#     pap = PAP(kclient=get_keystone_client(request))
-#     user_obj = pap.users.get_user(uuid=id)
-#     return render(request, "moon/users.html", {"user": user_obj})
-#
-#
-# @login_required(login_url='/auth/login/')
-# def users(request):
-#     """
-#     Users interface
-#     Render all (or some) users retrieve from OpenStack Keystone server
-#     """
-#     pap = PAP(kclient=get_keystone_client(request))
-#     form = UserAddForm()
-#     result = None
-#     if request.method == 'POST':
-#         form = UserAddForm(request.POST)
-#         if form.is_valid():
-#             username = form.cleaned_data['username']
-#             password1 = form.cleaned_data['password1']
-#             password2 = form.cleaned_data['password2']
-#             domain = form.cleaned_data['domain']
-#             project = form.cleaned_data['project']
-#             email = form.cleaned_data['email']
-#             description = form.cleaned_data['description']
-#             enable = form.cleaned_data['enable']
-#             if password1 and password1 != password2:
-#                 raise forms.ValidationError("Passwords don't match")
-#             result = pap.users.create(
-#                 name=username,
-#                 password=password1,
-#                 domain=domain,
-#                 project=project,
-#                 email=email,
-#                 description=description,
-#                 enabled=enable
-#             )
-#             if type(result) is User:
-#                 result = "User Created"
-#         else:
-#             raise forms.ValidationError("Form is not complete.")
-#     all_users = sorted(pap.users.list(), key=lambda _user: _user.name)
-#     return render(request, "moon/users.html", {"users": all_users, "form": form, "result": result})
-#
-#
-# class TenantChildAddForm(forms.Form):
-#     """
-#     Definition of the form which allow the selection a a child for a tenant
-#     """
-#     projects = forms.ChoiceField()
-#
-#     def __init__(self, tenants=(), query=None):
-#         tenants = map(lambda x: (str(x.uuid), str(x.name)), tenants)
-#         super(TenantChildAddForm, self).__init__(query)
-#         self.fields['projects'].choices = tenants
-#
-#
-# class TenantAddForm(forms.Form):
-#     name = forms.CharField(max_length=100)
-#     domain = forms.CharField(max_length=100, initial="Default")
-#     description = forms.CharField(max_length=100, required=False)
-#     enable = forms.BooleanField(initial=True)
-#
-#
-# def draw_tenant_tree(tenants=(), selected_tenant_uuid=None):
-#     """
-#     Draw the tenant hierarchy in a svg file (in the static directory) and return the filename
-#     """
-#     filename = "tenants.svg"
-#     static_dir = getattr(settings, 'STATICFILES_DIRS', "")[0]
-#     import pygraphviz as pgv
-#     graph = pgv.AGraph(directed=True)
-#     __tmp_dic = {}
-#     for tenant in tenants:
-#         if tenant.uuid == selected_tenant_uuid:
-#             graph.add_node(tenant.name, color='red')
-#         else:
-#             graph.add_node(tenant.name)
-#         __tmp_dic[tenant.uuid] = tenant.name
-#     for tenant in tenants:
-#         for child in tenant.children:
-#             graph.add_edge(tenant.name, __tmp_dic[child])
-#     graph.draw(os.path.join(static_dir, filename), format="svg", prog="dot")
-#     return filename
-#
-#
-# @login_required(login_url='/auth/login/')
-# def projects(request):
-#     """
-#     Users interface
-#     Render all (or some) users retrieve from OpenStack Keystone server
-#     """
-#     pap = PAP(kclient=get_keystone_client(request))
-#     form = TenantAddForm()
-#     if request.method == 'POST':
-#         form = TenantAddForm(request.POST)
-#         if form.is_valid():
-#             name = form.cleaned_data['name']
-#             domain = form.cleaned_data['domain']
-#             description = form.cleaned_data['description']
-#             enable = form.cleaned_data['enable']
-#             result = pap.tenants.create(
-#                 name=name,
-#                 domain=domain,
-#                 description=description,
-#                 enabled=enable
-#             )
-#             if type(result) is Project:
-#                 result = "Project Created"
-#         else:
-#             raise forms.ValidationError("Form is not complete.")
-#     all_projects = pap.tenants.list() #get_projects()
-#     svg_graph = draw_tenant_tree(tenants=all_projects)
-#     return render(request, "moon/projects.html", {
-#         "projects": all_projects,
-#         "graph": svg_graph,
-#         "tenantform": form})
-#
-#
-# @login_required(login_url='/auth/login/')
-# def project(request, id=None):
-#     """
-#     project interface
-#     Render one user retrieve from Tenant Repositery
-#     """
-#     pap = PAP(kclient=get_keystone_client(request))
-#     # projects = pap.tenants.list() #get_projects()
-#     form = TenantChildAddForm(tenants=pap.tenants.list())
-#     if request.method == 'POST':
-#         form = TenantChildAddForm(query=request.POST, tenants=pap.tenants.list())
-#         if form.is_valid():
-#             __projects = form.cleaned_data['projects']
-#             if "Add" in request.POST.keys():
-#                 pap.tenants.set_tenant_relationship(tenant_up=id, tenant_bottom=__projects)
-#             elif "Delete" in request.POST.keys():
-#                 pap.tenants.unset_tenant_relationship(tenant_up=id, tenant_bottom=__projects)
-#         else:
-#             raise forms.ValidationError("Form is not complete.")
-#     project = pap.tenants.get_tenant(uuid=id)
-#     svg_graph = draw_tenant_tree(tenants=pap.tenants.list(), selected_tenant_uuid=id)
-#     return render(request, "moon/projects.html", {
-#         "project": project,
-#         "projects": projects,
-#         "form": form,
-#         "graph": svg_graph})
-#
-#
-# @login_required(login_url='/auth/login/')
-# def roles(request):
-#     """
-#     Users interface
-#     Render all (or some) users retrieve from OpenStack Keystone server
-#     """
-#     c = get_keystone_client(request)
-#     logger.debug(c.roles.list())
-#     all_users = c.roles.list()
-#     return render(request, "moon/roles.html", {"roles": all_users})
-#
-#
-# class TablesSelectForm(forms.Form):
-#     """
-#     Definition of the form which allow the selection a a child for a tenant
-#     """
-#     main_tables = forms.ChoiceField()
-#     assignment_tables = forms.ChoiceField()
-#
-#     def __init__(self, tables=(), query=None, attrs=None):
-#         tables = map(lambda x: (str(x), str(x)), tables)
-#         super(TablesSelectForm, self).__init__(query)
-#         main_tables = filter(lambda x: "assignment" not in x[0].lower(), tables)
-#         main_tables.insert(0, ("", ""))
-#         assignment_tables = filter(lambda x: "assignment" in x[0].lower(), tables)
-#         assignment_tables.insert(0, ("", ""))
-#         self.fields['main_tables'].choices = main_tables
-#         self.fields['assignment_tables'].choices = assignment_tables
-#
-#
-# def add_element(table, columns, request, kclient=None):
-#     """Add an element to the database
-#     """
-#     pap = PAP(kclient=kclient)
-#     attributes = {}
-#     for column in columns:
-#         if column in request:
-#             attributes[column] = request[column]
-#     pap.add_element(table=table, attributes=attributes)
-#
-#
-# def delete_element(table, columns, uuid, kclient=None):
-#     """Add an element to the database
-#     """
-#     pap = PAP(kclient=kclient)
-#     attributes = dict()
-#     attributes["uuid"] = uuid
-#     pap.delete_element(table=table, attributes=attributes)
-#
-#
-# @register.filter
-# def get_item(dictionary, key):
-#     value = ""
-#     table = key.split("_")[0].title()
-#     value = eval("dictionary.{}".format(key))
-#     if key in ("tenant_uuid", "parent", "children"):
-#         pap = PAP()
-#         if value and type(value) in (str, unicode):
-#             value = pap.tenants.get_tenant(uuid=str(value)).name
-#         elif value and type(value) in (list, tuple):
-#             ret = []
-#             for v in value:
-#                 ret.append(pap.tenants.get_tenant(uuid=str(v)).name)
-#             value = ret
-#     elif "_uuid" in key:
-#         element = get_element(type=table, attributes={"uuid": value})
-#         value = element[0].name
-#     return value
-#
-#
-# @register.filter
-# def get_widget(column, value=None):
-#     column = conditional_escape(column)
-#     if value:
-#         value = eval("value.{}".format(column))
-#     html = """<input type="text" name="{}"/>""".format(column)
-#     html_value = """<input type="text" name="{}" value="{}"/>""".format(column, value)
-#     radio = """
-# <label for="{column}_true" value="True">True:</label>
-# <input type="radio" id="{column}_true" name="{column}" checked/>
-# <label for="{column}_false" value="False">False:</label>
-# <input type="radio" id="{column}_false" name="{column}"/>""".format(column=column)
-#     select = """
-# <select id="{column}_id" name="{column}">
-# {options}
-# </select>
-#     """
-#     options = """<option value="{uuid}">{val}</option>"""
-#     options_selected = """<option value="{uuid}" selected>{val}</option>"""
-#     static = """<label>{value}</label><input type="hidden" name="{column}" value="{value}"/>""".format(
-#         column=column,
-#         value=value)
-#     if "enabled" in column:
-#         return mark_safe(radio)
-#     elif "tenant_uuid" in column:
-#         pap = PAP()
-#         tenants = map(lambda x: (x.uuid, x.name), pap.tenants.list())
-#         all_options = []
-#         for element in tenants:
-#             if value and value == element[0]:
-#                 all_options.append(options_selected.format(uuid=element[0], val=element[1]))
-#             else:
-#                 all_options.append(options.format(uuid=element[0], val=element[1]))
-#         return mark_safe(select.format(column=column, options=all_options))
-#     elif "_uuid" in column:
-#         table = column.split("_")[0].title()
-#         pap = PAP()
-#         elements = get_elements(type=table)
-#         elements = map(lambda x: (x.uuid, x.name), elements)
-#         all_options = []
-#         for element in elements:
-#             if value and value == element[0]:
-#                 all_options.append(options_selected.format(uuid=element[0], val=element[1]))
-#             else:
-#                 all_options.append(options.format(uuid=element[0], val=element[1]))
-#         return mark_safe(select.format(column=column, options=all_options))
-#     elif column in ("id", "uuid"):
-#         return mark_safe(static)
-#     else:
-#         if value:
-#             return mark_safe(html_value)
-#         else:
-#             return mark_safe(html)
-#
-#
-# @login_required(login_url='/auth/login/')
-# def userdb(request):
-#     """
-#     User DB administration interface
-#     """
-#     c = get_keystone_client(request)
-#     tables = TablesSelectForm(tables=get_tables())
-#     elements = []
-#     columns = None
-#     selected_table = None
-#     uuid_column_number = 0
-#     edit_uuid = None
-#     addcolumns = ()
-#     if request.method == 'GET':
-#         # print("GET")
-#         # print(request.GET)
-#         if "edit" in request.GET:
-#             edit_uuid = request.GET.get('uuid')
-#         elif "delete" in request.GET:
-#             delete_element(table=request.GET.get('table'),
-#                            columns=get_attrs_list(request.GET.get('table')),
-#                            uuid=request.GET.get("uuid"),
-#                            kclient=c)
-#         selected_table = request.GET.get('table')
-#         if selected_table:
-#             elements = get_elements(type=selected_table)
-#             addcolumns = filter(lambda x: x not in ("id", "uuid"), get_attrs_list(selected_table))
-#             columns = get_attrs_list(selected_table)
-#     elif request.method == 'POST':
-#         # print("POST")
-#         # print(request.POST)
-#         action = request.POST.get("action")
-#         submit = request.POST.get("submit") or ""
-#         if action == "add" or submit.lower() == "update":
-#             add_element(table=request.POST['selected_table'],
-#                         columns=get_attrs_list(request.POST['selected_table']),
-#                         request=request.POST,
-#                         kclient=c)
-#         form = TablesSelectForm(query=request.POST, tables=get_tables())
-#         if form.is_valid():
-#             __table = form.cleaned_data['tables']
-#             selected_table = __table
-#             __elements = get_elements(type=__table)
-#             elements = __elements
-#             columns = get_attrs_list(__table)
-#         if "selected_table" in request.POST and not selected_table == 0:
-#             selected_table = request.POST['selected_table']
-#             if len(elements) == 0:
-#                 elements = get_elements(type=selected_table)
-#                 columns = get_attrs_list(selected_table)
-#         if selected_table:
-#             addcolumns = filter(lambda x: x not in ("id", "uuid"), get_attrs_list(selected_table))
-#     graph = get_db_diag(selected_table=selected_table)
-#     return render(request, "moon/userdb.html", {
-#         "tables": tables,
-#         "selected_table": selected_table,
-#         "elements": elements,
-#         "columns": columns,
-#         "addcolumns": addcolumns,
-#         "uuid_column_number": uuid_column_number,
-#         "edit_uuid": edit_uuid,
-#         "graph": graph})
-#
-#
-# @register.filter
-# def get_len(element, value=""):
-#     return len(element[value])
-#
-#
-# @login_required(login_url='/auth/login/')
-# def policy_repository(request):
-#     """
-#     User DB administration interface
-#     """
-#     c = get_keystone_client(request)
-#     manager = Manager()
-#     policies = manager.get_policies()
-#     policy = None
-#     rules = []
-#     if request.method == 'GET':
-#         key = request.environ["PATH_INFO"].strip("/").split("/")[-1]
-#         if key in policies.keys():
-#             policy = policies[key]
-#             rules = policy.get_rules()
-#     return render(request, "moon/policy.html", {
-#         "policies": policies.values(),
-#         "policy": policy,
-#         "rules": rules
-#         })
+
+
+@register.filter
+def rule_length(dictionary):
+    return len(dictionary["o_attr"])+len(dictionary["s_attr"])
 
 
 @login_required(login_url='/auth/login/')
 def logs_repository(request):
     """
-    User DB administration interface
+    Log viewer interface
     """
-    # c = get_keystone_client(request)
-    # manager = Manager()
-    logs = LOGS.read()
+    logs = LOGS.read(limit=30)
+    logs.reverse()
+    pap = PAP()
+    for log in logs:
+        if type(log.value) is dict:
+            if log.value["object_tenant"] != "None":
+                extension = pap.admin_manager.get_intra_extensions(tenant_uuid=log.value["object_tenant"])
+                if extension:
+                    log.value["subject"] = extension.get_subject(uuid=log.value["subject"])["name"]
+                log.value["object_tenant"] = pap.admin_manager.get_tenant(
+                    tenant_uuid=log.value["object_tenant"]
+                )[0].name
+            if log.value["subject_tenant"] != "None":
+                extension = pap.admin_manager.get_intra_extensions(tenant_uuid=log.value["subject_tenant"])
+                if extension:
+                    try:
+                        log.value["subject"] = extension.get_subject(uuid=log.value["subject"])["name"]
+                    except TypeError, IndexError:
+                        pass
+                try:
+                    log.value["subject_tenant"] = pap.admin_manager.get_tenant(
+                        tenant_uuid=log.value["subject_tenant"]
+                    )[0].name
+                except AttributeError:
+                    pass
+            if log.value["auth"] is True:
+                log.value["auth"] = "<span class=\"authorized\">Authorized</span>"
+            elif log.value["auth"] is False:
+                log.value["auth"] = "<span class=\"notauthorized\">Not Authorized</span>"
+            else:
+                log.value["auth"] = "<span class=\"outofscope\">{}</span>".format(log.value["auth"])
+            html = """<b>{auth}/{rule_name}</b>
+            <ul>
+                <li><b>action:</b> {action}</li>
+                <li><b>subject:</b> {subject_tenant}/{subject}</li>
+                <li><b>object:</b> {object_tenant}/[{object_type}]{object_name}</li>
+                <li><b>message:</b> {message}</li>
+            </ul>
+            """.format(**log.value)
+            log.value = mark_safe(html)
     return render(request, "moon/logs.html", {
         "logs": logs,
         })
