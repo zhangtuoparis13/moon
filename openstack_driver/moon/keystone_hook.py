@@ -5,36 +5,33 @@ TODO: write a documentation about driver installation
 from keystone.common import wsgi
 from keystone import identity
 from keystone.openstack.common import log as logging
-# from keystone import config
-# from keystone.common import extension
 from keystone import exception
 from keystone.common import dependency
+
 import urllib2
 import urllib
 import re
 import json
 import uuid
 import hashlib
+from moon import settings
+from moon import tools
+
 
 logger = logging.getLogger(__name__)
 
 # TODO: set a configuration file
-MOON_SERVER_IP = {
-    "HOST": "192.168.119.166",
-    "PORT": "8080",
-    "BASEURL": "mrm"
-}
+MOON_SERVER_IP = getattr(settings, "MOON_SERVER_IP")
+PASSWORD = getattr(settings, "PASSWORD")
+IMPORT = getattr(settings, "IMPORT")
 
-PASSWORD = "P4ssw0rd"
-IMPORT = False
-
-API = json.loads(file("/etc/moon/api.json").read())
-API_dict = {}
-for attr in API["attributes"]:
-    if "id" in attr:
-        API_dict[attr] = "(\w){32}"
-    else:
-        API_dict[attr] = "(\w+)"
+# API = json.loads(file("/etc/moon/api.json").read())
+# API_dict = {}
+# for attr in API["attributes"]:
+#     if "id" in attr:
+#         API_dict[attr] = "(\w){32}"
+#     else:
+#         API_dict[attr] = "(\w+)"
 
 
 class UserController(identity.controllers.UserV3):
@@ -66,25 +63,17 @@ class UserController(identity.controllers.UserV3):
         return user_tenant_from_token
 
 
-def get_action(env_req):
-    ret_action = ""
-    ret_object = ""
-    ret_object_type = ""
-    method = env_req['REQUEST_METHOD']
-    url = env_req['RAW_PATH_INFO'].replace("-", "_")
-    for action in API["data"]:
-        if action['method'] == method and \
-            re.match(action['name'].format(**API_dict), url):
-            ret_action = action['action']
-            ret_object_type = action['object']
-            ret_object = url.split("/")[-1]
-            if len(ret_object) != 32:
-                ret_object = ""
-    return ret_action, ret_object, ret_object_type
-
-
 @dependency.requires('assignment_api', 'identity_api')
-class Moon(wsgi.Middleware):
+class KeystoneMoon(wsgi.Middleware):
+
+    def __init__(self, app, conf):
+        self.LOG = logging.getLogger(conf.get('log_name', __name__))
+        self.conf = conf
+        self.application = app
+        self.password = self.conf.get("moon_server_password")
+        self.moon_server_ip = self.conf.get("moon_server_ip")
+        self.moon_server_port = self.conf.get("moon_server_port", 8080)
+        self.LOG.info('Starting moon middleware to {}'.format(self.moon_server_ip))
 
     def process_request(self, request):
         AUTH_TOKEN_HEADER = 'X-Auth-Token'
@@ -92,24 +81,19 @@ class Moon(wsgi.Middleware):
         # token = request.headers.get(AUTH_TOKEN_HEADER)
         context = request.environ.get(CONTEXT_ENV, {})
         KEYSTONE_AUTH_CONTEXT = request.environ.get("KEYSTONE_AUTH_CONTEXT", {})
-        #  example: 'project_id': u'2310b664a9ee430ea69d70c5e7c9662a',
-        #           'user_id': u'9d325471d9bc4144bfb9206873d61c74',
-        #           'roles': [u'admin']
         user = UserController()
         u = user.get_user_id(context)
         url = "http://{HOST}:{PORT}/{BASEURL}/tenants".format(**MOON_SERVER_IP)
-        action = get_action(request.environ)
-        if len(action[0]) == 0:
-            logger.warning("Action not found! " + str(request.environ))
+        ret_action, ret_object, ret_object_type, ret_tenant_uuid = tools.get_action(request.environ, self.LOG)
         key = uuid.uuid4()
         crypt_key = hashlib.sha256()
         crypt_key.update(str(key))
         crypt_key.update(PASSWORD)
         post_data = [
-            ('Object', action[1]),
-            ('ObjectType', action[2]),
+            ('Object', ret_object),
+            ('ObjectType', ret_object_type),
             ('Subject', u),
-            ('Action', action[0]),
+            ('Action', ret_action),
             ('Subject_Tenant', KEYSTONE_AUTH_CONTEXT.get('project_id')),
             ('Object_Tenant', self.__get_project(request.environ["PATH_INFO"])),
             ('RAW_PATH_INFO', request.environ["RAW_PATH_INFO"].replace("-", "_")),
@@ -140,3 +124,13 @@ class Moon(wsgi.Middleware):
                 return path.split('/')[2]
         except IndexError:
             return
+
+
+def filter_factory(global_conf, **local_conf):
+    """Returns a WSGI filter app for use with paste.deploy."""
+    conf = global_conf.copy()
+    conf.update(local_conf)
+
+    def auth_filter(app):
+        return KeystoneMoon(app, conf)
+    return auth_filter
