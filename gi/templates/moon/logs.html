@@ -6,8 +6,8 @@
     {% if logs %}
         <table class="logs">
         {% for log in logs %}
-            <tr>
-                <td>{{ log.date|date:"c" }}</td>
+            <tr class={%  cycle "row1" "row2" %}>
+                <td>{{ log.date|date:"d-m-Y H:i:s.u" }}</td>
                 <td>{{ log.value }}</td>
             </tr>
         {% endfor %}

@@ -47,9 +47,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'gi.urls'
+ROOT_URLCONF = 'moon.gi.urls'
 
-WSGI_APPLICATION = 'gi.wsgi.application'
+WSGI_APPLICATION = 'moon.gi.wsgi.application'
 
 
 # Database
@@ -102,12 +102,11 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    "gi",
-    "mrm",
+    "moon.gi",
+    "moon.mrm",
     #"repositery",
 )
 
-# OPENSTACK_KEYSTONE_URL = "http://localhost:5000/v3"
 OPENSTACK_KEYSTONE_URL = getattr(moon_settings, "OPENSTACK_KEYSTONE_URL")
 
 AUTHENTICATION_BACKENDS = ('openstack_auth.backend.KeystoneBackend',)

@@ -1,0 +1,4 @@
+include README.md
+recursive-include samples/moon *
+recursive-include gi/static *
+recursive-include gi/templates *

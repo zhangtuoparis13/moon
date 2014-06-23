@@ -20,7 +20,6 @@ class IntraExtensions:
 
     def __init__(self):
         self.db = driver.DB(name=db_name, collection_name="extensions")
-        # print(self.db.list(type="extension"))
         self.extensions = {}
         for ext in self.db.list(type="extension"):
             self.extensions[ext["uuid"]] = Extension(
@@ -36,7 +35,6 @@ class IntraExtensions:
             )
 
     def list(self, ):
-        # return self.db.list(type="extensions")
         return self.extensions.values()
 
     def get(self, uuid=None, name=None, attributes=dict()):

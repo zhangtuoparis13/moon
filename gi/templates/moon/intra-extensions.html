@@ -30,6 +30,112 @@
         {% endfor %}
         </ul>
         <b>rules:</b>
+        <a href="#" onclick="show_rule_add_actions()">Add Rule</a>
+        <div id="add_intra_rule">
+            <form action="/intra-extensions/{{ extension.uuid }}" method="post">
+                <table border="1">
+                    <tr>
+                        <th>Name</th>
+                        <th>Attribute rules</th>
+                        <th>description</th>
+                    </tr>
+                    <tr>
+                        <td valign="top">
+                            <input type="text">
+                        </td>
+                        <td>
+                            <textarea id="new_rule" rows="4" cols="50">s:role=*,
+o:type=token,
+o:action=get</textarea>
+                            <a href="#" onclick="show_add_rule_help()">Show help</a>
+                            <div id="add_rule_help">
+                                <em>type:attribute key=attribute value,</em><br/><hr>
+                                <b>type</b> can be
+                                <ul>
+                                    <li>s or subject</li>
+                                    <li>o or object</li>
+                                </ul>
+                                <b>attribute key</b> can be
+                                <ul>
+                                    <li>for subject:
+                                        <select id="s_attrs">
+                                            <option value="role">role</option>
+                                            <option value="group">group</option>
+                                        </select>
+                                    </li>
+                                    <li>for object:
+                                        <select id="o_attrs">
+                                            <option value="type">type</option>
+                                            <option value="action">action</option>
+                                            <option value="security">security</option>
+                                            <option value="size">size</option>
+                                        </select>
+                                    </li>
+                                </ul>
+                                <b>attribute value</b> can be
+                                <ul>
+                                    <li>for role:
+                                        <select id="role_values">
+                                            {% for val in roles %}
+                                                <option value="{{ val.value }}">{{ val.value }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </li>
+                                    <li>for group:
+                                        <select id="group_values">
+                                            {% for val in groups %}
+                                                <option value="{{ val.value }}">{{ val.value }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </li>
+                                    <li>for type:
+                                        <select id="type_values">
+                                            {% for val in types %}
+                                                <option value="{{ val.value }}">{{ val.value }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </li>
+                                    <li>for action:
+                                        <select id="action_values">
+                                            {% for val in actions %}
+                                                <option value="{{ val.value }}">{{ val.value }}</option>
+                                            {% endfor %}
+                                        </select><br/>
+                                        Action can contain sub-action like "post.os-start", here are examples of sub-actions:
+                                        <ul>
+                                            <li>os-start</li>
+                                            <li>os-stop</li>
+                                            <li>createImage</li>
+                                            <li>os-getVNCConsole</li>
+                                            <li>os-getVNCConsole</li>
+                                            <li>...</li>
+                                        </ul>
+                                    </li>
+                                    <li>for security:
+                                        <select id="security_values">
+                                            {% for val in securities %}
+                                                <option value="{{ val.value }}">{{ val.value }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </li>
+                                    <li>for size:
+                                        <select id="size_values">
+                                            {% for val in sizes %}
+                                                <option value="{{ val.value }}">{{ val.value }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td valign="top"><textarea rows="4" cols="50"></textarea></td>
+                    </tr>
+                </table>
+                <input type="hidden" name='csrfmiddlewaretoken' value="{{ csrf_token }}"/>
+                <label>Add a new rule:</label>
+                <input type="submit" value="Add"/>
+            </form>
+        </div>
         <table border="1">
         <tr>
             <th>Name</th>
@@ -37,7 +143,7 @@
             <th>description</th>
         </tr>
         {% for rule in extension.rules %}
-            {% cycle 'row1' 'row2' as divcolors%}
+            {% cycle 'row1' 'row2' as divcolors silent%}
             {% for orule in rule.s_attr %}
             <tr class={{ divcolors }}>
                 {% if forloop.first %}

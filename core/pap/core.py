@@ -31,6 +31,15 @@ class PAP:
         # self.tenants = Tenants(self.kclient)
         # self.policy_manager = Manager()
 
+    def get_roles(self, extension_uuid):
+        return self.admin_manager.get_roles(extension_uuid=extension_uuid)
+
+    def get_groups(self, extension_uuid):
+        return self.admin_manager.get_groups(extension_uuid=extension_uuid)
+
+    def get_object_attributes(self, extension_uuid, category=None):
+        return self.admin_manager.get_object_attributes(extension_uuid=extension_uuid, category=category)
+
     # def add_element(self, table="Subject", attributes=dict()):
     #     # print("pap.add_element " + str(table) + " " + str(attributes))
     #     return create_element(table=table, values=attributes)

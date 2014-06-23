@@ -20,6 +20,7 @@ def tenants(request, id=None):
     response_data = {"auth": False}
     if request.method == 'POST':
         print("\033[32m"+str(request.POST)+"\033[m")
+        logger.info("request: " + request.POST["RAW_PATH_INFO"])
         crypt_key = hashlib.sha256()
         if "key" in request.POST:
             crypt_key.update(request.POST["key"])
@@ -39,34 +40,34 @@ def tenants(request, id=None):
         )
         tenant = request.POST.get("Subject_Tenant", "None")
         # TODO: need to check authorisation
-        if not authz["auth"]:
-            # print("\t\033[41m" + tenant_name + "/" + str(authz) + " for (" + "\033[m")
-            log = "Unauthorized in tenant {tname} for ({subject} - {action} - {objecttype}/{object})".format(
-                tname=authz["tenant_name"],
-                authz=authz["auth"],
-                subject=request.POST["Subject"],
-                action=request.POST["Action"],
-                object=request.POST["Object"],
-                objecttype=request.POST["ObjectType"]
-            )
-            print("\t\033[41m"+log+"\033[m")
-            LOGS.write(line=log)
+        args = {
+            "tname": authz["tenant_name"],
+            "authz": authz["auth"],
+            "subject": request.POST["Subject"],
+            "action": request.POST["Action"],
+            "object": request.POST["Object"],
+            "objecttype": request.POST["ObjectType"],
+            "message": authz["message"],
+        }
+        if authz["auth"] == True:
+            log = "{color}Authorized{endcolor} in tenant {tname} " \
+                  "for ({subject} - {action} - {objecttype}/{object}) \n{message}"
+            print(log.format(color="\033[33m", endcolor="\033[m", **args))
+            # LOGS.write(line=log.format(color="", endcolor="", **args))
+            LOGS.write(authz)
+        elif not authz["auth"]:
+            log = "{color}Unauthorized{endcolor} in tenant {tname} " \
+                  "for ({subject} - {action} - {objecttype}/{object}) \n{message}"
+            print(log.format(color="\033[42m", endcolor="\033[m", **args))
+            # LOGS.write(line=log.format(color="", endcolor="", **args))
+            LOGS.write(authz)
         else:
-            log = "Authorized in tenant {tname} for ({subject} - {action} - {objecttype}/{object})".format(
-                tname=authz["tenant_name"],
-                authz=authz["auth"],
-                subject=request.POST["Subject"],
-                action=request.POST["Action"],
-                object=request.POST["Object"],
-                objecttype=request.POST["ObjectType"]
-            )
-            print("\t\033[33m"+log+"\033[m")
-            LOGS.write(line=log)
+            # print("\t\033[41m" + tenant_name + "/" + str(authz) + " for (" + "\033[m")
+            log = "{color}Out of Scope{endcolor} in tenant {tname} " \
+                  "for ({subject} - {action} - {objecttype}/{object}) \n{message}"
+            print(log.format(color="\033[41m", endcolor="\033[m", **args))
+            # LOGS.write(line=log.format(color="", endcolor="", **args))
+            LOGS.write(authz)
 
-        # response_data["auth"] = authz
-        if authz:
-            response_data["auth"] = True
-        # except Exception as e:
-        #     logger.warning(e.message)
-        #     logger.debug(e)
+        response_data["auth"] = authz
     return HttpResponse(json.dumps(response_data), content_type="application/json")

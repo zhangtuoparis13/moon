@@ -2,6 +2,7 @@ import unittest
 from moon import settings
 import uuid
 from moon.intra_extension_manager import get_dispatcher
+from moon.intra_extension_manager.models import Extension
 test_extension = {
     "uuid": "extension_uuid1",
     "description": "one extension",
@@ -129,7 +130,7 @@ class TestMongoDBFunctions(unittest.TestCase):
         pass
 
     def test_add_and_delete_element(self):
-        self.uuid = self.ie.new(
+        self.ext = self.ie.new(
             name="test extension",
             subjects=test_extension['perimeter']['subjects'].values(),
             objects=test_extension['perimeter']['objects'].values(),
@@ -138,15 +139,15 @@ class TestMongoDBFunctions(unittest.TestCase):
             description=test_extension['description'],
             profiles=test_extension['profiles']
         )
-        self.assertIsInstance(self.uuid, uuid.UUID)
-        answer = self.ie.delete(uuid=self.uuid)
+        self.assertIsInstance(self.ext, Extension)
+        answer = self.ie.delete(uuid=self.ext.uuid)
         self.assertIsInstance(answer, dict)
         self.assertEqual(answer["err"], None)
 
     def test_add_and_delete_element_with_uuid(self):
-        self.uuid = self.ie.new(
+        self.ext = self.ie.new(
             name="test extension",
-            uuid=uuid.uuid4(),
+            uuid=str(uuid.uuid4()).replace("-", ""),
             subjects=test_extension['perimeter']['subjects'].values(),
             objects=test_extension['perimeter']['objects'].values(),
             metadata=test_extension['configuration']['metadata'],
@@ -154,17 +155,17 @@ class TestMongoDBFunctions(unittest.TestCase):
             description=test_extension['description'],
             profiles=test_extension['profiles']
         )
-        self.assertIsInstance(self.uuid, uuid.UUID)
-        answer = self.ie.delete(uuid=self.uuid)
+        self.assertIsInstance(self.ext, Extension)
+        answer = self.ie.delete(uuid=self.ext.uuid)
         self.assertIsInstance(answer, dict)
         self.assertEqual(answer["err"], None)
 
     def test_list_elements(self):
         self.ie.delete_tables()
         obj = self.ie.list()
-        self.assertIsInstance(obj, tuple)
+        self.assertIsInstance(obj, list)
         self.assertEqual(len(obj), 0)
-        self.uuid = self.ie.new(
+        self.ext = self.ie.new(
             name="test extension",
             subjects=test_extension['perimeter']['subjects'].values(),
             objects=test_extension['perimeter']['objects'].values(),
@@ -173,16 +174,16 @@ class TestMongoDBFunctions(unittest.TestCase):
             description=test_extension['description'],
             profiles=test_extension['profiles']
         )
-        self.assertIsInstance(self.uuid, uuid.UUID)
+        self.assertIsInstance(self.ext, Extension)
         obj = self.ie.list()
-        self.assertIsInstance(obj, tuple)
+        self.assertIsInstance(obj, list)
         self.assertEqual(len(obj), 1)
-        self.assertIsInstance(obj[0], dict)
+        self.assertIsInstance(obj[0], Extension)
 
     def test_update_element(self):
-        self.uuid = self.ie.new(
+        self.ext = self.ie.new(
             name="test extension",
-            uuid=uuid.uuid4(),
+            uuid=str(uuid.uuid4()).replace("-", ""),
             subjects=test_extension['perimeter']['subjects'].values(),
             objects=test_extension['perimeter']['objects'].values(),
             metadata=test_extension['configuration']['metadata'],
@@ -190,7 +191,7 @@ class TestMongoDBFunctions(unittest.TestCase):
             description=test_extension['description'],
             profiles=test_extension['profiles']
         )
-        self.assertIsInstance(self.uuid, uuid.UUID)
+        self.assertIsInstance(self.ext, Extension)
         subjects = test_extension['perimeter']['subjects'].values()
         subjects.append(
             {
@@ -198,17 +199,18 @@ class TestMongoDBFunctions(unittest.TestCase):
                 "description": "demo 3"
             }
         )
-        answer = self.ie.set(uuid=self.uuid, subjects=subjects)
-        self.assertIsInstance(answer, dict)
-        self.assertEqual(answer["err"], None)
-        obj = self.ie.get(uuid=self.uuid)
-        self.assertIsInstance(obj, tuple)
-        self.assertIsInstance(obj[0], dict)
-        subject_names = map(lambda x: x["name"], obj[0]['perimeter']['subjects'])
-        subject_descriptions = map(lambda x: x["description"], obj[0]['perimeter']['subjects'])
+        answer = self.ie.new(uuid=self.ext.uuid, subjects=subjects)
+        self.assertIsInstance(answer, Extension)
+        self.assertIn("demo3", map(lambda x: x["name"], answer.subjects))
+        self.assertIn("demo 3", map(lambda x: x["description"], answer.subjects))
+        obj = self.ie.get(uuid=self.ext.uuid)
+        self.assertIsInstance(obj, list)
+        self.assertIsInstance(obj[0], Extension)
+        subject_names = map(lambda x: x["name"], obj[0].subjects)
+        subject_descriptions = map(lambda x: x["description"], obj[0].subjects)
         self.assertIn("demo3", subject_names)
         self.assertIn("demo 3", subject_descriptions)
         #At last, delete the updated element
-        answer = self.ie.delete(uuid=self.uuid)
+        answer = self.ie.delete(uuid=self.ext.uuid)
         self.assertIsInstance(answer, dict)
         self.assertEqual(answer["err"], None)

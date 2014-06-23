@@ -52,10 +52,10 @@ class InterExtensions:
 
     def get(self, uuid=None, name=None, attributes=dict()):
         """
-        :param uuid: uuid of the extension
-        :param name: name of the extension
+        :param uuid: uuid of the tenant or extension
+        :param name: name of the tenant or extension
         :param attributes: other attributes to look for
-        :return: a list of extensions
+        :return: a list of tenants or extensions
         """
         if not uuid and not name:
             return self.extensions
@@ -70,7 +70,7 @@ class InterExtensions:
                     return [ext, ]
         else:
             #TODO: delete this part ?
-            logger.warning("intra_extension_manager in get/else")
+            logger.warning("inter_extension_manager in get/else")
             uuids = map(lambda x: x["uuid"], tuple(self.db.get(attributes=attributes)))
             exts = []
             for uuid in uuids:

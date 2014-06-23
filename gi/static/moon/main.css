@@ -151,3 +151,14 @@ th {
 tr.row1 {
     background: #cccccc;
 }
+
+.authorized {
+    color: green;
+}
+
+.notauthorized {
+    color: red;
+}
+.outofscope {
+    color: orange;
+}

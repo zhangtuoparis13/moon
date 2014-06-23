@@ -6,9 +6,9 @@ Information gathering from the infrastructure
 from moon import settings
 from moon.intra_extension_manager import get_dispatcher as get_intra_dd
 from moon.inter_extension_manager import get_dispatcher as get_inter_dd
-from tools.openstack_credentials import get_keystone_creds, get_nova_creds
+from moon.tools.openstack_credentials import get_keystone_creds, get_nova_creds
 import logging
-import uuid
+from uuid import uuid4
 import json
 from keystoneclient.openstack.common.apiclient.exceptions import Unauthorized, Forbidden
 
@@ -17,17 +17,18 @@ logger = logging.getLogger("moon.pip")
 
 class PIP:
 
-    def __init__(self):
+    def __init__(self, standalone=False):
         self.kclient = None
         self.nclient = None
-        from keystoneclient.v3 import client as keystone_client
-        kcreds = get_keystone_creds()
-        #WORKAROUND: if in version 2.0, Keystone connection doesn't work
-        kcreds["auth_url"] = kcreds["auth_url"].replace("2.0", "3")
-        self.kclient = keystone_client.Client(**kcreds)
-        from novaclient import client as nova_client
-        ncreds = get_nova_creds()
-        self.nclient = nova_client.Client("1.1", **ncreds)
+        if not standalone:
+            from keystoneclient.v3 import client as keystone_client
+            kcreds = get_keystone_creds()
+            #WORKAROUND: if in version 2.0, Keystone connection doesn't work
+            kcreds["auth_url"] = kcreds["auth_url"].replace("2.0", "3")
+            self.kclient = keystone_client.Client(**kcreds)
+            from novaclient import client as nova_client
+            ncreds = get_nova_creds()
+            self.nclient = nova_client.Client("1.1", **ncreds)
 
     def set_creds_for_tenant(self, tenant_name="admin"):
         from keystoneclient.v3 import client as keystone_client
@@ -42,7 +43,6 @@ class PIP:
         self.nclient = nova_client.Client("1.1", **ncreds)
 
     def get_subjects(self, tenant=None):
-        # logger.info("Getting subjects")
         for user in self.kclient.users.list(project_id=tenant["uuid"]):
             s = dict()
             s["name"] = user.name
@@ -67,7 +67,6 @@ class PIP:
             yield s
 
     def get_objects(self, tenant=None):
-        # logger.info("Getting objects")
         s = dict()
         for server in self.nclient.servers.list():
             o = dict()
@@ -85,7 +84,6 @@ class PIP:
             yield o
 
     def get_roles(self, tenant=None):
-        # logger.info("Getting roles")
         for role in self.kclient.roles.list(project_id=tenant["uuid"]):
             o = dict()
             o["value"] = role.name
@@ -102,7 +100,6 @@ class PIP:
             yield o
 
     def get_groups(self, tenant=None):
-        # logger.info("Getting groups")
         for group in self.kclient.groups.list(project_id=tenant["uuid"]):
             g = dict()
             g["value"] = group.name
@@ -123,16 +120,14 @@ class PIP:
             users = self.get_subjects(tenant_uuid)
         for user in users:
             assignment = {}
-            _uuid = str(uuid.uuid4()).replace("-", "")
-            assignment[_uuid] = {}
-            assignment[_uuid]["object"] = user["uuid"]
-            assignment[_uuid]["description"] = "Role assignment for {}".format(user["name"])
-            assignment[_uuid]["attributes"] = []
-            # for tenant in client.projects.list():
+            _uuid = str(uuid4()).replace("-", "")
+            assignment["uuid"] = _uuid
+            assignment["object"] = user["uuid"]
+            assignment["description"] = "Role assignment for {}".format(user["name"])
+            assignment["attributes"] = []
             roles = map(lambda x: x.id, self.kclient.roles.list(user=user["uuid"], project=tenant_uuid))
             if len(roles) > 0:
-                assignment[_uuid]["attributes"].extend(roles)
-            # print(assignment)
+                assignment["attributes"].extend(roles)
             yield assignment
 
     def get_users_groups_assignment(self, tenant_uuid, users=None):
@@ -140,19 +135,17 @@ class PIP:
             users = self.get_subjects(tenant_uuid)
         for user in users:
             assignments = {}
-            _uuid = str(uuid.uuid4()).replace("-", "")
-            assignments[_uuid] = {}
-            assignments[_uuid]["object"] = user["uuid"]
-            assignments[_uuid]["description"] = "Group assignment for {}".format(user["name"])
-            assignments[_uuid]["attributes"] = []
-            # for tenant in client.projects.list():
+            _uuid = str(uuid4()).replace("-", "")
+            assignments["uuid"] = _uuid
+            assignments["object"] = user["uuid"]
+            assignments["description"] = "Group assignment for {}".format(user["name"])
+            assignments["attributes"] = []
             groups = map(lambda x: x.id, self.kclient.groups.list(user=user["uuid"], project=tenant_uuid))
             if len(groups) > 0:
-                assignments[_uuid]["attributes"].extend(groups)
+                assignments["attributes"].extend(groups)
             yield assignments
 
     def get_tenants(self):
-        # logger.info("Getting tenants")
         for tenant in self.kclient.projects.list():
             t = dict()
             t["name"] = tenant.name
@@ -168,65 +161,11 @@ class PIP:
             t["uuid"] = tenant.id
             yield t
 
-    def get_keystone_client(self, username=None, password=None, domain="Default"):
-        # from keystoneclient.v3 import client
-        # if not username and not password:
-        #     creds = get_keystone_creds()
-        #     self.kclient = client.Client(**creds)
-        #     return self.kclient
-        # if not password:
-        #     import getpass
-        #     password = getpass.getpass("Keystone password for {user} on [{url}]:".format(
-        #         user=username,
-        #         url=getattr(settings, 'OPENSTACK_KEYSTONE_URL', "")
-        #     ))
-        # self.kclient = self.kclient.Client(
-        #     username=username,
-        #     password=password,
-        #     user_domain_name=domain,
-        #     region_name="regionOne",
-        #     #endpoint=getattr(settings, 'OPENSTACK_KEYSTONE_URL', ""),
-        #     # insecure=True,
-        #     # cacert=None,
-        #     auth_url=getattr(settings, 'OPENSTACK_KEYSTONE_URL', ""),
-        #     # debug=settings.DEBUG
-        # )
-        # self.kclient.management_url = getattr(settings, 'OPENSTACK_KEYSTONE_URL', "")
-        # return self.kclient
-        return None
-
-    # def get_nova_client(self, username=None, password=None):
-    #     from novaclient import client
-    #     if not username and not password:
-    #         creds = get_nova_creds()
-    #         self.nclient = client.Client(**creds)
-    #         return self.nclient
-        # if not password:
-        #     import getpass
-        #     password = getpass.getpass("Nova password for {user} on [{url}]:".format(
-        #         user=username,
-        #         url=getattr(settings, 'OPENSTACK_KEYSTONE_URL', "")
-        #     ))
-        # self.kclient = client.Client(
-        #     username=username,
-        #     password=password,
-        #     user_domain_name=domain,
-        #     region_name="regionOne",
-        #     #endpoint=getattr(settings, 'OPENSTACK_KEYSTONE_URL', ""),
-        #     # insecure=True,
-        #     # cacert=None,
-        #     auth_url=getattr(settings, 'OPENSTACK_KEYSTONE_URL', ""),
-        #     # debug=settings.DEBUG
-        # )
-        # self.kclient.management_url = getattr(settings, 'OPENSTACK_KEYSTONE_URL', "")
-        # return self.kclient
-
     def new_intra_extension(self, tenant, test_only=False, json_data=None):
         if not json_data:
             filename = getattr(settings, "DEFAULT_EXTENSION_TABLE")
             json_data = json.loads(file(filename).read())
-        # for tenant in client.projects.list():
-        json_data["uuid"] = str(uuid.uuid4()).replace("-", "")
+        json_data["uuid"] = str(uuid4()).replace("-", "")
         json_data["tenant"] = {"uuid": tenant["uuid"], "name": tenant["name"]}
         json_data["perimeter"]["subjects"] = list(self.get_subjects(tenant=tenant))
         json_data["perimeter"]["objects"] = list(self.get_objects(tenant=tenant))
@@ -249,6 +188,16 @@ class PIP:
             attributes.remove("groups")
         json_data["profiles"]["s_attr"] = s_attr
         json_data["profiles"]["s_attr_assign"] = s_attr_assign
+        #HYPOTHESIS: objects are only virtual servers, so linking all objects to type server
+        o_attr_assign = json_data["profiles"]["o_attr_assign"]
+        for obj in json_data["perimeter"]["objects"]:
+            link = {}
+            link["uuid"] = str(uuid4())
+            link["object"] = obj["uuid"]
+            #Add default actions
+            link["attributes"] = ["type-vm", "action-get", "action-post", "action-delete", "action-post.os-start"]
+            o_attr_assign.append(link)
+        json_data["profiles"]["o_attr_assign"] = o_attr_assign
         if "rules" not in json_data["configuration"].keys():
             json_data["configuration"]["rules"] = []
         if len(attributes) > 0:
@@ -258,7 +207,6 @@ class PIP:
 
     def sync_db_with_keystone(self):
         # #synchronize all intra extensions
-        # logger.error("Call sync_db_with_keystone")
         for tenant in self.get_tenants():
             #TODO: if new tenant
             #       -> need to add a new intra extension
@@ -299,23 +247,11 @@ class PIP:
         get_inter_dd().delete_tables()
 
 
-pip = PIP()
+pip = None
 
 
-def get_pip():
+def get_pip(standalone=False):
+    global pip
+    if not pip:
+        pip = PIP(standalone)
     return pip
-
-# def update_request_attributes(
-#         subject=None,
-#         action=None,
-#         object_name=None,
-#         tenant=None,
-#         attributes=None):
-#     """
-#     Get a list of attribute values for user user_uuid in tenant tenant_uuid
-#     Return a list of attribute values for attribute_name
-#     Example for 'role': ( "admin", "user" )
-#
-#     """
-#     attributes = dd.update_request_attributes(subject, action, object_name, tenant, attributes)
-#     return attributes

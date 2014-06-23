@@ -33,10 +33,19 @@ class AdminManager:
         return self.intra_pdps[extension_uuid].get_object(uuid=uuid, name=name)
 
     def get_roles(self, extension_uuid=None, uuid=None, name=None):
-        return self.intra_pdps[extension_uuid].get_object_attributes(self, uuid=uuid, name=name, category="role")
+        return self.intra_pdps[extension_uuid].get_subject_attributes(uuid=uuid, name=name, category="role")
 
     def get_groups(self, extension_uuid=None, uuid=None, name=None):
-        return self.intra_pdps[extension_uuid].get_object_attributes(self, uuid=uuid, name=name, category="group")
+        return self.intra_pdps[extension_uuid].get_subject_attributes(uuid=uuid, name=name, category="group")
+
+    def get_object_attributes(self, extension_uuid=None, uuid=None, name=None, category=None):
+        return self.intra_pdps[extension_uuid].get_object_attributes(uuid=uuid, name=name, category=category)
+
+    def get_subject_attributes(self, extension_uuid=None, uuid=None, name=None, category=None):
+        return self.intra_pdps[extension_uuid].get_subject_attributes(uuid=uuid, name=name, category=category)
+
+    def get_tenant(self, tenant_uuid=None, tenant_name=None):
+        return self.inter_dispatcher.get(uuid=tenant_uuid, name=tenant_name)
 
 manager = AdminManager()
 
