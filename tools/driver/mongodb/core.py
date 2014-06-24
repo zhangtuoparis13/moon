@@ -62,7 +62,6 @@ class DB:
                 # if type(uuid) is not UUID:
                 #     uuid = str(UUID(uuid))
                 if self.count({"_id": str(uuid)}) > 0:
-                    # logger.info("Updating tenant {}".format(name))
                     return self.collection.update({"_id": str(uuid)}, post)
                 post["_id"] = str(uuid)
             else:
