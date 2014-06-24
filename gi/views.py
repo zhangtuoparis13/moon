@@ -16,6 +16,7 @@ from django.utils.safestring import mark_safe
 # from moon.info_repository.driver_dispatcher import get_tables, get_elements, get_db_diag, get_attrs_list, get_element
 from moon.core.pdp import get_admin_manager, get_authz_manager
 from moon.log_repository import get_log_manager
+from moon.core.pip import get_pip
 
 
 logger = logging.getLogger("moon.django")
@@ -41,6 +42,19 @@ def index(request):
     Front interface of the application
     """
     return render(request, "moon/base_site.html")
+
+
+@login_required(login_url='/auth/login/')
+def sync(request):
+    """
+    Interface of the application for syncing Moon database with Keystone and Nova databases
+    """
+    pip = get_pip()
+    sync_results = pip.sync_db_with_keystone()
+    sync_results = sync_results.replace("\n", "<br/>\n")
+    sync_results = sync_results.replace("KO", "<span class=\"notauthorized\">Error</span>\n")
+    sync_results = sync_results.replace("OK", "<span class=\"authorized\">OK</span>\n")
+    return render(request, "moon/base_site.html", {"sync_results": mark_safe(sync_results)})
 
 
 @login_required(login_url='/auth/login/')

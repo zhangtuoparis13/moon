@@ -29,7 +29,12 @@
             </div>
             <div id="pcontent">
                 <h1>{% block tcontent %}Content{% endblock %}</h1>
-                {% block pcontent %}{% endblock %}
+                {% block pcontent %}
+                    <a href="/sync" >Sync Moon database with Keystone and Nova Databases</a>
+                    {% if sync_results %}
+                        <p>{{ sync_results }}</p>
+                    {% endif %}
+                {% endblock %}
 
             </div>
 {#            <div id="plogs">#}

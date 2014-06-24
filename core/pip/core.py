@@ -162,10 +162,14 @@ class PIP:
             yield t
 
     def new_intra_extension(self, tenant, test_only=False, json_data=None):
+        existing_extension = get_intra_dd().get(attributes={"tenant.uuid": tenant["uuid"]})
         if not json_data:
             filename = getattr(settings, "DEFAULT_EXTENSION_TABLE")
             json_data = json.loads(file(filename).read())
-        json_data["uuid"] = str(uuid4()).replace("-", "")
+        if existing_extension:
+            json_data["uuid"] = existing_extension[0].uuid
+        else:
+            json_data["uuid"] = str(uuid4()).replace("-", "")
         json_data["tenant"] = {"uuid": tenant["uuid"], "name": tenant["name"]}
         json_data["perimeter"]["subjects"] = list(self.get_subjects(tenant=tenant))
         json_data["perimeter"]["objects"] = list(self.get_objects(tenant=tenant))
@@ -206,7 +210,9 @@ class PIP:
             get_intra_dd().new_from_json(json_data=json_data)
 
     def sync_db_with_keystone(self):
+        logs = ""
         # #synchronize all intra extensions
+        self.set_creds_for_tenant()
         for tenant in self.get_tenants():
             #TODO: if new tenant
             #       -> need to add a new intra extension
@@ -223,6 +229,7 @@ class PIP:
             except Unauthorized:
                 logger.warning("Cannot authenticate in tenant {}".format(tenant["name"]))
                 continue
+            logs += "Syncing {}".format(tenant["name"])
             get_inter_dd().add_tenant(
                 name=tenant["name"],
                 description=tenant["description"],
@@ -232,14 +239,17 @@ class PIP:
             )
             try:
                 self.new_intra_extension(tenant=tenant)
+                logs += " OK\n"
             except Forbidden:
                 logger.warning("Cannot list users in tenant {}".format(tenant["name"]))
+                logs += " KO\n"
                 continue
         # #synchronize all inter extensions
         # for subject in self.get_subjects(client):
         #     get_intra_dd().add_user(subject)
         # for role in self.get_roles(client):
         #     get_intra_dd().add_role(role)
+        return logs
 
     @staticmethod
     def delete_tables():

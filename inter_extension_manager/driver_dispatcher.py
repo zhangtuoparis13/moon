@@ -57,7 +57,7 @@ class InterExtensions:
         :param attributes: other attributes to look for
         :return: a list of tenants or extensions
         """
-        if not uuid and not name:
+        if not uuid and not name and not attributes:
             return self.extensions
         elif uuid:
             try:
@@ -69,8 +69,6 @@ class InterExtensions:
                 if ext.name == name:
                     return [ext, ]
         else:
-            #TODO: delete this part ?
-            logger.warning("inter_extension_manager in get/else")
             uuids = map(lambda x: x["uuid"], tuple(self.db.get(attributes=attributes)))
             exts = []
             for uuid in uuids:

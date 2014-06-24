@@ -9,6 +9,7 @@ patch_middleware_get_user()
 urlpatterns = patterns('gi.views',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'index'),
+    url(r'^sync/', 'sync'),
     url(r'^intra-extensions/(?P<id>\w{32})/$', 'intra_extension'),
     url(r'^intra-extensions/', 'intra_extensions'),
     # url(r'^users/(?P<id>\w{32})/$', 'user'),
