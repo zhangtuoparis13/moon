@@ -52,8 +52,10 @@ CNX_PASSWORD = "P4ssw0rd"
 
 BLOCK_UNKNOWN_TENANT = False
 
+UNMANAGED_OBJECTS = ("", "token", )
+
 OS_USERNAME = "admin"
-OS_PASSWORD = "set a password here"
+OS_PASSWORD = "P4ssw0rd"
 OS_TENANT_NAME = "admin"
 OS_AUTH_URL = "http://openstackserver:5000/v2.0/"
 #OS_SERVICE_ENDPOINT = "http://openstackserver:35357/v3/"
