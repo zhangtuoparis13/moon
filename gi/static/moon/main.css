@@ -24,6 +24,15 @@ body {
     padding: 5px;
 }
 
+#error {
+    color: red;
+    text-decoration-style: double;
+    padding: 10px;
+    margin: 10px;
+    border-radius:5px;
+    background: #ffffff;
+}
+
 #ptitle {
     width: 80%;
     text-align: center;
