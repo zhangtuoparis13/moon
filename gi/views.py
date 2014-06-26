@@ -95,10 +95,38 @@ def inter_extensions(request):
     User interface
     Render one user retrieve from OpenStack Keystone server
     """
-    #TODO
+    error = ""
     pap = PAP(kclient=get_keystone_client(request))
-    extensions = pap.admin_manager.get_intra_extensions()
-    return render(request, "moon/intra-extensions.html", {"extensions": extensions})
+    if request.META['REQUEST_METHOD'] == "POST":
+        post_args = request.POST
+        requesting = post_args["requesting"]
+        requested = post_args["requested"]
+        type = post_args["type"]
+        if requesting == requested:
+            error = "Requesting tenant and requested are identical."
+        else:
+            pap.admin_manager.add_inter_extension(
+                requesting=requesting,
+                requested=requested,
+                type=type
+            )
+    extensions = pap.admin_manager.get_inter_extensions()
+    tenants = pap.admin_manager.get_tenant()
+    subjects = pap.admin_manager.get_users(
+        tenant_uuid=tenants[0].uuid
+    )
+    objects = pap.admin_manager.get_objects(
+        tenant_uuid=tenants[1].uuid
+    )
+    return render(request, "moon/inter-extensions.html", {
+        "extensions": extensions,
+        "tenants": tenants,
+        "selected_tenant1": tenants[0],
+        "subjects": subjects,
+        "selected_tenant2": tenants[1],
+        "objects": objects,
+        "error": error,
+    })
 
 
 @login_required(login_url='/auth/login/')
@@ -107,16 +135,41 @@ def inter_extension(request, id=None):
     User interface
     Render one user retrieve from OpenStack Keystone server
     """
-    #TODO
+    error = ""
     pap = PAP(kclient=get_keystone_client(request))
-    extension = pap.admin_manager.get_intra_extensions(uuid=id)
-    return render(request, "moon/intra-extensions.html", {"extension": extension})
+    extension = pap.admin_manager.get_inter_extensions(uuid=id)[0]
+    return render(request, "moon/inter-extensions.html", {
+        "extension": extension,
+        "tenants": pap.admin_manager.get_tenant(),
+        "error": error,
+    })
 
 
 @register.filter
 def get_log(dictionary, key):
     value = eval("dictionary.{}".format(key))
     return value
+
+
+@register.filter
+def get_tenant_name(uuid):
+    pap = PAP()
+    tenant = pap.admin_manager.get_tenant(tenant_uuid=uuid)[0]
+    return tenant.name
+
+
+@register.filter
+def get_vent_name(uuid):
+    pap = PAP()
+    vent = pap.admin_manager.get_virtual_entity(uuid=uuid)[0]
+    return vent.name
+
+
+@register.filter
+def get_vent_category_name(uuid):
+    pap = PAP()
+    vent = pap.admin_manager.get_virtual_entity(uuid=uuid)[0]
+    return vent.name
 
 
 @register.filter

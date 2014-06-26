@@ -8,6 +8,7 @@ $( document ).ready(function() {
     $("#elementadd").hide();
     $("#add_intra_rule").hide();
     $("#add_rule_help").hide();
+    $("#add_inter_rule").hide();
     $(function() { $('#id_main_tables').change(function() {
         window.location.href='/userdb/?table=' + this[this.selectedIndex].value;
     }) });
@@ -30,6 +31,10 @@ function show_rule_add_actions() {
 
 function show_add_rule_help() {
     $("#add_rule_help").show();
+};
+
+function show_inter_extensions_add_actions() {
+    $("#add_inter_rule").show();
 };
 
 function opendiv(divelement) {
