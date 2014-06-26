@@ -16,6 +16,75 @@ class AuthzManager:
         self.inter_pdps = self.inter_dispatcher.extensions
         self.tenants = self.inter_dispatcher.tenants
         self.BLOCK_UNKNOWN_TENANT = getattr(settings, "BLOCK_UNKNOWN_TENANT")
+        self.__UNMANAGED_OBJECTS = getattr(settings, "UNMANAGED_OBJECTS", ("", "token", ))
+
+    def __intra_tenant_authz(self, auth):
+        for extension in self.intra_pdps.values():
+                if auth["subject_tenant"] != extension.tenant["uuid"]:
+                    auth["auth"] = "Out of Scope"
+                    auth["message"] = "Subject tenant was not found in intra-tenant extensions " \
+                                      "or Subject tenant cannot be managed."
+                    continue
+                auth["extension_name"] = extension.uuid
+                # if not extension.has_object_attributes(name=auth["object_type"]):
+                #     logger.warning("Unknown object {}".format(auth["object_name"]))
+                # else:
+                #     find_object = True
+                if not extension.has_subject(uuid=auth["subject"]):
+                    logger.warning("Subject {} unknown for tenant {}".format(auth["subject"], extension.tenant))
+                    auth["auth"] = "Out of Scope"
+                    auth["message"] = "The request could be connected to a extension but no subject match."
+                    continue
+                for rule in extension.get_rules():
+                    # check if subject is in extension
+                    # check if object is in extension
+                    # check if subject has a assignment with s_attr (ie Role, Group, ...)
+                    # check if object has a assignment with o_attr (ie Type, Security, Size, ...)
+                    # check if action has a assignment with o_attr (ie Action)
+                    #   and given action is equal to the rule value
+                    if not extension.has_subject(uuid=auth["subject"]):
+                        continue
+                    if not extension.has_object(uuid=auth["object_name"]):
+                        continue
+                    auth["auth"] = False
+                    auth["message"] = "The request could be connected to a extension but no rule match."
+                    _auth = list()
+                    for s_rule in rule["s_attr"]:
+                        _auth.append(extension.has_assignment(
+                            subject_uuid=auth["subject"],
+                            category=s_rule["category"],
+                            attribute_name=s_rule["value"]))
+                    for o_rule in rule["o_attr"]:
+                        if o_rule["category"] == "action":
+                            has_assignment = extension.has_assignment(
+                                object_uuid=auth["object_name"],
+                                category=o_rule["category"],
+                                attribute_uuid=auth["action"])
+                            o_rule_value = o_rule["value"].replace(".", "\\.").replace("*", ".*")
+                            if re.match(o_rule_value, auth["action"]):
+                                _auth.append(has_assignment)
+                            else:
+                                _auth.append(False)
+                        else:
+                            has_assignment = extension.has_assignment(
+                                object_uuid=auth["object_name"],
+                                category=o_rule["category"],
+                                attribute_uuid=o_rule["value"])
+                            _auth.append(has_assignment)
+                    main_auth = reduce(lambda x, y: x and y, _auth)
+                    if main_auth:
+                        auth["auth"] = True
+                        auth["rule_name"] = rule["name"]
+                        auth["tenant_name"] = auth["subject_tenant"]
+                        break
+                    else:
+                        auth["auth"] = False
+                break
+        return auth
+
+
+    def __inter_tenant_authz(self):
+        pass
 
     def authz(
             self,
@@ -44,75 +113,31 @@ class AuthzManager:
             "subject": subject,
             "action": action,
             "object_name": object_name,
+            "object_uuid": "",
             "subject_tenant": subject_tenant,
             "object_type": object_type,
-            "object_tenant": object_tenant
+            "object_tenant": object_tenant,
+            "extension_name": "None"
         }
         # rule_name = "None"
-        find_extension = False
-        find_rule = False
-        find_object = False
+        # find_extension = False
+        # find_rule = False
+        # find_object = False
         # print(subject, action, object_name, subject_tenant, object_type, object_tenant)
-        if object_tenant == "None" and subject_tenant == "None":
+        if object_type in self.__UNMANAGED_OBJECTS:
+            auth["auth"] = True
+            auth["rule_name"] = "UNMANAGED_OBJECTS"
+            auth["message"] = "The request is on an unmanaged object."
+        elif object_tenant == "None" and subject_tenant == "None":
             # TODO specific cases during authentication or when a user with no tenant ask for the list of tenants
             auth["auth"] = True
             auth["rule_name"] = "Default"
             logger.warning("object_tenant and subject_tenant are None together.")
         elif object_tenant == "None" or subject_tenant == object_tenant:
             # Intra Tenant
-            for extension in self.intra_pdps.values():
-                if subject_tenant != extension.tenant["uuid"]:
-                    continue
-                find_extension = True
-                if not extension.has_object_attributes(name=object_type):
-                    logger.warning("Unknown object {}".format(object_name))
-                else:
-                    find_object = True
-                if not extension.has_subject(uuid=subject):
-                    logger.warning("Subject {} unknown for tenant {}".format(subject, extension.tenant))
-                    continue
-                for rule in extension.get_rules():
-                    # check if subject is in extension
-                    # check if object is in extension
-                    # check if subject has a assignment with s_attr (ie Role, Group, ...)
-                    # check if object has a assignment with o_attr (ie Type, Security, Size, ...)
-                    # check if action has a assignment with o_attr (ie Action)
-                    #   and given action is equal to the rule value
-                    if not extension.has_subject(uuid=subject):
-                        continue
-                    if not extension.has_object(uuid=object_name):
-                        continue
-                    find_rule = True
-                    _auth = list()
-                    for s_rule in rule["s_attr"]:
-                        _auth.append(extension.has_assignment(
-                            subject_uuid=subject,
-                            category=s_rule["category"],
-                            attribute_name=s_rule["value"]))
-                    for o_rule in rule["o_attr"]:
-                        if o_rule["category"] == "action":
-                            has_assignment = extension.has_assignment(
-                                object_uuid=object_name,
-                                category=o_rule["category"],
-                                attribute_uuid=action)
-                            o_rule_value = o_rule["value"].replace(".", "\\.").replace("*", ".*")
-                            if re.match(o_rule_value, action):
-                                _auth.append(has_assignment)
-                            else:
-                                _auth.append(False)
-                        else:
-                            has_assignment = extension.has_assignment(
-                                object_uuid=object_name,
-                                category=o_rule["category"],
-                                attribute_uuid=o_rule["value"])
-                            _auth.append(has_assignment)
-                    main_auth = reduce(lambda x, y: x and y, _auth)
-                    if main_auth:
-                        auth["auth"] = True
-                        auth["rule_name"] = rule["name"]
-                        auth["tenant_name"] = subject_tenant
-                        break
-        else:
+            auth = self.__intra_tenant_authz(auth)
+        # print(auth)
+        if auth["auth"] == "Out of Scope":
             # Inter Tenant
             logger.warning("Inter Tenant authorization not developed!")
             # for e in extension_list
@@ -131,20 +156,20 @@ class AuthzManager:
             #         return KO
             for ext in get_inter_dispatcher().get():
                 print(ext)
-        if not find_rule and find_extension:
-            # The request could be connected to a extension but no rule match
-            auth["auth"] = "Out of scope"
-            auth["message"] = "The request could be connected to a extension but no rule match."
-        if not find_extension:
-            # No extension match the request, the tenant cannot be managed
-            if not self.BLOCK_UNKNOWN_TENANT:
-                auth["auth"] = True
-            else:
-                auth["auth"] = False
-            if object_tenant == "None" and subject_tenant == "None":
-                auth["message"] = "No tenant given (special case)."
-            else:
-                auth["message"] = "No extension match the request, the tenant cannot be managed."
+        # if auth["auth"] is not True and not find_rule and find_extension:
+        #     # The request could be connected to a extension but no rule match
+        #     auth["auth"] = "Out of scope"
+        #     auth["message"] = "The request could be connected to a extension but no rule match."
+        # if not find_extension:
+        #     # No extension match the request, the tenant cannot be managed
+        #     if not self.BLOCK_UNKNOWN_TENANT:
+        #         auth["auth"] = True
+        #     else:
+        #         auth["auth"] = False
+        #     if object_tenant == "None" and subject_tenant == "None":
+        #         auth["message"] = "No tenant given (special case)."
+        #     else:
+        #         auth["message"] = "No extension match the request, the tenant cannot be managed."
         return auth
 
 

@@ -39,7 +39,6 @@ def tenants(request, id=None):
             subject_tenant=request.POST["Subject_Tenant"]
         )
         tenant = request.POST.get("Subject_Tenant", "None")
-        # TODO: need to check authorisation
         args = {
             "tname": authz["tenant_name"],
             "authz": authz["auth"],
@@ -58,14 +57,14 @@ def tenants(request, id=None):
         elif not authz["auth"]:
             log = "{color}Unauthorized{endcolor} in tenant {tname} " \
                   "for ({subject} - {action} - {objecttype}/{object}) \n{message}"
-            print(log.format(color="\033[42m", endcolor="\033[m", **args))
+            print(log.format(color="\033[41m", endcolor="\033[m", **args))
             # LOGS.write(line=log.format(color="", endcolor="", **args))
             LOGS.write(authz)
         else:
             # print("\t\033[41m" + tenant_name + "/" + str(authz) + " for (" + "\033[m")
             log = "{color}Out of Scope{endcolor} in tenant {tname} " \
                   "for ({subject} - {action} - {objecttype}/{object}) \n{message}"
-            print(log.format(color="\033[41m", endcolor="\033[m", **args))
+            print(log.format(color="\033[42m", endcolor="\033[m", **args))
             # LOGS.write(line=log.format(color="", endcolor="", **args))
             LOGS.write(authz)
 

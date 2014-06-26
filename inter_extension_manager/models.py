@@ -1,6 +1,29 @@
 from uuid import uuid4, UUID
 
 
+class VirtualEntity:
+
+    def __init__(self, name, uuid=None):
+        self.name = name
+        self.db = None
+        self.type = "virtual_entity"
+        if not uuid:
+            self.uuid = str(uuid4()).replace("-", "")
+        else:
+            self.uuid = str(uuid).replace("-", "")
+
+    def sync(self, db):
+        self.db = db
+        post = dict()
+        post["name"] = self.name
+        post["uuid"] = self.uuid
+        post["type"] = self.type
+        self.db.add(attributes=post)
+
+    def __repr__(self):
+        return "Virtual Entity {}".format(self.name)
+
+
 class Tenant:
 
     def __init__(
@@ -73,7 +96,8 @@ class Extension:
             requesting_tenant=None,
             requested_tenant=None,
             connection_type=None,
-            category=None
+            category=None,
+            description=""
     ):
         """ Create a relation between 2 tenants
         :param name: str: name of the relation
@@ -91,29 +115,33 @@ class Extension:
             self.uuid = str(uuid).replace("-", "")
         else:
             self.uuid = str(uuid4()).replace("-", "")
-        self.requesting_tenant = requesting_tenant,
-        self.requested_tenant = requested_tenant,
-        self.connection_type = connection_type,
+        self.requesting_tenant = requesting_tenant
+        self.requested_tenant = requested_tenant
+        self.connection_type = connection_type
         self.category = category
+        self.type = "assignment"
+        self.description = description
 
     def sync(self, db):
         post = dict()
-        post['name'] = self.name
         post['uuid'] = str(self.uuid)
-        if type(self.requesting_tenant) is str:
-            post['requesting_tenant'] = self.requesting_tenant
+        if type(self.requesting_tenant) in (str, unicode):
+            post['requesting'] = self.requesting_tenant
         else:
-            post['requesting_tenant'] = self.requesting_tenant["uuid"]
-        if type(self.requested_tenant) is str:
-            post['requested_tenant'] = self.requested_tenant
+            post['requesting'] = self.requesting_tenant["uuid"]
+        if type(self.requested_tenant) in (str, unicode):
+            post['requested'] = self.requested_tenant
         else:
-            post['requested_tenant'] = self.requested_tenant["uuid"]
+            post['requested'] = self.requested_tenant["uuid"]
         post['connection_type'] = self.connection_type
         post['category'] = self.category
+        post['type'] = self.type
+        post['name'] = self.name
+        post['description'] = self.description
         db.add(attributes=post)
 
     def __repr__(self):
-        return "Extension {} ({}) enabled: {} ({}->{}:{}/{})".format(
+        return "Extension {} ({}) ({}->{}:{}/{})".format(
             self.name,
             self.uuid,
             self.requesting_tenant,

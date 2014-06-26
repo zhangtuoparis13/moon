@@ -27,6 +27,7 @@ class DB:
 
     def get(self, attributes=dict()):
         """Return a list of extensions with attributes"""
+        print(self.collection)
         if "uuid" in attributes:
             attributes["_id"] = attributes.pop("uuid")
         collections = tuple(self.collection.find(attributes))

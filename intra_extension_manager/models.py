@@ -3,7 +3,7 @@ try:
     from django.utils.safestring import mark_safe
 except ImportError:
     mark_safe = str
-from moon.tools.debug import logger, print_args
+
 
 class Extension:
 
@@ -91,8 +91,33 @@ class Extension:
     def has_subject(self, uuid=None, name=None):
         return self.has(self.subjects, uuid=uuid, name=name)
 
+    def add_subject(self, uuid=None, name=None, domain="default", enabled=True, mail="", project="", description=""):
+        if not uuid:
+            uuid = str(uuid4()).replace("-", "")
+        sbj = {}
+        sbj["uuid"] = uuid
+        sbj["name"] = name
+        sbj["enabled"] = enabled
+        sbj["description"] = description
+        sbj["domain"] = domain
+        sbj["mail"] = mail
+        sbj["project"] = project
+        self.subjects.append(sbj)
+        self.sync()
+
     def has_object(self, uuid=None, name=None):
         return self.get_object(uuid=uuid, name=name)
+
+    def add_object(self, uuid=None, name=None, enabled=True, description=""):
+        if not uuid:
+            uuid = str(uuid4()).replace("-", "")
+        obj = {}
+        obj["uuid"] = uuid
+        obj["name"] = name
+        obj["enabled"] = enabled
+        obj["description"] = description
+        self.objects.append(obj)
+        self.sync()
 
     def get_object_attributes(self, uuid=None, name=None, category=None):
         if not uuid and not name and not category:
@@ -102,15 +127,30 @@ class Extension:
             if uuid and obj["uuid"] == uuid:
                 return [obj, ]
             elif name and type(obj["value"]) in (str, unicode) and obj["value"] == name:
-                return [obj, ]
+                if category and obj["category"] == category:
+                    return [obj, ]
+                else:
+                    return [obj, ]
             elif name and type(obj["value"]) in (list, tuple) and name in obj["value"]:
-                return [obj, ]
+                if category and obj["category"] == category:
+                    return [obj, ]
+                else:
+                    return [obj, ]
             elif category and obj["category"] == category:
                 ret_objects.append(obj)
         return ret_objects
 
     def has_object_attributes(self, uuid=None, name=None):
         return self.has(self.profiles["o_attr"], uuid=uuid, name=name)
+
+    def add_object_attribute(self, category=None, value=None, description=""):
+        o_attr = {}
+        o_attr["uuid"] = str(uuid4()).replace("-", "")
+        o_attr["category"] = category
+        o_attr["value"] = value
+        o_attr["description"] = description
+        self.profiles["o_attr"].append(o_attr)
+        self.sync()
 
     def get_subject_attributes(self, uuid=None, name=None, category=None):
         if not uuid and not name and not category:
@@ -141,6 +181,20 @@ class Extension:
             if uuid == obj["object"] and attribute in obj["attributes"]:
                 return True
         return False
+
+    def add_object_attributes_relation(
+            self,
+            uuid=None,
+            object=None,
+            attributes=[]):
+        if not uuid:
+            uuid = str(uuid4()).replace("-", "")
+        rel = {}
+        rel["uuid"] = uuid
+        rel["object"] = object
+        rel["attributes"] = attributes
+        self.profiles["o_attr_assign"].append(rel)
+        self.sync()
 
     def has_object_attributes_relation(
             self,
@@ -225,6 +279,22 @@ class Extension:
         return self.rules
 
     def add_rule(self, rule):
+        """Add a new rule in this extension
+        :param rule: dict: the rule to add
+
+        The new rule must be formed like this:
+        {
+            "name": "the name of the rule",
+            "description": "a short description",
+            "s_attr": [
+                {u'category': u'role', u'value': u'admin'},
+            ],
+            "s_attr": [
+                {u'category': u'type', u'value': u'server'},
+                {u'category': u'action', u'value': u'get.os-start'},
+            ],
+        }
+        """
         self.rules.append(rule)
         if self.db:
             self.sync()
@@ -232,9 +302,6 @@ class Extension:
     def sync(self, db=None):
         if db:
             self.db = db
-        #TODO: self.name is modified from a string to a list; I don't know why
-        if type(self.name) in (tuple, list):
-            self.name = self.name[0]
         self.db.new_extension(
             uuid=self.uuid,
             name=self.name,
@@ -247,9 +314,6 @@ class Extension:
             tenant=self.tenant)
 
     def html(self):
-        #TODO: self.name is modified from a string to a list; I don't know why
-        if type(self.name) in (tuple, list):
-            self.name = self.name[0]
         return mark_safe("""<b>Extension</b> {} for <b>tenant {}</b><br/><br/>
         <b>Subjects:</b> <ul>{}</ul><br>
         <b>Objects:</b> <ul>{}</ul>

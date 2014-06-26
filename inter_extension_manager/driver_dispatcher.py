@@ -2,7 +2,7 @@ import logging
 import json
 from moon import settings
 import importlib
-from models import Extension, Tenant
+from models import Extension, Tenant, VirtualEntity
 from uuid import uuid4
 
 logger = logging.getLogger(__name__)
@@ -22,6 +22,9 @@ class InterExtensions:
         self.db = driver.DB(name=db_name, collection_name="relations")
         self.extensions = {}
         self.tenants = {}
+        self.virtual_entities = {}
+        #FIXME: when using the link named "sync" in the interface after a drop database,
+        # the InterExtensions is initialized twice
         for tenant in self.db.list(type="tenant"):
             t = Tenant(
                 uuid=tenant["uuid"],
@@ -36,17 +39,24 @@ class InterExtensions:
             e = Extension(
                 uuid=ext["uuid"],
                 name=ext["name"],
-                requesting_tenant=ext["questioning_tenant"],
-                requested_tenant=ext["questioned_tenant"],
+                requesting_tenant=ext["requesting"],
+                requested_tenant=ext["requested"],
                 connection_type=ext["connection_type"],
                 category=ext["category"]
             )
             e.sync(self.db)
             self.extensions[ext["uuid"]] = e
+        for vent in self.db.list(type="virtual_entity"):
+            v = VirtualEntity(
+                uuid=vent["uuid"],
+                name=vent["name"],
+            )
+            v.sync(self.db)
+            self.virtual_entities[vent["uuid"]] = v
 
     def list(self, type="tenants"):
         if type == "tenants":
-            return self.tenants
+            return self.tenants.values()
         else:
             return self.extensions.values()
 
@@ -58,7 +68,7 @@ class InterExtensions:
         :return: a list of tenants or extensions
         """
         if not uuid and not name and not attributes:
-            return self.extensions
+            return self.extensions.values()
         elif uuid:
             try:
                 return [self.extensions[uuid], ]
@@ -77,6 +87,16 @@ class InterExtensions:
                 except KeyError:
                     exts.append(self.tenants[uuid])
             return exts
+
+    def get_virtual_entity(self, uuid=None, name=None):
+        if not uuid and not name:
+            return self.virtual_entities.values()
+        elif uuid:
+            return [self.virtual_entities[uuid], ]
+        else:
+            for vent in self.virtual_entities:
+                if vent.name == name:
+                    return [vent, ]
 
     def delete(self, uuid):
         try:
@@ -122,6 +142,7 @@ class InterExtensions:
             uuid=tenant["uuid"]
         )
         self.tenants[tenant["uuid"]].sync(self.db)
+        logger.warning("add_tenant({})={}".format(self, self.tenants))
         return self.tenants[tenant["uuid"]]
 
     def add_tenant_assignment(
@@ -132,6 +153,13 @@ class InterExtensions:
             type=None,
             category=None,
             uuid=None):
+        if not uuid:
+            uuid = str(uuid4()).replace("-", "")
+        if not category:
+            vent = VirtualEntity(requesting+"->"+requested)
+            vent.sync(self.db)
+            self.virtual_entities[vent.uuid] = vent
+            category = vent.uuid
         assignment = self.db.add_tenant_assignment(
             attributes=attributes,
             requesting=requesting,
@@ -139,15 +167,15 @@ class InterExtensions:
             type=type,
             category=category,
             uuid=uuid)
-        self.extensions[assignment["uuid"]] = Extension(
+        self.extensions[assignment] = Extension(
             requesting_tenant=requesting,
             requested_tenant=requested,
             connection_type=type,
             category=category,
             uuid=uuid
         )
-        self.extensions[assignment["uuid"]].sync(self.db)
-        return self.extensions[assignment["uuid"]]
+        self.extensions[assignment].sync(self.db)
+        return self.extensions[assignment]
 
 driver_dispatcher = InterExtensions()
 

@@ -54,6 +54,7 @@ class IntraExtensions:
                     return [ext, ]
         else:
             uuids = map(lambda x: x["uuid"], tuple(self.db.get(attributes=attributes)))
+            print(attributes)
             exts = []
             for uuid in uuids:
                 exts.append(self.extensions[uuid])
