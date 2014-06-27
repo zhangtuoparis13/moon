@@ -1,5 +1,8 @@
 from uuid import uuid4, UUID
-
+try:
+    from django.utils.safestring import mark_safe
+except ImportError:
+    mark_safe = str
 
 class VirtualEntity:
 
@@ -95,6 +98,8 @@ class Extension:
             uuid=None,
             requesting_tenant=None,
             requested_tenant=None,
+            requesting_tenant_name=None,
+            requested_tenant_name=None,
             connection_type=None,
             category=None,
             description=""
@@ -121,6 +126,15 @@ class Extension:
         self.category = category
         self.type = "assignment"
         self.description = description
+        if requesting_tenant_name:
+            self.requesting_tenant_name = requesting_tenant_name
+        else:
+            self.requesting_tenant_name = requesting_tenant
+        if requested_tenant_name:
+            self.requested_tenant_name = requested_tenant_name
+        else:
+            self.requested_tenant_name = requested_tenant
+        print("Extension.__init__ {} {}".format(self.requesting_tenant_name, self.requested_tenant_name))
 
     def sync(self, db):
         post = dict()
@@ -141,10 +155,20 @@ class Extension:
         db.add(attributes=post)
 
     def __repr__(self):
-        return "Extension {} ({}) ({}->{}:{}/{})".format(
+        return "Extension {} ({}) ({} -> {}: {}/{})".format(
             self.name,
             self.uuid,
-            self.requesting_tenant,
-            self.requested_tenant,
+            self.requesting_tenant_name,
+            self.requested_tenant_name,
             self.connection_type,
             self.category)
+
+    def html(self):
+        return mark_safe("<b>Extension</b> {} <br/>"
+                         "{} -> {}<br/>connection type: {} <br/>vent: {}".format(
+            self.name,
+            self.requesting_tenant_name,
+            self.requested_tenant_name,
+            self.connection_type,
+            self.category
+        ))

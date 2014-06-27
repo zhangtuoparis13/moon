@@ -33,6 +33,7 @@ class IntraExtensions:
                 description=ext["description"],
                 tenant=ext["tenant"]
             )
+            self.extensions[ext["uuid"]].db = self.db
 
     def list(self, ):
         return self.extensions.values()
@@ -54,7 +55,6 @@ class IntraExtensions:
                     return [ext, ]
         else:
             uuids = map(lambda x: x["uuid"], tuple(self.db.get(attributes=attributes)))
-            print(attributes)
             exts = []
             for uuid in uuids:
                 exts.append(self.extensions[uuid])

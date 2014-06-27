@@ -40,7 +40,9 @@ class InterExtensions:
                 uuid=ext["uuid"],
                 name=ext["name"],
                 requesting_tenant=ext["requesting"],
+                requesting_tenant_name=self.tenants[ext["requesting"]].name,
                 requested_tenant=ext["requested"],
+                requested_tenant_name=self.tenants[ext["requested"]].name,
                 connection_type=ext["connection_type"],
                 category=ext["category"]
             )
@@ -142,7 +144,6 @@ class InterExtensions:
             uuid=tenant["uuid"]
         )
         self.tenants[tenant["uuid"]].sync(self.db)
-        logger.warning("add_tenant({})={}".format(self, self.tenants))
         return self.tenants[tenant["uuid"]]
 
     def add_tenant_assignment(
@@ -169,7 +170,9 @@ class InterExtensions:
             uuid=uuid)
         self.extensions[assignment] = Extension(
             requesting_tenant=requesting,
+            requesting_tenant_name=self.tenants[requesting].name,
             requested_tenant=requested,
+            requested_tenant_name=self.tenants[requested].name,
             connection_type=type,
             category=category,
             uuid=uuid
