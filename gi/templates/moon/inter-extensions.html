@@ -47,7 +47,8 @@
                         <tr>
                             <td><label for="requesting">Requesting tenant:</label></td>
                             <td>
-                                <select id="requesting" name="requesting">
+                                <select id="requesting" name="requesting" onchange="get_subjects('requesting')">
+                                    <option value="None" selected>Choose a requesting tenant</option>
                                     {% for tenant in tenants %}
                                         {% if tenant.uuid == selected_tenant1.uuid %}
                                             <option value="{{ tenant.uuid }}" selected>{{ tenant.name }}</option>
@@ -58,15 +59,18 @@
                                 </select>
                             </td>
                             <td>
+                                <div id="subjects_list">
                                 {% for subject in subjects %}
-                                <input type="checkbox" name="subject" value="{{ subject.uuid }}">{{ subject.name }}<br>
+                                <input type="checkbox" name="subject_{{ subject.uuid }}" value="{{ subject.uuid }}">{{ subject.name }}<br>
                                 {% endfor %}
+                                </div>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="requested">Requested tenant:</label></td>
                             <td>
-                                <select id="requested" name="requested">
+                                <select id="requested" name="requested" onchange="get_objects('requested')">
+                                    <option value="None" selected>Choose a requested tenant</option>
                                     {% for tenant in tenants %}
                                         {% if tenant.uuid == selected_tenant2.uuid %}
                                             <option value="{{ tenant.uuid }}" selected>{{ tenant.name }}</option>
@@ -74,13 +78,14 @@
                                             <option value="{{ tenant.uuid }}">{{ tenant.name }}</option>
                                         {% endif %}
                                     {% endfor %}
-                                    {% endfor %}
                                 </select>
                             </td>
                             <td>
+                                <div id="objects_list">
                                 {% for object in objects %}
-                                <input type="checkbox" name="object" value="{{ object.uuid }}">{{ object.name }}<br>
+                                <input type="checkbox" name="object_{{ object.uuid }}" value="{{ object.uuid }}">{{ object.name }}<br>
                                 {% endfor %}
+                                </div>
                             </td>
                         </tr>
                         <tr>

@@ -1,20 +1,13 @@
-import os
 import logging
-from django import forms
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.template.defaultfilters import register
-from django.utils.html import conditional_escape
-from django.utils.safestring import mark_safe
 from keystoneclient.v3 import client
-from keystoneclient.v3.users import User
-from keystoneclient.v3.projects import Project
-
 from gi import settings
 from moon.core.pap.core import PAP
 from django.utils.safestring import mark_safe
-# from moon.info_repository.driver_dispatcher import get_tables, get_elements, get_db_diag, get_attrs_list, get_element
-from moon.core.pdp import get_admin_manager, get_authz_manager
+import json
+from django.http import HttpResponse
 from moon.log_repository import get_log_manager
 from moon.core.pip import get_pip
 
@@ -102,13 +95,22 @@ def inter_extensions(request):
         requesting = post_args["requesting"]
         requested = post_args["requested"]
         type = post_args["type"]
+        _objects = []
+        _subjects = []
+        for key in post_args.keys():
+            if "object" in key:
+                _objects.append(post_args[key])
+            elif "subject" in key:
+                _subjects.append(post_args[key])
         if requesting == requested:
             error = "Requesting tenant and requested are identical."
         else:
             pap.admin_manager.add_inter_extension(
                 requesting=requesting,
                 requested=requested,
-                type=type
+                type=type,
+                requesting_subjects=_subjects,
+                requested_objects=_objects
             )
     extensions = pap.admin_manager.get_inter_extensions()
     tenants = pap.admin_manager.get_tenant()
@@ -121,12 +123,31 @@ def inter_extensions(request):
     return render(request, "moon/inter-extensions.html", {
         "extensions": extensions,
         "tenants": tenants,
-        "selected_tenant1": tenants[0],
-        "subjects": subjects,
-        "selected_tenant2": tenants[1],
-        "objects": objects,
+        # "selected_tenant1": tenants[0],
+        # "subjects": subjects,
+        # "selected_tenant2": tenants[0],
+        # "objects": objects,
         "error": error,
     })
+
+
+@login_required(login_url='/auth/login/')
+def get_subjects(request, id=None):
+    pap = PAP(kclient=get_keystone_client(request))
+    subjects = pap.admin_manager.get_users(
+        tenant_uuid=id
+    )
+    return HttpResponse(json.dumps({"subjects": subjects}))
+
+
+@login_required(login_url='/auth/login/')
+def get_objects(request, id=None):
+    pap = PAP(kclient=get_keystone_client(request))
+    objects = pap.admin_manager.get_objects(
+        tenant_uuid=id
+    )
+    # return HttpResponse(json.dumps({"objects": objects}), mimetype='application/json')
+    return HttpResponse(json.dumps({'objects': objects}))
 
 
 @login_required(login_url='/auth/login/')
