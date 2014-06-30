@@ -1,5 +1,6 @@
 from intra_extension_manager import get_dispatcher as get_intra_dispatcher
 from inter_extension_manager import get_dispatcher as get_inter_dispatcher
+from moon.core.pip import get_pip
 import logging
 from moon import settings
 import re
@@ -18,14 +19,19 @@ class AuthzManager:
         self.BLOCK_UNKNOWN_TENANT = getattr(settings, "BLOCK_UNKNOWN_TENANT")
         self.__UNMANAGED_OBJECTS = getattr(settings, "UNMANAGED_OBJECTS", ("", "token", ))
 
+    def get_tenant_for_object(self, object_uuid):
+        return self.intra_dispatcher.get_object(uuid=object_uuid)[0]
+
     def __intra_tenant_authz(self, auth):
         for extension in self.intra_pdps.values():
                 if auth["subject_tenant"] != extension.tenant["uuid"]:
-                    auth["auth"] = "Out of Scope"
-                    auth["message"] = "Subject tenant was not found in intra-tenant extensions " \
-                                      "or Subject tenant cannot be managed."
+                    if auth["auth"] != "Out of Scope":
+                        auth["auth"] = "Out of Scope"
+                        auth["message"] = "Subject tenant was not found in intra-tenant extensions " \
+                                          "or Subject tenant cannot be managed."
                     continue
                 auth["extension_name"] = extension.uuid
+                auth["tenant_name"] = extension.tenant["name"]
                 # if not extension.has_object_attributes(name=auth["object_type"]):
                 #     logger.warning("Unknown object {}".format(auth["object_name"]))
                 # else:
@@ -35,6 +41,15 @@ class AuthzManager:
                     auth["auth"] = "Out of Scope"
                     auth["message"] = "The request could be connected to a extension but no subject match."
                     continue
+                if not extension.has_object(uuid=auth["object_name"]):
+                    auth["auth"] = "Out of Scope"
+                    auth["message"] = "The request could be connected to a extension but no object match."
+                    #FIXME subject_tenant is false, we must found the true tenant for this object
+                    #FIXME this must be done in nova_hook
+                    obj = self.intra_dispatcher.get_object(uuid=auth["object_name"])[0]
+                    auth["object_uuid"] = obj["uuid"]
+                    auth["object_tenant"] = obj["tenant"]["uuid"]
+                    break
                 for rule in extension.get_rules():
                     # check if subject is in extension
                     # check if object is in extension
@@ -42,10 +57,6 @@ class AuthzManager:
                     # check if object has a assignment with o_attr (ie Type, Security, Size, ...)
                     # check if action has a assignment with o_attr (ie Action)
                     #   and given action is equal to the rule value
-                    if not extension.has_subject(uuid=auth["subject"]):
-                        continue
-                    if not extension.has_object(uuid=auth["object_name"]):
-                        continue
                     auth["auth"] = False
                     auth["message"] = "The request could be connected to a extension but no rule match."
                     _auth = list()
@@ -71,6 +82,7 @@ class AuthzManager:
                                 category=o_rule["category"],
                                 attribute_uuid=o_rule["value"])
                             _auth.append(has_assignment)
+                    # print(_auth, rule)
                     main_auth = reduce(lambda x, y: x and y, _auth)
                     if main_auth:
                         auth["auth"] = True
@@ -82,9 +94,54 @@ class AuthzManager:
                 break
         return auth
 
-
-    def __inter_tenant_authz(self):
-        pass
+    def __inter_tenant_authz(self, auth):
+        """
+        # for e in extension_list
+        #     if intra-authorization(s1, o1, a1) == OK
+        #         return OK
+        #     elif intra-authorization(s1, o1, a1) == "out of scope"
+        #         for (e', e'', vEnt) in extension_relation
+        #             if (s1, vEnt) in e' and (vEnt, o1) in e''
+        #                 if intra-authorization(s1, vEnt, a1) and intra-authorization(vEnt, o1, a1)
+        #                     return 'OK'
+        #                 else
+        #                     return 'KO'
+        #             else
+        #                 return 'out of scope'
+        #     else
+        #         return KO
+        """
+        for ext in get_inter_dispatcher().get():
+            #Check if this extension has the good requesting_tenant and requested_tenant
+            if auth["subject_tenant"] == ext.requesting_tenant and auth["object_tenant"] == ext.requested_tenant:
+                # print("\033[45mCheck intra authorization for subject\033[m")
+                subject_auth = dict(auth)
+                subject_auth["object_type"] = "virtual_entity"
+                subject_auth["object_name"] = ext.category
+                subject_auth["object_uuid"] = ext.category
+                subject_auth["object_tenant"] = subject_auth["subject_tenant"]
+                subject_auth = self.__intra_tenant_authz(subject_auth)
+                # print("---------------------------")
+                # print(subject_auth)
+                # print("---------------------------")
+                # print("\033[45mCheck intra authorization for object\033[m")
+                object_auth = dict(auth)
+                object_auth["subject"] = ext.category
+                object_auth["subject_tenant"] = object_auth["object_tenant"]
+                object_auth = self.__intra_tenant_authz(object_auth)
+                # print("---------------------------")
+                # print(object_auth)
+                # print("---------------------------")
+                if object_auth["auth"] and subject_auth["auth"]:
+                    auth["auth"] = True
+                    auth["message"] = "Inter tenant authorisation"
+                    auth["rule_name"] = subject_auth["rule_name"] + "->" + object_auth["rule_name"]
+                break
+            else:
+                #Out of scope
+                #TODO: set message in auth
+                auth["message"] = "No inter tenant extension match the request."
+        return auth
 
     def authz(
             self,
@@ -139,37 +196,7 @@ class AuthzManager:
         # print(auth)
         if auth["auth"] == "Out of Scope":
             # Inter Tenant
-            logger.warning("Inter Tenant authorization not developed!")
-            # for e in extension_list
-            #     if intra-authorization(s1, o1, a1) == OK
-            #         return OK
-            #     elif intra-authorization(s1, o1, a1) == "out of scope"
-            #         for (e', e'', vEnt) in extension_relation
-            #             if (s1, vEnt) in e' and (vEnt, o1) in e''
-            #                 if intra-authorization(s1, vEnt, a1) and intra-authorization(vEnt, o1, a1)
-            #                     return 'OK'
-            #                 else
-            #                     return 'KO'
-            #             else
-            #                 return 'out of scope'
-            #     else
-            #         return KO
-            for ext in get_inter_dispatcher().get():
-                print(ext)
-        # if auth["auth"] is not True and not find_rule and find_extension:
-        #     # The request could be connected to a extension but no rule match
-        #     auth["auth"] = "Out of scope"
-        #     auth["message"] = "The request could be connected to a extension but no rule match."
-        # if not find_extension:
-        #     # No extension match the request, the tenant cannot be managed
-        #     if not self.BLOCK_UNKNOWN_TENANT:
-        #         auth["auth"] = True
-        #     else:
-        #         auth["auth"] = False
-        #     if object_tenant == "None" and subject_tenant == "None":
-        #         auth["message"] = "No tenant given (special case)."
-        #     else:
-        #         auth["message"] = "No extension match the request, the tenant cannot be managed."
+            auth = self.__inter_tenant_authz(auth)
         return auth
 
 

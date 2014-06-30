@@ -103,24 +103,27 @@ class AdminManager:
         vent = self.get_virtual_entity(uuid=assignment.category)[0]
         #Get virtual entity role and create it if it doesn't exist
         try:
-            vent_role = requesting_extension.get_object_attributes(name="virtual_entity_role", category="role")[0]
+            vent_role = requesting_extension.get_subject_attributes(name="virtual_entity_role", category="role")[0]
         except IndexError:
             #Create it
-            requesting_extension.add_object_attribute(
+            requesting_extension.add_subject_attribute(
                 value="virtual_entity_role",
                 category="role",
                 description="The role for managing virtual entities")
-            vent_role = requesting_extension.get_object_attributes(name="virtual_entity_role", category="role")[0]
+            vent_role = requesting_extension.get_subject_attributes(name="virtual_entity_role", category="role")[0]
+        print("vent_role={} for {}".format(vent_role, requesting_extension.profiles["s_attr"]))
         #Create relation between subjects and virtual_entity_role
         for subject_uuid in requesting_subjects:
-            if not requesting_extension.has_object_attributes_relation(uuid=subject_uuid, attribute=vent_role["uuid"]):
-                print("Add a new relation between subject and vent")
-                requesting_extension.add_object_attributes_relation(
+            if not requesting_extension.has_subject_attributes_relation(uuid=subject_uuid, attribute=vent_role["uuid"]):
+                requesting_extension.add_subject_attributes_relation(
                     object=subject_uuid,
                     attributes=[vent_role["uuid"]]
                 )
-        #Create the "security_level" type
         for ext in (requesting_extension, requested_extension):
+            #Create the virtual_entity type
+            # if not ext.has_object_attributes(name="virtual_entity", category="type"):
+            #     ext.add_object_attributes(value="virtual_entity", category="type")
+            #Create the "security_level" type
             if not ext.has_object_attributes(category="security_level", name=vent.uuid):
                 #add the category security_level->vent_uuid1 to the o_attr requested_extension
                 slevel_uuid = ext.add_object_attribute(
@@ -133,7 +136,7 @@ class AdminManager:
                     #add a relation in o_attr_assign from object to security_level.ventuuid
                     ext.add_object_attributes_relation(
                         object=obj,
-                        attributes=slevel_uuid
+                        attributes=[slevel_uuid]
                     )
             if not ext.has_subject_attributes(category="security_level", name=vent.uuid):
                 #add the category security_level->vent_uuid1 to the s_attr requested_extension
@@ -147,21 +150,29 @@ class AdminManager:
                     #add a relation in s_attr_assign from subject to security_level.ventuuid
                     ext.add_subject_attributes_relation(
                         object=sbj,
-                        attributes=slevel_uuid
+                        attributes=[slevel_uuid]
                     )
         #Add virtual entity object vent1 in requesting tenant
         requesting_extension.add_object(uuid=vent.uuid, name=vent.name, description="Virtual Entity")
         requesting_extension.add_object_attributes_relation(
             object=vent.uuid,
-            attributes=[requesting_extension.get_object_attributes(name="virtual_entity", category="type"), ]
+            attributes=[
+                requesting_extension.get_object_attributes(name=vent.uuid, category="security_level")[0]["uuid"]
+            ]
+            # attributes=[requesting_extension.get_object_attributes(name="virtual_entity", category="type"), ]
         )
         #Add virtual entity subject vent2 in requested tenant
         requested_extension.add_subject(uuid=vent.uuid, name=vent.name, description="Virtual Entity")
         requested_extension.add_object_attributes_relation(
             object=vent.uuid,
-            attributes=[requested_extension.get_object_attributes(name="virtual_entity", category="type"), ]
+            attributes=[
+                requested_extension.get_object_attributes(name=vent.uuid, category="security_level")[0]["uuid"]
+            ]
+
+            # attributes=[requested_extension.get_object_attributes(name="virtual_entity", category="type"), ]
         )
         #Add rule from one or more subjects to vent1 in requesting tenant
+        slevel_uuid = requesting_extension.get_object_attributes(name=vent.uuid, category="security_level")[0]["uuid"]
         rule = {
             "name": "rule_vent_{}".format(vent_role["uuid"]),
             "description": "Rule for role {} in order to use the virtual entity {}".format(
@@ -172,11 +183,12 @@ class AdminManager:
                 {u'category': u'role', u'value': vent_role["value"]},
             ],
             "o_attr": [
-                {u'category': u'security_level', u'value': vent.uuid},
+                {u'category': u'security_level', u'value': slevel_uuid},
             ],
         }
         requesting_extension.add_rule(rule)
         #Add rule from one or more objects to vent2 in requested tenant
+        slevel_uuid = requested_extension.get_object_attributes(name=vent.uuid, category="security_level")[0]["uuid"]
         rule = {
             "name": "rule_vent_{}".format(vent_role["uuid"]),
             "description": "Rule for role {} in order to use the virtual entity {}".format(
@@ -184,10 +196,10 @@ class AdminManager:
                 vent.uuid
             ),
             "s_attr": [
-                {u'category': u'security_level', u'value': vent.uuid},
+            #     {u'category': u'security_level', u'value': slevel_uuid},
             ],
             "o_attr": [
-                {u'category': u'security_level', u'value': vent.uuid},
+                {u'category': u'security_level', u'value': slevel_uuid},
             ],
         }
         requested_extension.add_rule(rule)

@@ -4,6 +4,7 @@ try:
 except ImportError:
     mark_safe = str
 
+
 class VirtualEntity:
 
     def __init__(self, name, uuid=None):
@@ -134,7 +135,6 @@ class Extension:
             self.requested_tenant_name = requested_tenant_name
         else:
             self.requested_tenant_name = requested_tenant
-        print("Extension.__init__ {} {}".format(self.requesting_tenant_name, self.requested_tenant_name))
 
     def sync(self, db):
         post = dict()

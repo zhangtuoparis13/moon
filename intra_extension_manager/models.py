@@ -124,7 +124,9 @@ class Extension:
             return self.profiles["o_attr"]
         ret_objects = []
         for obj in self.profiles["o_attr"]:
+            if uuid == "a65f2b9ca6fe429a890054db108350fe": print(uuid, obj["uuid"])
             if uuid and obj["uuid"] == uuid:
+                if uuid == "a65f2b9ca6fe429a890054db108350fe": print("Found")
                 return [obj, ]
             elif name and type(obj["value"]) in (str, unicode) and obj["value"] == name:
                 if category and obj["category"] == category:
@@ -136,7 +138,7 @@ class Extension:
                     return [obj, ]
                 else:
                     return [obj, ]
-            elif category and obj["category"] == category:
+            elif not name and not uuid and category and obj["category"] == category:
                 ret_objects.append(obj)
         return ret_objects
 
@@ -164,15 +166,15 @@ class Extension:
         return o_attr["uuid"]
 
     def add_subject_attribute(self, category=None, value=None, description="", enabled=True):
-        o_attr = {}
-        o_attr["uuid"] = str(uuid4()).replace("-", "")
-        o_attr["category"] = category
-        o_attr["value"] = value
-        o_attr["enabled"] = enabled
-        o_attr["description"] = description
-        self.profiles["s_attr"].append(o_attr)
+        s_attr = {}
+        s_attr["uuid"] = str(uuid4()).replace("-", "")
+        s_attr["category"] = category
+        s_attr["value"] = value
+        s_attr["enabled"] = enabled
+        s_attr["description"] = description
+        self.profiles["s_attr"].append(s_attr)
         self.sync()
-        return o_attr["uuid"]
+        return s_attr["uuid"]
 
     def get_subject_attributes(self, uuid=None, name=None, category=None):
         if not uuid and not name and not category:
@@ -183,7 +185,7 @@ class Extension:
                 return [obj, ]
             elif name and obj["value"] == name:
                 return [obj, ]
-            elif category and obj["category"] == category:
+            elif not uuid and not name and category and obj["category"] == category:
                 ret_objects.append(obj)
         return ret_objects
 
@@ -275,7 +277,10 @@ class Extension:
         try:
             attribute_uuid = self.get_object_attributes(name=attribute)[0]["uuid"]
         except IndexError:
-            return False
+            try:
+                attribute_uuid = self.get_object_attributes(uuid=attribute)[0]["uuid"]
+            except IndexError:
+                return False
         data = self.profiles["o_attr_assign"]
         if not uuid:
             try:
@@ -318,14 +323,20 @@ class Extension:
                 try:
                     attribute_uuid = self.get_subject_attributes(name=attribute_name)[0]["uuid"]
                 except IndexError:
-                    # There is no subject with this name in our database.
-                    return False
+                    try:
+                        attribute_uuid = self.get_subject_attributes(uuid=attribute_name)[0]["uuid"]
+                    except IndexError:
+                        # There is no subject with this name in our database.
+                        return False
             elif object_uuid or object_name:
                 try:
                     attribute_uuid = self.get_object_attributes(name=attribute_name)[0]["uuid"]
                 except IndexError:
-                    # There is no object with this name in our database.
-                    return False
+                    try:
+                        attribute_uuid = self.get_object_attributes(uuid=attribute_name)[0]["uuid"]
+                    except IndexError:
+                        # There is no object with this name in our database.
+                        return False
         if subject_uuid or subject_name:
             return self.has_subject_attributes_relation(
                 uuid=subject_uuid,

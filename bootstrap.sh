@@ -1,6 +1,19 @@
 #!/usr/bin/env bash
 
 MySQLPASSWD="P4ssw0rd"
+ping -c 1 www-cache.aql.fr
+if [ $? == 0 ] ; then
+    export http_proxy="http://vis:visiteur@www-cache.aql.fr:3128";
+    export https_proxy="http://vis:visiteur@www-cache.aql.fr:3128";
+    echo Configuring proxy to $http_proxy;
+fi
+
+ping -c 1 proxy.rd.francetelecom.fr
+if [ $? == 0 ] ; then
+    export http_proxy="http://proxy.rd.francetelecom.fr:8080";
+    export https_proxy="http://proxy.rd.francetelecom.fr:8080";
+    echo Configuring proxy to $http_proxy;
+fi
 
 apt-get update
 apt-get install -y language-pack-fr

@@ -81,6 +81,7 @@ class PIP:
             except AttributeError:
                 o["enabled"] = True
             o["category"] = "object"
+            o["tenant"] = tenant
             yield o
 
     def get_roles(self, tenant=None):

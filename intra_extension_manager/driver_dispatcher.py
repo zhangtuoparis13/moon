@@ -60,6 +60,18 @@ class IntraExtensions:
                 exts.append(self.extensions[uuid])
             return exts
 
+    def get_object(self, uuid=None, name=None):
+        objects = []
+        for ext in self.extensions.values():
+            for obj in ext.objects:
+                if uuid and obj["uuid"] == uuid:
+                    return [obj]
+                elif name and obj["name"] == name:
+                    return [obj]
+                elif not uuid and not name:
+                    objects.append(obj)
+        return objects
+
     def new_from_json(self, json_data):
         all_tenants = map(lambda x: x.tenant["uuid"], self.extensions.values())
         # if json_data["tenant"]["uuid"] not in all_tenants:
