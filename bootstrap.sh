@@ -49,7 +49,17 @@ pip install pymongo
 ln -s /vagrant/ /usr/local/lib/python2.7/dist-packages/moon
 ln -s /vagrant/samples/moon /etc/moon
 
-mkdir /var/log/moon/
-chown vagrant /var/log/moon/
+mysql -uroot -p$MySQLPASSWD <<EOF
+create database user_db;
+create user moonuser identified by '$MySQLPASSWD';
+grant all privileges on user_db.* to 'moonuser'@'localhost' identified by "$MySQLPASSWD" with grant option;
+create database moon;
+grant all privileges on moon.* to 'moonuser'@'localhost' identified by "$MySQLPASSWD" with grant option;
+EOF
 
-python /vagrant/moon_server.py --run syncdb --noinput
+mkdir /var/log/moon/
+chown -R vagrant /var/log/moon/
+
+echo -e "\n192.168.119.113 openstackserver" >> /etc/hosts
+
+python /vagrant/moon_server.py --run "syncdb"
