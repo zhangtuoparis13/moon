@@ -4,8 +4,10 @@ Information gathering from the infrastructure
 """
 # from moon.info_repository import driver_dispatcher as dd
 from moon import settings
-from moon.intra_extension_manager import get_dispatcher as get_intra_dd
-from moon.inter_extension_manager import get_dispatcher as get_inter_dd
+# from moon.intra_extension_manager import get_dispatcher as get_intra_dd
+# from moon.inter_extension_manager import get_dispatcher as get_inter_dd
+from moon.core.pdp.inter_extension import get_inter_extentions
+from moon.core.pdp.intra_extension import get_intra_extentions
 from moon.tools.openstack_credentials import get_keystone_creds, get_nova_creds
 import logging
 from uuid import uuid4
@@ -163,9 +165,11 @@ class PIP:
             yield t
 
     def new_intra_extension(self, tenant, test_only=False, json_data=None):
-        existing_extension = get_intra_dd().get(attributes={"tenant.uuid": tenant["uuid"]})
+        # TODO: delete o_attr "type" and add an attribute with value the UUID of VM
+        existing_extension = get_intra_extentions().get(attributes={"tenant.uuid": tenant["uuid"]})
         if not json_data:
             filename = getattr(settings, "DEFAULT_EXTENSION_TABLE")
+            #TODO: deals with errors in json file
             json_data = json.loads(file(filename).read())
         if existing_extension:
             json_data["uuid"] = existing_extension[0].uuid
@@ -208,7 +212,7 @@ class PIP:
         if len(attributes) > 0:
             logger.warning("All attributes have not been parsed in configuration.metadata.subject {}".format(attributes))
         if not test_only:
-            get_intra_dd().new_from_json(json_data=json_data)
+            get_intra_extentions().new_from_json(json_data=json_data)
 
     def sync_db_with_keystone(self):
         logs = ""
@@ -231,7 +235,7 @@ class PIP:
                 logger.warning("Cannot authenticate in tenant {}".format(tenant["name"]))
                 continue
             logs += "Syncing {}".format(tenant["name"])
-            get_inter_dd().add_tenant(
+            get_inter_extentions().add_tenant(
                 name=tenant["name"],
                 description=tenant["description"],
                 enabled=tenant["enabled"],
@@ -254,8 +258,8 @@ class PIP:
 
     @staticmethod
     def delete_tables():
-        get_intra_dd().delete_tables()
-        get_inter_dd().delete_tables()
+        get_intra_extentions().delete_tables()
+        get_inter_extentions().delete_tables()
 
 
 pip = None

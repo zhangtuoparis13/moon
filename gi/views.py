@@ -10,6 +10,7 @@ import json
 from django.http import HttpResponse
 from moon.log_repository import get_log_manager
 from moon.core.pip import get_pip
+# import mongoengine
 
 
 logger = logging.getLogger("moon.django")
@@ -57,7 +58,7 @@ def intra_extensions(request):
     Render one user retrieve from OpenStack Keystone server
     """
     pap = PAP(kclient=get_keystone_client(request))
-    extensions = pap.admin_manager.get_intra_extensions()
+    extensions = pap.admin_manager.get_intra_extensions().values()
     return render(request, "moon/intra-extensions.html", {
         "extensions": extensions
     })
@@ -70,7 +71,10 @@ def intra_extension(request, id=None):
     Render one user retrieve from OpenStack Keystone server
     """
     pap = PAP(kclient=get_keystone_client(request))
-    extension = pap.admin_manager.get_intra_extensions(uuid=id)
+    try:
+        extension = pap.admin_manager.get_intra_extensions(uuid=id)[0]
+    except IndexError:
+        extension = {}
     return render(request, "moon/intra-extensions.html", {
         "extension": extension,
         "roles": pap.get_roles(extension_uuid=id),
@@ -137,6 +141,7 @@ def get_subjects(request, id=None):
     subjects = pap.admin_manager.get_users(
         tenant_uuid=id
     )
+    print(subjects)
     return HttpResponse(json.dumps({"subjects": subjects}))
 
 
@@ -146,6 +151,7 @@ def get_objects(request, id=None):
     objects = pap.admin_manager.get_objects(
         tenant_uuid=id
     )
+    print(objects)
     # return HttpResponse(json.dumps({"objects": objects}), mimetype='application/json')
     return HttpResponse(json.dumps({'objects': objects}))
 

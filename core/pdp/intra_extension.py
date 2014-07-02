@@ -1,12 +1,19 @@
 from uuid import uuid4
+import json
+import logging
 try:
     from django.utils.safestring import mark_safe
 except ImportError:
     mark_safe = str
+from moon.intra_extension_manager import get_dispatcher
+from moon import settings
+
+logger = logging.getLogger(__name__)
 
 
-class Extension:
+class IntraExtension:
 
+    #TODO: send extension in PDP
     def __init__(
             self,
             name="",
@@ -17,7 +24,8 @@ class Extension:
             rules=None,
             profiles=None,
             description="",
-            tenant=None):
+            tenant=None,
+            authz_model="RBAC"):
         self.name = name,
         if not uuid:
             self.uuid = str(uuid4()).replace("-", "")
@@ -27,10 +35,12 @@ class Extension:
         self.objects = objects
         self.metadata = metadata
         self.rules = rules
+        #TODO: separate profiles in o_attr, s_attr, ...
         self.profiles = profiles
         self.description = description
         self.tenant = tenant
-        self.db = None
+        self.dispatcher = get_dispatcher()
+        self.authz_model = authz_model
 
     def get(self, data, uuid=None, name=None, attribute=None, category=None):
         attr_list = []
@@ -91,6 +101,7 @@ class Extension:
     def has_subject(self, uuid=None, name=None):
         return self.has(self.subjects, uuid=uuid, name=name)
 
+    #TODO @check_admin_auth
     def add_subject(self, uuid=None, name=None, domain="default", enabled=True, mail="", project="", description=""):
         if not uuid:
             uuid = str(uuid4()).replace("-", "")
@@ -151,7 +162,7 @@ class Extension:
                 return [obj]
             elif name and obj["value"] == name:
                 return [obj]
-            else:
+            elif not name and not uuid:
                 result.append(obj)
         return result
 
@@ -200,7 +211,7 @@ class Extension:
                 return [obj]
             elif name and obj["value"] == name:
                 return [obj]
-            else:
+            elif not name and not uuid:
                 result.append(obj)
         return result
 
@@ -375,13 +386,27 @@ class Extension:
         }
         """
         self.rules.append(rule)
-        if self.db:
-            self.sync()
+        self.sync()
 
-    def sync(self, db=None):
-        if db:
-            self.db = db
-        self.db.new_extension(
+    def requesting_vent_create(self, vent, objects_list):
+        #TODO: identifier tous les objets
+        #TODO: creer des attr et attr_assign et des rules pour que le vent accede aux objects
+        if self.authz_model == "MLS":
+            return self.__mls_vent_subject_create(vent, objects_list)
+        elif self.authz_model == "RBAC":
+            return self.__rbac_vent_subject_create(vent, objects_list)
+
+    def requested_vent_create(self, vent, subjects_list):
+        #TODO: identifier tous les subjets
+        #TODO: creer des attr et attr_assign et des rules pour que les subjects accedent au vent
+        if self.authz_model == "MLS":
+            return self.__mls_vent_object_create(vent, subjects_list)
+        elif self.authz_model == "RBAC":
+            return self.__rbac_vent_object_create(vent, subjects_list)
+
+    def sync(self):
+
+        self.dispatcher.new_extension(
             uuid=self.uuid,
             name=self.name,
             subjects=self.subjects,
@@ -414,3 +439,248 @@ class Extension:
             map(lambda x: x["name"], self.subjects),
             map(lambda x: x["name"], self.objects),
         )
+
+
+class IntraExtensions:
+
+    def __init__(self):
+        #TODO create a MongoDB collection per extension
+        self.dispatcher = get_dispatcher()
+        #TODO: send the extensions list to PDP
+        self.extensions = {}
+        for ext in self.dispatcher.list(type="extension"):
+            self.extensions[ext["uuid"]] = IntraExtension(
+                name=ext["name"],
+                uuid=ext["uuid"],
+                subjects=ext["perimeter"]["subjects"],
+                objects=ext["perimeter"]["objects"],
+                metadata=ext["configuration"]["metadata"],
+                rules=ext["configuration"]["rules"],
+                profiles=ext["profiles"],
+                description=ext["description"],
+                tenant=ext["tenant"]
+            )
+            # self.extensions[ext["uuid"]].db = self.db
+
+    def list(self, ):
+        return self.extensions.values()
+
+    def keys(self):
+        return self.extensions.keys()
+
+    def get(self, uuid=None, name=None, attributes=dict()):
+        """
+        :param uuid: uuid of the extension
+        :param name: name of the extension
+        :param attributes: other attributes to look for
+        :return: a list of extensions
+        """
+        if not uuid and not name and not attributes:
+            return self.extensions.values()
+        elif uuid:
+            return [self.extensions[uuid], ]
+        elif name:
+            for ext in self.extensions.values():
+                if ext.name == name:
+                    return [ext, ]
+        else:
+            uuids = map(lambda x: x["uuid"], tuple(self.dispatcher.get(attributes=attributes)))
+            exts = []
+            for uuid in uuids:
+                exts.append(self.extensions[uuid])
+            return exts
+
+    def get_object(self, uuid=None, name=None):
+        objects = []
+        for ext in self.extensions.values():
+            for obj in ext.objects:
+                if uuid and obj["uuid"] == uuid:
+                    return [obj]
+                elif name and obj["name"] == name:
+                    return [obj]
+                elif not uuid and not name:
+                    objects.append(obj)
+        return objects
+
+    def new_from_json(self, json_data):
+        all_tenants = map(lambda x: x.tenant["uuid"], self.extensions.values())
+        # if json_data["tenant"]["uuid"] not in all_tenants:
+        ext = IntraExtension(
+            name=json_data["name"],
+            uuid=json_data["uuid"],
+            subjects=json_data["perimeter"]["subjects"],
+            objects=json_data["perimeter"]["objects"],
+            metadata=json_data["configuration"]["metadata"],
+            rules=json_data["configuration"]["rules"],
+            profiles=json_data["profiles"],
+            description=json_data["description"],
+            tenant=json_data["tenant"]
+        )
+        ext.sync()
+        self.extensions[json_data["uuid"]] = ext
+        return ext
+        # else:
+        #     return None
+
+    def new(
+            self,
+            uuid=None,
+            name="",
+            subjects=None,
+            objects=None,
+            metadata=None,
+            rules=None,
+            profiles=None,
+            description=""):
+        """Create a new Intra-extension
+        :param uuid: uuid of this extension (optional)
+        :param name: name of this extension
+        :param subjects: list of subjects example:
+            [{
+                "uuid": "user1_uuid",
+                "name": "admin",
+                "mail": "admin@localhost",
+                "tenant_id": "0123456789",
+                "description": "an administrator",
+                "enabled": True
+            },]
+        :param objects: list of objects example:
+            [{
+                "uuid": "object1_uuid",
+                "name": "vm1",
+                "description": "the virtual machine number 1",
+                "enabled": True
+            },]
+        :param metadata: list of authorized attributes for subject and object, example:
+            {
+                "subject": [
+                    "role",
+                    "group"
+                ],
+                "object": [
+                    "type",
+                    "security"
+                ]
+            }
+        :param rules: list of rules, example:
+            [{
+                "name": "rule1",
+                "s_attr": { "category": "role", "value": "subject_attribute_uuid1" },
+                "o_attr": { "category": "type", "value": "object_attribute_uuid1" },
+                "a_attr": { "category": "action", "value": "list" },
+                "description": "..."
+            },]
+        :param profiles: list of profiles, example:
+            {
+                "s_attr": {
+                    "s_attr_uuid1": {
+                        "category": "role",
+                        "value": "admin",
+                        "description": "le role admin"
+                    },
+                    "s_uuid2": {
+                        "category": "role",
+                        "value": "dev"
+                    },
+                    "s_uuid3": {
+                        "category": "group",
+                        "value": "prog"
+                    }
+                },
+                "o_attr": {
+                    "o_attr_uuid1": {
+                        "category": "type",
+                        "value": "stockage",
+                        "description": ""
+                    },
+                    "o_uuid2": {
+                        "category": "size",
+                        "value": "medium"
+                    }
+                },
+                "s_attr_assign": {
+                    "assign1_uuid": {
+                        "subject": "user1_uuid",
+                        "attributes": [ "s_uuid1", "s_uuid3" ]
+                    },
+                    "assign2_uuid": {
+                        "subject": "user3_uuid",
+                        "attributes": [ "s_uuid1", "s_uuid2", "s_uuid3" ]
+                    }
+                },
+                "o_attr_assign": {
+                    "assign3_uuid": {
+                        "object": "object1_uuid",
+                        "attributes": [ "o_uuid1", "o_uuid3" ]
+                    },
+                    "assign4_uuid": {
+                        "object": "object3_uuid",
+                        "attributes": [ "o_uuid1", "o_uuid2", "o_uuid3" ]
+                    }
+                }
+            }
+        :param description: string describing the new extension.
+        :return the created UUID
+        """
+        filename = getattr(settings, "DEFAULT_EXTENSION_TABLE")
+        json_data = json.loads(file(filename).read())
+        all_tenants = map(lambda x: x.tenant["uuid"], self.extensions.values())
+        if uuid:
+            json_data["uuid"] = uuid
+        else:
+            json_data["uuid"] = str(uuid4()).replace("-", "")
+        if name:
+            json_data["name"] = name
+        if subjects:
+            json_data["perimeter"]["subjects"] = subjects
+        if objects:
+            json_data["perimeter"]["objects"] = objects
+        if metadata:
+            json_data["configuration"]["metadata"] = metadata
+        if rules:
+            json_data["configuration"]["rules"] = rules
+        if profiles:
+            json_data["profiles"] = profiles
+        if description:
+            json_data["description"] = description
+        json_data["tenant"] = {}
+        json_data["tenant"]["uuid"] = str(uuid4()).replace("-", "")
+        if json_data["tenant"]["uuid"] not in all_tenants:
+            ext = IntraExtension(
+                name=json_data["name"],
+                uuid=json_data["uuid"],
+                subjects=json_data["perimeter"]["subjects"],
+                objects=json_data["perimeter"]["objects"],
+                metadata=json_data["configuration"]["metadata"],
+                rules=json_data["configuration"]["rules"],
+                profiles=json_data["profiles"],
+                description=json_data["description"],
+                tenant=json_data["tenant"]
+            )
+            ext.sync()
+            self.extensions[json_data["uuid"]] = ext
+            return ext
+        else:
+            return None
+
+    # def add_user(self, user):
+    #     return self.db.add_user(user)
+    #
+    # def add_role(self, role):
+    #     return self.db.add_role(role)
+
+    def delete(self, uuid):
+        self.extensions.pop(uuid)
+        return self.dispatcher.delete(uuid=uuid)
+
+    def delete_tables(self):
+        logger.warning("Dropping Intra Extension Database")
+        self.extensions = dict()
+        return self.dispatcher.drop()
+
+
+intra_extentions = IntraExtensions()
+
+
+def get_intra_extentions():
+    return intra_extentions

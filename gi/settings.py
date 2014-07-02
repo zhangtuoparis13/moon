@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 from moon import settings as moon_settings
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# import mongoengine
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -55,7 +56,16 @@ WSGI_APPLICATION = 'moon.gi.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
+# MONGODB_DATABASES = {
+#     'default': {'name': 'moon'}
+# }
+# DJANGO_MONGOENGINE_OVERRIDE_ADMIN = True
+#TODO: change MySQL to MongoDB
+
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    # }
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
@@ -66,6 +76,20 @@ DATABASES = {
         'PORT': ""
     }
 }
+# SESSION_ENGINE = 'mongoengine.django.sessions'
+
+# _MONGODB_USER = ''
+# _MONGODB_PASSWD = ''
+# _MONGODB_HOST = '127.0.0.1'
+# _MONGODB_NAME = 'moon'
+# _MONGODB_DATABASE_HOST = \
+#     'mongodb://%s/%s' \
+#     % (_MONGODB_HOST, _MONGODB_NAME)
+# _MONGODB_DATABASE_HOST = \
+#     'mongodb://%s:%s@%s/%s' \
+#     % (_MONGODB_USER, _MONGODB_PASSWD, _MONGODB_HOST, _MONGODB_NAME)
+
+# mongoengine.connect(_MONGODB_NAME, host=_MONGODB_DATABASE_HOST)
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -104,12 +128,19 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     "moon.gi",
     "moon.mrm",
-    #"repositery",
+    #"repositery",,
+    # 'mongoengine.django.debug_toolbar',
+    # 'mongoengine.django.auth',
+    # 'mongoengine.django.admin.sites',
+    # 'mongoengine.django.admin',
 )
 
 OPENSTACK_KEYSTONE_URL = getattr(moon_settings, "OPENSTACK_KEYSTONE_URL")
 
-AUTHENTICATION_BACKENDS = ('openstack_auth.backend.KeystoneBackend',)
+AUTHENTICATION_BACKENDS = (
+    'openstack_auth.backend.KeystoneBackend',
+    # 'mongoengine.django.auth.MongoEngineBackend',
+)
 
 #ROOT_URLCONF = 'openstack_auth.tests.urls'
 
