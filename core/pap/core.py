@@ -66,8 +66,11 @@ class AdminManager:
 
     def get_objects(self, extension_uuid=None, uuid=None, name=None, tenant_uuid=None):
         if tenant_uuid:
-            ext = self.intra_pdps.get(attributes={"tenant.uuid": tenant_uuid})[0]
-            return ext.get_object(uuid=uuid, name=name)
+            try:
+                ext = self.intra_pdps.get(attributes={"tenant.uuid": tenant_uuid})[0]
+                return ext.get_object(uuid=uuid, name=name)
+            except IndexError:
+                return []
         else:
             return self.intra_pdps.get(extension_uuid)[0].get_object(uuid=uuid, name=name)
 
