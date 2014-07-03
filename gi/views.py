@@ -9,7 +9,7 @@ from django.utils.safestring import mark_safe
 import json
 from django.http import HttpResponse
 from moon.log_repository import get_log_manager
-from moon.core.pip import get_pip
+from moon.core.pip import get_pip, PIP
 # import mongoengine
 
 
@@ -39,15 +39,17 @@ def index(request):
 
 
 @login_required(login_url='/auth/login/')
-def sync(request):
+def sync(request, id=None):
     """
     Interface of the application for syncing Moon database with Keystone and Nova databases
     """
+    print("VIEW {}".format(id))
     pip = get_pip()
-    sync_results = pip.sync_db_with_keystone()
+    sync_results = pip.sync_db_with_keystone(tenant_uuid=id)
     sync_results = sync_results.replace("\n", "<br/>\n")
     sync_results = sync_results.replace("KO", "<span class=\"notauthorized\">Error</span>\n")
     sync_results = sync_results.replace("OK", "<span class=\"authorized\">OK</span>\n")
+    print(sync_results)
     return render(request, "moon/base_site.html", {"sync_results": mark_safe(sync_results)})
 
 
@@ -58,7 +60,7 @@ def intra_extensions(request):
     Render one user retrieve from OpenStack Keystone server
     """
     pap = PAP(kclient=get_keystone_client(request))
-    extensions = pap.admin_manager.get_intra_extensions().values()
+    extensions = pap.admin_manager.get_intra_extensions()
     return render(request, "moon/intra-extensions.html", {
         "extensions": extensions
     })
@@ -141,7 +143,6 @@ def get_subjects(request, id=None):
     subjects = pap.admin_manager.get_users(
         tenant_uuid=id
     )
-    print(subjects)
     return HttpResponse(json.dumps({"subjects": subjects}))
 
 
@@ -151,7 +152,6 @@ def get_objects(request, id=None):
     objects = pap.admin_manager.get_objects(
         tenant_uuid=id
     )
-    print(objects)
     # return HttpResponse(json.dumps({"objects": objects}), mimetype='application/json')
     return HttpResponse(json.dumps({'objects': objects}))
 
@@ -204,6 +204,15 @@ def rule_length(dictionary):
     return len(dictionary["o_attr"])+len(dictionary["s_attr"])
 
 
+@register.filter
+def is_managed(tenant):
+    pap = PAP()
+    if pap.admin_manager.get_intra_extensions(tenant_uuid=tenant["uuid"]):
+        return True
+    else:
+        return False
+
+
 @login_required(login_url='/auth/login/')
 def logs_repository(request):
     """
@@ -251,4 +260,19 @@ def logs_repository(request):
             log.value = mark_safe(html)
     return render(request, "moon/logs.html", {
         "logs": logs,
-        })
+    })
+
+
+@login_required(login_url='/auth/login/')
+def get_tenants(request):
+    pip = PIP(kclient=get_keystone_client(request))
+    tenants = pip.get_tenants()
+    return render(request, "moon/tenants.html", {
+        "tenants": tenants
+    })
+
+
+@login_required(login_url='/auth/login/')
+def get_tenant(request, id=None):
+    return render(request, "moon/tenants.html", {})
+

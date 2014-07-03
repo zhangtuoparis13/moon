@@ -45,10 +45,15 @@ function add_text_to_new_rule(select_id) {
     $("#new_rule").value += $(select_id).options[$(select_id).selectedIndex].text;
 };
 
-function get_objects(select_id) {
-    var option = document.getElementById(select_id).selectedIndex;
-    var tenant_uuid =  document.getElementById(select_id).options[option].value;
-    console.log("load_plugin " + tenant_uuid);
+function get_objects(select_id, tenant_uuid, div_id, input) {
+    if (! select_id ) {
+
+    }
+    else {
+        var option = document.getElementById(select_id).selectedIndex;
+        tenant_uuid = document.getElementById(select_id).options[option].value;
+    }
+    if (! input) { input = false;}
     $.ajax({
             type:"GET",
             url: "/tenant/"+tenant_uuid+"/objects",
@@ -57,18 +62,35 @@ function get_objects(select_id) {
                 var obj = JSON.parse(msg);
                 var html = "";
                 for (var o in obj.objects) {
-                    html += "<input type='checkbox' name='object_"+ obj.objects[o].uuid +
-                    "' value="+ obj.objects[o].uuid +">"+ obj.objects[o].name+"<br>";
+                    var name = obj.objects[o].name
+                    if (name.length > 20) {name = obj.objects[o].name.slice(0,20) + "..."}
+                    if (input==true) {
+                        html += "<input type='checkbox' name='object_" + obj.objects[o].uuid +
+                            "' value=" + obj.objects[o].uuid + ">" + name + "<br>";
+                    }
+                    else {
+                        html += name + "<br>\n";
+                    }
                 }
-                $("#objects_list").html(html);
+                if (div_id) {
+                    $(div_id).html(html);
+                }
+                else {
+                    $("#objects_list").html(html);
+                }
             }
     });
 }
 
-function get_subjects(select_id) {
-    var option = document.getElementById(select_id).selectedIndex;
-    var tenant_uuid =  document.getElementById(select_id).options[option].value;
-    console.log("load_plugin " + tenant_uuid);
+function get_subjects(select_id, tenant_uuid, div_id, input) {
+    if (! select_id ) {
+
+    }
+    else {
+        var option = document.getElementById(select_id).selectedIndex;
+        tenant_uuid = document.getElementById(select_id).options[option].value;
+    }
+    if (! input) { input = false;}
     $.ajax({
             type:"GET",
             url: "/tenant/"+tenant_uuid+"/subjects",
@@ -77,10 +99,23 @@ function get_subjects(select_id) {
                 var obj = JSON.parse(msg);
                 var html = "";
                 for (var o in obj.subjects) {
-                    html += "<input type='checkbox' name='subject_"+ obj.subjects[o].uuid +
-                        "' value="+ obj.subjects[o].uuid +">"+ obj.subjects[o].name+"<br>";
+                    var name = obj.subjects[o].name
+                    if (name.length > 20) {name = obj.subjects[o].name.slice(0,20) + "..."}
+                    if (input==true) {
+                        html += "<input type='checkbox' name='subject_" + obj.subjects[o].uuid +
+                            "' value=" + obj.subjects[o].uuid + ">" + name + "<br>";
+                    }
+                    else {
+                        html += name + "<br>\n";
+                    }
                 }
-                $("#subjects_list").html(html);
+                if (div_id) {
+                    console.log("div_id="+div_id);
+                    $(div_id).html(html);
+                }
+                else {
+                    $("#subjects_list").html(html);
+                }
             }
     });
 }
