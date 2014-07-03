@@ -1,0 +1,12 @@
+{
+    "tenants": [
+        {
+            "name": "tenant_rh",
+            "extension_conf": "policy/rbac_extension.json"
+        },
+        {
+            "name": "tenant_it",
+            "extension_conf": "policy/mls_extension.json"
+        }
+    ]
+}

@@ -1,13 +1,5 @@
 
 DATABASES = {
-    'user_db': {
-        'ENGINE': 'moon.tools.driver.mysql',
-        'NAME': "user_db",
-        'USER': "moonuser",
-        'PASSWORD': "P4ssw0rd",
-        'HOST': "127.0.0.1",
-        'PORT': "3306"
-    },
     'intra-extensions': {
         'ENGINE': 'moon.tools.driver.mongodb',
         'NAME': "moon",
@@ -23,14 +15,6 @@ DATABASES = {
         'PASSWORD': "",
         'HOST': "127.0.0.1",
         'PORT': "27017"
-    },
-    'tenant_db': {
-        'ENGINE': 'moon.tools.driver.mongodb',
-        'NAME': "/etc/moon/tenant.db",
-        'USER': "",
-        'PASSWORD': "",
-        'HOST': "",
-        'PORT': ""
     },
     'log': {
         'ENGINE': 'moon.tools.driver.shelve',
@@ -51,6 +35,8 @@ OPENSTACK_API = "/etc/moon/api.json"
 CNX_PASSWORD = "P4ssw0rd"
 
 BLOCK_UNKNOWN_TENANT = False
+
+SYNC_CONF_FILENAME = "/etc/moon/tenants.json"
 
 UNMANAGED_OBJECTS = ("", "token", )
 
