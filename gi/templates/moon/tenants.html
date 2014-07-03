@@ -50,7 +50,7 @@
     {% elif tenants %}
         <table border="1">
         <tr>
-            <th>Actions</th>
+{#            <th>Actions</th>#}
             <th>Name</th>
             <th>Domain</th>
             <th>Managed ?</th>
@@ -59,12 +59,16 @@
             <th>Description</th>
         </tr>
         {% for p in tenants %}
-            <tr>
-                <td><a href="/tenants/{{ p.uuid }}/">Edit</a></td>
+            {% if p|is_managed %}
+            <tr class="managed">
+            {% else %}
+            <tr class="notmanaged">
+            {% endif %}
+{#                <td><a href="/tenants/{{ p.uuid }}/">Edit</a></td>#}
                 <td>{{ p.name }}</td>
                 <td>{{ p.domain }}</td>
                 {% if p|is_managed %}
-                <td>True</td>
+                <td>True<br><a href="/sync/{{ p.uuid }}">Sync again</a></td>
                 {% else %}
                 <td>False<br><a href="/sync/{{ p.uuid }}">Sync ?</a> </td>
                 {% endif %}

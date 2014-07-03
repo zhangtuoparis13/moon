@@ -171,3 +171,11 @@ tr.row1 {
 .outofscope {
     color: orange;
 }
+
+.managed {
+
+}
+
+.notmanaged {
+    background: #cc8595;
+}
