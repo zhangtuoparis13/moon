@@ -60,6 +60,18 @@ EOF
 mkdir /var/log/moon/
 chown -R vagrant /var/log/moon/
 
+cat <<EOF > /etc/logrotate.d/moon
+/var/log/moon/*.db {
+       daily
+       rotate 10
+       copytruncate
+       delaycompress
+       compress
+       notifempty
+       missingok
+}
+EOF
+
 echo -e "\n192.168.119.113 openstackserver" >> /etc/hosts
 
 python /vagrant/moon_server.py --run "syncdb"
