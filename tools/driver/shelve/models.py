@@ -9,7 +9,7 @@ logger = logging.getLogger('moon.tools.driver.shelve_driver')
 
 def get_db_filename():
     DATABASES = getattr(settings, "DATABASES")
-    if not 'tenant_db' in DATABASES or not 'ENGINE' in DATABASES['log']:
+    if not 'log' in DATABASES or not 'ENGINE' in DATABASES['log']:
         raise(Exception("Unknown database engine {engine}".format(engine=DATABASES['log']['ENGINE'])))
     return DATABASES['log']['NAME']
 

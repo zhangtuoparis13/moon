@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 DATABASES = getattr(settings, "DATABASES")
-if not 'tenant_db' in DATABASES or not 'ENGINE' in DATABASES['log']:
+if not 'log' in DATABASES or not 'ENGINE' in DATABASES['log']:
     raise(Exception("Unknown database engine {engine}".format(engine=DATABASES['log']['ENGINE'])))
 
 drivername = DATABASES['log']['ENGINE']
