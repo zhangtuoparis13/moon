@@ -19,10 +19,10 @@ logger = logging.getLogger("moon.pip")
 
 class PIP:
 
-    def __init__(self, standalone=False):
-        self.kclient = None
+    def __init__(self, standalone=False, kclient=None):
+        self.kclient = kclient
         self.nclient = None
-        if not standalone:
+        if not standalone and not kclient:
             from keystoneclient.v3 import client as keystone_client
             kcreds = get_keystone_creds()
             #WORKAROUND: if in version 2.0, Keystone connection doesn't work
@@ -214,7 +214,7 @@ class PIP:
         if not test_only:
             get_intra_extentions().new_from_json(json_data=json_data)
 
-    def sync_db_with_keystone(self):
+    def sync_db_with_keystone(self, tenant_uuid=None):
         logs = ""
         # #synchronize all intra extensions
         self.set_creds_for_tenant()
@@ -228,13 +228,21 @@ class PIP:
             #     users=self.get_subjects(client),
             #     roles=self.get_roles(client),
             #     groups=self.get_groups(client))
-            logger.info("Working with tenant {}".format(tenant["name"]))
+            if tenant_uuid and not tenant_uuid == tenant["uuid"]:
+                continue
+            SYNC_CONF_FILENAME = getattr(settings, "SYNC_CONF_FILENAME", None)
+            sync = json.loads(open(SYNC_CONF_FILENAME).read())
+            if not tenant_uuid and SYNC_CONF_FILENAME:
+                if tenant["name"] not in map(lambda x: x["name"], sync["tenants"]):
+                    continue
+            logger.info("Syncing tenant {}".format(tenant["name"]))
+            logs += "Syncing {}".format(tenant["name"])
             try:
                 self.set_creds_for_tenant(tenant["name"])
             except Unauthorized:
                 logger.warning("Cannot authenticate in tenant {}".format(tenant["name"]))
+                logs += " KO (Cannot authenticate in tenant)\n"
                 continue
-            logs += "Syncing {}".format(tenant["name"])
             get_inter_extentions().add_tenant(
                 name=tenant["name"],
                 description=tenant["description"],
@@ -247,7 +255,7 @@ class PIP:
                 logs += " OK\n"
             except Forbidden:
                 logger.warning("Cannot list users in tenant {}".format(tenant["name"]))
-                logs += " KO\n"
+                logs += " KO (Cannot list users in tenant)\n"
                 continue
         # #synchronize all inter extensions
         # for subject in self.get_subjects(client):
