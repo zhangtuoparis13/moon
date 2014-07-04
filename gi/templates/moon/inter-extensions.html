@@ -47,7 +47,7 @@
                         <tr>
                             <td><label for="requesting">Requesting tenant:</label></td>
                             <td>
-                                <select id="requesting" name="requesting" onchange="get_subjects('requesting')">
+                                <select id="requesting" name="requesting" onchange="get_subjects('requesting', undefined, undefined, true)">
                                     <option value="None" selected>Choose a requesting tenant</option>
                                     {% for tenant in tenants %}
                                         {% if tenant.uuid == selected_tenant1.uuid %}
@@ -69,7 +69,7 @@
                         <tr>
                             <td><label for="requested">Requested tenant:</label></td>
                             <td>
-                                <select id="requested" name="requested" onchange="get_objects('requested')">
+                                <select id="requested" name="requested" onchange="get_objects('requested',  undefined, undefined, true)">
                                     <option value="None" selected>Choose a requested tenant</option>
                                     {% for tenant in tenants %}
                                         {% if tenant.uuid == selected_tenant2.uuid %}
