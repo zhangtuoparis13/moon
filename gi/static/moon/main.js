@@ -122,3 +122,37 @@ function get_subjects(select_id, tenant_uuid, div_id, input) {
             }
     });
 }
+
+function getCookie(c_name)
+{
+    if (document.cookie.length > 0)
+    {
+        c_start = document.cookie.indexOf(c_name + "=");
+        if (c_start != -1)
+        {
+            c_start = c_start + c_name.length + 1;
+            c_end = document.cookie.indexOf(";", c_start);
+            if (c_end == -1) c_end = document.cookie.length;
+            return unescape(document.cookie.substring(c_start,c_end));
+        }
+    }
+    return "";
+ }
+
+function delete_inter_extension(uuid) {
+    $.ajaxSetup({
+        headers: { "X-CSRFToken": getCookie("csrftoken") }
+    });
+    $.ajax({
+            type:"DELETE",
+            url: "/inter-extensions/"+uuid+"/",
+            processData: false,
+            success: function(msg) {
+                var obj = JSON.parse(msg);
+                if (obj["delete"]) {
+                    window.location.href = "/inter-extensions/";
+                }
+
+            }
+    });
+}

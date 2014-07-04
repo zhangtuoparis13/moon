@@ -4,9 +4,9 @@
 {% endblock %}
 {% block pmenu %}
     {{ block.super }}
-    {% if graph %}
-        <img src="/static/{{ graph }}" width="300"/>
-    {% endif %}
+{#    {% if graph %}#}
+{#        <img src="/static/{{ graph }}" width="300"/>#}
+{#    {% endif %}#}
 {% endblock %}
 {% block pcontent %}
     {% if error %}
@@ -18,6 +18,7 @@
         <b>Requested tenant:</b> {{ extension.requested_tenant|get_tenant_name  }}<br/>
         <b>type:</b>{{ extension.connection_type }}<br/>
         <b>category:</b>{{ extension.category }}<br/>
+        <a href="#" onclick="delete_inter_extension('{{ extension.uuid }}')">Delete</a>
     {% elif extensions %}
         <div id="inter_extensions_list">
             <table border="1">

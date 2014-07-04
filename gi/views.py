@@ -163,6 +163,14 @@ def inter_extension(request, id=None):
     error = ""
     pap = PAP(kclient=get_keystone_client(request))
     extension = pap.admin_manager.get_inter_extensions(uuid=id)[0]
+    if request.META['REQUEST_METHOD'] == "DELETE":
+        pap.admin_manager.delete_inter_extension(uuid=id)
+        return HttpResponse(json.dumps({'delete': True}))
+        # return render(request, "moon/inter-extensions.html", {
+        #     "extensions": pap.admin_manager.get_inter_extensions(),
+        #     "tenants": pap.admin_manager.get_tenant(),
+        #     "error": error,
+        # })
     return render(request, "moon/inter-extensions.html", {
         "extension": extension,
         "tenants": pap.admin_manager.get_tenant(),

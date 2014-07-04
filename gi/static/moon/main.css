@@ -83,6 +83,30 @@ body {
     font-size: 1em;
 }
 
+#message {
+    display: none;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.fade.in {
+    display: block;
+    opacity: 1;
+}
+
+.fade {
+    transition: opacity 0.15s linear 0s;
+    opacity: 0;
+}
+
+.success {
+    color: black;
+}
+
+.error {
+    color: red;
+}
+
 #useradd {
     clear:right;
     margin: 5px;
