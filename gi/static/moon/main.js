@@ -63,7 +63,10 @@ function get_objects(select_id, tenant_uuid, div_id, input) {
                 var html = "";
                 for (var o in obj.objects) {
                     var name = obj.objects[o].name
-                    if (name.length > 20) {name = obj.objects[o].name.slice(0,20) + "..."}
+                    if (name.length > 20) {
+                        l = name.length;
+                        name = obj.objects[o].name.slice(0,10) + "..." + obj.objects[o].name.slice(l-3,l);
+                    }
                     if (input==true) {
                         html += "<input type='checkbox' name='object_" + obj.objects[o].uuid +
                             "' value=" + obj.objects[o].uuid + ">" + name + "<br>";

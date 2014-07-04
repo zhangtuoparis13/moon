@@ -43,13 +43,11 @@ def sync(request, id=None):
     """
     Interface of the application for syncing Moon database with Keystone and Nova databases
     """
-    print("VIEW {}".format(id))
     pip = get_pip()
     sync_results = pip.sync_db_with_keystone(tenant_uuid=id)
     sync_results = sync_results.replace("\n", "<br/>\n")
     sync_results = sync_results.replace("KO", "<span class=\"notauthorized\">Error</span>\n")
     sync_results = sync_results.replace("OK", "<span class=\"authorized\">OK</span>\n")
-    print(sync_results)
     return render(request, "moon/base_site.html", {"sync_results": mark_safe(sync_results)})
 
 
@@ -120,12 +118,12 @@ def inter_extensions(request):
             )
     extensions = pap.admin_manager.get_inter_extensions()
     tenants = pap.admin_manager.get_tenant()
-    subjects = pap.admin_manager.get_users(
-        tenant_uuid=tenants[0].uuid
-    )
-    objects = pap.admin_manager.get_objects(
-        tenant_uuid=tenants[1].uuid
-    )
+    # subjects = pap.admin_manager.get_users(
+    #     tenant_uuid=tenants[0].uuid
+    # )
+    # objects = pap.admin_manager.get_objects(
+    #     tenant_uuid=tenants[1].uuid
+    # )
     return render(request, "moon/inter-extensions.html", {
         "extensions": extensions,
         "tenants": tenants,

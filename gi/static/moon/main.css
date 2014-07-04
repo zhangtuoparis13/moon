@@ -179,3 +179,7 @@ tr.row1 {
 .notmanaged {
     background: #cc8595;
 }
+
+td.objects {
+    width: 200px;
+}
