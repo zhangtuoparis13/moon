@@ -71,18 +71,46 @@ def intra_extension(request, id=None):
     Render one user retrieve from OpenStack Keystone server
     """
     pap = PAP(kclient=get_keystone_client(request))
+    if request.META['REQUEST_METHOD'] == "POST":
+        print(request.POST)
+        if "rules_list" in request.POST:
+            name = request.POST.get("name", "NO-NAME")
+            description = request.POST.get("description", "")
+            rules_str = request.POST.get("rules_list", "")
+            rule = dict()
+            rule["name"] = name
+            rule["description"] = description
+            rule["s_attr"] = []
+            rule["o_attr"] = []
+            s_attr = []
+            o_attr = []
+            for line in rules_str.splitlines():
+                try:
+                    _type, _category, _value = line.strip().split(":")
+                    if _type == "subject":
+                        s_attr.append({"category": _category, "value": _value})
+                    elif _type == "object":
+                        o_attr.append({"category": _category, "value": _value})
+                except:
+                    continue
+            rule["s_attr"] = s_attr
+            rule["o_attr"] = o_attr
+            extension = pap.admin_manager.get_intra_extensions(uuid=id)[0]
+            extension.add_rule(rule)
     try:
         extension = pap.admin_manager.get_intra_extensions(uuid=id)[0]
+        # o_attributes = pap.get_object_attributes(extension_uuid=id)
+        # o_categories = set(map(lambda x: x["category"], o_attributes))
+        # s_attributes = pap.get_subject_attributes(extension_uuid=id)
+        # s_categories = set(map(lambda x: x["category"], s_attributes))
     except IndexError:
         extension = {}
+        # o_categories = []
+        # s_categories = []
     return render(request, "moon/intra-extensions.html", {
         "extension": extension,
-        "roles": pap.get_roles(extension_uuid=id),
-        "groups": pap.get_groups(extension_uuid=id),
-        "types": pap.get_object_attributes(extension_uuid=id, category="type"),
-        "actions": pap.get_object_attributes(extension_uuid=id, category="action"),
-        "securities": pap.get_object_attributes(extension_uuid=id, category="security"),
-        "size": pap.get_object_attributes(extension_uuid=id, category="size"),
+        # "o_categories": o_categories,
+        # "s_categories": s_categories,
     })
 
 
@@ -177,6 +205,22 @@ def inter_extension(request, id=None):
         "error": error,
     })
 
+
+@login_required(login_url='/auth/login/')
+def intra_extension_attributes(request, id=None, type=None):
+    """
+    User interface
+    Render one user retrieve from OpenStack Keystone server
+    """
+    error = ""
+    pap = PAP(kclient=get_keystone_client(request))
+    attributes = []
+    if type.lower() == "subject":
+        attributes = pap.get_subject_attributes(extension_uuid=id)
+    elif type.lower() == "object":
+        attributes = pap.get_object_attributes(extension_uuid=id)
+    categories = list(set(map(lambda x: x["category"], attributes)))
+    return HttpResponse(json.dumps({'attributes': attributes, "categories": categories}))
 
 @register.filter
 def get_log(dictionary, key):

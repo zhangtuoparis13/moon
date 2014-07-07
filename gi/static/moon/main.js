@@ -156,3 +156,63 @@ function delete_inter_extension(uuid) {
             }
     });
 }
+
+function get_attributes(name, uuid) {
+    var type_select = document.getElementById("type")
+    var type_id = type_select.selectedIndex;
+    var type = type_select.options[type_id].value;
+    var category_select = document.getElementById("category");
+    var value_select = document.getElementById("value");
+    var category = "";
+    if (name == "category") {
+        var category_id = category_select.selectedIndex;
+        category = category_select.options[category_id].value;
+    }
+    $.ajax({
+            type:"GET",
+            url: "/intra-extensions/"+uuid+"/type/"+type+"/",
+            processData: false,
+            success: function(msg) {
+                var obj = JSON.parse(msg);
+                var html = "";
+                if (name == "type") {
+                    var length = category_select.length;
+                    for (var cpt = 0; cpt < length; cpt++) {
+                        category_select.remove(0);
+                    }
+                    for (var c in obj.categories) {
+                        var opt = document.createElement('option');
+                        opt.value = obj.categories[c];
+                        opt.innerHTML = obj.categories[c];
+                        category_select.appendChild(opt);
+                    }
+                }
+                length = value_select.length;
+                for (cpt = 0 ; cpt<length ; cpt++) {
+                    value_select.remove(0);
+                }
+                if (category.length == 0) {
+                    category = category_select.options[category_select.selectedIndex].value;
+                }
+                for (var o in obj.attributes) {
+                    if (obj.attributes[o].category == category) {
+                        opt = document.createElement('option');
+                        opt.value = obj.attributes[o].value;
+                        opt.innerHTML = obj.attributes[o].value;
+                        value_select.appendChild(opt);
+                    }
+                }
+            }
+    });
+}
+
+function add_temp_rule() {
+    var type_select = document.getElementById("type")
+    var type = type_select.options[type_select.selectedIndex].value;
+    var category_select = document.getElementById("category");
+    var category = category_select.options[category_select.selectedIndex].value;
+    var value_select = document.getElementById("value");
+    var value = value_select.options[value_select.selectedIndex].value;
+    var rules_list = document.getElementById("rules_list");
+    rules_list.innerHTML += type + ":" + category + ":" + value + "\n";
+}
