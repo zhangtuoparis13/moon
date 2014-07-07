@@ -54,7 +54,7 @@ class NovaMoon(wsgi.Middleware):
             host=self.moon_server_ip,
             port=self.moon_server_port,
             subject_uuid=env["HTTP_X_USER_ID"],
-            object_uuid=ret_object.replace("_", "-"),
+            object_uuid=ret_object.replace("_", ""),
             object_type=ret_object_type,
             action=ret_action+"."+sub_action,
             subject_tenant=env["HTTP_X_TENANT_ID"],
