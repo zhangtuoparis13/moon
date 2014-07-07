@@ -16,12 +16,12 @@
         <b>tenant:</b> {{ extension.tenant.name }} ({{ extension.tenant.uuid }})<br/>
         <b>subjects:</b> <ul>
         {% for subject in extension.subjects %}
-            <li>{{ subject.name }}</li>
+            <li><b>{{ subject.name }}</b> ({{ subject.uuid }})</li>
         {% endfor %}
         </ul>
         <b>objects:</b> <ul>
         {% for object in extension.objects %}
-            <li>{{ object.name }}</li>
+            <li><b>{{ object.name }}</b> ({{ object.uuid }})</li>
         {% endfor %}
         </ul>
         <b>rules:</b>
