@@ -12,6 +12,7 @@ from moon.tools.openstack_credentials import get_keystone_creds, get_nova_creds
 import logging
 from uuid import uuid4
 import json
+import os
 from keystoneclient.openstack.common.apiclient.exceptions import Unauthorized, Forbidden
 
 logger = logging.getLogger("moon.pip")
@@ -179,7 +180,7 @@ class PIP:
         json_data["perimeter"]["subjects"] = list(self.get_subjects(tenant=tenant))
         json_data["perimeter"]["objects"] = list(self.get_objects(tenant=tenant))
         attributes = list(json_data["configuration"]["metadata"]["subject"])
-        s_attr = []
+        s_attr = json_data["profiles"]["s_attr"]
         s_attr_assign = []
         if "roles" in attributes:
             roles = list(self.get_roles(tenant=tenant))
@@ -197,25 +198,21 @@ class PIP:
             attributes.remove("groups")
         json_data["profiles"]["s_attr"] = s_attr
         json_data["profiles"]["s_attr_assign"] = s_attr_assign
-        #HYPOTHESIS: objects are only virtual servers, so linking all objects to type server
         o_attr_assign = json_data["profiles"]["o_attr_assign"]
-        for obj in json_data["perimeter"]["objects"]:
-            link = {}
-            link["uuid"] = str(uuid4())
-            link["object"] = obj["uuid"]
-            #Add default actions
-            link["attributes"] = ["type-vm", "action-get", "action-post", "action-delete", "action-post.os-start"]
-            o_attr_assign.append(link)
         json_data["profiles"]["o_attr_assign"] = o_attr_assign
         if "rules" not in json_data["configuration"].keys():
             json_data["configuration"]["rules"] = []
         if len(attributes) > 0:
-            logger.warning("All attributes have not been parsed in configuration.metadata.subject {}".format(attributes))
+            logger.warning("All attributes have not been parsed in configuration.metadata.subject {} (in {})".format(
+                attributes,
+                json_data["configuration"]["protocol"]
+            ))
         if not test_only:
             get_intra_extentions().new_from_json(json_data=json_data)
 
     def sync_db_with_keystone(self, tenant_uuid=None):
         logs = ""
+        json_data = None
         # #synchronize all intra extensions
         self.set_creds_for_tenant()
         for tenant in self.get_tenants():
@@ -232,9 +229,14 @@ class PIP:
                 continue
             SYNC_CONF_FILENAME = getattr(settings, "SYNC_CONF_FILENAME", None)
             sync = json.loads(open(SYNC_CONF_FILENAME).read())
-            if not tenant_uuid and SYNC_CONF_FILENAME:
+            if SYNC_CONF_FILENAME:
                 if tenant["name"] not in map(lambda x: x["name"], sync["tenants"]):
                     continue
+                for conf in sync["tenants"]:
+                    if conf["name"] == tenant["name"]:
+                        if not os.path.isfile(conf["extension_conf"]):
+                            raise Exception("Unable to find configuration file {}".format(conf["extension_conf"]))
+                        json_data = json.loads(file(conf["extension_conf"]).read())
             logger.info("Syncing tenant {}".format(tenant["name"]))
             logs += "Syncing {}".format(tenant["name"])
             try:
@@ -251,7 +253,7 @@ class PIP:
                 uuid=tenant["uuid"]
             )
             try:
-                self.new_intra_extension(tenant=tenant)
+                self.new_intra_extension(tenant=tenant, json_data=json_data)
                 logs += " OK\n"
             except Forbidden:
                 logger.warning("Cannot list users in tenant {}".format(tenant["name"]))

@@ -2,11 +2,11 @@
     "tenants": [
         {
             "name": "tenant_rh",
-            "extension_conf": "policy/rbac_extension.json"
+            "extension_conf": "/etc/moon/rbac_conf/rbac_extension.json"
         },
         {
             "name": "tenant_it",
-            "extension_conf": "policy/mls_extension.json"
+            "extension_conf": "/etc/moon/mls_conf/mls_extension.json"
         }
     ]
 }

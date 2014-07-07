@@ -74,4 +74,4 @@ EOF
 
 echo -e "\n192.168.119.113 openstackserver" >> /etc/hosts
 
-python /vagrant/moon_server.py --run "syncdb"
+#python /vagrant/moon_server.py --run "syncdb"

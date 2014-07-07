@@ -24,7 +24,8 @@ if __name__ == "__main__":
     parser.add_argument("--username", "-u", type=str, help="Username for Keystone remote database")
     parser.add_argument("--userpass", "-p", type=str, help="Password for Keystone remote database")
     parser.add_argument("--unittest", action='store_true', help="Execute tests")
-    parser.add_argument("--testonly", action='store_true', help="Check for Keystone connection and show what it would do.")
+    parser.add_argument("--testonly", action='store_true', help="Check for Keystone connection and "
+                                                                "show what it would do.")
     args = parser.parse_args()
 
     pip = get_pip()
@@ -35,7 +36,7 @@ if __name__ == "__main__":
         LOGS.write("Starting application")
         if args.keystone_sync:
             pip.sync_db_with_keystone()
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gi.settings")
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "moon.gi.settings")
         from django.core.management import execute_from_command_line
         d_args = [sys.argv[0]]
         d_args.extend(args.djangoargs)

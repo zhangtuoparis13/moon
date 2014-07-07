@@ -2,8 +2,8 @@
 Policy Decision Point
 """
 
-from intra_extension_manager import get_dispatcher as get_intra_dispatcher
-from inter_extension_manager import get_dispatcher as get_inter_dispatcher
+from moon.intra_extension_manager import get_dispatcher as get_intra_dispatcher
+from moon.inter_extension_manager import get_dispatcher as get_inter_dispatcher
 from moon.core.pdp.inter_extension import get_inter_extentions
 from moon.core.pdp.intra_extension import get_intra_extentions
 import logging

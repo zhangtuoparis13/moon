@@ -1,6 +1,8 @@
 from uuid import uuid4
 import json
 import logging
+import os
+import imp
 try:
     from django.utils.safestring import mark_safe
 except ImportError:
@@ -11,9 +13,8 @@ from moon import settings
 logger = logging.getLogger(__name__)
 
 
-class IntraExtension:
+class IntraExtension(object):
 
-    #TODO: send extension in PDP
     def __init__(
             self,
             name="",
@@ -25,7 +26,8 @@ class IntraExtension:
             profiles=None,
             description="",
             tenant=None,
-            authz_model="RBAC"):
+            model="RBAC",
+            protocol=None):
         self.name = name,
         if not uuid:
             self.uuid = str(uuid4()).replace("-", "")
@@ -40,7 +42,20 @@ class IntraExtension:
         self.description = description
         self.tenant = tenant
         self.dispatcher = get_dispatcher()
-        self.authz_model = authz_model
+        self.model = model
+        self.protocol = protocol
+        # if not self.protocol or "requesting" not in self.protocol or "requested" not in self.protocol:
+        #     raise Exception("Cannot find an adequate protocol for extension {}".format(self.uuid))
+        # requesting_filename = self.protocol["requesting"].split(":")[0]
+        # requesting_function = self.protocol["requesting"].split(":")[-1]
+        # requested_filename = self.protocol["requested"].split(":")[0]
+        # requested_function = self.protocol["requested"].split(":")[-1]
+        # if not os.path.isfile(requesting_filename) or not os.path.isfile(requested_filename):
+        #     raise Exception("Cannot find an adequate protocol for extension {}".format(self.uuid))
+        # requesting_module = imp.load_source("requesting_vent_create", requesting_filename)
+        # self.__requesting_vent_create = eval("requesting_module.{}".format(requesting_function))
+        # requested_module = imp.load_source("requested_vent_create", requested_filename)
+        # self.__requested_vent_create = eval("requested_module.{}".format(requested_function))
 
     def get(self, data, uuid=None, name=None, attribute=None, category=None):
         attr_list = []
@@ -256,10 +271,10 @@ class IntraExtension:
     def add_subject_attributes_relation(
             self,
             uuid=None,
-            object=None,
+            subject=None,
             attributes=[]):
         for assignment in self.profiles["s_attr_assign"]:
-            if assignment["object"] == object:
+            if assignment["subject"] == subject:
                 _attr = assignment["attributes"]
                 _attr.extend(attributes)
                 assignment["attributes"] = _attr
@@ -269,7 +284,7 @@ class IntraExtension:
             uuid = str(uuid4()).replace("-", "")
         rel = {}
         rel["uuid"] = uuid
-        rel["object"] = object
+        rel["subject"] = subject
         if type(attributes) in (list, tuple):
             rel["attributes"] = attributes
         else:
@@ -391,18 +406,12 @@ class IntraExtension:
     def requesting_vent_create(self, vent, objects_list):
         #TODO: identifier tous les objets
         #TODO: creer des attr et attr_assign et des rules pour que le vent accede aux objects
-        if self.authz_model == "MLS":
-            return self.__mls_vent_subject_create(vent, objects_list)
-        elif self.authz_model == "RBAC":
-            return self.__rbac_vent_subject_create(vent, objects_list)
+        return None
 
     def requested_vent_create(self, vent, subjects_list):
         #TODO: identifier tous les subjets
         #TODO: creer des attr et attr_assign et des rules pour que les subjects accedent au vent
-        if self.authz_model == "MLS":
-            return self.__mls_vent_object_create(vent, subjects_list)
-        elif self.authz_model == "RBAC":
-            return self.__rbac_vent_object_create(vent, subjects_list)
+        return None
 
     def sync(self):
 
@@ -415,7 +424,10 @@ class IntraExtension:
             rules=self.rules,
             profiles=self.profiles,
             description=self.description,
-            tenant=self.tenant)
+            tenant=self.tenant,
+            model=self.model,
+            protocol=self.protocol
+        )
 
     def html(self):
         return mark_safe("""<b>Extension</b> {} for <b>tenant {}</b><br/><br/>
@@ -446,7 +458,6 @@ class IntraExtensions:
     def __init__(self):
         #TODO create a MongoDB collection per extension
         self.dispatcher = get_dispatcher()
-        #TODO: send the extensions list to PDP
         self.extensions = {}
         for ext in self.dispatcher.list(type="extension"):
             self.extensions[ext["uuid"]] = IntraExtension(
@@ -458,9 +469,10 @@ class IntraExtensions:
                 rules=ext["configuration"]["rules"],
                 profiles=ext["profiles"],
                 description=ext["description"],
-                tenant=ext["tenant"]
+                tenant=ext["tenant"],
+                model=ext["model"],
+                protocol=ext["protocol"]
             )
-            # self.extensions[ext["uuid"]].db = self.db
 
     def list(self, ):
         return self.extensions.values()
@@ -503,21 +515,53 @@ class IntraExtensions:
         return objects
 
     def new_from_json(self, json_data):
-        all_tenants = map(lambda x: x.tenant["uuid"], self.extensions.values())
+        # all_tenants = map(lambda x: x.tenant["uuid"], self.extensions.values())
         # if json_data["tenant"]["uuid"] not in all_tenants:
-        ext = IntraExtension(
+        extension_filename = json_data["configuration"]["protocol"].split(":")[0]
+        extension_class = json_data["configuration"]["protocol"].split(":")[-1]
+        if not os.path.isfile(extension_filename) or not os.path.isfile(extension_filename):
+            raise Exception("Cannot find an adequate protocol for extension {}".format(self.uuid))
+        requesting_module = imp.load_source("requesting_vent_create", extension_filename)
+        __IntraExtension = eval("requesting_module.{}".format(extension_class))
+        ext = __IntraExtension(
             name=json_data["name"],
             uuid=json_data["uuid"],
-            subjects=json_data["perimeter"]["subjects"],
-            objects=json_data["perimeter"]["objects"],
+            subjects=[],#json_data["perimeter"]["subjects"],
+            objects=[],#json_data["perimeter"]["objects"],
             metadata=json_data["configuration"]["metadata"],
             rules=json_data["configuration"]["rules"],
             profiles=json_data["profiles"],
             description=json_data["description"],
-            tenant=json_data["tenant"]
+            tenant=json_data["tenant"],
+            model=json_data["model"],
+            protocol=json_data["configuration"]["protocol"],
         )
         ext.sync()
         self.extensions[json_data["uuid"]] = ext
+        #Adding subjects and objects after so we can tune afterward the creation process
+        for sbj in json_data["perimeter"]["subjects"]:
+            if "description" not in sbj:
+                sbj["description"] = ""
+            if "mail" not in sbj:
+                sbj["mail"] = ""
+            if "project" not in sbj:
+                sbj["project"] = ""
+            ext.add_subject(
+                uuid=sbj["uuid"], 
+                name=sbj["name"], 
+                domain=sbj["domain"], 
+                enabled=sbj["enabled"], 
+                mail=sbj["mail"], 
+                project=sbj["project"], 
+                description=sbj["description"])
+        for obj in json_data["perimeter"]["objects"]:
+            if "description" not in obj:
+                obj["description"] = ""
+            ext.add_object(
+                uuid=obj["uuid"], 
+                name=obj["name"], 
+                enabled=obj["enabled"],
+                description=obj["description"])
         return ext
         # else:
         #     return None

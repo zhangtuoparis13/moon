@@ -1,0 +1,79 @@
+    {
+        "name": "RBAC administration",
+        "model": "RBAC administration",
+        "description": "",
+        "tenant": {},
+        "perimeter": {
+            "subjects": [],
+            "objects": [
+                {
+                    "name": "subjects_list",
+                    "uuid": "id_subjects_list"
+                },
+                {
+                    "name": "objects_list",
+                    "uuid": "id_objects_list"
+                },
+                {
+                    "name": "rules_list",
+                    "uuid": "id_rules_list"
+                },
+                {
+                    "name": "s_attrs_list",
+                    "uuid": "id_s_attrs_list"
+                },
+                {
+                    "name": "o_attrs_list",
+                    "uuid": "id_o_attrs_list"
+                },
+                {
+                    "name": "s_attrs_assign_list",
+                    "uuid": "id_s_attrs_assign_list"
+                },
+                {
+                    "name": "o_attrs_assign_list",
+                    "uuid": "id_o_attrs_assign_list"
+                }
+            ]
+        },
+
+        "configuration": {
+            "metadata": {
+                "subject": [
+                    "roles"
+                ],
+                "object": [
+                    "id",
+                    "action"
+                ]
+            },
+            "rules": [
+                {
+                    "name": "rule_rbac_administration",
+                    "s_attr": [
+                        { "category": "role", "value": "role_admin" }
+                    ],
+                    "o_attr": [
+                        { "category": "id", "value": ["id_subjects_list", "id_objects_list"] },
+                        { "category": "action", "value": ["read", "write"] }
+                    ],
+                    "description": ""
+                }
+            ],
+            "protocol": {
+                "requesting": "/etc/moon/rbac_conf/inter_rbac_admin_protocol:rbac_admin_requesting_vent_create",
+                "requested": "/etc/moon/rbac_conf/inter_rbac_admin_protocol:rbac_admin_requested_vent_create"
+            }
+        },
+
+        "profiles": {
+            "s_attr": [],
+            "o_attr": [
+                { "uuid": "action-read", "category": "action", "value": "read", "description": "" },
+                { "uuid": "action-write", "category": "action", "value": "write", "description": "" }
+            ],
+            "s_attr_assign": [],
+            "o_attr_assign": []
+        }
+
+    }
