@@ -284,6 +284,9 @@ def logs_repository(request):
                     )[0].name
                 except AttributeError:
                     pass
+                except KeyError:
+                    # Tenant does not exist anymore
+                    pass
             if log.value["auth"] is True:
                 log.value["auth"] = "<span class=\"authorized\">Authorized</span>"
             elif log.value["auth"] is False:
