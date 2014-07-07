@@ -214,5 +214,6 @@ function add_temp_rule() {
     var value_select = document.getElementById("value");
     var value = value_select.options[value_select.selectedIndex].value;
     var rules_list = document.getElementById("rules_list");
-    rules_list.innerHTML += type + ":" + category + ":" + value + "\n";
+    console.log(rules_list.innerHTML);
+    rules_list.value += type + ":" + category + ":" + value + "\n";
 }
