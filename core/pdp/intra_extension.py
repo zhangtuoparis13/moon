@@ -28,7 +28,7 @@ class IntraExtension(object):
             tenant=None,
             model="RBAC",
             protocol=None):
-        self.name = name,
+        self.name = name
         if not uuid:
             self.uuid = str(uuid4()).replace("-", "")
         else:
