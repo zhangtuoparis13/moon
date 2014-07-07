@@ -34,12 +34,10 @@ class MLSIntraExtension(IntraExtension):
         IntraExtension.add_object(self, uuid=uuid, name=name, enabled=enabled, description=description)
         # Default: all objects (ie all VM) have the attribute security_level to medium
         self.add_object_attributes_relation(object=uuid, attributes=["security_medium"])
-        # Default: all objects (ie all VM) have some attribute action
-        self.add_object_attributes_relation(object=uuid, attributes=[
-            "action-get",
-            "action-post",
-            "action-delete",
-            "action-post.os-start"])
+        # Default: all objects (ie all VM) have all attribute action
+        actions = self.get_object_attributes(category="action")
+        for action in actions:
+            self.add_object_attributes_relation(object=uuid, attributes=[action["uuid"]])
 
     def add_subject(self, uuid=None, name=None, domain="default", enabled=True, mail="", project="", description=""):
         IntraExtension.add_subject(
