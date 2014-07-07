@@ -14,17 +14,6 @@
         <b>name:</b> {{ extension.name }}<br/>
         <b>description:</b> {{ extension.description  }}<br/>
         <b>tenant:</b> {{ extension.tenant.name }} ({{ extension.tenant.uuid }})<br/>
-        <b>subjects:</b> <ul>
-        {% for subject in extension.subjects %}
-            <li><b>{{ subject.name }}</b> ({{ subject.uuid }})</li>
-        {% endfor %}
-        </ul>
-        <b>objects:</b> <ul>
-        {% for object in extension.objects %}
-            <li><b>{{ object.name }}</b> ({{ object.uuid }})</li>
-        {% endfor %}
-        </ul>
-        <b>rules:</b>
         <a href="#" onclick="show_rule_add_actions()">Add Rule</a>
         <div id="add_intra_rule">
             <form action="/intra-extensions/{{ extension.uuid }}/" method="post" id="rules">
@@ -78,6 +67,18 @@
                 <input type="submit" value="Add"/>
             </form>
         </div>
+        <br>
+        <b>subjects:</b> <ul>
+        {% for subject in extension.subjects %}
+            <li><b>{{ subject.name }}</b> ({{ subject.uuid }})</li>
+        {% endfor %}
+        </ul>
+        <b>objects:</b> <ul>
+        {% for object in extension.objects %}
+            <li><b>{{ object.name }}</b> ({{ object.uuid }})</li>
+        {% endfor %}
+        </ul>
+        <b>rules:</b>
         <table border="1">
         <tr>
             <th>Name</th>
