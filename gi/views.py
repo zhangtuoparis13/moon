@@ -72,7 +72,6 @@ def intra_extension(request, id=None):
     """
     pap = PAP(kclient=get_keystone_client(request))
     if request.META['REQUEST_METHOD'] == "POST":
-        print(request.POST)
         if "rules_list" in request.POST:
             name = request.POST.get("name", "NO-NAME")
             description = request.POST.get("description", "")
@@ -99,18 +98,10 @@ def intra_extension(request, id=None):
             extension.add_rule(rule)
     try:
         extension = pap.admin_manager.get_intra_extensions(uuid=id)[0]
-        # o_attributes = pap.get_object_attributes(extension_uuid=id)
-        # o_categories = set(map(lambda x: x["category"], o_attributes))
-        # s_attributes = pap.get_subject_attributes(extension_uuid=id)
-        # s_categories = set(map(lambda x: x["category"], s_attributes))
     except IndexError:
         extension = {}
-        # o_categories = []
-        # s_categories = []
     return render(request, "moon/intra-extensions.html", {
         "extension": extension,
-        # "o_categories": o_categories,
-        # "s_categories": s_categories,
     })
 
 
