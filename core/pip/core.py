@@ -231,6 +231,7 @@ class PIP:
             sync = json.loads(open(SYNC_CONF_FILENAME).read())
             if SYNC_CONF_FILENAME:
                 if tenant["name"] not in map(lambda x: x["name"], sync["tenants"]):
+                    logs += "Tenant {} not in configuration file -> KO".format(tenant["name"])
                     continue
                 for conf in sync["tenants"]:
                     if conf["name"] == tenant["name"]:
