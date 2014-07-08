@@ -166,7 +166,6 @@ class PIP:
             yield t
 
     def new_intra_extension(self, tenant, test_only=False, json_data=None):
-        # TODO: delete o_attr "type" and add an attribute with value the UUID of VM
         existing_extension = get_intra_extentions().get(attributes={"tenant.uuid": tenant["uuid"]})
         if not json_data:
             filename = getattr(settings, "DEFAULT_EXTENSION_TABLE")
@@ -182,6 +181,7 @@ class PIP:
         attributes = list(json_data["configuration"]["metadata"]["subject"])
         s_attr = json_data["profiles"]["s_attr"]
         s_attr_assign = []
+        #TODO: we don't know in advance the number of subject attributes
         if "roles" in attributes:
             roles = list(self.get_roles(tenant=tenant))
             s_attr.extend(roles)

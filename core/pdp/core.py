@@ -51,9 +51,12 @@ class AuthzManager:
                 auth["message"] = "The request could be connected to a extension but no object match."
                 #FIXME subject_tenant is false, we must found the true tenant for this object
                 #FIXME this must be done in nova_hook
-                obj = self.intra_pdps.get_object(uuid=auth["object_name"])[0]
-                auth["object_uuid"] = obj["uuid"]
-                auth["object_tenant"] = obj["tenant"]["uuid"]
+                try:
+                    obj = self.intra_pdps.get_object(uuid=auth["object_name"])[0]
+                    auth["object_uuid"] = obj["uuid"]
+                    auth["object_tenant"] = obj["tenant"]["uuid"]
+                except IndexError:
+                    pass
                 continue
             for rule in extension.get_rules():
                 # check if subject is in extension
@@ -75,7 +78,7 @@ class AuthzManager:
                         has_assignment = extension.has_assignment(
                             object_uuid=auth["object_name"],
                             category=o_rule["category"],
-                            attribute_uuid=auth["action"])
+                            attribute_name=auth["action"])
                         o_rule_value = o_rule["value"].replace(".", "\\.").replace("*", ".*")
                         if re.match(o_rule_value, auth["action"]):
                             _auth.append(has_assignment)

@@ -239,9 +239,12 @@ class IntraExtension(object):
         data = self.profiles["s_attr_assign"]
         if not uuid:
             uuid = self.get_subject(name=name)[0]["uuid"]
-        for obj in data:
-            if uuid == obj["object"] and attribute in obj["attributes"]:
-                return True
+        for sbj in data:
+            if type(attribute) not in (list, tuple):
+                attribute = [attribute, ]
+            for att in attribute:
+                if uuid == sbj["subject"] and att in sbj["attributes"]:
+                    return True
         return False
 
     def add_object_attributes_relation(
@@ -300,23 +303,15 @@ class IntraExtension(object):
             attribute=""):
         if name == "*":
             return True
-        try:
-            attribute_uuid = self.get_object_attributes(name=attribute)[0]["uuid"]
-        except IndexError:
-            try:
-                attribute_uuid = self.get_object_attributes(uuid=attribute)[0]["uuid"]
-            except IndexError:
-                return False
         data = self.profiles["o_attr_assign"]
         if not uuid:
-            try:
-                uuid = self.get_object(name=name)[0]["uuid"]
-            except IndexError:
-                # There is no object with this name in our database.
-                return False
+            uuid = self.get_subject(name=name)[0]["uuid"]
         for obj in data:
-            if uuid == obj["object"] and attribute_uuid in obj["attributes"]:
-                return True
+            if type(attribute) not in (list, tuple):
+                attribute = [attribute, ]
+            for att in attribute:
+                if uuid == obj["object"] and att in obj["attributes"]:
+                    return True
         return False
 
     def has_assignment(
