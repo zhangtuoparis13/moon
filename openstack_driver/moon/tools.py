@@ -98,5 +98,7 @@ def get_action(env_req, logger=None):
                 # BAD
                 ret_object = url.split("/")[-2]
                 ret_object_type = "server"
+            if len(ret_object_type) == 0:
+                continue
             return ret_action, ret_object, ret_object_type, ret_tenant_uuid
     return ret_action, ret_object, ret_object_type, ret_tenant_uuid
