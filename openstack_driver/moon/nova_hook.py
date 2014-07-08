@@ -50,13 +50,14 @@ class NovaMoon(wsgi.Middleware):
             sub_action = json.loads(sub_action_object).keys()[0]
             body = StringIO(sub_action_object)
             env['wsgi.input'] = body
+            ret_action = ret_action+"."+sub_action
         authz = tools.get_moon_authz(
             host=self.moon_server_ip,
             port=self.moon_server_port,
             subject_uuid=env["HTTP_X_USER_ID"],
             object_uuid=ret_object.replace("_", ""),
             object_type=ret_object_type,
-            action=ret_action+"."+sub_action,
+            action=ret_action,
             subject_tenant=env["HTTP_X_TENANT_ID"],
             object_tenant=ret_tenant_uuid,
             path=env["RAW_PATH_INFO"],
