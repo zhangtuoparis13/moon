@@ -17,21 +17,9 @@ import hashlib
 from moon import settings
 from moon import tools
 
+UNMANAGED_OBJECTS = ("", "token", )
 
 logger = logging.getLogger(__name__)
-
-# TODO: set a configuration file
-# MOON_SERVER_IP = getattr(settings, "MOON_SERVER_IP")
-# PASSWORD = getattr(settings, "PASSWORD")
-# IMPORT = getattr(settings, "IMPORT")
-
-# API = json.loads(file("/etc/moon/api.json").read())
-# API_dict = {}
-# for attr in API["attributes"]:
-#     if "id" in attr:
-#         API_dict[attr] = "(\w){32}"
-#     else:
-#         API_dict[attr] = "(\w+)"
 
 
 class UserController(identity.controllers.UserV3):
@@ -89,38 +77,39 @@ class KeystoneMoon(wsgi.Middleware):
             BASEURL="mrm"
         )
         ret_action, ret_object, ret_object_type, ret_tenant_uuid = tools.get_action(request.environ, self.LOG)
-        key = uuid.uuid4()
-        crypt_key = hashlib.sha256()
-        crypt_key.update(str(key))
-        crypt_key.update(self.password)
-        post_data = [
-            ('Object', ret_object),
-            ('ObjectType', ret_object_type),
-            ('Subject', u),
-            ('Action', ret_action),
-            ('Subject_Tenant', KEYSTONE_AUTH_CONTEXT.get('project_id')),
-            ('Object_Tenant', self.__get_project(request.environ["PATH_INFO"])),
-            ('RAW_PATH_INFO', request.environ["RAW_PATH_INFO"].replace("-", "_")),
-            ('key', key)]
-        # TODO: connection is too long when the server is down
-        #       especially when we create the DB for the first time
-        # if not IMPORT:
-        try:
-            # TODO: the connection must be secured!
-            result = urllib2.urlopen(url, urllib.urlencode(post_data))
-            content = json.loads(result.read())
-            if "key" not in content or content["key"] != crypt_key.hexdigest():
-                raise exception.Unauthorized(message="Connection problem with Moon authorisation framework")
-            # TODO: in production must raise an error if authz is false
-            if "auth" not in content or content["auth"] != True:
-                logger.error("You are not authorized to do that!")
-                # raise exception.Unauthorized(message="You are not authorized to do that!")
-        except urllib2.URLError as e:
-            # TODO: in production must raise an error and don't allow connection
-            logger.warning(e.message)
-            logger.warning(e)
-        # else:
-        #     logger.warning("Moon is disabled by configuration.")
+        if ret_object_type not in UNMANAGED_OBJECTS:
+            key = uuid.uuid4()
+            crypt_key = hashlib.sha256()
+            crypt_key.update(str(key))
+            crypt_key.update(self.password)
+            post_data = [
+                ('Object', ret_object),
+                ('ObjectType', ret_object_type),
+                ('Subject', u),
+                ('Action', ret_action),
+                ('Subject_Tenant', KEYSTONE_AUTH_CONTEXT.get('project_id')),
+                ('Object_Tenant', self.__get_project(request.environ["PATH_INFO"])),
+                ('RAW_PATH_INFO', request.environ["RAW_PATH_INFO"].replace("-", "_")),
+                ('key', key)]
+            # TODO: connection is too long when the server is down
+            #       especially when we create the DB for the first time
+            # if not IMPORT:
+            try:
+                # TODO: the connection must be secured!
+                result = urllib2.urlopen(url, urllib.urlencode(post_data))
+                content = json.loads(result.read())
+                if "key" not in content or content["key"] != crypt_key.hexdigest():
+                    raise exception.Unauthorized(message="Connection problem with Moon authorisation framework")
+                # TODO: in production must raise an error if authz is false
+                if "auth" not in content or content["auth"] != True:
+                    logger.error("You are not authorized to do that!")
+                    # raise exception.Unauthorized(message="You are not authorized to do that!")
+            except urllib2.URLError as e:
+                # TODO: in production must raise an error and don't allow connection
+                logger.warning(e.message)
+                logger.warning(e)
+            # else:
+            #     logger.warning("Moon is disabled by configuration.")
 
     def __get_project(self, path):
         try:
