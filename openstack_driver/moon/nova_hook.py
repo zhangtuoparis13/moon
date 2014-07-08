@@ -34,8 +34,8 @@ class NovaMoon(wsgi.Middleware):
         # self.LOG.info(dir(self.app))
 
     def __call__(self, env, start_response):
-        self.LOG.info(tools.get_action(env, self.LOG))
-        self.LOG.info(env)
+        # self.LOG.info(tools.get_action(env, self.LOG))
+        # self.LOG.info(env)
         ret_action, ret_object, ret_object_type, ret_tenant_uuid = tools.get_action(env, self.LOG)
         sub_action = "*"
         # if ret_object_type == "server":
