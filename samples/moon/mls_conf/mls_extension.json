@@ -27,10 +27,10 @@
                 {
                     "name": "rule_mls_standard",
                     "s_attr": [
-                        { "category": "security_level", "value": "high" }
+                        { "category": "security_level", "value": 50 }
                     ],
                     "o_attr": [
-                        { "category": "security_level", "value": ["high", "medium", "low"] },
+                        { "category": "security_level", "value": [50, 30, 10] },
                         { "category": "action", "value": "*" }
                     ],
                     "description": ""
@@ -41,9 +41,9 @@
 
         "profiles": {
             "s_attr": [
-                { "uuid": "security_high", "category": "security_level", "value": "high", "description": "" },
-                { "uuid": "security_medium", "category": "security_level", "value": "medium", "description": "" },
-                { "uuid": "security_low", "category": "security_level", "value": "low", "description": "" }
+                { "uuid": "security_high", "category": "security_level", "value": 50, "description": "" },
+                { "uuid": "security_medium", "category": "security_level", "value": 30, "description": "" },
+                { "uuid": "security_low", "category": "security_level", "value": 10, "description": "" }
             ],
             "o_attr": [
                 { "uuid": "action-get", "category": "action", "value": "get", "description": "" },
@@ -58,9 +58,9 @@
                 { "uuid": "action-connect", "category": "action", "value": "connect", "description": "" },
                 { "uuid": "action-put", "category": "action", "value": "put", "description": "" },
 
-                { "uuid": "security_high", "category": "security_level", "value": "high", "description": "" },
-                { "uuid": "security_medium", "category": "security_level", "value": "medium", "description": "" },
-                { "uuid": "security_low", "category": "security_level", "value": "low", "description": "" }
+                { "uuid": "security_high", "category": "security_level", "value": 50, "description": "" },
+                { "uuid": "security_medium", "category": "security_level", "value": 30, "description": "" },
+                { "uuid": "security_low", "category": "security_level", "value": 10, "description": "" }
 
             ],
             "s_attr_assign": [],
