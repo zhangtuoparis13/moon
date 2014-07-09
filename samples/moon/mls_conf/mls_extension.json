@@ -25,12 +25,34 @@
             },
             "rules": [
                 {
-                    "name": "rule_mls_standard",
+                    "name": "rule_mls_standard1",
                     "s_attr": [
-                        { "category": "security_level", "value": 50 }
+                        { "category": "security_level", "value": "security_high" }
                     ],
                     "o_attr": [
-                        { "category": "security_level", "value": [50, 30, 10] },
+                        { "category": "security_level", "value": ["security_high", "security_medium", "security_low"] },
+                        { "category": "action", "value": "*" }
+                    ],
+                    "description": ""
+                },
+                {
+                    "name": "rule_mls_standard2",
+                    "s_attr": [
+                        { "category": "security_level", "value": "security_medium" }
+                    ],
+                    "o_attr": [
+                        { "category": "security_level", "value": ["security_medium", "security_low"] },
+                        { "category": "action", "value": "*" }
+                    ],
+                    "description": ""
+                },
+                {
+                    "name": "rule_mls_standard3",
+                    "s_attr": [
+                        { "category": "security_level", "value": "security_low" }
+                    ],
+                    "o_attr": [
+                        { "category": "security_level", "value": "security_low" },
                         { "category": "action", "value": "*" }
                     ],
                     "description": ""

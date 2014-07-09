@@ -126,7 +126,7 @@ class PIP:
             assignment = {}
             _uuid = str(uuid4()).replace("-", "")
             assignment["uuid"] = _uuid
-            assignment["object"] = user["uuid"]
+            assignment["subject"] = user["uuid"]
             assignment["description"] = "Role assignment for {}".format(user["name"])
             assignment["attributes"] = []
             roles = map(lambda x: x.id, self.kclient.roles.list(user=user["uuid"], project=tenant_uuid))

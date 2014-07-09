@@ -50,14 +50,14 @@ class AuthzManager:
                 auth["auth"] = "Out of Scope"
                 auth["message"] = "The request could be connected to a extension but no object match."
                 #FIXME subject_tenant is false, we must found the true tenant for this object
-                #FIXME this must be done in nova_hook
+                #FIXME this would be better done in nova_hook
                 try:
                     obj = self.intra_pdps.get_object(uuid=auth["object_name"])[0]
                     auth["object_uuid"] = obj["uuid"]
                     auth["object_tenant"] = obj["tenant"]["uuid"]
                 except IndexError:
-                    pass
-                continue
+                    continue
+                break
             for rule in extension.get_rules():
                 # check if subject is in extension
                 # check if object is in extension
@@ -72,24 +72,43 @@ class AuthzManager:
                     _auth.append(extension.has_assignment(
                         subject_uuid=auth["subject"],
                         category=s_rule["category"],
-                        attribute_name=s_rule["value"]))
+                        attribute_uuid=s_rule["value"]))
+                    if not _auth:
+                        continue
                 for o_rule in rule["o_attr"]:
                     if o_rule["category"] == "action":
                         has_assignment = extension.has_assignment(
-                            object_uuid=auth["object_name"],
+                            object_uuid=auth["object_uuid"],
                             category=o_rule["category"],
                             attribute_name=auth["action"])
-                        o_rule_value = o_rule["value"].replace(".", "\\.").replace("*", ".*")
-                        if re.match(o_rule_value, auth["action"]):
+                        if type(o_rule["value"]) not in (list, tuple):
+                            o_rule["value"] = [o_rule["value"], ]
+                        o_rule_value = map(lambda x: x.replace(".", "\\.").replace("*", ".*"), o_rule["value"])
+                        _auth_action = False
+                        # the o_rule_value is a regex expression, so we search for all action_uuid corresponding
+                        # to that expression
+                        _possible_actions = extension.get_object_attributes(category="action")
+                        possible_actions = []
+                        for _o_rule_value in o_rule_value:
+                            for _a in _possible_actions:
+                                if re.match(_o_rule_value, _a["value"]):
+                                    possible_actions.append(_a["value"])
+                        for _o_rule_value in possible_actions:
+                            if re.match(_o_rule_value, auth["action"]):
+                                _auth_action = True
+                                break
+                        if _auth_action:
                             _auth.append(has_assignment)
                         else:
                             _auth.append(False)
                     else:
                         has_assignment = extension.has_assignment(
-                            object_uuid=auth["object_name"],
+                            object_uuid=auth["object_uuid"],
                             category=o_rule["category"],
                             attribute_uuid=o_rule["value"])
                         _auth.append(has_assignment)
+                    if not _auth:
+                        continue
                     #TODO o_attr -> o_rule
                     #o_attr ou s_attr= {
                     # "uuid": "high-security",
@@ -104,12 +123,12 @@ class AuthzManager:
                     #         #TODO
                     #     ],
                     # }
-                # print(_auth, rule)
                 main_auth = reduce(lambda x, y: x and y, _auth)
                 if main_auth:
                     auth["auth"] = True
                     auth["rule_name"] = rule["name"]
                     auth["tenant_name"] = auth["subject_tenant"]
+                    auth["message"] = ""
                     break
                 else:
                     auth["auth"] = False

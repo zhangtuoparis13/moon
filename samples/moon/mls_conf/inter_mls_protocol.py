@@ -1,4 +1,5 @@
 from moon.core.pdp.intra_extension import IntraExtension
+from uuid import uuid4
 
 
 class MLSIntraExtension(IntraExtension):
@@ -50,8 +51,11 @@ class MLSIntraExtension(IntraExtension):
             project=project,
             description=description
         )
-        # Default: all subjects (ie all users) have the attribute security_level to high
-        self.add_subject_attributes_relation(subject=uuid, attributes=["security_high"])
+        # Default: all subjects (ie all users) have the attribute security_level to medium except *admin*
+        if "admin" in name:
+            self.add_subject_attributes_relation(subject=uuid, attributes=["security_high"])
+        else:
+            self.add_subject_attributes_relation(subject=uuid, attributes=["security_medium"])
 
     # def delete_object(self, uuid):
     #     # Suppresion de l'objet
@@ -59,23 +63,61 @@ class MLSIntraExtension(IntraExtension):
     #     # Suppression des o_attr et o_attr_assign associes
 
     def requesting_vent_create(self, vent, subjects_list):
-        print("\033[34mmls_requesting_vent_create {} {} {}\033[m".format(self, vent, subjects_list))
-        # try:
-        #     vent_role = self.get_subject_attributes(name="virtual_entity_role", category="role")[0]
-        # except IndexError:
-        #     #Create it
-        #     self.add_subject_attribute(
-        #         value="virtual_entity_role",
-        #         category="role",
-        #         description="The role for managing virtual entities")
-        #     vent_role = self.get_subject_attributes(name="virtual_entity_role", category="role")[0]
-        # #Create relation between subjects and virtual_entity_role
-        # for subject_uuid in subjects_list:
-        #     if not self.has_subject_attributes_relation(uuid=subject_uuid, attribute=vent_role["uuid"]):
-        #         self.add_subject_attributes_relation(
-        #             object=subject_uuid,
-        #             attributes=[vent_role["uuid"]]
-        #         )
+        if not self.has_object(uuid=vent.uuid):
+            self.add_object(uuid=vent.uuid, name=vent.name, description="virtual entity")
+        # Assign the security_level vent_uuid to the virtual entity
+        try:
+            hl_uuid = self.get_object_attributes(name=vent.uuid, category="security_level")[0]
+        except IndexError:
+            hl_uuid = self.add_object_attribute(value=vent.uuid, category="security_level")
+            self.add_object_attributes_relation(object=vent.uuid, attributes=[hl_uuid, ])
+        # Assign all actions to the virtual entity
+        actions = self.get_object_attributes(category="action")
+        for action in actions:
+            self.add_object_attributes_relation(object=vent.uuid, attributes=[action["uuid"]])
+        # Add rules
+        #TODO what append if one of the subjects doesn't have the security_level to high ?
+        rule = {
+            "name": "requesting_rule_vent_{}".format(str(uuid4())),
+            "description": "Rule for security_level high in order to use the virtual entity {}".format(
+                vent.uuid
+            ),
+            "s_attr": [
+                {u'category': u'security_level', u'value': hl_uuid},
+            ],
+            "o_attr": [
+                {u'category': u'id', u'value': vent.uuid},
+                {u'category': u'action', u'value': [x["uuid"] for x in actions]},
+            ],
+        }
+        self.add_rule(rule)
 
     def requested_vent_create(self, vent, objects_list):
-        print("\033[34mmls_requested_vent_create {} {} {}\033[m".format(self, vent, objects_list))
+        if not self.has_subject(uuid=vent.uuid):
+            self.add_subject(uuid=vent.uuid, name=vent.name, description="virtual entity")
+        # Assign the security_level vent_uuid to the virtual entity
+        try:
+            hl_uuid = self.get_subject_attributes(name=vent.uuid, category="security_level")[0]
+        except IndexError:
+            hl_uuid = self.add_subject_attribute(value=vent.uuid, category="security_level")
+            self.add_subject_attributes_relation(subject=vent.uuid, attributes=[hl_uuid, ])
+        actions = self.get_object_attributes(category="action")
+        for obj in objects_list:
+            _actions = []
+            for action in actions:
+                if self.has_object_attributes_relation(uuid=obj, attribute=action["uuid"]):
+                    _actions.append(action)
+            rule = {
+                "name": "requested_rule_vent_{}".format(str(uuid4())),
+                "description": "Rule for security_level high in order to use the virtual entity {}".format(
+                    vent.uuid
+                ),
+                "s_attr": [
+                    {u'category': u'security_level', u'value': hl_uuid},
+                ],
+                "o_attr": [
+                    {u'category': u'id', u'value': obj},
+                    {u'category': u'action', u'value': [x["value"] for x in _actions]},
+                ],
+            }
+            self.add_rule(rule)

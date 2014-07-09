@@ -142,6 +142,7 @@ class IntraExtension(object):
         obj["name"] = name
         obj["enabled"] = enabled
         obj["description"] = description
+        obj["tenant"] = self.tenant
         self.objects.append(obj)
         self.sync()
 
@@ -150,9 +151,7 @@ class IntraExtension(object):
             return self.profiles["o_attr"]
         ret_objects = []
         for obj in self.profiles["o_attr"]:
-            if uuid == "a65f2b9ca6fe429a890054db108350fe": print(uuid, obj["uuid"])
             if uuid and obj["uuid"] == uuid:
-                if uuid == "a65f2b9ca6fe429a890054db108350fe": print("Found")
                 return [obj, ]
             elif name and type(obj["value"]) in (str, unicode) and obj["value"] == name:
                 if category and obj["category"] == category:
@@ -235,7 +234,7 @@ class IntraExtension(object):
             uuid=None,
             name=None,
             category=None,
-            attribute=""):
+            attribute=[]):
         data = self.profiles["s_attr_assign"]
         if not uuid:
             uuid = self.get_subject(name=name)[0]["uuid"]
@@ -300,7 +299,7 @@ class IntraExtension(object):
             uuid=None,
             name=None,
             category=None,
-            attribute=""):
+            attribute=[]):
         if name == "*":
             return True
         data = self.profiles["o_attr_assign"]
@@ -320,7 +319,7 @@ class IntraExtension(object):
             subject_uuid=None,
             object_name=None,
             object_uuid=None,
-            attribute_uuid=None,
+            attribute_uuid=[],
             attribute_name=None,
             category=None):
         """
@@ -337,27 +336,41 @@ class IntraExtension(object):
         """
         if object_uuid:
             object_uuid = object_uuid.replace("_", "-")
+        if attribute_uuid == "*":
+                return True
         if attribute_name and not attribute_uuid:
             if attribute_name == "*":
                 return True
             if subject_uuid or subject_name:
-                try:
-                    attribute_uuid = self.get_subject_attributes(name=attribute_name)[0]["uuid"]
-                except IndexError:
-                    try:
-                        attribute_uuid = self.get_subject_attributes(uuid=attribute_name)[0]["uuid"]
-                    except IndexError:
-                        # There is no subject with this name in our database.
-                        return False
+                # try:
+                if type(attribute_name) not in (list, tuple):
+                    attribute_name = [attribute_name, ]
+                for att in attribute_name:
+                    _uuid = self.get_subject_attributes(name=att)[0]["uuid"]
+                    if _uuid:
+                        attribute_uuid.append(_uuid)
+                    # attribute_uuid = self.get_subject_attributes(name=attribute_name)[0]["uuid"]
+                # except IndexError:
+                #     try:
+                #         attribute_uuid = self.get_subject_attributes(uuid=attribute_name)[0]["uuid"]
+                #     except IndexError:
+                #         # There is no subject with this name in our database.
+                #         return False
             elif object_uuid or object_name:
-                try:
-                    attribute_uuid = self.get_object_attributes(name=attribute_name)[0]["uuid"]
-                except IndexError:
-                    try:
-                        attribute_uuid = self.get_object_attributes(uuid=attribute_name)[0]["uuid"]
-                    except IndexError:
-                        # There is no object with this name in our database.
-                        return False
+                if type(attribute_name) not in (list, tuple):
+                    attribute_name = [attribute_name, ]
+                for att in attribute_name:
+                    _uuid = self.get_object_attributes(name=att)[0]["uuid"]
+                    if _uuid:
+                        attribute_uuid.append(_uuid)
+                # try:
+                #     attribute_uuid = self.get_object_attributes(name=attribute_name)[0]["uuid"]
+                # except IndexError:
+                #     try:
+                #         attribute_uuid = self.get_object_attributes(uuid=attribute_name)[0]["uuid"]
+                #     except IndexError:
+                #         # There is no object with this name in our database.
+                #         return False
         if subject_uuid or subject_name:
             return self.has_subject_attributes_relation(
                 uuid=subject_uuid,
@@ -455,7 +468,13 @@ class IntraExtensions:
         self.dispatcher = get_dispatcher()
         self.extensions = {}
         for ext in self.dispatcher.list(type="extension"):
-            self.extensions[ext["uuid"]] = IntraExtension(
+            extension_filename = ext["configuration"]["protocol"].split(":")[0]
+            extension_class = ext["configuration"]["protocol"].split(":")[-1]
+            if not os.path.isfile(extension_filename) or not os.path.isfile(extension_filename):
+                raise Exception("Cannot find an adequate protocol for extension {}".format(ext["uuid"]))
+            requesting_module = imp.load_source("requesting_vent_create", extension_filename)
+            __IntraExtension = eval("requesting_module.{}".format(extension_class))
+            self.extensions[ext["uuid"]] = __IntraExtension(
                 name=ext["name"],
                 uuid=ext["uuid"],
                 subjects=ext["perimeter"]["subjects"],
@@ -466,7 +485,7 @@ class IntraExtensions:
                 description=ext["description"],
                 tenant=ext["tenant"],
                 model=ext["model"],
-                protocol=ext["protocol"]
+                protocol=ext["configuration"]["protocol"]
             )
 
     def list(self, ):

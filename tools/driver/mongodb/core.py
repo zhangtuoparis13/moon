@@ -91,11 +91,12 @@ class DB:
         }
         configuration = {
             "metadata": metadata,
-            "rules": rules
+            "rules": rules,
+            "protocol": protocol
         }
         return self.add(
             uuid=uuid,
-            mandatory_attrs=["name", "perimeter", "configuration", "profiles", "tenant", "model", "protocol"],
+            mandatory_attrs=["name", "perimeter", "configuration", "profiles", "tenant", "model"],
             name=name,
             perimeter=perimeter,
             configuration=configuration,
@@ -103,8 +104,7 @@ class DB:
             description=description,
             tenant=tenant,
             type="extension",
-            model=model,
-            protocol=protocol)
+            model=model)
 
     def add_user(
             self,

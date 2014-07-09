@@ -131,7 +131,7 @@ def inter_extensions(request):
             pap.admin_manager.add_inter_extension(
                 requesting=requesting,
                 requested=requested,
-                type=type,
+                connexion_type=type,
                 requesting_subjects=_subjects,
                 requested_objects=_objects
             )

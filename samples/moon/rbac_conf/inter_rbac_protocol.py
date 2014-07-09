@@ -1,4 +1,5 @@
 from moon.core.pdp.intra_extension import IntraExtension
+from uuid import uuid4
 
 
 class RBACIntraExtension(IntraExtension):
@@ -52,7 +53,7 @@ class RBACIntraExtension(IntraExtension):
             project=project,
             description=description
         )
-        # TODO: Ajout des s_attr et s_attr_assign qui vont bien
+        # No need to add roles, they have been already added
 
     # def delete_object(self, uuid):
     #     # Suppresion de l'objet
@@ -60,7 +61,9 @@ class RBACIntraExtension(IntraExtension):
     #     # Suppression des o_attr et o_attr_assign associes
 
     def requesting_vent_create(self, vent, subjects_list):
-        print("\033[34mrbac requesting_vent_create {} {} {}\033[m".format(self, vent, subjects_list))
+        if not self.has_object(uuid=vent.uuid):
+            self.add_object(uuid=vent.uuid, name=vent.name, description="virtual entity")
+        # Get or Create the virtual entity role
         try:
             vent_role = self.get_subject_attributes(name="virtual_entity_role", category="role")[0]
         except IndexError:
@@ -77,6 +80,72 @@ class RBACIntraExtension(IntraExtension):
                     subject=subject_uuid,
                     attributes=[vent_role["uuid"]]
                 )
+        # Create an attribute "id" for the Vent
+        if not self.has_object_attributes(name=vent["uuid"], category="id"):
+            _uuid = self.add_object_attribute(
+                category="id",
+                value=vent["uuid"],
+                description="object attribute for the vent")
+            self.add_object_attributes_relation(object=vent.uuid, attributes=[_uuid, ])
+        # Assign all actions to the virtual entity
+        actions = self.get_object_attributes(category="action")
+        for action in actions:
+            self.add_object_attributes_relation(object=vent.uuid, attributes=[action["uuid"]])
+        # Add rules
+        rule = {
+            "name": "requesting_rule_vent_{}".format(str(uuid4())),
+            "description": "Rule for role {} in order to use the virtual entity {}".format(
+                vent_role["uuid"],
+                vent.uuid
+            ),
+            "s_attr": [
+                {u'category': u'role', u'value': vent_role["uuid"]},
+            ],
+            "o_attr": [
+                {u'category': u'id', u'value': vent.uuid},
+                {u'category': u'action', u'value': [x["uuid"] for x in actions]},
+            ],
+        }
+        self.add_rule(rule)
 
     def requested_vent_create(self, vent, objects_list):
-        print("\033[34mrbac_requested_vent_create {} {} {}\033[m".format(self, vent, objects_list))
+        if not self.has_subject(uuid=vent.uuid):
+            self.add_subject(uuid=vent.uuid, name=vent.name, description="virtual entity")
+        # Get or Create the virtual entity role
+        try:
+            vent_role = self.get_subject_attributes(name="virtual_entity_role", category="role")[0]
+        except IndexError:
+            #Create it
+            self.add_subject_attribute(
+                value="virtual_entity_role",
+                category="role",
+                description="The role for managing virtual entities")
+            vent_role = self.get_subject_attributes(name="virtual_entity_role", category="role")[0]
+        #Create relation between virtual entity and virtual_entity_role
+        self.add_subject_attributes_relation(
+            subject=vent.uuid,
+            attributes=[vent_role["uuid"]]
+        )
+        # Add rules
+        actions = self.get_object_attributes(category="action")
+        for obj in objects_list:
+            _id_obj = self.get_object_attributes(category="id", name=obj)[0]["uuid"]
+            _actions = []
+            for action in actions:
+                if self.has_object_attributes_relation(uuid=obj, attribute=action["uuid"]):
+                    _actions.append(action)
+            rule = {
+                "name": "requested_rule_vent_{}".format(str(uuid4())),
+                "description": "Rule for role {} in order to use the virtual entity {}".format(
+                    vent_role["uuid"],
+                    vent.uuid
+                ),
+                "s_attr": [
+                    {u'category': u'role', u'value': vent_role["uuid"]},
+                ],
+                "o_attr": [
+                    {u'category': u'id', u'value': _id_obj},
+                    {u'category': u'action', u'value': [x["value"] for x in _actions]},
+                ],
+            }
+            self.add_rule(rule)
