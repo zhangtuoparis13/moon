@@ -65,14 +65,18 @@ class RBACIntraExtension(IntraExtension):
             self.add_object(uuid=vent.uuid, name=vent.name, description="virtual entity")
         # Get or Create the virtual entity role
         try:
-            vent_role = self.get_subject_attributes(name="virtual_entity_role", category="role")[0]
+            vent_role = self.get_subject_attributes(
+                name="virtual_entity_role_{}".format(vent.uuid),
+                category="role")[0]
         except IndexError:
             #Create it
             self.add_subject_attribute(
-                value="virtual_entity_role",
+                value="virtual_entity_role_{}".format(vent.uuid),
                 category="role",
                 description="The role for managing virtual entities")
-            vent_role = self.get_subject_attributes(name="virtual_entity_role", category="role")[0]
+            vent_role = self.get_subject_attributes(
+                name="virtual_entity_role_{}".format(vent.uuid),
+                category="role")[0]
         #Create relation between subjects and virtual_entity_role
         for subject_uuid in subjects_list:
             if not self.has_subject_attributes_relation(uuid=subject_uuid, attribute=vent_role["uuid"]):
@@ -113,14 +117,18 @@ class RBACIntraExtension(IntraExtension):
             self.add_subject(uuid=vent.uuid, name=vent.name, description="virtual entity")
         # Get or Create the virtual entity role
         try:
-            vent_role = self.get_subject_attributes(name="virtual_entity_role", category="role")[0]
+            vent_role = self.get_subject_attributes(
+                name="virtual_entity_role_{}".format(vent.uuid),
+                category="role")[0]
         except IndexError:
             #Create it
             self.add_subject_attribute(
-                value="virtual_entity_role",
+                value="virtual_entity_role_{}".format(vent.uuid),
                 category="role",
                 description="The role for managing virtual entities")
-            vent_role = self.get_subject_attributes(name="virtual_entity_role", category="role")[0]
+            vent_role = self.get_subject_attributes(
+                name="virtual_entity_role_{}".format(vent.uuid),
+                category="role")[0]
         #Create relation between virtual entity and virtual_entity_role
         self.add_subject_attributes_relation(
             subject=vent.uuid,
