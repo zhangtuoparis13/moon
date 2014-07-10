@@ -249,7 +249,10 @@ class InterExtensions:
             try:
                 return [self.extensions[uuid], ]
             except KeyError:
-                return [self.tenants[uuid], ]
+                try:
+                    return [self.tenants[uuid], ]
+                except KeyError:
+                    return []
         elif name:
             for ext in self.extensions.values():
                 if ext.name == name:
