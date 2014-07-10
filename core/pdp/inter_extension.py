@@ -277,10 +277,15 @@ class InterExtensions:
                 if vent.name == name:
                     return [vent, ]
 
+    def delete_virtual_entity(self, uuid=None):
+        if uuid in self.virtual_entities:
+            self.virtual_entities.pop(uuid)
+
     def delete(self, uuid):
         # delete rules where the virtual entity is present
         # self.extensions[uuid].delete(vent=self.extensions[uuid]["category"])
         # delete the virtual entity
+        self.delete_virtual_entity(uuid=uuid)
         # delete the extension itself
         try:
             self.extensions.pop(uuid)
