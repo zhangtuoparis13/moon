@@ -44,18 +44,6 @@ class IntraExtension(object):
         self.dispatcher = get_dispatcher()
         self.model = model
         self.protocol = protocol
-        # if not self.protocol or "requesting" not in self.protocol or "requested" not in self.protocol:
-        #     raise Exception("Cannot find an adequate protocol for extension {}".format(self.uuid))
-        # requesting_filename = self.protocol["requesting"].split(":")[0]
-        # requesting_function = self.protocol["requesting"].split(":")[-1]
-        # requested_filename = self.protocol["requested"].split(":")[0]
-        # requested_function = self.protocol["requested"].split(":")[-1]
-        # if not os.path.isfile(requesting_filename) or not os.path.isfile(requested_filename):
-        #     raise Exception("Cannot find an adequate protocol for extension {}".format(self.uuid))
-        # requesting_module = imp.load_source("requesting_vent_create", requesting_filename)
-        # self.__requesting_vent_create = eval("requesting_module.{}".format(requesting_function))
-        # requested_module = imp.load_source("requested_vent_create", requested_filename)
-        # self.__requested_vent_create = eval("requested_module.{}".format(requested_function))
 
     def get(self, data, uuid=None, name=None, attribute=None, category=None):
         attr_list = []
@@ -293,6 +281,12 @@ class IntraExtension(object):
             rel["attributes"] = [attributes, ]
         self.profiles["s_attr_assign"].append(rel)
         self.sync()
+
+    def get_subject_attributes_relation(self):
+        return self.profiles["s_attr_assign"]
+
+    def get_object_attributes_relation(self):
+        return self.profiles["o_attr_assign"]
 
     def has_object_attributes_relation(
             self,
@@ -603,8 +597,8 @@ class IntraExtensions:
         ext = __IntraExtension(
             name=json_data["name"],
             uuid=json_data["uuid"],
-            subjects=[],#json_data["perimeter"]["subjects"],
-            objects=[],#json_data["perimeter"]["objects"],
+            subjects=[],
+            objects=[],
             metadata=json_data["configuration"]["metadata"],
             rules=json_data["configuration"]["rules"],
             profiles=json_data["profiles"],
