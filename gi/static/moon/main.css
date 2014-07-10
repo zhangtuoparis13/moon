@@ -54,11 +54,14 @@ body {
     /*border: 1px dotted #ffb445;*/
     margin: 5px;
     float:left;
-    width: 300px;
+    width: 280px;
     /*min-height: 200px;*/
     padding: 5px;
     background: #dcdcdc;
     border-radius:25px;
+    position: fixed;
+    top: 30px;
+    left: 5px;
 }
 
 #pcontent {
@@ -68,6 +71,7 @@ body {
     width: 60%;
     min-height: 200px;
     padding: 5px;
+    padding-left: 320px;
 }
 
 #plogs {
