@@ -183,6 +183,7 @@ def inter_extension(request, id=None):
     pap = PAP(kclient=get_keystone_client(request))
     extension = pap.admin_manager.get_inter_extensions(uuid=id)[0]
     if request.META['REQUEST_METHOD'] == "DELETE":
+        #TODO: check if deletion is OK
         pap.admin_manager.delete_inter_extension(uuid=id)
         return HttpResponse(json.dumps({'delete': True}))
         # return render(request, "moon/inter-extensions.html", {
@@ -268,15 +269,20 @@ def logs_repository(request):
                 extension = pap.admin_manager.get_intra_extensions(tenant_uuid=log.value["object_tenant"])
                 if extension:
                     log.value["subject"] = extension.get_subject(uuid=log.value["subject"])["name"]
-                log.value["object_tenant"] = pap.admin_manager.get_tenant(
-                    tenant_uuid=log.value["object_tenant"]
-                )[0].name
+                try:
+                    log.value["object_tenant"] = pap.admin_manager.get_tenant(
+                        tenant_uuid=log.value["object_tenant"]
+                    )[0].name
+                except IndexError:
+                    pass
             if log.value["subject_tenant"] != "None":
                 extension = pap.admin_manager.get_intra_extensions(tenant_uuid=log.value["subject_tenant"])
                 if extension:
                     try:
                         log.value["subject"] = extension.get_subject(uuid=log.value["subject"])["name"]
-                    except TypeError, IndexError:
+                    except TypeError:
+                        pass
+                    except IndexError:
                         pass
                 try:
                     log.value["subject_tenant"] = pap.admin_manager.get_tenant(
@@ -284,7 +290,7 @@ def logs_repository(request):
                     )[0].name
                 except AttributeError:
                     pass
-                except KeyError:
+                except IndexError:
                     # Tenant does not exist anymore
                     pass
             if log.value["auth"] is True:
@@ -319,4 +325,23 @@ def get_tenants(request):
 @login_required(login_url='/auth/login/')
 def get_tenant(request, id=None):
     return render(request, "moon/tenants.html", {})
+
+
+@login_required(login_url='/auth/login/')
+def roles(request, id=None):
+    """
+    Users interface
+    Render all roles retrieve from OpenStack Keystone server
+    """
+    pip = PIP(kclient=get_keystone_client(request))
+    if request.META['REQUEST_METHOD'] == "POST":
+        pip.create_roles(name=request.POST["name"], description=request.POST["description"])
+    if request.META['REQUEST_METHOD'] == "DELETE":
+        #TODO: check if deletion is OK
+        pip.delete_roles(uuid=id)
+        return HttpResponse(json.dumps({'delete': True}))
+    #TODO add selection by tenant
+    tenant = list(pip.get_tenants(name="admin"))[0]
+    _roles = list(pip.get_roles(tenant=tenant))
+    return render(request, "moon/roles.html", {"roles": _roles})
 

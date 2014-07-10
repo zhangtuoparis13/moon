@@ -157,6 +157,25 @@ function delete_inter_extension(uuid) {
     });
 }
 
+function delete_role(uuid) {
+    console.log("delete_role "+uuid);
+    $.ajaxSetup({
+        headers: { "X-CSRFToken": getCookie("csrftoken") }
+    });
+    $.ajax({
+            type:"DELETE",
+            url: "/roles/"+uuid+"/",
+            processData: false,
+            success: function(msg) {
+                var obj = JSON.parse(msg);
+                if (obj["delete"]) {
+                    window.location.href = "/roles/";
+                }
+
+            }
+    });
+}
+
 function get_attributes(name, uuid) {
     var type_select = document.getElementById("type")
     var type_id = type_select.selectedIndex;

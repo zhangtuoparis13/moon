@@ -87,7 +87,7 @@ class PIP:
             o["tenant"] = tenant
             yield o
 
-    def get_roles(self, tenant=None):
+    def get_roles(self, tenant=None, uuid=None, name=None):
         for role in self.kclient.roles.list(project_id=tenant["uuid"]):
             o = dict()
             o["value"] = role.name
@@ -101,6 +101,10 @@ class PIP:
                 o["enabled"] = True
             o["category"] = "role"
             o["uuid"] = role.id
+            if name and name != name:
+                continue
+            if uuid and uuid != uuid:
+                continue
             yield o
 
     def get_groups(self, tenant=None):
@@ -149,7 +153,7 @@ class PIP:
                 assignments["attributes"].extend(groups)
             yield assignments
 
-    def get_tenants(self):
+    def get_tenants(self, name=None):
         for tenant in self.kclient.projects.list():
             t = dict()
             t["name"] = tenant.name
@@ -163,7 +167,19 @@ class PIP:
                 t["enabled"] = True
             t["domain"] = tenant.domain_id
             t["uuid"] = tenant.id
+            if name and name != t["name"]:
+                continue
             yield t
+
+    def create_roles(self, name=None, description=""):
+        if name and len(name) > 0:
+            return self.kclient.roles.create(name=name, description=description)
+
+    def delete_roles(self, uuid=None):
+        if uuid and len(uuid) > 0:
+            role = list(self.get_roles(uuid=uuid, tenant=list(pip.get_tenants(name="admin"))[0]))[0]
+            if role["value"] not in ("admin", "_member_", "Member", "heat_stack_user", "service", "heat_stack_owner"):
+                return self.kclient.roles.delete(uuid)
 
     def new_intra_extension(self, tenant, test_only=False, json_data=None):
         existing_extension = get_intra_extentions().get(attributes={"tenant.uuid": tenant["uuid"]})
