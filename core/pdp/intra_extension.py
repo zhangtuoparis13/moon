@@ -219,7 +219,7 @@ class IntraExtension(object):
         for obj in self.profiles["s_attr"]:
             if category and obj["category"] != category:
                 continue
-            if obj["enabled"] not in (True, "true"):
+            if "enabled" in obj and obj["enabled"] not in (True, "true"):
                 continue
             if uuid and obj["uuid"] == uuid:
                 return [obj]
@@ -412,14 +412,78 @@ class IntraExtension(object):
         self.sync()
 
     def requesting_vent_create(self, vent, objects_list):
-        #TODO: identifier tous les objets
-        #TODO: creer des attr et attr_assign et des rules pour que le vent accede aux objects
         return None
 
     def requested_vent_create(self, vent, subjects_list):
-        #TODO: identifier tous les subjets
-        #TODO: creer des attr et attr_assign et des rules pour que les subjects accedent au vent
         return None
+
+    def delete_subject(self, uuid):
+        for index, sbj in enumerate(self.subjects):
+            if sbj["uuid"] == uuid:
+                self.subjects.pop(index)
+
+    def delete_object(self, uuid):
+        for index, sbj in enumerate(self.objects):
+            if sbj["uuid"] == uuid:
+                self.objects.pop(index)
+
+    def delete_object_attributes(self, uuid=None, name=None):
+        for index, o_attr in enumerate(self.profiles["o_attr"]):
+            if o_attr["uuid"] == uuid or o_attr["value"] == name:
+                return self.profiles["o_attr"].pop(index)
+
+    def delete_subject_attributes(self, uuid=None, name=None):
+        for index, s_attr in enumerate(self.profiles["s_attr"]):
+            if s_attr["uuid"] == uuid or s_attr["value"] == name:
+                return self.profiles["s_attr"].pop(index)
+
+    def delete_attributes_from_vent(self, vent_uuid):
+        if self.has_subject(uuid=vent_uuid):
+            self.delete_subject(uuid=vent_uuid)
+        if self.has_object(uuid=vent_uuid):
+            self.delete_object(uuid=vent_uuid)
+
+    def delete_rules(self, s_attrs=[], o_attrs=[]):
+        if type(s_attrs) not in (list, tuple):
+            s_attrs = [s_attrs, ]
+        if type(o_attrs) not in (list, tuple):
+            o_attrs = [o_attrs, ]
+        indexes = []
+        for index, rule in enumerate(self.get_rules()):
+            for s_attr in s_attrs:
+                if s_attr in map(lambda x: x["value"], rule["s_attr"]):
+                    indexes.append(index)
+                    break
+            for o_attr in o_attrs:
+                if o_attr in map(lambda x: x["value"], rule["o_attr"]):
+                    indexes.append(index)
+                    break
+        indexes.reverse()
+        for index in indexes:
+            try:
+                self.get_rules().pop(index)
+            except IndexError:
+                pass
+
+    def delete_subject_relation(self, attributes=[]):
+        for relation in self.profiles["s_attr_assign"]:
+            for att in attributes:
+                try:
+                    relation["attributes"].remove(att)
+                except ValueError:
+                    pass
+
+    def delete_object_relation(self, attributes=[]):
+        for relation in self.profiles["o_attr_assign"]:
+            for att in attributes:
+                try:
+                    relation["attributes"].remove(att)
+                except ValueError:
+                    pass
+
+    def delete_attributes_relations(self, s_attrs=[], o_attrs=[]):
+        self.delete_subject_relation(attributes=s_attrs)
+        self.delete_object_relation(attributes=o_attrs)
 
     def sync(self):
 
@@ -517,16 +581,15 @@ class IntraExtensions:
             return exts
 
     def get_object(self, uuid=None, name=None):
-        objects = []
+        if not uuid and not name:
+            return self.extensions
         for ext in self.extensions.values():
             for obj in ext.objects:
                 if uuid and obj["uuid"] == uuid:
                     return [obj]
                 elif name and obj["name"] == name:
                     return [obj]
-                elif not uuid and not name:
-                    objects.append(obj)
-        return objects
+        return []
 
     def new_from_json(self, json_data):
         # all_tenants = map(lambda x: x.tenant["uuid"], self.extensions.values())
@@ -726,6 +789,14 @@ class IntraExtensions:
     #
     # def add_role(self, role):
     #     return self.db.add_role(role)
+
+    def delete_attributes_from_vent(self, uuid):
+        for ext in self.get():
+            ext.delete_attributes_from_vent(uuid)
+
+    def delete_rules(self, s_attrs=None, o_attrs=None):
+        for ext in self.get():
+            ext.delete_rules(s_attrs=s_attrs, o_attrs=o_attrs)
 
     def delete(self, uuid):
         self.extensions.pop(uuid)

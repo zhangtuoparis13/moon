@@ -140,6 +140,10 @@ class AdminManager:
         return self.inter_pdps.get_virtual_entity(uuid=uuid, name=name)
 
     def delete_inter_extension(self, uuid):
+        ext = self.inter_pdps.get(uuid=uuid)[0]
+        vent_uuid = ext.get_vent()
+        self.intra_pdps.delete_rules(s_attrs=vent_uuid, o_attrs=vent_uuid)
+        self.intra_pdps.delete_attributes_from_vent(uuid=vent_uuid)
         self.inter_pdps.delete(uuid=uuid)
 
 manager = AdminManager()

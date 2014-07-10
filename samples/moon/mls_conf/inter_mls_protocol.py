@@ -57,10 +57,45 @@ class MLSIntraExtension(IntraExtension):
         else:
             self.add_subject_attributes_relation(subject=uuid, attributes=["security_medium"])
 
-    # def delete_object(self, uuid):
-    #     # Suppresion de l'objet
-    #     IntraExtension.delete_object()
-    #     # Suppression des o_attr et o_attr_assign associes
+    def delete_attributes_from_vent(self, vent_uuid):
+        attributes = []
+        if self.has_subject_attributes(name=vent_uuid, category="security_level"):
+            attributes.append(self.delete_subject_attributes(name=vent_uuid))
+        if self.has_object_attributes(name=vent_uuid, category="security_level"):
+            attributes.append(self.delete_object_attributes(name=vent_uuid))
+        self.delete_attributes_relations(s_attrs=attributes, o_attrs=attributes)
+        IntraExtension.delete_attributes_from_vent(self, vent_uuid=vent_uuid)
+
+    def delete_rules(self, s_attrs=[], o_attrs=[]):
+        if type(s_attrs) not in (list, tuple):
+            s_attrs = [s_attrs, ]
+        if type(o_attrs) not in (list, tuple):
+            o_attrs = [o_attrs, ]
+        indexes = []
+        for index, rule in enumerate(self.get_rules()):
+            for s_attr in s_attrs:
+                try:
+                    hl_uuid = self.get_subject_attributes(name=s_attr, category="security_level")[0]["uuid"]
+                    if hl_uuid in map(lambda x: x["value"], rule["s_attr"]):
+                        indexes.append(index)
+                    break
+                except IndexError:
+                    pass
+            for o_attr in o_attrs:
+                try:
+                    hl_uuid = self.get_object_attributes(name=o_attr, category="security_level")[0]["uuid"]
+                    if hl_uuid in map(lambda x: x["value"], rule["s_attr"]):
+                        indexes.append(index)
+                    break
+                except IndexError:
+                    pass
+        indexes.reverse()
+        for index in indexes:
+            try:
+                self.get_rules().pop(index)
+            except IndexError:
+                pass
+        IntraExtension.delete_rules(self, s_attrs=s_attrs, o_attrs=o_attrs)
 
     def requesting_vent_create(self, vent, subjects_list):
         if not self.has_object(uuid=vent.uuid):

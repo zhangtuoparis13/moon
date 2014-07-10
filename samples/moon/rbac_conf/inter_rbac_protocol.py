@@ -55,10 +55,40 @@ class RBACIntraExtension(IntraExtension):
         )
         # No need to add roles, they have been already added
 
-    # def delete_object(self, uuid):
-    #     # Suppresion de l'objet
-    #     IntraExtension.delete_object()
-    #     # Suppression des o_attr et o_attr_assign associes
+    def delete_attributes_from_vent(self, vent_uuid):
+        attributes = []
+        if self.has_object_attributes(name="virtual_entity_role_{}".format(vent_uuid)):
+            attributes.append(self.delete_object_attributes(name="virtual_entity_role_{}".format(vent_uuid)))
+        if self.has_subject_attributes(name="virtual_entity_role_{}".format(vent_uuid)):
+            attributes.append(self.delete_subject_attributes(name="virtual_entity_role_{}".format(vent_uuid)))
+        if self.has_subject_attributes(name=vent_uuid, category="id"):
+            attributes.append(self.delete_subject_attributes(name=vent_uuid))
+        if self.has_object_attributes(name=vent_uuid, category="id"):
+            attributes.append(self.delete_object_attributes(name=vent_uuid))
+        self.delete_attributes_relations(s_attrs=attributes, o_attrs=attributes)
+        IntraExtension.delete_attributes_from_vent(self, vent_uuid=vent_uuid)
+
+    def delete_rules(self, s_attrs=[], o_attrs=[]):
+        if type(s_attrs) not in (list, tuple):
+            s_attrs = [s_attrs, ]
+        if type(o_attrs) not in (list, tuple):
+            o_attrs = [o_attrs, ]
+        indexes = []
+        for index, rule in enumerate(self.get_rules()):
+            for s_attr in s_attrs:
+                vent_role_uuid = self.get_subject_attributes(
+                        name="virtual_entity_role_{}".format(s_attr),
+                        category="role")[0]["uuid"]
+                if vent_role_uuid in map(lambda x: x["value"], rule["s_attr"]):
+                    indexes.append(index)
+                    break
+        indexes.reverse()
+        for index in indexes:
+            try:
+                self.get_rules().pop(index)
+            except IndexError:
+                pass
+        IntraExtension.delete_rules(self, s_attrs=s_attrs, o_attrs=o_attrs)
 
     def requesting_vent_create(self, vent, subjects_list):
         if not self.has_object(uuid=vent.uuid):
@@ -85,10 +115,10 @@ class RBACIntraExtension(IntraExtension):
                     attributes=[vent_role["uuid"]]
                 )
         # Create an attribute "id" for the Vent
-        if not self.has_object_attributes(name=vent["uuid"], category="id"):
+        if not self.has_object_attributes(name=vent.uuid, category="id"):
             _uuid = self.add_object_attribute(
                 category="id",
-                value=vent["uuid"],
+                value=vent.uuid,
                 description="object attribute for the vent")
             self.add_object_attributes_relation(object=vent.uuid, attributes=[_uuid, ])
         # Assign all actions to the virtual entity

@@ -141,6 +141,13 @@ class InterExtension:
             self.requested_tenant_name = requested_tenant
         self.dispatcher = get_dispatcher()
 
+    # def delete(self, vent, requesting_ext, requested_ext):
+    #     requesting_ext.delete_attributes_from_vent(vent=self.category)
+    #     requested_ext.delete_attributes_from_vent(vent=self.category)
+
+    def get_vent(self):
+        return self.category
+
     def sync(self):
         post = dict()
         post['uuid'] = str(self.uuid)
@@ -268,6 +275,10 @@ class InterExtensions:
                     return [vent, ]
 
     def delete(self, uuid):
+        # delete rules where the virtual entity is present
+        # self.extensions[uuid].delete(vent=self.extensions[uuid]["category"])
+        # delete the virtual entity
+        # delete the extension itself
         try:
             self.extensions.pop(uuid)
         except KeyError:
