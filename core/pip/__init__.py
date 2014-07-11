@@ -1,1 +1,1 @@
-from moon.core.pip.core import get_pip, PIP
+from moon.core.pip.core import get_pip

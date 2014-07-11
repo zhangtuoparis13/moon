@@ -178,9 +178,12 @@ class IntraExtension(object):
         self.sync()
         return o_attr["uuid"]
 
-    def add_subject_attribute(self, category=None, value=None, description="", enabled=True):
+    def add_subject_attribute(self, uuid=None, category=None, value=None, description="", enabled=True):
         s_attr = {}
-        s_attr["uuid"] = str(uuid4()).replace("-", "")
+        if not uuid:
+            s_attr["uuid"] = str(uuid4()).replace("-", "")
+        else:
+            s_attr["uuid"] = uuid
         s_attr["category"] = category
         s_attr["value"] = value
         s_attr["enabled"] = enabled
@@ -545,6 +548,9 @@ class IntraExtensions:
                 model=ext["model"],
                 protocol=ext["configuration"]["protocol"]
             )
+
+    def values(self):
+        return self.extensions.values()
 
     def list(self, ):
         return self.extensions.values()

@@ -9,7 +9,8 @@ from django.utils.safestring import mark_safe
 import json
 from django.http import HttpResponse
 from moon.log_repository import get_log_manager
-from moon.core.pip import get_pip, PIP
+from moon.core.pip import get_pip
+from moon.core.pap import get_pap
 # import mongoengine
 
 
@@ -57,8 +58,8 @@ def intra_extensions(request):
     User interface
     Render one user retrieve from OpenStack Keystone server
     """
-    pap = PAP(kclient=get_keystone_client(request))
-    extensions = pap.admin_manager.get_intra_extensions()
+    pap = get_pap()
+    extensions = pap.get_intra_extensions()
     return render(request, "moon/intra-extensions.html", {
         "extensions": extensions
     })
@@ -70,7 +71,7 @@ def intra_extension(request, id=None):
     User interface
     Render one user retrieve from OpenStack Keystone server
     """
-    pap = PAP(kclient=get_keystone_client(request))
+    pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         if "rules_list" in request.POST:
             name = request.POST.get("name", "NO-NAME")
@@ -94,10 +95,10 @@ def intra_extension(request, id=None):
                     continue
             rule["s_attr"] = s_attr
             rule["o_attr"] = o_attr
-            extension = pap.admin_manager.get_intra_extensions(uuid=id)[0]
+            extension = pap.get_intra_extensions(uuid=id)[0]
             extension.add_rule(rule)
     try:
-        extension = pap.admin_manager.get_intra_extensions(uuid=id)[0]
+        extension = pap.get_intra_extensions(uuid=id)[0]
     except IndexError:
         extension = {}
     return render(request, "moon/intra-extensions.html", {
@@ -112,7 +113,7 @@ def inter_extensions(request):
     Render one user retrieve from OpenStack Keystone server
     """
     error = ""
-    pap = PAP(kclient=get_keystone_client(request))
+    pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         post_args = request.POST
         requesting = post_args["requesting"]
@@ -128,15 +129,15 @@ def inter_extensions(request):
         if requesting == requested:
             error = "Requesting tenant and requested are identical."
         else:
-            pap.admin_manager.add_inter_extension(
+            pap.add_inter_extension(
                 requesting=requesting,
                 requested=requested,
                 connexion_type=type,
                 requesting_subjects=_subjects,
                 requested_objects=_objects
             )
-    extensions = pap.admin_manager.get_inter_extensions()
-    tenants = pap.admin_manager.get_tenant()
+    extensions = pap.get_inter_extensions()
+    tenants = pap.get_tenant()
     # subjects = pap.admin_manager.get_users(
     #     tenant_uuid=tenants[0].uuid
     # )
@@ -156,8 +157,8 @@ def inter_extensions(request):
 
 @login_required(login_url='/auth/login/')
 def get_subjects(request, id=None):
-    pap = PAP(kclient=get_keystone_client(request))
-    subjects = pap.admin_manager.get_users(
+    pap = get_pap()
+    subjects = pap.get_users(
         tenant_uuid=id
     )
     return HttpResponse(json.dumps({"subjects": subjects}))
@@ -165,8 +166,8 @@ def get_subjects(request, id=None):
 
 @login_required(login_url='/auth/login/')
 def get_objects(request, id=None):
-    pap = PAP(kclient=get_keystone_client(request))
-    objects = pap.admin_manager.get_objects(
+    pap = get_pap()
+    objects = pap.get_objects(
         tenant_uuid=id
     )
     # return HttpResponse(json.dumps({"objects": objects}), mimetype='application/json')
@@ -180,11 +181,11 @@ def inter_extension(request, id=None):
     Render one user retrieve from OpenStack Keystone server
     """
     error = ""
-    pap = PAP(kclient=get_keystone_client(request))
-    extension = pap.admin_manager.get_inter_extensions(uuid=id)[0]
+    pap = get_pap()
+    extension = pap.get_inter_extensions(uuid=id)[0]
     if request.META['REQUEST_METHOD'] == "DELETE":
         #TODO: check if deletion is OK
-        pap.admin_manager.delete_inter_extension(uuid=id)
+        pap.delete_inter_extension(uuid=id)
         return HttpResponse(json.dumps({'delete': True}))
         # return render(request, "moon/inter-extensions.html", {
         #     "extensions": pap.admin_manager.get_inter_extensions(),
@@ -193,7 +194,7 @@ def inter_extension(request, id=None):
         # })
     return render(request, "moon/inter-extensions.html", {
         "extension": extension,
-        "tenants": pap.admin_manager.get_tenant(),
+        "tenants": pap.get_tenant(),
         "error": error,
     })
 
@@ -205,7 +206,7 @@ def intra_extension_attributes(request, id=None, type=None):
     Render one user retrieve from OpenStack Keystone server
     """
     error = ""
-    pap = PAP(kclient=get_keystone_client(request))
+    pap = get_pap()
     attributes = []
     if type.lower() == "subject":
         attributes = pap.get_subject_attributes(extension_uuid=id)
@@ -222,22 +223,22 @@ def get_log(dictionary, key):
 
 @register.filter
 def get_tenant_name(uuid):
-    pap = PAP()
-    tenant = pap.admin_manager.get_tenant(tenant_uuid=uuid)[0]
+    pap = get_pap()
+    tenant = pap.get_tenant(tenant_uuid=uuid)[0]
     return tenant.name
 
 
 @register.filter
 def get_vent_name(uuid):
-    pap = PAP()
-    vent = pap.admin_manager.get_virtual_entity(uuid=uuid)[0]
+    pap = get_pap()
+    vent = pap.get_virtual_entity(uuid=uuid)[0]
     return vent.name
 
 
 @register.filter
 def get_vent_category_name(uuid):
-    pap = PAP()
-    vent = pap.admin_manager.get_virtual_entity(uuid=uuid)[0]
+    pap = get_pap()
+    vent = pap.get_virtual_entity(uuid=uuid)[0]
     return vent.name
 
 
@@ -248,8 +249,8 @@ def rule_length(dictionary):
 
 @register.filter
 def is_managed(tenant):
-    pap = PAP()
-    if pap.admin_manager.get_intra_extensions(tenant_uuid=tenant["uuid"]):
+    pap = get_pap()
+    if pap.get_intra_extensions(tenant_uuid=tenant["uuid"]):
         return True
     else:
         return False
@@ -262,21 +263,21 @@ def logs_repository(request):
     """
     logs = LOGS.read(limit=30)
     logs.reverse()
-    pap = PAP()
+    pap = get_pap()
     for log in logs:
         if type(log.value) is dict:
             if log.value["object_tenant"] != "None":
-                extension = pap.admin_manager.get_intra_extensions(tenant_uuid=log.value["object_tenant"])
+                extension = pap.get_intra_extensions(tenant_uuid=log.value["object_tenant"])
                 if extension:
                     log.value["subject"] = extension.get_subject(uuid=log.value["subject"])["name"]
                 try:
-                    log.value["object_tenant"] = pap.admin_manager.get_tenant(
+                    log.value["object_tenant"] = pap.get_tenant(
                         tenant_uuid=log.value["object_tenant"]
                     )[0].name
                 except IndexError:
                     pass
             if log.value["subject_tenant"] != "None":
-                extension = pap.admin_manager.get_intra_extensions(tenant_uuid=log.value["subject_tenant"])
+                extension = pap.get_intra_extensions(tenant_uuid=log.value["subject_tenant"])
                 if extension:
                     try:
                         log.value["subject"] = extension.get_subject(uuid=log.value["subject"])["name"]
@@ -285,7 +286,7 @@ def logs_repository(request):
                     except IndexError:
                         pass
                 try:
-                    log.value["subject_tenant"] = pap.admin_manager.get_tenant(
+                    log.value["subject_tenant"] = pap.get_tenant(
                         tenant_uuid=log.value["subject_tenant"]
                     )[0].name
                 except AttributeError:
@@ -315,8 +316,8 @@ def logs_repository(request):
 
 @login_required(login_url='/auth/login/')
 def get_tenants(request):
-    pip = PIP(kclient=get_keystone_client(request))
-    tenants = pip.get_tenants()
+    pap = get_pip()
+    tenants = pap.get_tenants()
     return render(request, "moon/tenants.html", {
         "tenants": tenants
     })
@@ -327,21 +328,37 @@ def get_tenant(request, id=None):
     return render(request, "moon/tenants.html", {})
 
 
+@register.filter
+def has_subject_attribute(tenant, object_uuid=None):
+    pap = get_pap()
+    ext = pap.get_intra_extensions(tenant_uuid=tenant["uuid"])
+    return ext.has_subject_attributes(uuid=object_uuid)
+
+
 @login_required(login_url='/auth/login/')
 def roles(request, id=None):
     """
     Users interface
     Render all roles retrieve from OpenStack Keystone server
     """
-    pip = PIP(kclient=get_keystone_client(request))
+    pap = get_pap()
+    pip = get_pip()
     if request.META['REQUEST_METHOD'] == "POST":
-        pip.create_roles(name=request.POST["name"], description=request.POST["description"])
-    if request.META['REQUEST_METHOD'] == "DELETE":
+        print(request.POST)
+        tenants = []
+        for key in request.POST:
+            if len(key) == 32 and request.POST[key] == "on":
+                tenants.append(key)
+        pap.create_roles(name=request.POST["name"], description=request.POST["description"], tenants=tenants)
+    elif request.META['REQUEST_METHOD'] == "DELETE":
         #TODO: check if deletion is OK
-        pip.delete_roles(uuid=id)
+        pap.delete_roles(uuid=id)
         return HttpResponse(json.dumps({'delete': True}))
     #TODO add selection by tenant
     tenant = list(pip.get_tenants(name="admin"))[0]
     _roles = list(pip.get_roles(tenant=tenant))
-    return render(request, "moon/roles.html", {"roles": _roles})
+    return render(request, "moon/roles.html", {
+        "roles": _roles,
+        "tenants": list(pap.get_tenants())
+    })
 

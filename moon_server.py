@@ -2,7 +2,7 @@
 import os
 import sys
 import argparse
-from moon.core.pip import get_pip
+from moon.core.pap import get_pap
 import logging
 from moon.log_repository import get_log_manager
 
@@ -28,21 +28,21 @@ if __name__ == "__main__":
                                                                 "show what it would do.")
     args = parser.parse_args()
 
-    pip = get_pip()
+    pap = get_pap()
 
     if args.dbdrop:
-        pip.delete_tables()
+        pap.delete_tables()
     elif args.run:
         LOGS.write("Starting application")
         if args.keystone_sync:
-            pip.sync_db_with_keystone()
+            pap.sync_db_with_keystone()
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "moon.gi.settings")
         from django.core.management import execute_from_command_line
         d_args = [sys.argv[0]]
         d_args.extend(args.djangoargs)
         execute_from_command_line(d_args)
     elif args.keystone_sync:
-        pip.sync_db_with_keystone()
+        pap.sync_db_with_keystone()
     # elif args.test:
     #     sys.argv.remove("--test")
     #     # TODO: add tests

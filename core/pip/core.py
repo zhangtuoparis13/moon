@@ -2,17 +2,9 @@
 Policy information Point
 Information gathering from the infrastructure
 """
-# from moon.info_repository import driver_dispatcher as dd
-from moon import settings
-# from moon.intra_extension_manager import get_dispatcher as get_intra_dd
-# from moon.inter_extension_manager import get_dispatcher as get_inter_dd
-from moon.core.pdp.inter_extension import get_inter_extentions
-from moon.core.pdp.intra_extension import get_intra_extentions
 from moon.tools.openstack_credentials import get_keystone_creds, get_nova_creds
 import logging
 from uuid import uuid4
-import json
-import os
 from keystoneclient.openstack.common.apiclient.exceptions import Unauthorized, Forbidden
 
 logger = logging.getLogger("moon.pip")
@@ -101,9 +93,9 @@ class PIP:
                 o["enabled"] = True
             o["category"] = "role"
             o["uuid"] = role.id
-            if name and name != name:
+            if name and o["name"] != name:
                 continue
-            if uuid and uuid != uuid:
+            if uuid and o["uuid"] != uuid:
                 continue
             yield o
 
@@ -153,7 +145,7 @@ class PIP:
                 assignments["attributes"].extend(groups)
             yield assignments
 
-    def get_tenants(self, name=None):
+    def get_tenants(self, uuid=None, name=None):
         for tenant in self.kclient.projects.list():
             t = dict()
             t["name"] = tenant.name
@@ -169,186 +161,15 @@ class PIP:
             t["uuid"] = tenant.id
             if name and name != t["name"]:
                 continue
+            if uuid and uuid != t["uuid"]:
+                continue
             yield t
 
     def create_roles(self, name=None, description=""):
-        if name and len(name) > 0:
-            return self.kclient.roles.create(name=name, description=description)
+        return self.kclient.roles.create(name=name, description=description)
 
     def delete_roles(self, uuid=None):
-        if uuid and len(uuid) > 0:
-            role = list(self.get_roles(uuid=uuid, tenant=list(pip.get_tenants(name="admin"))[0]))[0]
-            if role["value"] not in ("admin", "_member_", "Member", "heat_stack_user", "service", "heat_stack_owner"):
-                return self.kclient.roles.delete(uuid)
-
-    def update_from_json(self, existing_extension=None, tenant=None, json_data=None):
-        json_data["tenant"] = {"uuid": tenant["uuid"], "name": tenant["name"]}
-        subjects = list(self.get_subjects(tenant=tenant))
-        subjects_uuid = map(lambda x: x["uuid"], subjects)
-        for sbj in existing_extension.get_subject():
-            if sbj["uuid"] not in subjects_uuid:
-                subjects.append(sbj)
-        json_data["perimeter"]["subjects"] = subjects
-        objects = list(self.get_objects(tenant=tenant))
-        objects_uuid = map(lambda x: x["uuid"], objects)
-        for obj in existing_extension.get_object():
-            if obj["uuid"] not in objects_uuid:
-                objects.append(obj)
-        json_data["perimeter"]["objects"] = objects
-        s_attr = []
-        s_attr_assign = []
-        if "roles" in list(json_data["configuration"]["metadata"]["subject"]):
-            roles = list(self.get_roles(tenant=tenant))
-            roles_uuid = map(lambda x: x["uuid"], roles)
-            for role in existing_extension.get_subject_attributes(category="role"):
-                if role["uuid"] not in roles_uuid:
-                    roles.append(role)
-            s_attr.extend(roles)
-            s_attr_assign.extend(list(self.get_users_roles_assignment(tenant_uuid=tenant["uuid"])))
-            s_attr_assign.extend(list(self.get_users_roles_assignment(
-                tenant_uuid=tenant["uuid"],
-                users=json_data["perimeter"]["subjects"])))
-        if "groups" in list(json_data["configuration"]["metadata"]["subject"]):
-            groups = list(self.get_groups(tenant=tenant))
-            groups_uuid = map(lambda x: x["uuid"], groups)
-            for group in existing_extension.get_subject_attributes(category="group"):
-                if group["uuid"] not in groups_uuid:
-                    groups.append(group)
-            s_attr.extend(groups)
-            s_attr_assign.extend(list(self.get_users_groups_assignment(tenant_uuid=tenant["uuid"])))
-        json_data["profiles"]["s_attr"] = s_attr
-        s_attr_assign_objects = map(lambda x: x["subject"], s_attr_assign)
-        for relation in existing_extension.get_subject_attributes_relation():
-            if relation["subject"] not in s_attr_assign_objects:
-                s_attr_assign.append(relation)
-        json_data["profiles"]["s_attr_assign"] = s_attr_assign
-        json_data["profiles"]["o_attr"] = existing_extension.get_object_attributes()
-        o_attr_assign_objects = map(lambda x: x["object"], json_data["profiles"]["o_attr_assign"])
-        o_attr_assign = json_data["profiles"]["o_attr_assign"]
-        for relation in existing_extension.get_object_attributes_relation():
-            if relation["object"] not in o_attr_assign_objects:
-                o_attr_assign.append(relation)
-        json_data["profiles"]["o_attr_assign"] = o_attr_assign
-        if "rules" not in json_data["configuration"].keys():
-                json_data["configuration"]["rules"] = []
-        rules = json_data["configuration"]["rules"]
-        rules_names = map(lambda x: x["name"], json_data["configuration"]["rules"])
-        for rule in existing_extension.get_rules():
-            if rule["name"] not in rules_names:
-                rules.append(rule)
-        json_data["configuration"]["rules"] = rules
-        return json_data
-
-    def new_intra_extension(self, tenant, test_only=False, json_data=None):
-        existing_extension = get_intra_extentions().get(attributes={"tenant.uuid": tenant["uuid"]})
-        if not json_data:
-            filename = getattr(settings, "DEFAULT_EXTENSION_TABLE")
-            #TODO: deals with errors in json file
-            json_data = json.loads(file(filename).read())
-        if existing_extension:
-            json_data["uuid"] = existing_extension[0].uuid
-            json_data = self.update_from_json(
-                existing_extension=existing_extension[0],
-                tenant=tenant,
-                json_data=json_data)
-        else:
-            json_data["uuid"] = str(uuid4()).replace("-", "")
-            json_data["tenant"] = {"uuid": tenant["uuid"], "name": tenant["name"]}
-            json_data["perimeter"]["subjects"] = list(self.get_subjects(tenant=tenant))
-            json_data["perimeter"]["objects"] = list(self.get_objects(tenant=tenant))
-            attributes = list(json_data["configuration"]["metadata"]["subject"])
-            s_attr = json_data["profiles"]["s_attr"]
-            s_attr_assign = []
-            #TODO: we don't know in advance the number of subject attributes
-            if "roles" in attributes:
-                roles = list(self.get_roles(tenant=tenant))
-                s_attr.extend(roles)
-                s_attr_assign.extend(list(self.get_users_roles_assignment(
-                    tenant_uuid=tenant["uuid"],
-                    users=json_data["perimeter"]["subjects"])))
-                attributes.remove("roles")
-            if "groups" in attributes:
-                groups = list(self.get_groups(tenant=tenant))
-                s_attr.extend(groups)
-                s_attr_assign.extend(list(self.get_users_groups_assignment(
-                    tenant_uuid=tenant["uuid"],
-                    users=json_data["perimeter"]["subjects"])))
-                attributes.remove("groups")
-            json_data["profiles"]["s_attr"] = s_attr
-            json_data["profiles"]["s_attr_assign"] = s_attr_assign
-            # o_attr_assign = json_data["profiles"]["o_attr_assign"]
-            # json_data["profiles"]["o_attr_assign"] = o_attr_assign
-            if "rules" not in json_data["configuration"].keys():
-                json_data["configuration"]["rules"] = []
-            if len(attributes) > 0:
-                logger.warning("All attributes have not been parsed in configuration.metadata.subject {} (in {})".format(
-                    attributes,
-                    json_data["configuration"]["protocol"]
-                ))
-        if not test_only:
-            get_intra_extentions().new_from_json(json_data=json_data)
-
-    def sync_db_with_keystone(self, tenant_uuid=None):
-        logs = ""
-        json_data = None
-        # #synchronize all intra extensions
-        self.set_creds_for_tenant()
-        for tenant in self.get_tenants():
-            #TODO: if new tenant
-            #       -> need to add a new intra extension
-            #       -> need to add a new inter extension with a new vent
-            #TODO: if not new tenant -> need to synchronize users, roles, ...
-            # extension = get_intra_dd().sync_extension(
-            #     tenant_uuid=tenant["uuid"],
-            #     users=self.get_subjects(client),
-            #     roles=self.get_roles(client),
-            #     groups=self.get_groups(client))
-            if tenant_uuid and not tenant_uuid == tenant["uuid"]:
-                continue
-            SYNC_CONF_FILENAME = getattr(settings, "SYNC_CONF_FILENAME", None)
-            sync = json.loads(open(SYNC_CONF_FILENAME).read())
-            if SYNC_CONF_FILENAME:
-                if tenant["name"] not in map(lambda x: x["name"], sync["tenants"]):
-                    logs += "Tenant {} not in configuration file -> KO".format(tenant["name"])
-                    continue
-                for conf in sync["tenants"]:
-                    if conf["name"] == tenant["name"]:
-                        if not os.path.isfile(conf["extension_conf"]):
-                            raise Exception("Unable to find configuration file {}".format(conf["extension_conf"]))
-                        json_data = json.loads(file(conf["extension_conf"]).read())
-            logger.info("Syncing tenant {}".format(tenant["name"]))
-            logs += "Syncing {}".format(tenant["name"])
-            try:
-                self.set_creds_for_tenant(tenant["name"])
-            except Unauthorized:
-                logger.warning("Cannot authenticate in tenant {}".format(tenant["name"]))
-                logs += " KO (Cannot authenticate in tenant)\n"
-                continue
-            get_inter_extentions().add_tenant(
-                name=tenant["name"],
-                description=tenant["description"],
-                enabled=tenant["enabled"],
-                domain=tenant["domain"],
-                uuid=tenant["uuid"]
-            )
-            try:
-                self.new_intra_extension(tenant=tenant, json_data=json_data)
-                logs += " OK\n"
-            except Forbidden:
-                logger.warning("Cannot list users in tenant {}".format(tenant["name"]))
-                logs += " KO (Cannot list users in tenant)\n"
-                continue
-        # #synchronize all inter extensions
-        # for subject in self.get_subjects(client):
-        #     get_intra_dd().add_user(subject)
-        # for role in self.get_roles(client):
-        #     get_intra_dd().add_role(role)
-        return logs
-
-    @staticmethod
-    def delete_tables():
-        get_intra_extentions().delete_tables()
-        get_inter_extentions().delete_tables()
+        return self.kclient.roles.delete(uuid)
 
 
 pip = None
