@@ -4,14 +4,13 @@ TODO: write a documentation about driver installation
 
 from nova.openstack.common.middleware import base
 from nova import wsgi
-import webob.dec
-import urllib2
-import urllib
-import re
+# import webob.dec
+# import urllib2
+# import urllib
+# import re
 import json
-import uuid
-import hashlib
-from moon import settings
+# import uuid
+# import hashlib
 from nova.openstack.common import log as logging
 from oslo.config import cfg
 from moon import tools
