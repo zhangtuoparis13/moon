@@ -19,7 +19,8 @@
                 ]
             },
             "rules": [],
-            "protocol": "/etc/moon/rbac_conf/inter_rbac_protocol.py:RBACIntraExtension"
+            "protocol": "/etc/moon/rbac_conf/inter_rbac_protocol.py:RBACIntraExtension",
+            "administration": "/etc/moon/rbac_conf/rbac_administration.json"
         },
 
         "profiles": {
