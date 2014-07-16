@@ -58,7 +58,8 @@
                     "description": ""
                 }
             ],
-            "protocol": "/etc/moon/mls_conf/inter_mls_protocol.py:MLSIntraExtension"
+            "protocol": "/etc/moon/mls_conf/inter_mls_protocol.py:MLSIntraExtension",
+            "administration": ""
         },
 
         "profiles": {

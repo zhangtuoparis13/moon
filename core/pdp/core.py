@@ -9,6 +9,8 @@ from moon.core.pdp.intra_extension import get_intra_extentions
 import logging
 from moon import settings
 import re
+import json
+from uuid import uuid4
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +38,7 @@ class AuthzManager:
                                       "or Subject tenant cannot be managed."
                 continue
             auth["extension_name"] = extension.uuid
-            auth["tenant_name"] = extension.tenant["name"]
+            auth["tenant_name"] = extension.tenant["__name"]
             # if not extension.has_object_attributes(name=auth["object_type"]):
             #     logger.warning("Unknown object {}".format(auth["object_name"]))
             # else:
@@ -74,7 +76,7 @@ class AuthzManager:
                         category=s_rule["category"],
                         attribute_uuid=s_rule["value"]))
                     if not _auth:
-                        continue
+                        break
                 for o_rule in rule["o_attr"]:
                     if o_rule["category"] == "action":
                         has_assignment = extension.has_assignment(
@@ -126,7 +128,7 @@ class AuthzManager:
                 main_auth = reduce(lambda x, y: x and y, _auth)
                 if main_auth:
                     auth["auth"] = True
-                    auth["rule_name"] = rule["name"]
+                    auth["rule_name"] = rule["__name"]
                     auth["tenant_name"] = auth["subject_tenant"]
                     auth["message"] = ""
                     break
@@ -241,8 +243,70 @@ class AuthzManager:
         return auth
 
 
+class AdminManager:
+
+    def __init__(self):
+        # self.__conf_filename = getattr(settings, "INTERNAL_AUTHZ_CONF")
+        # self.__conf = json.loads(open(self.__conf_filename).read())
+        # self.__dispatcher = get_intra_dispatcher()
+        # ext = self.__dispatcher.list(type="internalextension")
+        # if not ext:
+        #     self.__uuid = str(uuid4()).replace("-", "")
+        #     self.__name = self.__conf["name"]
+        #     self.__metadata = self.__conf["configuration"]["metadata"]
+        #     self.__description = self.__conf["description"]
+        #     self.__tenant = self.__conf["tenant"]
+        #     self.__model = self.__conf["model"]
+        #     self.__protocol = self.__conf["configuration"]["protocol"]
+        #     self.__objects = self.__conf["perimeter"]["objects"]
+        #     self.__subjects = self.__conf["perimeter"]["subjects"]
+        #     self.__rules = self.__conf["configuration"]["rules"]
+        #     self.__s_attr = self.__conf["profiles"]["s_attr"]
+        #     self.__o_attr = self.__conf["profiles"]["o_attr"]
+        #     self.__s_attr_assign = self.__conf["profiles"]["s_attr_assign"]
+        #     self.__o_attr_assign = self.__conf["profiles"]["o_attr_assign"]
+        #     self.sync()
+        # else:
+        #     ext = ext[0]
+        #     self.__uuid = ext["uuid"]
+        #     self.__name = ext["name"]
+        #     self.__metadata = ext["configuration"]["metadata"]
+        #     self.__description = ext["description"]
+        #     self.__tenant = ext["tenant"]
+        #     self.__model = ext["model"]
+        #     self.__protocol = ext["configuration"]["protocol"]
+        #     self.__objects = ext["perimeter"]["objects"]
+        #     self.__subjects = ext["perimeter"]["subjects"]
+        #     self.__rules = ext["configuration"]["rules"]
+        #     self.__s_attr = ext["profiles"]["s_attr"]
+        #     self.__o_attr = ext["profiles"]["o_attr"]
+        #     self.__s_attr_assign = ext["profiles"]["s_attr_assign"]
+        #     self.__o_attr_assign = ext["profiles"]["o_attr_assign"]
+        pass
+
+    def authz(self, user_uuid, object_name, tenant_name, mode):
+        auth = {
+            "auth": False,
+            "rule_name": "None",
+            "message": "",
+            "subject": user_uuid,
+            "action": mode,
+            "object_name": object_name,
+            "tenant_name": tenant_name,
+            "extension_name": "Extension not found",
+        }
+        for extension in get_intra_extentions().get():
+            return extension.authz(auth)
+        return auth
+
 
 manager = AuthzManager()
+
+admin_manager = AdminManager()
+
+
+def get_admin_manager():
+    return admin_manager
 
 
 def get_manager():

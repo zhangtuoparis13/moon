@@ -4,14 +4,13 @@ from django.contrib.auth.decorators import login_required
 from django.template.defaultfilters import register
 from keystoneclient.v3 import client
 from gi import settings
-from moon.core.pap.core import PAP
 from django.utils.safestring import mark_safe
 import json
 from django.http import HttpResponse
 from moon.log_repository import get_log_manager
 from moon.core.pip import get_pip
 from moon.core.pap import get_pap
-# import mongoengine
+from moon.core.pdp.authz import save_auth
 
 
 logger = logging.getLogger("moon.django")
@@ -44,14 +43,15 @@ def sync(request, id=None):
     """
     Interface of the application for syncing Moon database with Keystone and Nova databases
     """
-    pip = get_pip()
-    sync_results = pip.sync_db_with_keystone(tenant_uuid=id)
+    pap = get_pap()
+    sync_results = pap.sync_db_with_keystone(tenant_uuid=id)
     sync_results = sync_results.replace("\n", "<br/>\n")
     sync_results = sync_results.replace("KO", "<span class=\"notauthorized\">Error</span>\n")
     sync_results = sync_results.replace("OK", "<span class=\"authorized\">OK</span>\n")
     return render(request, "moon/base_site.html", {"sync_results": mark_safe(sync_results)})
 
 
+@save_auth
 @login_required(login_url='/auth/login/')
 def intra_extensions(request):
     """
@@ -66,6 +66,7 @@ def intra_extensions(request):
 
 
 @login_required(login_url='/auth/login/')
+@save_auth
 def intra_extension(request, id=None):
     """
     User interface
@@ -107,6 +108,7 @@ def intra_extension(request, id=None):
 
 
 @login_required(login_url='/auth/login/')
+@save_auth
 def inter_extensions(request):
     """
     User interface
@@ -156,7 +158,8 @@ def inter_extensions(request):
 
 
 @login_required(login_url='/auth/login/')
-def get_subjects(request, id=None):
+@save_auth
+def get_subjects(request, id=None, **kwargs):
     pap = get_pap()
     subjects = pap.get_users(
         tenant_uuid=id
@@ -165,6 +168,7 @@ def get_subjects(request, id=None):
 
 
 @login_required(login_url='/auth/login/')
+@save_auth
 def get_objects(request, id=None):
     pap = get_pap()
     objects = pap.get_objects(
@@ -175,6 +179,7 @@ def get_objects(request, id=None):
 
 
 @login_required(login_url='/auth/login/')
+@save_auth
 def inter_extension(request, id=None):
     """
     User interface
@@ -200,6 +205,7 @@ def inter_extension(request, id=None):
 
 
 @login_required(login_url='/auth/login/')
+@save_auth
 def intra_extension_attributes(request, id=None, type=None):
     """
     User interface
@@ -257,6 +263,7 @@ def is_managed(tenant):
 
 
 @login_required(login_url='/auth/login/')
+@save_auth
 def logs_repository(request):
     """
     Log viewer interface
@@ -269,7 +276,7 @@ def logs_repository(request):
             if log.value["object_tenant"] != "None":
                 extension = pap.get_intra_extensions(tenant_uuid=log.value["object_tenant"])
                 if extension:
-                    log.value["subject"] = extension.get_subject(uuid=log.value["subject"])["name"]
+                    log.value["subject"] = extension.get_subject(uuid=log.value["subject"])["__name"]
                 try:
                     log.value["object_tenant"] = pap.get_tenant(
                         tenant_uuid=log.value["object_tenant"]
@@ -280,7 +287,7 @@ def logs_repository(request):
                 extension = pap.get_intra_extensions(tenant_uuid=log.value["subject_tenant"])
                 if extension:
                     try:
-                        log.value["subject"] = extension.get_subject(uuid=log.value["subject"])["name"]
+                        log.value["subject"] = extension.get_subject(uuid=log.value["subject"])["__name"]
                     except TypeError:
                         pass
                     except IndexError:
@@ -315,16 +322,19 @@ def logs_repository(request):
 
 
 @login_required(login_url='/auth/login/')
-def get_tenants(request):
-    pap = get_pip()
-    tenants = pap.get_tenants()
+@save_auth
+def get_tenants(request, **kwargs):
+    pap = get_pap()
+    pip = get_pip()
+    tenants = pip.get_tenants(pap=pap)
     return render(request, "moon/tenants.html", {
         "tenants": tenants
     })
 
 
 @login_required(login_url='/auth/login/')
-def get_tenant(request, id=None):
+@save_auth
+def get_tenant(request, id=None, **kwargs):
     return render(request, "moon/tenants.html", {})
 
 
@@ -336,6 +346,7 @@ def has_subject_attribute(tenant, object_uuid=None):
 
 
 @login_required(login_url='/auth/login/')
+@save_auth
 def roles(request, id=None):
     """
     Users interface
@@ -349,7 +360,7 @@ def roles(request, id=None):
         for key in request.POST:
             if len(key) == 32 and request.POST[key] == "on":
                 tenants.append(key)
-        pap.create_roles(name=request.POST["name"], description=request.POST["description"], tenants=tenants)
+        pap.create_roles(name=request.POST["__name"], description=request.POST["description"], tenants=tenants)
     elif request.META['REQUEST_METHOD'] == "DELETE":
         #TODO: check if deletion is OK
         pap.delete_roles(uuid=id)
@@ -362,3 +373,14 @@ def roles(request, id=None):
         "tenants": list(pap.get_tenants())
     })
 
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def authz(request, id=None):
+    """
+    Internal authorisation interface
+    """
+    pap = get_pap()
+    pip = get_pip()
+    return render(request, "moon/internal_authz.html", {
+    })

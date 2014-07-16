@@ -31,7 +31,9 @@ class Dispatcher:
                       description=None,
                       tenant=None,
                       model=None,
-                      protocol=None
+                      type=None,
+                      protocol=None,
+                      administration=None
                       ):
         return self.db.new_extension(
             uuid=uuid,
@@ -44,7 +46,10 @@ class Dispatcher:
             description=description,
             tenant=tenant,
             model=model,
-            protocol=protocol)
+            type=type,
+            protocol=protocol,
+            administration=administration
+        )
 
     def list(self, type="extension"):
         return self.db.list(type=type)

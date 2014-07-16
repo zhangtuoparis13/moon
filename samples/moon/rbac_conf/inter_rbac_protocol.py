@@ -4,31 +4,31 @@ from uuid import uuid4
 
 class RBACIntraExtension(IntraExtension):
 
-    def __init__(
-            self,
-            name="",
-            uuid=None,
-            subjects=None,
-            objects=None,
-            metadata=None,
-            rules=None,
-            profiles=None,
-            description="",
-            tenant=None,
-            model="RBAC",
-            protocol=None):
-        super(RBACIntraExtension, self).__init__(
-            name=name,
-            uuid=uuid,
-            subjects=subjects,
-            objects=objects,
-            metadata=metadata,
-            rules=rules,
-            profiles=profiles,
-            description=description,
-            tenant=tenant,
-            model=model,
-            protocol=protocol)
+    # def __init__(
+    #         self,
+    #         name="",
+    #         uuid=None,
+    #         subjects=None,
+    #         objects=None,
+    #         metadata=None,
+    #         rules=None,
+    #         profiles=None,
+    #         description="",
+    #         tenant=None,
+    #         model="RBAC",
+    #         protocol=None):
+    #     super(RBACIntraExtension, self).__init__(
+    #         name=name,
+    #         uuid=uuid,
+    #         subjects=subjects,
+    #         objects=objects,
+    #         metadata=metadata,
+    #         rules=rules,
+    #         profiles=profiles,
+    #         description=description,
+    #         tenant=tenant,
+    #         model=model,
+    #         protocol=protocol)
 
     def add_object(self, uuid=None, name=None, enabled=True, description=""):
         #HYPOTHESIS: objects are only virtual servers, so linking all objects to type server

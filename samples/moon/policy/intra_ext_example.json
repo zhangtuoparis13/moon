@@ -64,12 +64,27 @@
                         { "category": "action", "value": "*" }
                     ],
                     "description": "Authorize the start of VM by users who have the admin role."
+                },
+                {
+                    "name": "rule_example_mls",
+                    "s_attr": [
+                        { "category": "security_level", "value": "high" }
+                    ],
+                    "o_attr": [
+                        { "category": "security_level", "value": "medium" },
+                        { "category": "action", "value": "get" }
+                    ],
+                    "description": "Authorize the start of VM by users who have the admin role."
                 }
             ]
         },
 
         "profiles": {
-            "s_attr": [],
+            "s_attr": [
+                { "uuid": "high-security", "category": "security_level", "value": "high", "description": "high security needed" },
+                { "uuid": "medium-security", "category": "security_level", "value": "medium", "description": "medium security needed" },
+                { "uuid": "low-security", "category": "security_level", "value": "low", "description": "low security needed" }
+            ],
             "o_attr": [
                 { "uuid": "type-tenant", "category": "type", "value": [ "tenant", "project" ], "description": "" },
                 { "uuid": "type-cloudpipe", "category": "type", "value": "cloudpipe", "description": "" },
@@ -138,14 +153,20 @@
                 { "uuid": "action-connect", "category": "action", "value": "connect", "description": "" },
                 { "uuid": "action-put", "category": "action", "value": "put", "description": "" },
 
-                { "uuid": "high-security", "category": "security", "value": "50", "description": "high security needed" },
-                { "uuid": "medium-security", "category": "security", "value": "30", "description": "medium security needed" },
-                { "uuid": "low-security", "category": "security", "value": "10", "description": "low security needed" },
+                { "uuid": "high-security", "category": "security_level", "value": "high", "description": "high security needed" },
+                { "uuid": "medium-security", "category": "security_level", "value": "medium", "description": "medium security needed" },
+                { "uuid": "low-security", "category": "security_level", "value": "low", "description": "low security needed" },
                 { "uuid": "high-size", "category": "size", "value": "50", "description": "high size needed" },
                 { "uuid": "medium-size", "category": "size", "value": "30", "description": "medium size needed" },
                 { "uuid": "low-size", "category": "size", "value": "10", "description": "low size needed" }
             ],
-            "s_attr_assign": [],
+            "s_attr_assign": [
+                {
+                    "uuid": "123456567",
+                    "subject": "subject11",
+                    "attributes": [ "high-security" ]
+                }
+            ],
             "o_attr_assign": [
                 {
                     "uuid": "tenant-size",
@@ -156,6 +177,11 @@
                     "uuid": "tenant-type",
                     "object": "tenant",
                     "attributes": [ "storage", "network" ]
+                },
+                {
+                    "uuid": "123456",
+                    "object": "VM1",
+                    "attributes": [ "medium-security" ]
                 }
             ]
         }

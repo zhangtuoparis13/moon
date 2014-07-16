@@ -12,9 +12,12 @@ logger = logging.getLogger("moon.pip")
 
 class PIP:
 
-    def __init__(self, standalone=False, kclient=None):
+    def __init__(self, standalone=False, kclient=None, **kwargs):
         self.kclient = kclient
         self.nclient = None
+        self.kwargs = kwargs
+        self.Unauthorized = Unauthorized
+        self.Forbidden = Forbidden
         if not standalone and not kclient:
             from keystoneclient.v3 import client as keystone_client
             kcreds = get_keystone_creds()
@@ -145,7 +148,7 @@ class PIP:
                 assignments["attributes"].extend(groups)
             yield assignments
 
-    def get_tenants(self, uuid=None, name=None):
+    def get_tenants(self, uuid=None, name=None, pap=None, **kwargs):
         for tenant in self.kclient.projects.list():
             t = dict()
             t["name"] = tenant.name
@@ -159,6 +162,10 @@ class PIP:
                 t["enabled"] = True
             t["domain"] = tenant.domain_id
             t["uuid"] = tenant.id
+            if pap and pap.get_intra_extensions(tenant_uuid=t["uuid"]):
+                t["managed"] = True
+            else:
+                t["managed"] = False
             if name and name != t["name"]:
                 continue
             if uuid and uuid != t["uuid"]:
@@ -175,8 +182,8 @@ class PIP:
 pip = None
 
 
-def get_pip(standalone=False):
+def get_pip(standalone=False, **kwargs):
     global pip
     if not pip:
-        pip = PIP(standalone)
+        pip = PIP(standalone, **kwargs)
     return pip

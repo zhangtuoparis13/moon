@@ -20,6 +20,7 @@ urlpatterns = patterns(
     url(r'^intra-extensions/', 'intra_extensions'),
     url(r'^inter-extensions/', 'inter_extensions'),
     url(r'^tenants/$', 'get_tenants'),
+    url(r'^authz/$', 'authz'),
     url(r'^roles/$', 'roles'),
     # url(r'^users/(?P<id>\w{32})/$', 'user'),
     # url(r'^users/', 'users'),

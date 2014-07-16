@@ -81,6 +81,8 @@ class DB:
             tenant={},
             model=None,
             protocol=None,
+            type="extension",
+            administration="",
             json_data={}):
         """Create a new Intra-extension
         return: created UUID
@@ -103,8 +105,10 @@ class DB:
             profiles=profiles,
             description=description,
             tenant=tenant,
-            type="extension",
-            model=model)
+            type=type,
+            model=model,
+            administration=administration
+        )
 
     def add_user(
             self,

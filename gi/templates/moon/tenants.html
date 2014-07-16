@@ -59,7 +59,7 @@
             <th>Description</th>
         </tr>
         {% for p in tenants %}
-            {% if p|is_managed %}
+            {% if p.managed %}
             <tr class="managed">
             {% else %}
             <tr class="notmanaged">
@@ -67,7 +67,7 @@
 {#                <td><a href="/tenants/{{ p.uuid }}/">Edit</a></td>#}
                 <td>{{ p.name }}</td>
                 <td>{{ p.domain }}</td>
-                {% if p|is_managed %}
+                {% if p.managed %}
                 <td>True<br><a href="/sync/{{ p.uuid }}">Sync again</a></td>
                 {% else %}
                 <td>False<br><a href="/sync/{{ p.uuid }}">Sync ?</a> </td>

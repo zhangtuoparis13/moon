@@ -5,10 +5,7 @@ import os
 import json
 from uuid import uuid4
 from moon import settings
-# from intra_extension_manager import get_dispatcher as get_intra_dispatcher
-# from inter_extension_manager import get_dispatcher as get_inter_dispatcher
-from moon.core.pdp.inter_extension import get_inter_extentions
-from moon.core.pdp.intra_extension import get_intra_extentions
+from moon.core.pdp import get_inter_extentions, get_intra_extentions
 from moon.core.pip import get_pip
 
 logger = logging.getLogger("moon.pap")
@@ -21,35 +18,35 @@ class PAP:
         self.inter_pdps = get_inter_extentions()
         self.tenants = get_inter_extentions().tenants
 
-    def get_intra_extensions(self, uuid=None, tenant_uuid=None, tenant_name=None):
+    def get_intra_extensions(self, uuid=None, tenant_uuid=None, tenant_name=None, **kwargs):
         if not uuid and not tenant_uuid:
             return self.intra_pdps.get()
         elif uuid and uuid in self.intra_pdps.keys():
             return self.intra_pdps.get(uuid=uuid)
         elif tenant_uuid:
             for ext in self.intra_pdps.get():
-                if ext.tenant["uuid"] == tenant_uuid:
+                if ext.get_tenant()["uuid"] == tenant_uuid:
                     return ext
         elif tenant_name:
             for ext in self.intra_pdps.get():
-                if ext.tenant["name"] == tenant_name:
+                if ext.get_tenant()["name"] == tenant_name:
                     return ext
 
     @staticmethod
-    def get_tenants(name=None):
+    def get_tenants(name=None, **kwargs):
         return get_pip().get_tenants(name=name)
 
-    def get_users(self, extension_uuid=None, uuid=None, name=None, tenant_uuid=None):
+    def get_users(self, extension_uuid=None, uuid=None, name=None, tenant_uuid=None, **kwargs):
         if tenant_uuid:
             try:
                 ext = self.intra_pdps.get(attributes={"tenant.uuid": tenant_uuid})[0]
             except IndexError:
                 return []
-            return self.intra_pdps.get(ext.uuid)[0].get_subject(uuid=uuid, name=name)
+            return self.intra_pdps.get(ext.get_uuid())[0].get_subject(uuid=uuid, name=name)
         else:
             return self.intra_pdps.get(extension_uuid)[0].get_subject(uuid=uuid, name=name)
 
-    def get_objects(self, extension_uuid=None, uuid=None, name=None, tenant_uuid=None):
+    def get_objects(self, extension_uuid=None, uuid=None, name=None, tenant_uuid=None, **kwargs):
         if tenant_uuid:
             try:
                 ext = self.intra_pdps.get(attributes={"tenant.uuid": tenant_uuid})[0]
@@ -59,19 +56,19 @@ class PAP:
         else:
             return self.intra_pdps.get(extension_uuid)[0].get_object(uuid=uuid, name=name)
 
-    def get_roles(self, extension_uuid=None, uuid=None, name=None):
+    def get_roles(self, extension_uuid=None, uuid=None, name=None, **kwargs):
         return self.intra_pdps.get(uuid=extension_uuid)[0].get_subject_attributes(uuid=uuid, name=name, category="role")
 
-    def get_groups(self, extension_uuid=None, uuid=None, name=None):
+    def get_groups(self, extension_uuid=None, uuid=None, name=None, **kwargs):
         return self.intra_pdps.get(uuid=extension_uuid)[0].get_subject_attributes(uuid=uuid, name=name, category="group")
 
-    def get_object_attributes(self, extension_uuid=None, uuid=None, name=None, category=None):
+    def get_object_attributes(self, extension_uuid=None, uuid=None, name=None, category=None, **kwargs):
         return self.intra_pdps.get(uuid=extension_uuid)[0].get_object_attributes(uuid=uuid, name=name, category=category)
 
-    def get_subject_attributes(self, extension_uuid=None, uuid=None, name=None, category=None):
+    def get_subject_attributes(self, extension_uuid=None, uuid=None, name=None, category=None, **kwargs):
         return self.intra_pdps.get(uuid=extension_uuid)[0].get_subject_attributes(uuid=uuid, name=name, category=category)
 
-    def get_tenant(self, tenant_uuid=None, tenant_name=None):
+    def get_tenant(self, tenant_uuid=None, tenant_name=None, **kwargs):
         if not tenant_uuid and not tenant_name:
             return self.inter_pdps.list()
         else:
@@ -125,7 +122,8 @@ class PAP:
             tenant_uuid=None,
             attributes=[],
             category="role",
-            description=""):
+            description="",
+            **kwargs):
         if tenant_uuid and type(tenant_uuid) not in (list, tuple):
             tenant_uuid = [tenant_uuid, ]
         for _uuid in tenant_uuid:
@@ -145,7 +143,8 @@ class PAP:
             tenant_uuid=None,
             attributes=[],
             category="type",
-            description=""):
+            description="",
+            **kwargs):
         ext = self.get_intra_extensions(uuid=extension_uuid, tenant_uuid=tenant_uuid)
         if type(attributes) not in (list, tuple):
             attributes = [attributes, ]
@@ -159,7 +158,8 @@ class PAP:
             self,
             extension_uuid=None,
             tenant_uuid=None,
-            attributes=[]):
+            attributes=[],
+            **kwargs):
         ext = self.get_intra_extensions(uuid=extension_uuid, tenant_uuid=tenant_uuid)[0]
         if type(attributes) not in (list, tuple):
             attributes = [attributes, ]
@@ -170,24 +170,25 @@ class PAP:
             self,
             extension_uuid=None,
             tenant_uuid=None,
-            attributes=[]):
+            attributes=[],
+            **kwargs):
         ext = self.get_intra_extensions(uuid=extension_uuid, tenant_uuid=tenant_uuid)
         if type(attributes) not in (list, tuple):
             attributes = [attributes, ]
         for attribute in attributes:
             ext.delete_object_attributes(uuid=attribute)
 
-    def get_virtual_entity(self, uuid=None, name=None):
+    def get_virtual_entity(self, uuid=None, name=None, **kwargs):
         return self.inter_pdps.get_virtual_entity(uuid=uuid, name=name)
 
-    def delete_inter_extension(self, uuid):
+    def delete_inter_extension(self, uuid, **kwargs):
         ext = self.inter_pdps.get(uuid=uuid)[0]
         vent_uuid = ext.get_vent()
         self.intra_pdps.delete_rules(s_attrs=vent_uuid, o_attrs=vent_uuid)
         self.intra_pdps.delete_attributes_from_vent(uuid=vent_uuid)
         self.inter_pdps.delete(uuid=uuid)
 
-    def update_from_json(self, existing_extension=None, tenant=None, json_data=None):
+    def update_from_json(self, existing_extension=None, tenant=None, json_data=None, **kwargs):
         pip = get_pip()
         json_data["tenant"] = {"uuid": tenant["uuid"], "name": tenant["name"]}
         subjects = list(pip.get_subjects(tenant=tenant))
@@ -246,7 +247,7 @@ class PAP:
         json_data["configuration"]["rules"] = rules
         return json_data
 
-    def new_intra_extension(self, tenant, test_only=False, json_data=None):
+    def new_intra_extension(self, tenant, test_only=False, json_data=None, **kwargs):
         pip = get_pip()
         existing_extension = get_intra_extentions().get(attributes={"tenant.uuid": tenant["uuid"]})
         if not json_data:
@@ -254,7 +255,7 @@ class PAP:
             #TODO: deals with errors in json file
             json_data = json.loads(file(filename).read())
         if existing_extension:
-            json_data["uuid"] = existing_extension[0].uuid
+            json_data["uuid"] = existing_extension[0].get_uuid()
             json_data = self.update_from_json(
                 existing_extension=existing_extension[0],
                 tenant=tenant,
@@ -296,7 +297,7 @@ class PAP:
         if not test_only:
             get_intra_extentions().new_from_json(json_data=json_data)
 
-    def sync_db_with_keystone(self, tenant_uuid=None):
+    def sync_db_with_keystone(self, tenant_uuid=None, **kwargs):
         pip = get_pip()
         logs = ""
         json_data = None
@@ -349,12 +350,11 @@ class PAP:
                 continue
         return logs
 
-    @staticmethod
-    def delete_tables():
+    def delete_tables(self):
         get_intra_extentions().delete_tables()
         get_inter_extentions().delete_tables()
 
-    def create_roles(self, name=None, description="", tenants=[]):
+    def create_roles(self, name=None, description="", tenants=[], **kwargs):
         krole = None
         if name and len(name) > 0:
             krole = get_pip().create_roles(name=name, description=description)
@@ -368,7 +368,7 @@ class PAP:
                     description=description)
         return krole
 
-    def delete_roles(self, uuid=None, tenants=[]):
+    def delete_roles(self, uuid=None, tenants=[], **kwargs):
         message = ""
         if tenants and type(tenants) not in (list, tuple):
             tenants = [tenants, ]
@@ -392,8 +392,6 @@ class PAP:
                     for ext in get_intra_extentions().values():
                         self.delete_subject_attributes(extension_uuid=ext.uuid, attributes=[uuid, ])
         return message
-
-
 
 
 pap = PAP()
