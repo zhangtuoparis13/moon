@@ -6,7 +6,7 @@ from sqlalchemy.dialects.mysql import INTEGER as Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from moon import settings
-from moon.info_repository import models #noqa
+# from moon.info_repository import models #noqa
 import logging
 
 logger = logging.getLogger('moon.mysql_driver')

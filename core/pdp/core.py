@@ -74,14 +74,17 @@ class AuthzManager:
                     _auth.append(extension.has_assignment(
                         subject_uuid=auth["subject"],
                         category=s_rule["category"],
-                        attribute_uuid=s_rule["value"]))
-                    if not _auth:
-                        break
+                        attribute_uuid=[], #if not set, the attributes is set to ["admin_uuid"], I don't know why...
+                        attribute_name=s_rule["value"]))
+                    # if not _auth:
+                    #     break
                 for o_rule in rule["o_attr"]:
+                    # print(auth["object_uuid"], o_rule["category"], o_rule["value"])
                     if o_rule["category"] == "action":
                         has_assignment = extension.has_assignment(
                             object_uuid=auth["object_uuid"],
                             category=o_rule["category"],
+                            attribute_uuid=[],
                             attribute_name=auth["action"])
                         if type(o_rule["value"]) not in (list, tuple):
                             o_rule["value"] = [o_rule["value"], ]
@@ -107,10 +110,12 @@ class AuthzManager:
                         has_assignment = extension.has_assignment(
                             object_uuid=auth["object_uuid"],
                             category=o_rule["category"],
+                            attribute_name=[],
                             attribute_uuid=o_rule["value"])
                         _auth.append(has_assignment)
-                    if not _auth:
-                        continue
+                    # print(_auth)
+                    # if not _auth:
+                    #     continue
                     #TODO o_attr -> o_rule
                     #o_attr ou s_attr= {
                     # "uuid": "high-security",

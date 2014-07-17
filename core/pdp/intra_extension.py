@@ -369,7 +369,6 @@ class IntraExtension(object):
             if attribute_name == "*":
                 return True
             if subject_uuid or subject_name:
-                # try:
                 if type(attribute_name) not in (list, tuple):
                     attribute_name = [attribute_name, ]
                 for att in attribute_name:

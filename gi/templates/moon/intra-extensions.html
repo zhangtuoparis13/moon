@@ -10,13 +10,13 @@
 {% endblock %}
 {% block pcontent %}
     {% if extension %}
-        <b>uuid:</b> {{ extension.uuid }}<br/>
-        <b>name:</b> {{ extension.name }}<br/>
+        <b>uuid:</b> {{ extension.get_uuid }}<br/>
+        <b>name:</b> {{ extension.get_name }}<br/>
         <b>description:</b> {{ extension.description  }}<br/>
-        <b>tenant:</b> {{ extension.tenant.name }} ({{ extension.tenant.uuid }})<br/>
+        <b>tenant:</b> {{ extension.get_tenant.name }} ({{ extension.get_tenant.uuid }})<br/>
         <a href="#" onclick="show_rule_add_actions()">Add Rule</a>
         <div id="add_intra_rule">
-            <form action="/intra-extensions/{{ extension.uuid }}/" method="post" id="rules">
+            <form action="/intra-extensions/{{ extension.get_uuid }}/" method="post" id="rules">
                 <table border="1">
                     <tr>
                         <th><label for="name">Name</label></th>
@@ -29,7 +29,7 @@
                         </td>
                         <td>
                             <label for="type">Type</label>
-                            <select id="type" name="type" onchange="get_attributes('type', '{{ extension.uuid }}')">
+                            <select id="type" name="type" onchange="get_attributes('type', '{{ extension.get_uuid }}')">
                                 <option value="none" selected>Select...</option>
                                 <option value="subject">subject</option>
                                 <option value="object">object</option>
@@ -37,7 +37,7 @@
                         </td>
                         <td>
                             <label for="category">Category</label>
-                            <select id="category" name="category" onchange="get_attributes('category', '{{ extension.uuid }}')">
+                            <select id="category" name="category" onchange="get_attributes('category', '{{ extension.get_uuid }}')">
 {#                                <option value="subject">subject</option>#}
 {#                                <option value="object">object</option>#}
                             </select>
@@ -69,12 +69,12 @@
         </div>
         <br>
         <b>subjects:</b> <ul>
-        {% for subject in extension.subjects %}
+        {% for subject in extension.get_subject %}
             <li><b>{{ subject.name }}</b> ({{ subject.uuid }})</li>
         {% endfor %}
         </ul>
         <b>objects:</b> <ul>
-        {% for object in extension.objects %}
+        {% for object in extension.get_object %}
             <li><b>{{ object.name }}</b> ({{ object.uuid }})</li>
         {% endfor %}
         </ul>
@@ -85,7 +85,7 @@
             <th colspan="3">Attribute rules</th>
             <th>description</th>
         </tr>
-        {% for rule in extension.rules %}
+        {% for rule in extension.get_rules %}
             {% cycle 'row1' 'row2' as divcolors silent%}
             {% for orule in rule.s_attr %}
             <tr class={{ divcolors }}>
@@ -115,7 +115,7 @@
                 {% for ext in extensions %}
                 <tr>
                     <td>
-                        <a href="/intra-extensions/{{ ext.uuid }}/">{{ ext.uuid }}</a>
+                        <a href="/intra-extensions/{{ ext.get_uuid }}/">{{ ext.get_uuid }}</a>
                     </td>
                     <td>
                         {{ ext.html }}

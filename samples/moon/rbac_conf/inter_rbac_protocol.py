@@ -134,11 +134,11 @@ class RBACIntraExtension(IntraExtension):
                 vent.uuid
             ),
             "s_attr": [
-                {u'category': u'role', u'value': vent_role["uuid"]},
+                {u'category': u'role', u'value': vent_role["value"]},
             ],
             "o_attr": [
-                {u'category': u'id', u'value': vent.uuid},
-                {u'category': u'action', u'value': [x["uuid"] for x in actions]},
+                {u'category': u'id', u'value': vent.name},
+                {u'category': u'action', u'value': [x["value"] for x in actions]},
             ],
         }
         self.add_rule(rule)
@@ -168,7 +168,7 @@ class RBACIntraExtension(IntraExtension):
         # Add rules
         actions = self.get_object_attributes(category="action")
         for obj in objects_list:
-            _id_obj = self.get_object_attributes(category="id", name=obj)[0]["uuid"]
+            _id_obj = self.get_object_attributes(category="id", name=obj)[0]["value"]
             _actions = []
             for action in actions:
                 if self.has_object_attributes_relation(uuid=obj, attribute=action["uuid"]):
@@ -180,7 +180,7 @@ class RBACIntraExtension(IntraExtension):
                     vent.uuid
                 ),
                 "s_attr": [
-                    {u'category': u'role', u'value': vent_role["uuid"]},
+                    {u'category': u'role', u'value': vent_role["value"]},
                 ],
                 "o_attr": [
                     {u'category': u'id', u'value': _id_obj},

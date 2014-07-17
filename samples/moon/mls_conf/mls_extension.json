@@ -27,10 +27,10 @@
                 {
                     "name": "rule_mls_standard1",
                     "s_attr": [
-                        { "category": "security_level", "value": "security_high" }
+                        { "category": "security_level", "value": "security_level_high" }
                     ],
                     "o_attr": [
-                        { "category": "security_level", "value": ["security_high", "security_medium", "security_low"] },
+                        { "category": "security_level", "value": ["security_level_high", "security_level_medium", "security_level_low"] },
                         { "category": "action", "value": "*" }
                     ],
                     "description": ""
@@ -38,10 +38,10 @@
                 {
                     "name": "rule_mls_standard2",
                     "s_attr": [
-                        { "category": "security_level", "value": "security_medium" }
+                        { "category": "security_level", "value": "security_level_medium" }
                     ],
                     "o_attr": [
-                        { "category": "security_level", "value": ["security_medium", "security_low"] },
+                        { "category": "security_level", "value": ["security_level_medium", "security_level_low"] },
                         { "category": "action", "value": "*" }
                     ],
                     "description": ""
@@ -49,10 +49,10 @@
                 {
                     "name": "rule_mls_standard3",
                     "s_attr": [
-                        { "category": "security_level", "value": "security_low" }
+                        { "category": "security_level", "value": "security_level_low" }
                     ],
                     "o_attr": [
-                        { "category": "security_level", "value": "security_low" },
+                        { "category": "security_level", "value": "security_level_low" },
                         { "category": "action", "value": "*" }
                     ],
                     "description": ""
@@ -64,9 +64,9 @@
 
         "profiles": {
             "s_attr": [
-                { "uuid": "security_high", "category": "security_level", "value": 50, "description": "" },
-                { "uuid": "security_medium", "category": "security_level", "value": 30, "description": "" },
-                { "uuid": "security_low", "category": "security_level", "value": 10, "description": "" }
+                { "uuid": "security_high", "category": "security_level", "value": "security_level_high", "description": "" },
+                { "uuid": "security_medium", "category": "security_level", "value": "security_level_medium", "description": "" },
+                { "uuid": "security_low", "category": "security_level", "value": "security_level_low", "description": "" }
             ],
             "o_attr": [
                 { "uuid": "action-get", "category": "action", "value": "get", "description": "" },
@@ -81,9 +81,9 @@
                 { "uuid": "action-connect", "category": "action", "value": "connect", "description": "" },
                 { "uuid": "action-put", "category": "action", "value": "put", "description": "" },
 
-                { "uuid": "security_high", "category": "security_level", "value": 50, "description": "" },
-                { "uuid": "security_medium", "category": "security_level", "value": 30, "description": "" },
-                { "uuid": "security_low", "category": "security_level", "value": 10, "description": "" }
+                { "uuid": "security_high", "category": "security_level", "value": "security_level_high", "description": "" },
+                { "uuid": "security_medium", "category": "security_level", "value": "security_level_medium", "description": "" },
+                { "uuid": "security_low", "category": "security_level", "value": "security_level_low", "description": "" }
 
             ],
             "s_attr_assign": [],

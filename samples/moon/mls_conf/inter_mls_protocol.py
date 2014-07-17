@@ -106,6 +106,7 @@ class MLSIntraExtension(IntraExtension):
         except IndexError:
             hl_uuid = self.add_object_attribute(value=vent.uuid, category="security_level")
             self.add_object_attributes_relation(object=vent.uuid, attributes=[hl_uuid, ])
+        hl_name = self.get_subject_attributes(name=vent.uuid, category="security_level")[0]["value"]
         # Assign all actions to the virtual entity
         actions = self.get_object_attributes(category="action")
         for action in actions:
@@ -118,7 +119,7 @@ class MLSIntraExtension(IntraExtension):
                 vent.uuid
             ),
             "s_attr": [
-                {u'category': u'security_level', u'value': hl_uuid},
+                {u'category': u'security_level', u'value': hl_name},
             ],
             "o_attr": [
                 {u'category': u'id', u'value': vent.uuid},
@@ -136,6 +137,7 @@ class MLSIntraExtension(IntraExtension):
         except IndexError:
             hl_uuid = self.add_subject_attribute(value=vent.uuid, category="security_level")
             self.add_subject_attributes_relation(subject=vent.uuid, attributes=[hl_uuid, ])
+        hl_name = self.get_subject_attributes(name=vent.uuid, category="security_level")[0]["value"]
         actions = self.get_object_attributes(category="action")
         for obj in objects_list:
             _actions = []
@@ -148,7 +150,7 @@ class MLSIntraExtension(IntraExtension):
                     vent.uuid
                 ),
                 "s_attr": [
-                    {u'category': u'security_level', u'value': hl_uuid},
+                    {u'category': u'security_level', u'value': hl_name},
                 ],
                 "o_attr": [
                     {u'category': u'id', u'value': obj},

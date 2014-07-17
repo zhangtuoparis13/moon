@@ -278,7 +278,7 @@ def logs_repository(request):
             if log.value["object_tenant"] != "None":
                 extension = pap.get_intra_extensions(tenant_uuid=log.value["object_tenant"])
                 if extension:
-                    log.value["subject"] = extension.get_subject(uuid=log.value["subject"])["__name"]
+                    log.value["subject"] = extension.get_subject(uuid=log.value["subject"])["name"]
                 try:
                     log.value["object_tenant"] = pap.get_tenant(
                         tenant_uuid=log.value["object_tenant"]
@@ -289,7 +289,7 @@ def logs_repository(request):
                 extension = pap.get_intra_extensions(tenant_uuid=log.value["subject_tenant"])
                 if extension:
                     try:
-                        log.value["subject"] = extension.get_subject(uuid=log.value["subject"])["__name"]
+                        log.value["subject"] = extension.get_subject(uuid=log.value["subject"])["name"]
                     except TypeError:
                         pass
                     except IndexError:
@@ -362,7 +362,7 @@ def roles(request, id=None):
         for key in request.POST:
             if len(key) == 32 and request.POST[key] == "on":
                 tenants.append(key)
-        pap.create_roles(name=request.POST["__name"], description=request.POST["description"], tenants=tenants)
+        pap.create_roles(name=request.POST["name"], description=request.POST["description"], tenants=tenants)
     elif request.META['REQUEST_METHOD'] == "DELETE":
         #TODO: check if deletion is OK
         pap.delete_roles(uuid=id)

@@ -7,6 +7,10 @@
         {
             "name": "tenant_it",
             "extension_conf": "/etc/moon/mls_conf/mls_extension.json"
+        },
+        {
+            "name": "admin",
+            "extension_conf": "/etc/moon/rbac_conf/rbac_extension.json"
         }
     ]
 }
