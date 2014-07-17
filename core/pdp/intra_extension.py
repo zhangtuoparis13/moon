@@ -556,11 +556,10 @@ class IntraExtension(object):
                 auth["object_uuid"] = obj["uuid"]
                 break
         for rule in self.__administration["rules"]:
-            print("--------- starting rule ---------------------")
+            _auth = False
             for s_rule in rule["s_attr"]:
                 data = self.__profiles["s_attr_assign"]
                 attribute = s_rule["value"]
-                _auth = False
                 for sbj in data:
                     if type(attribute) not in (list, tuple):
                         attribute = [attribute, ]
@@ -613,7 +612,7 @@ class IntraExtension(object):
             administration=self.__administration
         )
 
-    @enforce("tenant")
+    @enforce(("tenant", "perimeter.subjects", "perimeter.objects"))
     def html(self):
         return mark_safe("""<b>Extension</b> {} for <b>tenant {}</b><br/><br/>
         <b>Subjects:</b> <ul>{}</ul><br>
