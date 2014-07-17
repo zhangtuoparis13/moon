@@ -31,20 +31,20 @@ class AuthzManager:
 
     def __intra_tenant_authz(self, auth):
         for extension in self.intra_pdps.get():
-            if auth["subject_tenant"] != extension.tenant["uuid"]:
+            if auth["subject_tenant"] != extension.get_tenant()["uuid"]:
                 if auth["auth"] != "Out of Scope":
                     auth["auth"] = "Out of Scope"
                     auth["message"] = "Subject tenant was not found in intra-tenant extensions " \
                                       "or Subject tenant cannot be managed."
                 continue
-            auth["extension_name"] = extension.uuid
-            auth["tenant_name"] = extension.tenant["__name"]
+            auth["extension_name"] = extension.get_uuid()
+            auth["tenant_name"] = extension.get_tenant()["name"]
             # if not extension.has_object_attributes(name=auth["object_type"]):
             #     logger.warning("Unknown object {}".format(auth["object_name"]))
             # else:
             #     find_object = True
             if not extension.has_subject(uuid=auth["subject"]):
-                logger.warning("Subject {} unknown for tenant {}".format(auth["subject"], extension.tenant))
+                logger.warning("Subject {} unknown for tenant {}".format(auth["subject"], extension.get_tenant()))
                 auth["auth"] = "Out of Scope"
                 auth["message"] = "The request could be connected to a extension but no subject match."
                 continue
@@ -128,7 +128,7 @@ class AuthzManager:
                 main_auth = reduce(lambda x, y: x and y, _auth)
                 if main_auth:
                     auth["auth"] = True
-                    auth["rule_name"] = rule["__name"]
+                    auth["rule_name"] = rule["name"]
                     auth["tenant_name"] = auth["subject_tenant"]
                     auth["message"] = ""
                     break
@@ -252,7 +252,7 @@ class AdminManager:
         # ext = self.__dispatcher.list(type="internalextension")
         # if not ext:
         #     self.__uuid = str(uuid4()).replace("-", "")
-        #     self.__name = self.__conf["name"]
+        #     self.name = self.__conf["name"]
         #     self.__metadata = self.__conf["configuration"]["metadata"]
         #     self.__description = self.__conf["description"]
         #     self.__tenant = self.__conf["tenant"]
@@ -269,7 +269,7 @@ class AdminManager:
         # else:
         #     ext = ext[0]
         #     self.__uuid = ext["uuid"]
-        #     self.__name = ext["name"]
+        #     self.name = ext["name"]
         #     self.__metadata = ext["configuration"]["metadata"]
         #     self.__description = ext["description"]
         #     self.__tenant = ext["tenant"]

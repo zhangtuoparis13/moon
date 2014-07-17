@@ -64,9 +64,9 @@ class IntraExtension(object):
                 # Searching for an object assignment given its name
                 #FIXME: get_subject or get_object depending on the data
                 try:
-                    uuid = self.get_subject(name=name)[0][""]
+                    uuid = self.get_subject(name=name)[0]["uuid"]
                 except IndexError:
-                    uuid = self.get_object(name=name)[0][""]
+                    uuid = self.get_object(name=name)[0]["uuid"]
                 if obj["object"] == uuid and attribute in obj["attributes"] and obj["category"] == category:
                     return obj
             elif category and obj["category"] != category:
@@ -74,7 +74,7 @@ class IntraExtension(object):
                 continue
             if uuid is None and name is None:
                 attr_list.append(obj)
-            elif uuid and obj[""] == uuid:
+            elif uuid and obj["uuid"] == uuid:
                 return obj
             elif name and "name" in obj and obj["name"] == name:
                 return obj
@@ -101,6 +101,7 @@ class IntraExtension(object):
     def get_subject(self, uuid=None, name=None, **kwargs):
         return self.get(self.__subjects, uuid=uuid, name=name)
 
+    @enforce("perimeter.objects")
     def get_object(self, uuid=None, name=None):
         if not uuid and not name:
             return self.__objects
@@ -109,12 +110,13 @@ class IntraExtension(object):
         except AttributeError:
             name = name.replace("_", "-")
         for obj in self.__objects:
-            if uuid and obj[""] == uuid:
+            if uuid and obj["uuid"] == uuid:
                 return [obj, ]
             elif name and obj["name"] == name:
                 return [obj, ]
         return []
 
+    @enforce("perimeter.subjects")
     def has_subject(self, uuid=None, name=None):
         return self.has(self.__subjects, uuid=uuid, name=name)
 
@@ -142,7 +144,7 @@ class IntraExtension(object):
         if not uuid:
             uuid = str(uuid4()).replace("-", "")
         obj = {}
-        obj[""] = uuid
+        obj["uuid"] = uuid
         obj["name"] = name
         obj["enabled"] = enabled
         obj["description"] = description
@@ -150,7 +152,7 @@ class IntraExtension(object):
         self.__objects.append(obj)
         self.sync()
 
-    @enforce("profiles.o_attrs")
+    @enforce("profiles.o_attr")
     def get_object_attributes(self, uuid=None, name=None, category=None):
         if not uuid and not name and not category:
             return self.__profiles["o_attr"]
@@ -172,13 +174,13 @@ class IntraExtension(object):
                 ret_objects.append(obj)
         return ret_objects
 
-    @enforce("profiles.o_attrs")
+    @enforce("profiles.o_attr")
     def has_object_attributes(self, uuid=None, name=None, category=None):
         result = []
         for obj in self.__profiles["o_attr"]:
             if category and obj["category"] != category:
                 continue
-            if uuid and obj[""] == uuid:
+            if uuid and obj["uuid"] == uuid:
                 return [obj]
             elif name and obj["value"] == name:
                 return [obj]
@@ -186,39 +188,39 @@ class IntraExtension(object):
                 result.append(obj)
         return result
 
-    @enforce("profiles.o_attrs", "w")
+    @enforce("profiles.o_attr", "w")
     def add_object_attribute(self, category=None, value=None, description=""):
         o_attr = {}
-        o_attr[""] = str(uuid4()).replace("-", "")
+        o_attr["uuid"] = str(uuid4()).replace("-", "")
         o_attr["category"] = category
         o_attr["value"] = value
         o_attr["description"] = description
         self.__profiles["o_attr"].append(o_attr)
         self.sync()
-        return o_attr[""]
+        return o_attr["uuid"]
 
-    @enforce("profiles.s_attrs", "w")
+    @enforce("profiles.s_attr", "w")
     def add_subject_attribute(self, uuid=None, category=None, value=None, description="", enabled=True):
         s_attr = {}
         if not uuid:
-            s_attr[""] = str(uuid4()).replace("-", "")
+            s_attr["uuid"] = str(uuid4()).replace("-", "")
         else:
-            s_attr[""] = uuid
+            s_attr["uuid"] = uuid
         s_attr["category"] = category
         s_attr["value"] = value
         s_attr["enabled"] = enabled
         s_attr["description"] = description
         self.__profiles["s_attr"].append(s_attr)
         self.sync()
-        return s_attr[""]
+        return s_attr["uuid"]
 
-    @enforce("profiles.s_attrs")
+    @enforce("profiles.s_attr")
     def get_subject_attributes(self, uuid=None, name=None, category=None):
         if not uuid and not name and not category:
             return self.__profiles["s_attr"]
         ret_objects = []
         for obj in self.__profiles["s_attr"]:
-            if uuid and obj[""] == uuid:
+            if uuid and obj["uuid"] == uuid:
                 return [obj, ]
             elif name and obj["value"] == name:
                 return [obj, ]
@@ -226,7 +228,7 @@ class IntraExtension(object):
                 ret_objects.append(obj)
         return ret_objects
 
-    @enforce("profiles.s_attrs")
+    @enforce("profiles.s_attr")
     def has_subject_attributes(self, uuid=None, name=None, category=None):
         result = []
         for obj in self.__profiles["s_attr"]:
@@ -234,7 +236,7 @@ class IntraExtension(object):
                 continue
             if "enabled" in obj and obj["enabled"] not in (True, "true"):
                 continue
-            if uuid and obj[""] == uuid:
+            if uuid and obj["uuid"] == uuid:
                 return [obj]
             elif name and obj["value"] == name:
                 return [obj]
@@ -242,7 +244,7 @@ class IntraExtension(object):
                 result.append(obj)
         return result
 
-    @enforce("profiles.s_attrs_assign")
+    @enforce("profiles.s_attr_assign")
     def has_subject_attributes_relation(
             self,
             uuid=None,
@@ -251,7 +253,7 @@ class IntraExtension(object):
             attribute=[]):
         data = self.__profiles["s_attr_assign"]
         if not uuid:
-            uuid = self.get_subject(name=name)[0][""]
+            uuid = self.get_subject(name=name)[0]["uuid"]
         for sbj in data:
             if type(attribute) not in (list, tuple):
                 attribute = [attribute, ]
@@ -260,7 +262,7 @@ class IntraExtension(object):
                     return True
         return False
 
-    @enforce("profiles.o_attrs_assign", "w")
+    @enforce("profiles.o_attr_assign", "w")
     def add_object_attributes_relation(
             self,
             uuid=None,
@@ -276,7 +278,7 @@ class IntraExtension(object):
         if not uuid:
             uuid = str(uuid4()).replace("-", "")
         rel = {}
-        rel[""] = uuid
+        rel["uuid"] = uuid
         rel["object"] = object
         if type(attributes) in (list, tuple):
             rel["attributes"] = attributes
@@ -285,7 +287,7 @@ class IntraExtension(object):
         self.__profiles["o_attr_assign"].append(rel)
         self.sync()
 
-    @enforce("profiles.s_attrs_assign", "w")
+    @enforce("profiles.s_attr_assign", "w")
     def add_subject_attributes_relation(
             self,
             uuid=None,
@@ -301,7 +303,7 @@ class IntraExtension(object):
         if not uuid:
             uuid = str(uuid4()).replace("-", "")
         rel = {}
-        rel[""] = uuid
+        rel["uuid"] = uuid
         rel["subject"] = subject
         if type(attributes) in (list, tuple):
             rel["attributes"] = attributes
@@ -310,15 +312,15 @@ class IntraExtension(object):
         self.__profiles["s_attr_assign"].append(rel)
         self.sync()
 
-    @enforce("profiles.s_attrs_assign")
+    @enforce("profiles.s_attr_assign")
     def get_subject_attributes_relation(self):
         return self.__profiles["s_attr_assign"]
 
-    @enforce("profiles.o_attrs_assign")
+    @enforce("profiles.o_attr_assign")
     def get_object_attributes_relation(self):
         return self.__profiles["o_attr_assign"]
 
-    @enforce("profiles.o_attrs_assign")
+    @enforce("profiles.o_attr_assign")
     def has_object_attributes_relation(
             self,
             uuid=None,
@@ -329,7 +331,7 @@ class IntraExtension(object):
             return True
         data = self.__profiles["o_attr_assign"]
         if not uuid:
-            uuid = self.get_subject(name=name)[0][""]
+            uuid = self.get_subject(name=name)[0]["uuid"]
         for obj in data:
             if type(attribute) not in (list, tuple):
                 attribute = [attribute, ]
@@ -349,10 +351,10 @@ class IntraExtension(object):
             category=None):
         """
         :param subject_name: name of the user
-        :param subject_uuid:  of the user
+        :param subject_uuid: uuid of the user
         :param object_name: name of the object
-        :param object_uuid:  of the object
-        :param attribute_uuid:  of the object attribute
+        :param object_uuid: uuid of the object
+        :param attribute_uuid: uuid of the object attribute
         :param attribute_name: name of the object attribute
         :param category: name of the category attribute
         :return: None if no assignment, a dictionary if an assignment was found
@@ -371,7 +373,7 @@ class IntraExtension(object):
                 if type(attribute_name) not in (list, tuple):
                     attribute_name = [attribute_name, ]
                 for att in attribute_name:
-                    _uuid = self.get_subject_attributes(name=att)[0][""]
+                    _uuid = self.get_subject_attributes(name=att)[0]["uuid"]
                     if _uuid:
                         attribute_uuid.append(_uuid)
                     # attribute_uuid = self.get_subject_attributes(name=attribute_name)[0]["uuid"]
@@ -385,7 +387,7 @@ class IntraExtension(object):
                 if type(attribute_name) not in (list, tuple):
                     attribute_name = [attribute_name, ]
                 for att in attribute_name:
-                    _uuid = self.get_object_attributes(name=att)[0][""]
+                    _uuid = self.get_object_attributes(name=att)[0]["uuid"]
                     if _uuid:
                         attribute_uuid.append(_uuid)
                 # try:
@@ -447,25 +449,25 @@ class IntraExtension(object):
     @enforce("perimeter.subjects", "w")
     def delete_subject(self, uuid):
         for index, sbj in enumerate(self.__subjects):
-            if sbj[""] == uuid:
+            if sbj["uuid"] == uuid:
                 self.__subjects.pop(index)
 
     @enforce("perimeter.objects", "w")
     def delete_object(self, uuid):
         for index, sbj in enumerate(self.__objects):
-            if sbj[""] == uuid:
+            if sbj["uuid"] == uuid:
                 self.__objects.pop(index)
 
-    @enforce("profiles.o_attrs")
+    @enforce("profiles.o_attr")
     def delete_object_attributes(self, uuid=None, name=None):
         for index, o_attr in enumerate(self.__profiles["o_attr"]):
-            if o_attr[""] == uuid or o_attr["value"] == name:
+            if o_attr["uuid"] == uuid or o_attr["value"] == name:
                 return self.__profiles["o_attr"].pop(index)
 
-    @enforce("profiles.s_attrs")
+    @enforce("profiles.s_attr")
     def delete_subject_attributes(self, uuid=None, name=None):
         for index, s_attr in enumerate(self.__profiles["s_attr"]):
-            if s_attr[""] == uuid or s_attr["value"] == name:
+            if s_attr["uuid"] == uuid or s_attr["value"] == name:
                 return self.__profiles["s_attr"].pop(index)
 
     def delete_attributes_from_vent(self, vent_uuid):
@@ -497,7 +499,7 @@ class IntraExtension(object):
             except IndexError:
                 pass
 
-    @enforce("profiles.s_attrs", "w")
+    @enforce("profiles.s_attr", "w")
     def delete_subject_relation(self, attributes=[]):
         for relation in self.__profiles["s_attr_assign"]:
             for att in attributes:
@@ -506,7 +508,7 @@ class IntraExtension(object):
                 except ValueError:
                     pass
 
-    @enforce("profiles.o_attrs", "w")
+    @enforce("profiles.o_attr", "w")
     def delete_object_relation(self, attributes=[]):
         for relation in self.__profiles["o_attr_assign"]:
             for att in attributes:
@@ -554,6 +556,7 @@ class IntraExtension(object):
                 auth["object_uuid"] = obj["uuid"]
                 break
         for rule in self.__administration["rules"]:
+            print("--------- starting rule ---------------------")
             for s_rule in rule["s_attr"]:
                 data = self.__profiles["s_attr_assign"]
                 attribute = s_rule["value"]
@@ -565,9 +568,9 @@ class IntraExtension(object):
                         if auth["subject"] == sbj["subject"] and att in sbj["attributes"]:
                             _auth = True
                             break
-                if not _auth:
-                    auth["message"] = "Rules on subject don't match."
-                    break
+            if not _auth:
+                auth["message"] = "Rules on subject don't match."
+                continue
             for o_rule in rule["o_attr"]:
                     if o_rule["category"] == "action":
                         _auth = self.__has_admin_assignment(
@@ -585,10 +588,12 @@ class IntraExtension(object):
                             attribute_uuid=o_rule["value"])
                         if not _auth:
                             auth["message"] = "Rules on object don't match."
+                            print(auth["object_uuid"], o_rule["value"])
                             break
             else:
                 auth["message"] = ""
                 auth["auth"] = True
+                break
         return auth
 
     def sync(self):
@@ -608,6 +613,7 @@ class IntraExtension(object):
             administration=self.__administration
         )
 
+    @enforce("tenant")
     def html(self):
         return mark_safe("""<b>Extension</b> {} for <b>tenant {}</b><br/><br/>
         <b>Subjects:</b> <ul>{}</ul><br>
@@ -695,7 +701,7 @@ class IntraExtensions:
         if not uuid and not name:
             return self.extensions
         for ext in self.extensions.values():
-            for obj in ext.objects:
+            for obj in ext.get_object():
                 if uuid and obj["uuid"] == uuid:
                     return [obj]
                 elif name and obj["name"] == name:

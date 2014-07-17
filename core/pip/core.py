@@ -41,7 +41,9 @@ class PIP:
         self.nclient = nova_client.Client("1.1", **ncreds)
 
     def get_subjects(self, tenant=None):
-        for user in self.kclient.users.list(project_id=tenant["uuid"]):
+        if type(tenant) is dict:
+            tenant = tenant["uuid"]
+        for user in self.kclient.users.list(project_id=tenant):
             s = dict()
             s["name"] = user.name
             try:

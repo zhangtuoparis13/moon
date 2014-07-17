@@ -16,7 +16,8 @@ class RBACIntraExtension(IntraExtension):
     #         description="",
     #         tenant=None,
     #         model="RBAC",
-    #         protocol=None):
+    #         protocol=None,
+    #         administration=None):
     #     super(RBACIntraExtension, self).__init__(
     #         name=name,
     #         uuid=uuid,
@@ -28,10 +29,10 @@ class RBACIntraExtension(IntraExtension):
     #         description=description,
     #         tenant=tenant,
     #         model=model,
-    #         protocol=protocol)
+    #         protocol=protocol,
+    #         administration=administration)
 
     def add_object(self, uuid=None, name=None, enabled=True, description=""):
-        #HYPOTHESIS: objects are only virtual servers, so linking all objects to type server
         uuid = uuid.replace("-", "")
         IntraExtension.add_object(self, uuid=uuid, name=name, enabled=enabled, description=description)
         # Default: all objects (ie all VM) have the attribute id linked to the uuid of the object

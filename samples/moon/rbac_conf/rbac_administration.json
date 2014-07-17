@@ -51,28 +51,7 @@
                     "action"
                 ]
             },
-            "rules": [
-                {
-                    "name": "rule_rbac_administration",
-                    "s_attr": [
-                        { "category": "role", "value": "role-admin" }
-                    ],
-                    "o_attr": [
-                        { "category": "id", "value": [
-                            "id_subjects_list",
-                            "id_objects_list",
-                            "id_rules_list",
-                            "id_s_attr_list",
-                            "id_o_attr_list",
-                            "id_s_attr_assign_list",
-                            "id_o_attr_assign_list",
-                            "id_tenant"
-                        ] },
-                        { "category": "action", "value": ["action-read", "action-write"] }
-                    ],
-                    "description": "The admin has all authorisations by default"
-                }
-            ],
+            "rules": [],
             "protocol": "/etc/moon/rbac_conf/inter_rbac_admin_protocol.py:RBACAdminIntraExtension"
         },
 
@@ -109,27 +88,27 @@
                     "description": ""
                 },
                 {
-                    "uuid": "o_attr_assign_s_attrs_list",
-                    "object": "id_s_attrs_list",
-                    "attributes": ["id_s_attrs_list", "action-read", "action-write"],
+                    "uuid": "o_attr_assign_s_attr_list",
+                    "object": "id_s_attr_list",
+                    "attributes": ["id_s_attr_list", "action-read", "action-write"],
                     "description": ""
                 },
                 {
-                    "uuid": "o_attr_assign_o_attrs_list",
-                    "object": "id_o_attrs_list",
-                    "attributes": ["id_o_attrs_list", "action-read", "action-write"],
+                    "uuid": "o_attr_assign_o_attr_list",
+                    "object": "id_o_attr_list",
+                    "attributes": ["id_o_attr_list", "action-read", "action-write"],
                     "description": ""
                 },
                 {
-                    "uuid": "o_attr_assign_s_attrs_assign_list",
-                    "object": "id_s_attrs_assign_list",
-                    "attributes": ["id_s_attrs_assign_list", "action-read", "action-write"],
+                    "uuid": "o_attr_assign_s_attr_assign_list",
+                    "object": "id_s_attr_assign_list",
+                    "attributes": ["id_s_attr_assign_list", "action-read", "action-write"],
                     "description": ""
                 },
                 {
-                    "uuid": "o_attr_assign_o_attrs_assign_list",
-                    "object": "id_o_attrs_assign_list",
-                    "attributes": ["id_o_attrs_assign_list", "action-read", "action-write"],
+                    "uuid": "o_attr_assign_o_attr_assign_list",
+                    "object": "id_o_attr_assign_list",
+                    "attributes": ["id_o_attr_assign_list", "action-read", "action-write"],
                     "description": ""
                 }
             ]

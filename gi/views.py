@@ -30,6 +30,7 @@ def get_keystone_client(request):
     return c
 
 
+@save_auth
 @login_required(login_url='/auth/login/')
 def index(request):
     """
@@ -38,6 +39,7 @@ def index(request):
     return render(request, "moon/base_site.html")
 
 
+@save_auth
 @login_required(login_url='/auth/login/')
 def sync(request, id=None):
     """

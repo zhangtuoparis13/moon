@@ -3,13 +3,17 @@
 # authz_manager = get_internal_authz()
 
 
-def enforce(obj, mode="r", internal_authz=None):
+def enforce(objs, mode="r"):
+    if type(objs) not in (tuple, list):
+        objs = [objs,]
+
     def enforce_decorator(function):
         def wrapped(*args, **kwargs):
             # tenant = dir(locals().get("args"))
             init_flag = globals().get("initialization")
             auth_flag = globals().get("authorisation")
-            if not init_flag and not auth_flag:
+            readonly_flag = globals().get("readonly")
+            if not init_flag and not auth_flag and not readonly_flag:
                 try:
                     ext = locals().get("args")[0]
                     toggle_auth_flag()
@@ -23,25 +27,30 @@ def enforce(obj, mode="r", internal_authz=None):
                 user_uuid = globals().get("username")
                 if not user_uuid:
                     raise Exception("Unable to authenticate connection...")
-                print("\033[31mCalling {} for {}/{} on {}/{}\033[m".format(
-                    function.__name__,
-                    tenant["name"],
-                    user_uuid,
-                    obj,
-                    mode))
-                auth = {
-                    "auth": False,
-                    "rule_name": "None",
-                    "message": "",
-                    "subject": user_uuid,
-                    "action": "action-write" if mode == "w" else "action-read",
-                    "object_name": obj,
-                    "tenant_name": tenant["name"],
-                    "extension_name": ext.get_name(),
-                }
-                print("\t-> {auth}: {message}".format(**ext.authz(auth=auth)))
-            # print("\033[31mCalling {} for {} on {}\033[m".format(function.__name__, globals().get("username"), obj))
-            # Check if user can have access to that object
+                for obj in objs:
+                    auth = {
+                        "auth": False,
+                        "rule_name": "None",
+                        "message": "",
+                        "subject": user_uuid,
+                        "action": "action-write" if mode == "w" else "action-read",
+                        "object_name": obj,
+                        "tenant_name": tenant["name"],
+                        "extension_name": ext.get_name(),
+                    }
+                    auth = ext.authz(auth=auth)
+                    # print("\t-> {subject} {action} {object_name} {auth}: {message}".format(**auth))
+                    if auth["auth"] is not True:
+                        print("\033[31mCalling {} for {}/{} on {}/{}\033[m".format(
+                            function.__name__,
+                            tenant["name"],
+                            user_uuid,
+                            obj,
+                            mode))
+                        raise Exception(auth["message"])
+            result = None
+            if readonly_flag and mode != "r":
+                raise Exception("Read only mode set and write access required!")
             return function(*args, **kwargs)
         return wrapped
     return enforce_decorator
@@ -106,6 +115,13 @@ def toggle_init_flag():
         globals()["initialization"] = True
     else:
         globals()["initialization"] = not globals()["initialization"]
+
+
+def toggle_readonly_flag():
+    if "readonly" not in globals():
+        globals()["readonly"] = True
+    else:
+        globals()["readonly"] = not globals()["readonly"]
 
 
 def toggle_auth_flag():

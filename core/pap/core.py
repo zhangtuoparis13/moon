@@ -189,6 +189,9 @@ class PAP:
         self.inter_pdps.delete(uuid=uuid)
 
     def update_from_json(self, existing_extension=None, tenant=None, json_data=None, **kwargs):
+        #TODO: wrong method: when uptading we must not re-create the extension
+        # because a bug appears on the internal authz system when extension.__subjects is empty
+        # see intra_extensions.py line 757 and 771
         pip = get_pip()
         json_data["tenant"] = {"uuid": tenant["uuid"], "name": tenant["name"]}
         subjects = list(pip.get_subjects(tenant=tenant))
@@ -301,7 +304,6 @@ class PAP:
         pip = get_pip()
         logs = ""
         json_data = None
-        # #synchronize all intra extensions
         pip.set_creds_for_tenant()
         for tenant in self.get_tenants():
             #TODO: if new tenant
