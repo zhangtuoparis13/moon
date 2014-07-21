@@ -1,6 +1,12 @@
+from moon.tools.exceptions import AuthzException
+
+
 class BasicInterface(object):
 
     def __init__(self):
+        self.__uuid = ""
+        self.__name = ""
+        self.__tenant = dict()
         self.__subjects = []
         self.__objects = []
         self.__objectsAttributes = []
@@ -11,27 +17,36 @@ class BasicInterface(object):
         self.__metadata = {}
         self.__uuid = ""
 
-    def __get_subjects(self):
+    def __get_uuid__(self):
+        return self.__uuid
+
+    def __get_name__(self):
+        return self.__name
+
+    def __get_tenant__(self):
+        return self.__tenant
+
+    def __get_subjects__(self):
         return self.__subjects
 
-    def __get_objects(self):
+    def __get_objects__(self):
         return self.__objects
 
-    def __get_subject_attribute_categories(self):
+    def __get_subject_attribute_categories__(self):
         """ Return all categories for subjects
 
         :return:
         """
         return self.__metadata["s_attr"]
 
-    def __get_object_attribute_categories(self):
+    def __get_object_attribute_categories__(self):
         """ Return all categories for objects
 
         :return:
         """
         return self.__metadata["o_attr"]
 
-    def __get_subject_attributes(self, subject_name, category=None):
+    def __get_subject_attributes__(self, attribute_name, category=None):
         """
 
         :param subject_name:
@@ -39,7 +54,7 @@ class BasicInterface(object):
         """
         pass
 
-    def __get_object_attributes(self, object_name, category=None):
+    def __get_object_attributes__(self, attribute_name, category=None):
         """
 
         :param object_name:
@@ -47,7 +62,7 @@ class BasicInterface(object):
         """
         pass
 
-    def __get_subject_attribute_assignments(self, subject_name=None, category=None):
+    def __get_subject_attribute_assignments__(self, subject_name=None, category=None):
         """
 
         :param subject_name:
@@ -55,7 +70,7 @@ class BasicInterface(object):
         """
         pass
 
-    def __get_object_attribute_assignments(self, object_name=None, category=None):
+    def __get_object_attribute_assignments__(self, object_name=None, category=None):
         """
 
         :param object_name:
@@ -63,7 +78,7 @@ class BasicInterface(object):
         """
         pass
 
-    def __get_rules(self):
+    def __get_rules__(self):
         """
 
         :return:
@@ -120,23 +135,71 @@ rule(
 
          """
 
-    @enforce("")
-    def get_subjects(self):
+    @enforce("perimeter.subjects")
+    def get_subjects(self, uuid="", name=""):
         return self.__subjects
 
-    @enforce("")
-    def get_objects(self):
+    @enforce("perimeter.subjects", "w")
+    def add_subject(self, name, description="", domain="Default", enabled=True, project=None, mail=""):
+        raise NotImplemented
+
+    @enforce("perimeter.subjects", "w")
+    def del_subject(self, uuid):
+        raise NotImplemented
+
+    @enforce("perimeter.subjects", "w")
+    def mod_subject(self, uuid, name="", description="", domain="Default", enabled=True, project=None, mail=""):
+        raise NotImplemented
+
+    @enforce("perimeter.objects")
+    def get_objects(self, uuid="", name=""):
         return self.__objects
 
-    @enforce("")
-    def get_subject_attribute_categories(self):
+    @enforce("perimeter.objects", "w")
+    def add_objects(self, name, enabled=True, description="", tenant=None):
+        raise NotImplemented
+
+    @enforce("perimeter.objects", "w")
+    def del_objects(self, uuid):
+        raise NotImplemented
+
+    @enforce("perimeter.objects", "w")
+    def mod_objects(self, uuid, name="", enabled=True, description="", tenant=None):
+        raise NotImplemented
+
+    @enforce("configuration.metadata")
+    def get_subject_attribute_categories(self, name=""):
         """ Return all categories for subjects
 
         :return:
         """
         return self.__metadata["s_attr"]
 
-    @enforce("")
+    @enforce("configuration.metadata", "w")
+    def add_subject_attribute_categories(self, name):
+        """ Return all categories for subjects
+
+        :return:
+        """
+        raise NotImplemented
+
+    @enforce("configuration.metadata", "w")
+    def del_subject_attribute_categories(self, uuid):
+        """ Return all categories for subjects
+
+        :return:
+        """
+        raise NotImplemented
+
+    @enforce("configuration.metadata", "w")
+    def mod_subject_attribute_categories(self, uuid, name):
+        """ Return all categories for subjects
+
+        :return:
+        """
+        raise NotImplemented
+
+    @enforce("configuration.metadata")
     def get_object_attribute_categories(self):
         """ Return all categories for objects
 
@@ -144,41 +207,173 @@ rule(
         """
         return self.__metadata["o_attr"]
 
-    @enforce("")
-    def get_subject_attributes(self, subject_name, category=None):
+    @enforce("configuration.metadata", "w")
+    def add_object_attribute_categories(self, name):
+        """ Return all categories for subjects
+
+        :return:
+        """
+        raise NotImplemented
+
+    @enforce("configuration.metadata", "w")
+    def del_object_attribute_categories(self, uuid):
+        """ Return all categories for subjects
+
+        :return:
+        """
+        raise NotImplemented
+
+    @enforce("configuration.metadata", "w")
+    def mod_object_attribute_categories(self, uuid, name):
+        """ Return all categories for subjects
+
+        :return:
+        """
+        raise NotImplemented
+
+    @enforce("profiles.s_attr")
+    def get_subject_attributes(self, attribute_name, category=None):
         """
 
         :param subject_name:
         :return: a list of dict with value and category
         """
-        return self.__get_subject_attributes(subject_name=subject_name, category=category)
+        return self.__get_subject_attributes__(attribute_name=attribute_name, category=category)
 
-    @enforce("")
+    @enforce("profiles.s_attr", "w")
+    def add_subject_attributes(self, attribute_name, category=None, description=""):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    @enforce("profiles.s_attr", "w")
+    def del_subject_attributes(self, uuid):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    @enforce("profiles.s_attr", "w")
+    def mod_subject_attributes(self, uuid, attribute_name="", category=None, description=""):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    @enforce("profiles.o_attr")
     def get_object_attributes(self, object_name, category=None):
         """
 
         :param object_name:
         :return: a list of dict with value and category
         """
-        pass
+        raise NotImplemented
 
-    @enforce("")
+    @enforce("profiles.o_attr", "w")
+    def add_object_attributes(self, attribute_name, category=None, description=""):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    @enforce("profiles.o_attr", "w")
+    def del_object_attributes(self, uuid):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    @enforce("profiles.o_attr", "w")
+    def mod_object_attributes(self, uuid, attribute_name="", category=None, description=""):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    @enforce("profiles.s_attr_assign")
     def get_subject_attribute_assignments(self, subject_name=None, category=None):
         """
 
         :param subject_name:
         :return: a list of dict with value and category
         """
-        pass
+        raise NotImplemented
 
-    @enforce("object_assignment")
+    @enforce("profiles.s_attr_assign", "w")
+    def add_subject_attribute_assignments(self, subject_name=None, category=None, attributes=[]):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    @enforce("profiles.s_attr_assign", "w")
+    def del_subject_attribute_assignments(self, uuid, category=None):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    @enforce("profiles.s_attr_assign", "w")
+    def mod_subject_attribute_assignments(self, uuid, subject_name=None, category=None, attributes=[]):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    @enforce("profiles.o_attr_assign")
     def get_object_attribute_assignments(self, object_name=None, category=None):
         """
 
         :param object_name:
         :return: a list of dict with value and category
         """
-        pass
+        raise NotImplemented
+
+    @enforce("profiles.o_attr_assign", "w")
+    def add_object_attribute_assignments(self, object_name=None, category=None, attributes=[]):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    @enforce("profiles.o_attr_assign", "w")
+    def del_object_attribute_assignments(self, uuid, category=None):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    @enforce("profiles.o_attr_assign", "w")
+    def mod_object_attribute_assignments(self, uuid, object_name=None, category=None, attributes=[]):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
 
     @enforce("rules")
     def get_rules(self):
@@ -186,36 +381,34 @@ rule(
 
         :return:
         """
-        pass
-
-    #TODO add, del, mod
+        return self.__get_rules__()
 
     @enforce("rules", "w")
-    def add_rule(self, name, subject_attrs, object_attrs, desription=""):
-        pass
+    def add_rule(self, name, subject_attrs, object_attrs, description=""):
+        raise NotImplemented
         #TODO: check metadata to only add categories in self.__metadata
 
     @enforce("rules", "w")
-    def mod_rule(self, uuid, name="", subject_attrs=[], object_attrs=[], desription=""):
-        pass
+    def mod_rule(self, uuid, name="", subject_attrs=[], object_attrs=[], description=""):
+        raise NotImplemented
         #TODO: check metadata to only add categories in self.__metadata
 
     @enforce("rules", "w")
     def del_rule(self, uuid):
-        pass
+        raise NotImplemented
 
     def adminAuthz(self, admin_object_name, action, user):
-        pass
+        raise NotImplemented
 
 
 def enforce(param, mode="r"):
     def enforce_decorated(function):
         def wrapped(*args, **kwargs):
             interface = locals().get("args")[0]
-            s = super(PublicAdminInterface, interface).__get_subjects(interface)
+            s = super(PublicAdminInterface, interface).__get_subjects__(interface)
             try:
                 interface.adminAuthz()
-            except MyException:
+            except AuthzException:
                 pass
             result = function(*args, **kwargs)
             return result
