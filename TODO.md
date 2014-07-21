@@ -15,31 +15,28 @@ Legend:
 - ~10% work initiated
 - ~90% work almost finished
 
-###Moon Core
+###Administration model
 
-| Module            | Description                               | Percentage of work |
-| ----------------- | ----------------------------------------- | ------------------ |
-| PAP               | Policy Administration Point               | 50%                |
-| PIP               | Policy Information Point                  | 50%                |
-| PDP               | Policy Decision Point                     | 50%                |
-| Info Repository   | DB for objects                            | 90%                |
-| Tenant Repository | DB for tenants and relations between them | 90%                |
-| Policy Repository | DB for Policy authorization               | 50%                |
-| MRM               | model-based reference monitor             | 80%                |
+| Title               | Description                               | Percentage of work |
+| ------------------- | ----------------------------------------- | ------------------ |
+| Fix bugs            | in authorisation systems                  | 0%                 |
+| Add PublicInterface |                                           | 0%                 |
 
-###Redirect keystone Auth to Moon
+###Integrate Policy engine with Prolog
 
-| Module        | Description                               | Percentage of work |
-| ------------- | ----------------------------------------- | ------------------ |
-| moon_hook     | Hook Keystone authorization               | 70%                |
-| keystone_sync | Synchronisation between Moon and Keystone | 0%                 |
+| Title                   | Description                               | Percentage of work |
+| ----------------------- | ----------------------------------------- | ------------------ |
+| Understand Tun code     |                                           | 0%                |
+| Include code in Moon    |                                           | 0%                 |
 
-###Admin interface on Django
+###Evaluation and tests on Moon
 
-|Module       | Description                              | Percentage of work |
+|Title        | Description                              | Percentage of work |
 |------------ | ---------------------------------------- | ------------------ |
-|GI (Users)   | Users administration                     | 70%                |
-|GI (Tenants) | Tenants administration                   | 70%                |
-|GI (Roles)   | Roles administration                     | 10%                |
-|GI (Userdb)  | Administration of all objects of user_db | 90%                |
-|GI (Policy)  | Policy administration                    | 30%                |
+|Create tests |                                          |  0%                |
+|Pass tests   |                                          |  0%                |
+
+###Graphical interface
+
+###Senario for "Salon de recherche"
+
