@@ -1,7 +1,7 @@
 from moon.tools.exceptions import AuthzException
 
 
-class BasicInterface(object):
+class IntraExtension(object):
 
     def __init__(self):
         self.__uuid = ""
@@ -17,88 +17,257 @@ class BasicInterface(object):
         self.__metadata = {}
         self.__uuid = ""
 
-    def __get_uuid__(self):
+    def get_uuid__(self):
         return self.__uuid
 
-    def __get_name__(self):
+    def get_name__(self):
         return self.__name
 
-    def __get_tenant__(self):
+    def get_tenant__(self):
         return self.__tenant
 
-    def __get_subjects__(self):
+    def get_subjects(self, uuid="", name=""):
         return self.__subjects
 
-    def __get_objects__(self):
+    def add_subject(self, name, description="", domain="Default", enabled=True, project=None, mail=""):
+        raise NotImplemented
+
+    def del_subject(self, uuid):
+        raise NotImplemented
+
+    def set_subject(self, uuid, name="", description="", domain="Default", enabled=True, project=None, mail=""):
+        raise NotImplemented
+
+    def get_objects(self, uuid="", name=""):
         return self.__objects
 
-    def __get_subject_attribute_categories__(self):
+    def add_objects(self, name, enabled=True, description="", tenant=None):
+        raise NotImplemented
+
+    def del_objects(self, uuid):
+        raise NotImplemented
+
+    def set_objects(self, uuid, name="", enabled=True, description="", tenant=None):
+        raise NotImplemented
+
+    def get_subject_attribute_categories(self, name=""):
         """ Return all categories for subjects
 
         :return:
         """
         return self.__metadata["s_attr"]
 
-    def __get_object_attribute_categories__(self):
+    def add_subject_attribute_categories(self, name):
+        """ Return all categories for subjects
+
+        :return:
+        """
+        raise NotImplemented
+
+    def del_subject_attribute_categories(self, uuid):
+        """ Return all categories for subjects
+
+        :return:
+        """
+        raise NotImplemented
+
+    def set_subject_attribute_categories(self, uuid, name):
+        """ Return all categories for subjects
+
+        :return:
+        """
+        raise NotImplemented
+
+    def get_object_attribute_categories(self):
         """ Return all categories for objects
 
         :return:
         """
         return self.__metadata["o_attr"]
 
-    def __get_subject_attributes__(self, attribute_name, category=None):
+    def add_object_attribute_categories(self, name):
+        """ Return all categories for subjects
+
+        :return:
+        """
+        raise NotImplemented
+
+    def del_object_attribute_categories(self, uuid):
+        """ Return all categories for subjects
+
+        :return:
+        """
+        raise NotImplemented
+
+    def set_object_attribute_categories(self, uuid, name):
+        """ Return all categories for subjects
+
+        :return:
+        """
+        raise NotImplemented
+
+    def get_subject_attributes(self, attribute_name, category=None):
         """
 
         :param subject_name:
         :return: a list of dict with value and category
         """
-        pass
+        raise NotImplemented
 
-    def __get_object_attributes__(self, attribute_name, category=None):
-        """
-
-        :param object_name:
-        :return: a list of dict with value and category
-        """
-        pass
-
-    def __get_subject_attribute_assignments__(self, subject_name=None, category=None):
+    def add_subject_attributes(self, attribute_name, category=None, description=""):
         """
 
         :param subject_name:
         :return: a list of dict with value and category
         """
-        pass
+        raise NotImplemented
 
-    def __get_object_attribute_assignments__(self, object_name=None, category=None):
+    def del_subject_attributes(self, uuid):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    def set_subject_attributes(self, uuid, attribute_name="", category=None, description=""):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    def get_object_attributes(self, object_name, category=None):
         """
 
         :param object_name:
         :return: a list of dict with value and category
         """
-        pass
+        raise NotImplemented
 
-    def __get_rules__(self):
+    def add_object_attributes(self, attribute_name, category=None, description=""):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    def del_object_attributes(self, uuid):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    def set_object_attributes(self, uuid, attribute_name="", category=None, description=""):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    def get_subject_attribute_assignments(self, subject_name=None, category=None):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    def add_subject_attribute_assignments(self, subject_name=None, category=None, attributes=[]):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    def del_subject_attribute_assignments(self, uuid, category=None):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    def set_subject_attribute_assignments(self, uuid, subject_name=None, category=None, attributes=[]):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    def get_object_attribute_assignments(self, object_name=None, category=None):
+        """
+
+        :param object_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    def add_object_attribute_assignments(self, object_name=None, category=None, attributes=[]):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    def del_object_attribute_assignments(self, uuid, category=None):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    def set_object_attribute_assignments(self, uuid, object_name=None, category=None, attributes=[]):
+        """
+
+        :param subject_name:
+        :return: a list of dict with value and category
+        """
+        raise NotImplemented
+
+    def get_rules(self):
         """
 
         :return:
         """
-        pass
+        return self.__rules
+
+    def add_rule(self, name, subject_attrs, object_attrs, description=""):
+        raise NotImplemented
+        #TODO: check metadata to only add categories in self.__metadata
+
+    def set_rule(self, uuid, name="", subject_attrs=[], object_attrs=[], description=""):
+        raise NotImplemented
+        #TODO: check metadata to only add categories in self.__metadata
+
+    def del_rule(self, uuid):
+        raise NotImplemented
 
 
-class PublicAuthzInterface(BasicInterface):
+class PublicAuthzInterface:
 
-    def __init__(self):
-        super(PublicAuthzInterface, self).__init__()
+    def __init__(self, extension=None):
+        self.__extension = extension
+        print("Init of PublicAuthzInterface with uuid=" + self.__extension.get_uuid())
+        self.__all__ = (self.authz, )
 
     def authz(self, request):
-        s = self.__subjects
+        raise NotImplemented
 
 
-class PublicAdminInterface(BasicInterface):
+class PublicAdminInterface:
 
-    def __init__(self):
-        super(PublicAdminInterface, self).__init__()
+    def __init__(self, extension):
+        self.__extension = extension
         self.__adminObjects = []
         self.__adminSubjects = []
         self.__adminObjectsAttributes = []
@@ -106,7 +275,7 @@ class PublicAdminInterface(BasicInterface):
         self.__adminObjectsAssignments = []
         self.__adminSubjectsAssignments = []
         self.__adminRules = []
-        self.__prolog_metadata = "/var/cache/prolog/metadata/{}".format(self.__uuid)
+        self.__prolog_metadata = "/var/cache/prolog/metadata/{}".format(self.__extension.get_uuid())
         self.__prolog_data = """
 attribute_category(subject,attribute_category...) # for each category
 attribute_category(object,attribute_category...) # for each category
@@ -137,23 +306,23 @@ rule(
 
     @enforce("perimeter.subjects")
     def get_subjects(self, uuid="", name=""):
-        return self.__subjects
+        return self.__extension.get_subjects(uuid, name)
 
     @enforce("perimeter.subjects", "w")
     def add_subject(self, name, description="", domain="Default", enabled=True, project=None, mail=""):
-        raise NotImplemented
+        return self.__extension.add_subjects(name, description, domain, enabled, project, mail)
 
     @enforce("perimeter.subjects", "w")
     def del_subject(self, uuid):
-        raise NotImplemented
+        return self.__extension.del_subject(uuid)
 
     @enforce("perimeter.subjects", "w")
-    def mod_subject(self, uuid, name="", description="", domain="Default", enabled=True, project=None, mail=""):
-        raise NotImplemented
+    def set_subject(self, uuid, name="", description="", domain="Default", enabled=True, project=None, mail=""):
+        return self.__extension.set_subject(self, uuid, name, description, domain, enabled, project, mail)
 
     @enforce("perimeter.objects")
     def get_objects(self, uuid="", name=""):
-        return self.__objects
+        return self.__extension.get_objects(uuid, name)
 
     @enforce("perimeter.objects", "w")
     def add_objects(self, name, enabled=True, description="", tenant=None):
@@ -164,7 +333,7 @@ rule(
         raise NotImplemented
 
     @enforce("perimeter.objects", "w")
-    def mod_objects(self, uuid, name="", enabled=True, description="", tenant=None):
+    def set_objects(self, uuid, name="", enabled=True, description="", tenant=None):
         raise NotImplemented
 
     @enforce("configuration.metadata")
@@ -173,7 +342,7 @@ rule(
 
         :return:
         """
-        return self.__metadata["s_attr"]
+        return self.__extension.get_metadata["s_attr"]
 
     @enforce("configuration.metadata", "w")
     def add_subject_attribute_categories(self, name):
@@ -192,7 +361,7 @@ rule(
         raise NotImplemented
 
     @enforce("configuration.metadata", "w")
-    def mod_subject_attribute_categories(self, uuid, name):
+    def set_subject_attribute_categories(self, uuid, name):
         """ Return all categories for subjects
 
         :return:
@@ -205,7 +374,7 @@ rule(
 
         :return:
         """
-        return self.__metadata["o_attr"]
+        return self.__extension.get_metadata["o_attr"]
 
     @enforce("configuration.metadata", "w")
     def add_object_attribute_categories(self, name):
@@ -224,7 +393,7 @@ rule(
         raise NotImplemented
 
     @enforce("configuration.metadata", "w")
-    def mod_object_attribute_categories(self, uuid, name):
+    def set_object_attribute_categories(self, uuid, name):
         """ Return all categories for subjects
 
         :return:
@@ -238,7 +407,7 @@ rule(
         :param subject_name:
         :return: a list of dict with value and category
         """
-        return self.__get_subject_attributes__(attribute_name=attribute_name, category=category)
+        return self.__extension.get_get_subject_attributes(attribute_name=attribute_name, category=category)
 
     @enforce("profiles.s_attr", "w")
     def add_subject_attributes(self, attribute_name, category=None, description=""):
@@ -259,7 +428,7 @@ rule(
         raise NotImplemented
 
     @enforce("profiles.s_attr", "w")
-    def mod_subject_attributes(self, uuid, attribute_name="", category=None, description=""):
+    def set_subject_attributes(self, uuid, attribute_name="", category=None, description=""):
         """
 
         :param subject_name:
@@ -295,7 +464,7 @@ rule(
         raise NotImplemented
 
     @enforce("profiles.o_attr", "w")
-    def mod_object_attributes(self, uuid, attribute_name="", category=None, description=""):
+    def set_object_attributes(self, uuid, attribute_name="", category=None, description=""):
         """
 
         :param subject_name:
@@ -331,7 +500,7 @@ rule(
         raise NotImplemented
 
     @enforce("profiles.s_attr_assign", "w")
-    def mod_subject_attribute_assignments(self, uuid, subject_name=None, category=None, attributes=[]):
+    def set_subject_attribute_assignments(self, uuid, subject_name=None, category=None, attributes=[]):
         """
 
         :param subject_name:
@@ -367,7 +536,7 @@ rule(
         raise NotImplemented
 
     @enforce("profiles.o_attr_assign", "w")
-    def mod_object_attribute_assignments(self, uuid, object_name=None, category=None, attributes=[]):
+    def set_object_attribute_assignments(self, uuid, object_name=None, category=None, attributes=[]):
         """
 
         :param subject_name:
@@ -381,7 +550,7 @@ rule(
 
         :return:
         """
-        return self.__get_rules__()
+        return self.__extension.get_get_rules()
 
     @enforce("rules", "w")
     def add_rule(self, name, subject_attrs, object_attrs, description=""):
@@ -389,7 +558,7 @@ rule(
         #TODO: check metadata to only add categories in self.__metadata
 
     @enforce("rules", "w")
-    def mod_rule(self, uuid, name="", subject_attrs=[], object_attrs=[], description=""):
+    def set_rule(self, uuid, name="", subject_attrs=[], object_attrs=[], description=""):
         raise NotImplemented
         #TODO: check metadata to only add categories in self.__metadata
 
@@ -405,7 +574,7 @@ def enforce(param, mode="r"):
     def enforce_decorated(function):
         def wrapped(*args, **kwargs):
             interface = locals().get("args")[0]
-            s = super(PublicAdminInterface, interface).__get_subjects__(interface)
+            raw_extension = getattr(interface, "_PublicAdminInterface__extension")
             try:
                 interface.adminAuthz()
             except AuthzException:
