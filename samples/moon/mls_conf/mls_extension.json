@@ -1,0 +1,93 @@
+    {
+        "name": "MLS extension",
+        "model": "MLS",
+        "description": "",
+        "tenant": {},
+        "perimeter": {
+            "subjects": [
+                {
+                    "name": "user1",
+                    "uuid": "subject_user1"
+                }
+            ],
+            "objects": []
+        },
+
+        "configuration": {
+            "metadata": {
+                "subject": [
+                    "security_level"
+                ],
+                "object": [
+                    "security_level",
+                    "action"
+                ]
+            },
+            "rules": [
+                {
+                    "name": "rule_mls_standard1",
+                    "s_attr": [
+                        { "category": "security_level", "value": "security_level_high" }
+                    ],
+                    "o_attr": [
+                        { "category": "security_level", "value": ["security_level_high", "security_level_medium", "security_level_low"] },
+                        { "category": "action", "value": "*" }
+                    ],
+                    "description": ""
+                },
+                {
+                    "name": "rule_mls_standard2",
+                    "s_attr": [
+                        { "category": "security_level", "value": "security_level_medium" }
+                    ],
+                    "o_attr": [
+                        { "category": "security_level", "value": ["security_level_medium", "security_level_low"] },
+                        { "category": "action", "value": "*" }
+                    ],
+                    "description": ""
+                },
+                {
+                    "name": "rule_mls_standard3",
+                    "s_attr": [
+                        { "category": "security_level", "value": "security_level_low" }
+                    ],
+                    "o_attr": [
+                        { "category": "security_level", "value": "security_level_low" },
+                        { "category": "action", "value": "*" }
+                    ],
+                    "description": ""
+                }
+            ],
+            "protocol": "/etc/moon/mls_conf/inter_mls_protocol.py:MLSIntraExtension",
+            "administration": ""
+        },
+
+        "profiles": {
+            "s_attr": [
+                { "uuid": "security_high", "category": "security_level", "value": "security_level_high", "description": "" },
+                { "uuid": "security_medium", "category": "security_level", "value": "security_level_medium", "description": "" },
+                { "uuid": "security_low", "category": "security_level", "value": "security_level_low", "description": "" }
+            ],
+            "o_attr": [
+                { "uuid": "action-get", "category": "action", "value": "get", "description": "" },
+                { "uuid": "action-post.os-start", "category": "action", "value": "post.os-start", "description": "Start a VM" },
+                { "uuid": "action-post.os-stop", "category": "action", "value": "post.os-stop", "description": "Stop a VM" },
+                { "uuid": "action-post", "category": "action", "value": "post", "description": "" },
+                { "uuid": "action-trace", "category": "action", "value": "trace", "description": "" },
+                { "uuid": "action-delete", "category": "action", "value": "delete", "description": "" },
+                { "uuid": "action-head", "category": "action", "value": "head", "description": "" },
+                { "uuid": "action-patch", "category": "action", "value": "patch", "description": "" },
+                { "uuid": "action-options", "category": "action", "value": "options", "description": "" },
+                { "uuid": "action-connect", "category": "action", "value": "connect", "description": "" },
+                { "uuid": "action-put", "category": "action", "value": "put", "description": "" },
+
+                { "uuid": "security_high", "category": "security_level", "value": "security_level_high", "description": "" },
+                { "uuid": "security_medium", "category": "security_level", "value": "security_level_medium", "description": "" },
+                { "uuid": "security_low", "category": "security_level", "value": "security_level_low", "description": "" }
+
+            ],
+            "s_attr_assign": [],
+            "o_attr_assign": []
+        }
+
+    }

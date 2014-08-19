@@ -1,0 +1,45 @@
+    {
+        "name": "RBAC extension",
+        "model": "RBAC",
+        "description": "",
+        "tenant": {},
+        "perimeter": {
+            "subjects": [],
+            "objects": []
+        },
+
+        "configuration": {
+            "metadata": {
+                "subject": [
+                    "roles"
+                ],
+                "object": [
+                    "id",
+                    "action"
+                ]
+            },
+            "rules": [],
+            "protocol": "/etc/moon/rbac_conf/inter_rbac_protocol.py:RBACIntraExtension",
+            "administration": "/etc/moon/rbac_conf/rbac_administration.json"
+        },
+
+        "profiles": {
+            "s_attr": [],
+            "o_attr": [
+                { "uuid": "action-get", "category": "action", "value": "get", "description": "" },
+                { "uuid": "action-post.os-start", "category": "action", "value": "post.os-start", "description": "Start a VM" },
+                { "uuid": "action-post.os-stop", "category": "action", "value": "post.os-stop", "description": "Stop a VM" },
+                { "uuid": "action-post", "category": "action", "value": "post", "description": "" },
+                { "uuid": "action-trace", "category": "action", "value": "trace", "description": "" },
+                { "uuid": "action-delete", "category": "action", "value": "delete", "description": "" },
+                { "uuid": "action-head", "category": "action", "value": "head", "description": "" },
+                { "uuid": "action-patch", "category": "action", "value": "patch", "description": "" },
+                { "uuid": "action-options", "category": "action", "value": "options", "description": "" },
+                { "uuid": "action-connect", "category": "action", "value": "connect", "description": "" },
+                { "uuid": "action-put", "category": "action", "value": "put", "description": "" }
+            ],
+            "s_attr_assign": [],
+            "o_attr_assign": []
+        }
+
+    }

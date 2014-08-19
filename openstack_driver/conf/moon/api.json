@@ -1,0 +1,2687 @@
+{
+    "attributes": [
+        "tenant_id", 
+        "volume_id", 
+        "volume_type_id", 
+        "snapshot_id", 
+        "qos_id", 
+        "user_id", 
+        "alias", 
+        "server_id", 
+        "key", 
+        "network_label", 
+        "flavor_id", 
+        "image_id", 
+        "key_id", 
+        "id", 
+        "aggregate_id", 
+        "attachment_id", 
+        "fixed_ip", 
+        "domain", 
+        "name", 
+        "ip", 
+        "host_name", 
+        "hypervisor_hostname", 
+        "action_id", 
+        "keypair_name", 
+        "security_group_rule_id", 
+        "security_group_id", 
+        "ServerGroup_id", 
+        "flavor_extra_spec_key", 
+        "hypervisor_id", 
+        "request_id", 
+        "datetime", 
+        "class_id", 
+        "accountId", 
+        "instanceId", 
+        "databaseName", 
+        "flavorId", 
+        "service_id", 
+        "endpoint_id", 
+        "domain_id", 
+        "group_id", 
+        "role_id", 
+        "project_id", 
+        "credential_id", 
+        "policy_id", 
+        "consumer_id", 
+        "access_token_id", 
+        "tokenId", 
+        "tenantId", 
+        "userId", 
+        "roleId", 
+        "serviceId", 
+        "endpointId", 
+        "endpointTemplateId", 
+        "type", 
+        "groupId", 
+        "tag", 
+        "member_id", 
+        "owner_id", 
+        "owner", 
+        "network_id", 
+        "subnet_id", 
+        "port_id", 
+        "rules_security_groups_id", 
+        "router_id", 
+        "floatingip_id", 
+        "metering_label_id", 
+        "metering_label_rule_id", 
+        "vip_id", 
+        "health_monitor_id", 
+        "pool_id", 
+        "account", 
+        "container", 
+        "object", 
+        "stack_name", 
+        "stack_id", 
+        "resource_name", 
+        "type_name", 
+        "event_id", 
+        "config_id", 
+        "deployment_id", 
+        "alarm_id", 
+        "meter_name", 
+        "resource_id"
+    ], 
+    "objects": [
+        [
+            "tenant", 
+            "project"
+        ], 
+        "cloudpipe", 
+        "user", 
+        "interface", 
+        "aggregate", 
+        "agent", 
+        "quota", 
+        "limit", 
+        "image", 
+        "key", 
+        "flavor", 
+        "server", 
+        "network", 
+        "metadata", 
+        "volume", 
+        "token", 
+        "association", 
+        "extension", 
+        "event", 
+        "software", 
+        "resource", 
+        "container", 
+        "monitor", 
+        "metering-label", 
+        "router", 
+        [
+            "floating-ip", 
+            "floatingip"
+        ], 
+        "subnet", 
+        "member", 
+        "tag", 
+        "group", 
+        "template", 
+        "endpoint", 
+        "service", 
+        "domain", 
+        "region", 
+        "extension", 
+        "policy", 
+        "consumer", 
+        "credentials", 
+        "database", 
+        "action", 
+        "hypervisor", 
+        "host", 
+        "migration", 
+        "keypair", 
+        "alarm", 
+        "pool", 
+        "vips", 
+        "port", 
+        "role", 
+        "meter", 
+        "assignment", 
+        "instance", 
+        [
+            "audit-log", 
+            "audit", 
+            "log"
+        ], 
+        "cell"
+    ], 
+    "data": [
+        {
+            "action": "get", 
+            "object": "", 
+            "method": "GET", 
+            "name": "/", 
+            "desc": "Lists information about all Block Storage API versions."
+        }, 
+        {
+            "action": "get", 
+            "object": "", 
+            "method": "GET", 
+            "name": "/v2", 
+            "desc": "Shows details for Block Storage API v2."
+        }, 
+        {
+            "action": "get", 
+            "object": "extension", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/extensions", 
+            "desc": "Lists Block Storage API extensions."
+        }, 
+        {
+            "action": "post", 
+            "object": "volume", 
+            "method": "POST", 
+            "name": "/v2/{tenant_id}/volumes", 
+            "desc": "Creates a volume."
+        }, 
+        {
+            "action": "get", 
+            "object": "volume", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/volumes/detail", 
+            "desc": "Lists detailed information for all Block Storage volumes that the tenant who submits the request can access."
+        }, 
+        {
+            "action": "get", 
+            "object": "volume", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/volumes/{volume_id}", 
+            "desc": "Shows information about a specified volume."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/types", 
+            "desc": "Lists volume types."
+        }, 
+        {
+            "action": "get", 
+            "object": "volume", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/types/{volume_type_id}", 
+            "desc": "Shows information about a specified volume type."
+        }, 
+        {
+            "action": "post", 
+            "object": "tenant", 
+            "method": "POST", 
+            "name": "/v2/{tenant_id}/snapshots", 
+            "desc": "Creates a snapshot, which is a point-in-time copy of a volume. You can create a volume from the snapshot."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/snapshots/detail", 
+            "desc": "Lists detailed information for all Block Storage snapshots that the tenant who submits the request can access."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/snapshots/{snapshot_id}", 
+            "desc": "Shows information for a specified snapshot."
+        }, 
+        {
+            "action": "get", 
+            "object": "metadata", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/snapshots/{snapshot_id}/metadata", 
+            "desc": "Shows the metadata for a specified snapshot."
+        }, 
+        {
+            "action": "post", 
+            "object": "tenant", 
+            "method": "POST", 
+            "name": "/v2/{tenant_id}/qos_specs", 
+            "desc": "Creates a QoS specification."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/qos_specs/{qos_id}", 
+            "desc": "Shows details for a specified QoS specification."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/qos_specs/{qos_id}/associate", 
+            "desc": "Associates a QoS specification with a specified volume type."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/qos_specs/{qos_id}/disassociate", 
+            "desc": "Disassociates a QoS specification from a specified volume type."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/qos_specs/{qos_id}/disassociate_all", 
+            "desc": "Disassociates a specified QoS specification from all associations."
+        }, 
+        {
+            "action": "get", 
+            "object": "association", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/qos_specs/{qos_id}/associations", 
+            "desc": "Gets all associations for a specified QoS specification."
+        }, 
+        {
+            "action": "get", 
+            "object": "quota", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_quota_sets/{tenant_id}", 
+            "desc": "Shows quotas for a tenant."
+        }, 
+        {
+            "action": "get", 
+            "object": "quota", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_quota_sets/defaults", 
+            "desc": "Gets default quotas for a tenant."
+        }, 
+        {
+            "action": "get", 
+            "object": "quota", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_quota_sets/{tenant_id}/{user_id}", 
+            "desc": "Enables an admin user to show quotas for a specified tenant and user."
+        }, 
+        {
+            "action": "get", 
+            "object": "quota", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_quota_sets/{tenant_id}/detail/{user_id}", 
+            "desc": "Shows details for quotas for a specified tenant and user."
+        }, 
+        {
+            "action": "get", 
+            "object": "limit", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/limits", 
+            "desc": "Shows absolute limits for a tenant."
+        }, 
+        {
+            "action": "get", 
+            "object": "", 
+            "method": "GET", 
+            "name": "/v1", 
+            "desc": "Shows details for Block Storage API v1."
+        }, 
+        {
+            "action": "post", 
+            "object": "volume", 
+            "method": "POST", 
+            "name": "/v1/{tenant_id}/volumes", 
+            "desc": "Creates a volume."
+        }, 
+        {
+            "action": "get", 
+            "object": "volume", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/volumes/detail", 
+            "desc": "Lists details for volume entities."
+        }, 
+        {
+            "action": "get", 
+            "object": "volume", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/volumes/{volume_id}", 
+            "desc": "Shows information about a specified volume."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/types", 
+            "desc": "Request a list of volume types."
+        }, 
+        {
+            "action": "get", 
+            "object": "volume", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/types/{volume_type_id}", 
+            "desc": "Shows information about a specified volume type."
+        }, 
+        {
+            "action": "post", 
+            "object": "tenant", 
+            "method": "POST", 
+            "name": "/v1/{tenant_id}/snapshots", 
+            "desc": "Creates a snapshot."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/snapshots/detail", 
+            "desc": "Lists details for snapshot entities."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/snapshots/{snapshot_id}", 
+            "desc": "Shows information about a specified snapshot."
+        }, 
+        {
+            "action": "get", 
+            "object": "metadata", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/snapshots/{snapshot_id}/metadata", 
+            "desc": "Shows the metadata for a specified snapshot."
+        }, 
+        {
+            "action": "get", 
+            "object": "extension", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/extensions/{alias}", 
+            "desc": "Gets details about the specified extension."
+        }, 
+        {
+            "action": "get", 
+            "object": "server", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/servers", 
+            "desc": "Lists IDs, names, and links for all servers."
+        }, 
+        {
+            "action": "get", 
+            "object": "server", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/servers/detail", 
+            "desc": "Lists details for all servers."
+        }, 
+        {
+            "action": "get", 
+            "object": "server", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/servers/{server_id}", 
+            "desc": "Gets details for a specified server."
+        }, 
+        {
+            "action": "get", 
+            "object": "metadata", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/servers/{server_id}/metadata", 
+            "desc": "Shows metadata for a specified server."
+        }, 
+        {
+            "action": "get", 
+            "object": "metadata", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/servers/{server_id}/metadata/{key}", 
+            "desc": "Shows details for a metadata item by key for a specified server."
+        }, 
+        {
+            "action": "get", 
+            "object": "server", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/servers/{server_id}/ips", 
+            "desc": "Lists networks and addresses for a specified tenant and server."
+        }, 
+        {
+            "action": "get", 
+            "object": "network", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/servers/{server_id}/ips/{network_label}", 
+            "desc": "Lists addresses for a specified tenant, server, and network."
+        }, 
+        {
+            "action": "post", 
+            "object": "action", 
+            "method": "POST", 
+            "name": "/v2/{tenant_id}/servers/{server_id}/action", 
+            "desc": "Changes the password for a server. Specify the changePassword"
+        }, 
+        {
+            "action": "get", 
+            "object": "flavor", 
+            "method": "GET", 
+            "name": "/v2/flavors", 
+            "desc": "Lists IDs, names, and links for available flavors."
+        }, 
+        {
+            "action": "get", 
+            "object": "flavor", 
+            "method": "GET", 
+            "name": "/v2/flavors/detail", 
+            "desc": "Lists all details for available flavors."
+        }, 
+        {
+            "action": "get", 
+            "object": "flavor", 
+            "method": "GET", 
+            "name": "/v2/flavors/{flavor_id}", 
+            "desc": "Gets details for a specified flavor."
+        }, 
+        {
+            "action": "get", 
+            "object": "image", 
+            "method": "GET", 
+            "name": "/v2/images", 
+            "desc": "Lists IDs, names, and links for available images."
+        }, 
+        {
+            "action": "get", 
+            "object": "image", 
+            "method": "GET", 
+            "name": "/v2/images/detail", 
+            "desc": "Lists all details for available images."
+        }, 
+        {
+            "action": "get", 
+            "object": "image", 
+            "method": "GET", 
+            "name": "/v2/images/{image_id}", 
+            "desc": "Gets details for a specified image."
+        }, 
+        {
+            "action": "get", 
+            "object": "metadata", 
+            "method": "GET", 
+            "name": "/v2/images/{image_id}/metadata", 
+            "desc": "Shows metadata for a specified image."
+        }, 
+        {
+            "action": "get", 
+            "object": "metadata", 
+            "method": "GET", 
+            "name": "/v2/images/{image_id}/metadata/{key}", 
+            "desc": "Shows details for a metadata item by key for a specified image."
+        }, 
+        {
+            "action": "get", 
+            "object": "server", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/servers/{server_id}/diagnostics", 
+            "desc": "Gets basic usage data for a specified server."
+        }, 
+        {
+            "action": "get", 
+            "object": "flavor", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/flavors", 
+            "desc": "Lists flavors and includes the access type, which is public or private."
+        }, 
+        {
+            "action": "get", 
+            "object": "flavor", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/flavors/{flavor_id}", 
+            "desc": "Gets the flavor access type, which is public or private."
+        }, 
+        {
+            "action": "get", 
+            "object": "flavor", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/flavors/{flavor_id}/os_flavor_access", 
+            "desc": "Lists tenants with access to the specified private flavor."
+        }, 
+        {
+            "action": "post", 
+            "object": "action", 
+            "method": "POST", 
+            "name": "/v2/{tenant_id}/flavors/{flavor_id}/action", 
+            "desc": "Gives a specified tenant access to the specified private flavor."
+        }, 
+        {
+            "action": "get", 
+            "object": "flavor", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/flavors/detail", 
+            "desc": "Lists available flavors. Includes the OS-FLV-DISABLED:disabled"
+        }, 
+        {
+            "action": "get", 
+            "object": "flavor", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/flavors/{flavor_id}/os_extra_specs", 
+            "desc": "Lists the extra-specs or keys for the specified flavor."
+        }, 
+        {
+            "action": "get", 
+            "object": "flavor", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/flavors/{flavor_id}/os_extra_specs/{key_id}", 
+            "desc": "Gets the value of the specified key."
+        }, 
+        {
+            "action": "get", 
+            "object": "image", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/images/detail", 
+            "desc": "Lists details for available images. Includes the image size."
+        }, 
+        {
+            "action": "get", 
+            "object": "image", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/images/{image_id}", 
+            "desc": "Gets details for a specified image. Includes the image size."
+        }, 
+        {
+            "action": "get", 
+            "object": "limit", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/limits/{tenant_id}", 
+            "desc": "Enables administrators to get absolute and rate limit information, including information about currently used absolute limits, for a specified customer tenant ID."
+        }, 
+        {
+            "action": "get", 
+            "object": "agent", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_agents", 
+            "desc": "Lists all agent builds."
+        }, 
+        {
+            "action": "put", 
+            "object": "agent", 
+            "method": "PUT", 
+            "name": "/v2/{tenant_id}/os_agents/{id}", 
+            "desc": "Updates an agent build."
+        }, 
+        {
+            "action": "get", 
+            "object": "aggregate", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_aggregates", 
+            "desc": "Lists all aggregates."
+        }, 
+        {
+            "action": "delete", 
+            "object": "aggregate", 
+            "method": "DELETE", 
+            "name": "/v2/{tenant_id}/os_aggregates/{aggregate_id}", 
+            "desc": "Deletes an aggregate."
+        }, 
+        {
+            "action": "post", 
+            "object": "action", 
+            "method": "POST", 
+            "name": "/v2/{tenant_id}/os_aggregates/{aggregate_id}/action", 
+            "desc": "Sets metadata for an aggregate."
+        }, 
+        {
+            "action": "post", 
+            "object": "server", 
+            "method": "POST", 
+            "name": "/v2/{tenant_id}/servers/{server_id}/os_attach_interfaces", 
+            "desc": "Creates and uses a port interface to attach the port to a server instance."
+        }, 
+        {
+            "action": "get", 
+            "object": "server", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/servers/{server_id}/os_attach_interfaces/{attachment_id}", 
+            "desc": "Shows information about a specified port interface."
+        }, 
+        {
+            "action": "post", 
+            "object": "tenant", 
+            "method": "POST", 
+            "name": "/v2/{tenant_id}/os_certificates", 
+            "desc": "Creates a root certificate."
+        }, 
+        {
+            "action": "get", 
+            "object": "cloudpipe", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_cloudpipe", 
+            "desc": "Lists cloudpipes."
+        }, 
+        {
+            "action": "post", 
+            "object": "cloudpipe", 
+            "method": "POST", 
+            "name": "/v2/{tenant_id}/os_cloudpipe/configure_project", 
+            "desc": "Updates the virtual private network (VPN) IP address and port for a specified cloudpipe instance."
+        }, 
+        {
+            "action": "post", 
+            "object": "action", 
+            "method": "POST", 
+            "name": "/v2/{tenant_id}/os_coverage/action", 
+            "desc": "Generates a coverage report."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_fixed_ips/{fixed_ip}", 
+            "desc": "Shows information for a specified fixed IP address."
+        }, 
+        {
+            "action": "post", 
+            "object": "action", 
+            "method": "POST", 
+            "name": "/v2/{tenant_id}/os_fixed_ips/{fixed_ip}/action", 
+            "desc": "Reserves or releases a fixed IP."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_floating_ip_dns", 
+            "desc": "Lists registered DNS domains published by the DNS drivers."
+        }, 
+        {
+            "action": "put", 
+            "object": "domain", 
+            "method": "PUT", 
+            "name": "/v2/{tenant_id}/os_floating_ip_dns/{domain}", 
+            "desc": "Creates or updates a DNS domain."
+        }, 
+        {
+            "action": "put", 
+            "object": "domain", 
+            "method": "PUT", 
+            "name": "/v2/{tenant_id}/os_floating_ip_dns/{domain}/entries/{name}", 
+            "desc": "Creates or updates a DNS entry."
+        }, 
+        {
+            "action": "get", 
+            "object": "domain", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_floating_ip_dns/{domain}/entries/{ip}", 
+            "desc": "Lists DNS entries for a specified domain and IP."
+        }, 
+        {
+            "action": "get", 
+            "object": "pool", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_floating_ip_pools", 
+            "desc": "Lists floating IP pools."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_floating_ips", 
+            "desc": "Lists floating IP addresses associated with the tenant or account."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_floating_ips/{id}", 
+            "desc": "Shows information for a specified floating IP address."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_floating_ips_bulk", 
+            "desc": "Lists all floating IPs."
+        }, 
+        {
+            "action": "post", 
+            "object": "tenant", 
+            "method": "POST", 
+            "name": "/v2/{tenant_id}/os_floating_ips_bulk/delete", 
+            "desc": "Bulk-deletes floating IPs."
+        }, 
+        {
+            "action": "get", 
+            "object": "host", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_floating_ips_bulk/{host_name}", 
+            "desc": "Lists all floating IPs for a specified host."
+        }, 
+        {
+            "action": "get", 
+            "object": "host", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_hosts", 
+            "desc": "Lists hosts."
+        }, 
+        {
+            "action": "get", 
+            "object": "host", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_hosts/{host_name}", 
+            "desc": "Shows information for a specified host."
+        }, 
+        {
+            "action": "get", 
+            "object": "host", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_hosts/{host_name}/startup", 
+            "desc": "Starts a host."
+        }, 
+        {
+            "action": "get", 
+            "object": "host", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_hosts/{host_name}/shutdown", 
+            "desc": "Shuts down a host."
+        }, 
+        {
+            "action": "get", 
+            "object": "host", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_hosts/{host_name}/reboot", 
+            "desc": "Reboots a host."
+        }, 
+        {
+            "action": "get", 
+            "object": "hypervisor", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_hypervisors", 
+            "desc": "Lists hypervisors information for each server obtained through the hypervisor-specific API, such as libvirt or XenAPI."
+        }, 
+        {
+            "action": "get", 
+            "object": "hypervisor", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_hypervisors/detail", 
+            "desc": "Shows information for a specified hypervisor. Typically configured as an admin-only extension by using policy.json"
+        }, 
+        {
+            "action": "get", 
+            "object": "hypervisor", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_hypervisors/statistics", 
+            "desc": "Shows hypervisor statistics over all compute nodes."
+        }, 
+        {
+            "action": "get", 
+            "object": "host", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_hypervisors/{hypervisor_hostname}", 
+            "desc": "Shows the up time for a specified hypervisor."
+        }, 
+        {
+            "action": "get", 
+            "object": "host", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_hypervisors/{hypervisor_hostname}/servers", 
+            "desc": "Lists instances that belong to specific hypervisors."
+        }, 
+        {
+            "action": "get", 
+            "object": "instance", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/servers/{server_id}/os_instance_actions", 
+            "desc": "Lists available actions for a specified server. Deployers set permissions for this request in the policy.json"
+        }, 
+        {
+            "action": "get", 
+            "object": "instance", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/servers/{server_id}/os_instance_actions/{action_id}", 
+            "desc": "Gets details for a specified action for a specified server instance. Deployers set permissions for this request in the policy.json"
+        }, 
+        {
+            "action": "get", 
+            "object": "keypair", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_keypairs", 
+            "desc": "Lists keypairs that are associated with the account."
+        }, 
+        {
+            "action": "delete", 
+            "object": "keypair", 
+            "method": "DELETE", 
+            "name": "/v2/{tenant_id}/os_keypairs/{keypair_name}", 
+            "desc": "Deletes a keypair."
+        }, 
+        {
+            "action": "get", 
+            "object": "migration", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_migrations", 
+            "desc": "Enables an administrative user to fetch in-progress migrations for a region or specified cell in a region."
+        }, 
+        {
+            "action": "post", 
+            "object": "tenant", 
+            "method": "POST", 
+            "name": "/v2/{tenant_id}", 
+            "desc": "Creates a network."
+        }, 
+        {
+            "action": "get", 
+            "object": "network", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_networks", 
+            "desc": "Lists networks that are available to the tenant."
+        }, 
+        {
+            "action": "post", 
+            "object": "network", 
+            "method": "POST", 
+            "name": "/v2/{tenant_id}/os_networks/add", 
+            "desc": "Adds a specified network to a project."
+        }, 
+        {
+            "action": "get", 
+            "object": "network", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_networks/{id}", 
+            "desc": "Shows information for a specified network."
+        }, 
+        {
+            "action": "post", 
+            "object": "action", 
+            "method": "POST", 
+            "name": "/v2/{tenant_id}/os_networks/{id}/action", 
+            "desc": "Associates a specified network with a host."
+        }, 
+        {
+            "action": "get", 
+            "object": "group", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_security_group_rules", 
+            "desc": "Lists default security group rules."
+        }, 
+        {
+            "action": "get", 
+            "object": "group", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_security_group_rules/{security_group_rule_id}", 
+            "desc": "Shows information for a specified security group rule."
+        }, 
+        {
+            "action": "get", 
+            "object": "group", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_security_groups", 
+            "desc": "Lists security groups."
+        }, 
+        {
+            "action": "get", 
+            "object": "group", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_security_groups/servers/{server_id}/os_security_groups", 
+            "desc": "Lists security groups for a specified server."
+        }, 
+        {
+            "action": "get", 
+            "object": "group", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_security_groups/{security_group_id}", 
+            "desc": "Shows information for a specified security group."
+        }, 
+        {
+            "action": "get", 
+            "object": "group", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_server_groups", 
+            "desc": "Lists server groups."
+        }, 
+        {
+            "action": "get", 
+            "object": "group", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_server_groups/{ServerGroup_id}", 
+            "desc": "Shows details for a specified server group."
+        }, 
+        {
+            "action": "get", 
+            "object": "server", 
+            "method": "GET", 
+            "name": "/v2/servers/{server_id}/os_server_password", 
+            "desc": "Gets the administrative password for a specified server."
+        }, 
+        {
+            "action": "get", 
+            "object": "service", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_services", 
+            "desc": "Lists running services."
+        }, 
+        {
+            "action": "put", 
+            "object": "service", 
+            "method": "PUT", 
+            "name": "/v2/{tenant_id}/os_services/enable", 
+            "desc": "Enables scheduling for a service."
+        }, 
+        {
+            "action": "put", 
+            "object": "service", 
+            "method": "PUT", 
+            "name": "/v2/{tenant_id}/os_services/disable", 
+            "desc": "Disables scheduling for a service."
+        }, 
+        {
+            "action": "put", 
+            "object": "audit-log", 
+            "method": "PUT", 
+            "name": "/v2/{tenant_id}/os_services/disable_log_reason", 
+            "desc": "Logs information to the service table about why a service was disabled."
+        }, 
+        {
+            "action": "get", 
+            "object": "service", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_services/detail", 
+            "desc": "Lists disabled services. If information exists, includes reasons why services were disabled."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_simple_tenant_usage", 
+            "desc": "Lists usage information for all tenants."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/os_simple_tenant_usage/{tenant_id}", 
+            "desc": "Gets usage information for a tenant."
+        }, 
+        {
+            "action": "get", 
+            "object": "server", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/servers/{server_id}/os_virtual_interfaces", 
+            "desc": "Lists the virtual interfaces for a specified instance."
+        }, 
+        {
+            "action": "get", 
+            "object": "volume", 
+            "method": "GET", 
+            "name": "/v1.1/{tenant_id}/os_volumes", 
+            "desc": "Lists the volumes associated with the account."
+        }, 
+        {
+            "action": "get", 
+            "object": "volume", 
+            "method": "GET", 
+            "name": "/v1.1/{tenant_id}/os_volumes/detail", 
+            "desc": "Lists details for a specified volume."
+        }, 
+        {
+            "action": "post", 
+            "object": "volume", 
+            "method": "POST", 
+            "name": "/v1.1/{tenant_id}/os_volumes/{volume_id}", 
+            "desc": "Creates a volume."
+        }, 
+        {
+            "action": "get", 
+            "object": "volume", 
+            "method": "GET", 
+            "name": "/v1.1/{tenant_id}/os_volume_types", 
+            "desc": "Lists volume types."
+        }, 
+        {
+            "action": "get", 
+            "object": "volume", 
+            "method": "GET", 
+            "name": "/v1.1/{tenant_id}/os_volume_types/{volume_type_id}", 
+            "desc": "Shows information for a specified volume type."
+        }, 
+        {
+            "action": "post", 
+            "object": "tenant", 
+            "method": "POST", 
+            "name": "/v1.1/{tenant_id}/os_snapshots", 
+            "desc": "Creates a snapshot."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v1.1/{tenant_id}/os_snapshots/detail", 
+            "desc": "Lists details for a specified snapshot."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v1.1/{tenant_id}/os_snapshots/{snapshot_id}", 
+            "desc": "Shows information for a specified snapshot."
+        }, 
+        {
+            "action": "post", 
+            "object": "volume", 
+            "method": "POST", 
+            "name": "/v2/{tenant_id}/servers/{server_id}/os_volume_attachments", 
+            "desc": "Attaches a volume to the specified server."
+        }, 
+        {
+            "action": "get", 
+            "object": "volume", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/servers/{server_id}/os_volume_attachments/{attachment_id}", 
+            "desc": "Shows details for the specified volume attachment."
+        }, 
+        {
+            "action": "get", 
+            "object": "server", 
+            "method": "GET", 
+            "name": "/v2/{tenant_id}/servers/{server_id}/detail", 
+            "desc": "Lists details for all servers including the configuration drive extended attribute."
+        }, 
+        {
+            "action": "get", 
+            "object": "server", 
+            "method": "GET", 
+            "name": "/v2/servers", 
+            "desc": "Lists detailed extended server attribute information for all servers."
+        }, 
+        {
+            "action": "get", 
+            "object": "server", 
+            "method": "GET", 
+            "name": "/v2/servers/{server_id}", 
+            "desc": "Shows extended server attributes for a specified server."
+        }, 
+        {
+            "action": "get", 
+            "object": "", 
+            "method": "GET", 
+            "name": "/v3", 
+            "desc": "Shows details for Compute API v3."
+        }, 
+        {
+            "action": "post", 
+            "object": "action", 
+            "method": "POST", 
+            "name": "/v3/servers/{server_id}/action/{server_id}/action", 
+            "desc": "Backs up a server instance."
+        }, 
+        {
+            "action": "post", 
+            "object": "agent", 
+            "method": "POST", 
+            "name": "/v3/os_agents", 
+            "desc": "Creates an agent build."
+        }, 
+        {
+            "action": "put", 
+            "object": "agent", 
+            "method": "PUT", 
+            "name": "/v3/os_agents/{id}", 
+            "desc": "Updates an agent build."
+        }, 
+        {
+            "action": "post", 
+            "object": "aggregate", 
+            "method": "POST", 
+            "name": "/v3/os_aggregates", 
+            "desc": "Creates an aggregate, given its name and availability zone."
+        }, 
+        {
+            "action": "get", 
+            "object": "aggregate", 
+            "method": "GET", 
+            "name": "/v3/os_aggregates/{aggregate_id}", 
+            "desc": "Shows the details of an aggregate, hosts and metadata included."
+        }, 
+        {
+            "action": "post", 
+            "object": "action", 
+            "method": "POST", 
+            "name": "/v3/os_aggregates/{aggregate_id}/action", 
+            "desc": "Adds a host to the specified aggregate."
+        }, 
+        {
+            "action": "get", 
+            "object": "cell", 
+            "method": "GET", 
+            "name": "/v3/os_cells", 
+            "desc": "Lists cells."
+        }, 
+        {
+            "action": "get", 
+            "object": "cell", 
+            "method": "GET", 
+            "name": "/v3/os_cells/cell3", 
+            "desc": "Shows data for a specified cell."
+        }, 
+        {
+            "action": "get", 
+            "object": "cell", 
+            "method": "GET", 
+            "name": "/v3/os_cells/nova/capacities", 
+            "desc": "Shows capacities for a specified cell."
+        }, 
+        {
+            "action": "post", 
+            "object": "", 
+            "method": "POST", 
+            "name": "/v3/os_certificates", 
+            "desc": "Creates a certificate."
+        }, 
+        {
+            "action": "get", 
+            "object": "", 
+            "method": "GET", 
+            "name": "/v3/os_certificates/root", 
+            "desc": "Shows details for a specified certificate."
+        }, 
+        {
+            "action": "get", 
+            "object": "server", 
+            "method": "GET", 
+            "name": "/v3/servers/{server_id}", 
+            "desc": "Shows details for a specified server."
+        }, 
+        {
+            "action": "get", 
+            "object": "server", 
+            "method": "GET", 
+            "name": "/v3/servers/detail", 
+            "desc": "Lists server details for a specified user."
+        }, 
+        {
+            "action": "post", 
+            "object": "action", 
+            "method": "POST", 
+            "name": "/v3/servers/{server_id}/action", 
+            "desc": "Force deletes an instance before deferred cleanup."
+        }, 
+        {
+            "action": "get", 
+            "object": "server", 
+            "method": "GET", 
+            "name": "/v3/servers", 
+            "desc": "Shows details for a specified server."
+        }, 
+        {
+            "action": "get", 
+            "object": "server", 
+            "method": "GET", 
+            "name": "/v3/servers/details", 
+            "desc": "Lists server details for a specified user."
+        }, 
+        {
+            "action": "post", 
+            "object": "flavor", 
+            "method": "POST", 
+            "name": "/v3/flavors", 
+            "desc": "Adds access attribute to the flavor create response."
+        }, 
+        {
+            "action": "get", 
+            "object": "flavor", 
+            "method": "GET", 
+            "name": "/v3/flavors/detail", 
+            "desc": "Extends flavor detail to add access attribute to the response of flavor detail."
+        }, 
+        {
+            "action": "get", 
+            "object": "flavor", 
+            "method": "GET", 
+            "name": "/v3/flavors/1", 
+            "desc": "Extends flavor show to add access attribute to the flavor show response."
+        }, 
+        {
+            "action": "post", 
+            "object": "action", 
+            "method": "POST", 
+            "name": "/v3/flavors/10/action", 
+            "desc": "Adds flavor access for tenant."
+        }, 
+        {
+            "action": "get", 
+            "object": "flavor", 
+            "method": "GET", 
+            "name": "/v3/flavors/10/os_flavor_access", 
+            "desc": "Returns access list by flavor id."
+        }, 
+        {
+            "action": "post", 
+            "object": "flavor", 
+            "method": "POST", 
+            "name": "/v3/flavors/{flavor_id}/flavor_extra_specs", 
+            "desc": "Creates and updates flavor extra specs."
+        }, 
+        {
+            "action": "get", 
+            "object": "flavor", 
+            "method": "GET", 
+            "name": "/v3/flavors/{flavor_id}/flavor_extra_specs/{flavor_extra_spec_key}", 
+            "desc": "Shows an extra spec for specified flavor by the key."
+        }, 
+        {
+            "action": "delete", 
+            "object": "flavor", 
+            "method": "DELETE", 
+            "name": "/v3/flavors/{flavor_id}", 
+            "desc": "Deletes a flavor."
+        }, 
+        {
+            "action": "get", 
+            "object": "host", 
+            "method": "GET", 
+            "name": "/v3/os_hosts", 
+            "desc": "Lists hosts."
+        }, 
+        {
+            "action": "put", 
+            "object": "host", 
+            "method": "PUT", 
+            "name": "/v3/os_hosts/{host_name}", 
+            "desc": "Enables or puts a host in maintenance mode."
+        }, 
+        {
+            "action": "get", 
+            "object": "host", 
+            "method": "GET", 
+            "name": "/v3/os_hosts/{host_name}/reboot", 
+            "desc": "Reboots a host."
+        }, 
+        {
+            "action": "get", 
+            "object": "host", 
+            "method": "GET", 
+            "name": "/v3/os_hosts/{host_name}/shutdown", 
+            "desc": "Shuts down a host."
+        }, 
+        {
+            "action": "get", 
+            "object": "host", 
+            "method": "GET", 
+            "name": "/v3/os_hosts/{host_name}/startup", 
+            "desc": "Starts a host."
+        }, 
+        {
+            "action": "get", 
+            "object": "hypervisor", 
+            "method": "GET", 
+            "name": "/v3/os_hypervisors", 
+            "desc": "Lists hypervisors."
+        }, 
+        {
+            "action": "get", 
+            "object": "hypervisor", 
+            "method": "GET", 
+            "name": "/v3/os_hypervisors/statistics", 
+            "desc": "Shows statistics for all hypervisors."
+        }, 
+        {
+            "action": "get", 
+            "object": "hypervisor", 
+            "method": "GET", 
+            "name": "/v3/os_hypervisors/search", 
+            "desc": "Searches hypervisors by specified host name."
+        }, 
+        {
+            "action": "get", 
+            "object": "hypervisor", 
+            "method": "GET", 
+            "name": "/v3/os_hypervisors/{hypervisor_id}", 
+            "desc": "Shows details for a specified hypervisor."
+        }, 
+        {
+            "action": "get", 
+            "object": "hypervisor", 
+            "method": "GET", 
+            "name": "/v3/os_hypervisors/{hypervisor_id}/uptime", 
+            "desc": "Shows the uptime for a specified hypervisor."
+        }, 
+        {
+            "action": "get", 
+            "object": "hypervisor", 
+            "method": "GET", 
+            "name": "/v3/os_hypervisors/{hypervisor_id}/servers", 
+            "desc": "Lists servers that run on a specified hypervisor."
+        }, 
+        {
+            "action": "get", 
+            "object": "instance", 
+            "method": "GET", 
+            "name": "/v3/servers/{server_id}/os_instance_actions", 
+            "desc": "Lists actions for a specified instance."
+        }, 
+        {
+            "action": "get", 
+            "object": "instance", 
+            "method": "GET", 
+            "name": "/v3/servers/{server_id}/os_instance_actions/{request_id}", 
+            "desc": "Shows information about a specified instance action."
+        }, 
+        {
+            "action": "get", 
+            "object": "audit-log", 
+            "method": "GET", 
+            "name": "/v3/os_instance_usage_audit_log", 
+            "desc": "Lists usage audits for a specified instance."
+        }, 
+        {
+            "action": "get", 
+            "object": "audit-log", 
+            "method": "GET", 
+            "name": "/v3/os_instance_usage_audit_log/{datetime}", 
+            "desc": "Lists instance usage audits that occurred before a specified time."
+        }, 
+        {
+            "action": "get", 
+            "object": "limit", 
+            "method": "GET", 
+            "name": "/v3/limits", 
+            "desc": "Show global and rate limit information."
+        }, 
+        {
+            "action": "get", 
+            "object": "migration", 
+            "method": "GET", 
+            "name": "/v3/os_migrations", 
+            "desc": "Lists in-progress migrations."
+        }, 
+        {
+            "action": "post", 
+            "object": "action", 
+            "method": "POST", 
+            "name": "/v3/servers/action", 
+            "desc": "Adds an IP to a specified network on an instance."
+        }, 
+        {
+            "action": "get", 
+            "object": "quota", 
+            "method": "GET", 
+            "name": "/v3/os_quota_class_sets/{class_id}", 
+            "desc": "Shows the quota for a specified class."
+        }, 
+        {
+            "action": "delete", 
+            "object": "quota", 
+            "method": "DELETE", 
+            "name": "/v3/os_quota_sets/{tenant_id}", 
+            "desc": "Deletes a quota for tenant."
+        }, 
+        {
+            "action": "get", 
+            "object": "quota", 
+            "method": "GET", 
+            "name": "/v3/os_quota_sets/{tenant_id}/defaults", 
+            "desc": "Shows default quotas for tenant."
+        }, 
+        {
+            "action": "put", 
+            "object": "quota", 
+            "method": "PUT", 
+            "name": "/v3/os_quota_sets/{tenant_id}/", 
+            "desc": "Updates quota for user."
+        }, 
+        {
+            "action": "post", 
+            "object": "action", 
+            "method": "POST", 
+            "name": "/v3/servers/{server_id}/actions", 
+            "desc": "Gets text console output."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v3/os_simple_tenant_usage", 
+            "desc": "Lists usage information for all tenants."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v3/os_simple_tenant_usage/{tenant_id}", 
+            "desc": "Shows usage details for a specified tenant."
+        }, 
+        {
+            "action": "get", 
+            "object": "", 
+            "method": "GET", 
+            "name": "/v1.0", 
+            "desc": "Shows details for the Database Service API v1.0."
+        }, 
+        {
+            "action": "post", 
+            "object": "instance", 
+            "method": "POST", 
+            "name": "/v1.0/{accountId}/instances", 
+            "desc": "Creates a database instance."
+        }, 
+        {
+            "action": "get", 
+            "object": "instance", 
+            "method": "GET", 
+            "name": "/v1.0/{accountId}/instances/{instanceId}", 
+            "desc": "Shows database instance details."
+        }, 
+        {
+            "action": "post", 
+            "object": "instance", 
+            "method": "POST", 
+            "name": "/v1.0/{accountId}/instances/{instanceId}/root", 
+            "desc": "Enables the root user for a specified database instance and returns the root password."
+        }, 
+        {
+            "action": "post", 
+            "object": "instance", 
+            "method": "POST", 
+            "name": "/v1.0/{accountId}/instances/{instanceId}/action", 
+            "desc": "Restarts the database service on an instance."
+        }, 
+        {
+            "action": "post", 
+            "object": "instance", 
+            "method": "POST", 
+            "name": "/v1.0/{accountId}/instances/{instanceId}/databases", 
+            "desc": "Creates a database within a specified instance."
+        }, 
+        {
+            "action": "delete", 
+            "object": "instance", 
+            "method": "DELETE", 
+            "name": "/v1.0/{accountId}/instances/{instanceId}/databases/{databaseName}", 
+            "desc": "Deletes a specified database."
+        }, 
+        {
+            "action": "post", 
+            "object": "instance", 
+            "method": "POST", 
+            "name": "/v1.0/{accountId}/instances/{instanceId}/users", 
+            "desc": "Creates a user for a specified database instance."
+        }, 
+        {
+            "action": "delete", 
+            "object": "instance", 
+            "method": "DELETE", 
+            "name": "/v1.0/{accountId}/instances/{instanceId}/users/{name}", 
+            "desc": "Deletes a specified user for a specified database instance."
+        }, 
+        {
+            "action": "get", 
+            "object": "flavor", 
+            "method": "GET", 
+            "name": "/v1.0/{accountId}/flavors", 
+            "desc": "Lists information for all available flavors."
+        }, 
+        {
+            "action": "get", 
+            "object": "flavor", 
+            "method": "GET", 
+            "name": "/v1.0/{accountId}/flavors/{flavorId}", 
+            "desc": "Shows flavor details."
+        }, 
+        {
+            "action": "post", 
+            "object": "token", 
+            "method": "POST", 
+            "name": "/v3/auth/tokens", 
+            "desc": "Authenticates and generates a token."
+        }, 
+        {
+            "action": "post", 
+            "object": "service", 
+            "method": "POST", 
+            "name": "/v3/services", 
+            "desc": "Adds a service."
+        }, 
+        {
+            "action": "get", 
+            "object": "service", 
+            "method": "GET", 
+            "name": "/v3/services/{service_id}", 
+            "desc": "Shows details for a specified service."
+        }, 
+        {
+            "action": "post", 
+            "object": "endpoint", 
+            "method": "POST", 
+            "name": "/v3/endpoints", 
+            "desc": "Adds an endpoint."
+        }, 
+        {
+            "action": "patch", 
+            "object": "endpoint", 
+            "method": "PATCH", 
+            "name": "/v3/endpoints/{endpoint_id}", 
+            "desc": "Updates a specified endpoint."
+        }, 
+        {
+            "action": "post", 
+            "object": "domain", 
+            "method": "POST", 
+            "name": "/v3/domains", 
+            "desc": "Adds a domain."
+        }, 
+        {
+            "action": "get", 
+            "object": "domain", 
+            "method": "GET", 
+            "name": "/v3/domains/{domain_id}", 
+            "desc": "Shows details for a specified domain."
+        }, 
+        {
+            "action": "get", 
+            "object": "role", 
+            "method": "GET", 
+            "name": "/v3/domains/{domain_id}/users/{user_id}/roles", 
+            "desc": "Lists roles for a user on a domain."
+        }, 
+        {
+            "action": "get", 
+            "object": "role", 
+            "method": "GET", 
+            "name": "/v3/domains/{domain_id}/groups/{group_id}/roles", 
+            "desc": "Lists roles for a specified domain group."
+        }, 
+        {
+            "action": "put", 
+            "object": "role", 
+            "method": "PUT", 
+            "name": "/v3/domains/{domain_id}/groups/{group_id}/roles/{role_id}", 
+            "desc": "Grants a specified role to a specified domain group."
+        }, 
+        {
+            "action": "post", 
+            "object": "tenant", 
+            "method": "POST", 
+            "name": "/v3/projects", 
+            "desc": "Adds a project."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v3/projects/{project_id}", 
+            "desc": "Shows details for a specified project."
+        }, 
+        {
+            "action": "put", 
+            "object": "role", 
+            "method": "PUT", 
+            "name": "/v3/projects/{project_id}/users/{user_id}/roles/{role_id}", 
+            "desc": "Grants a role to a user on a project."
+        }, 
+        {
+            "action": "get", 
+            "object": "role", 
+            "method": "GET", 
+            "name": "/v3/projects/{project_id}/groups/{group_id}/roles", 
+            "desc": "Lists roles for a project group."
+        }, 
+        {
+            "action": "get", 
+            "object": "user", 
+            "method": "GET", 
+            "name": "/v3/users/{user_id}", 
+            "desc": "Shows details for a specified user."
+        }, 
+        {
+            "action": "get", 
+            "object": "group", 
+            "method": "GET", 
+            "name": "/v3/users/{user_id}/groups", 
+            "desc": "Lists groups for a specified user."
+        }, 
+        {
+            "action": "get", 
+            "object": "user", 
+            "method": "GET", 
+            "name": "/v3/users/{user_id}/projects", 
+            "desc": "List projects for a specified user."
+        }, 
+        {
+            "action": "get", 
+            "object": "role", 
+            "method": "GET", 
+            "name": "/v3/users/{user_id}/roles", 
+            "desc": "Lists roles for a specified user."
+        }, 
+        {
+            "action": "post", 
+            "object": "group", 
+            "method": "POST", 
+            "name": "/v3/groups", 
+            "desc": "Adds a group."
+        }, 
+        {
+            "action": "get", 
+            "object": "group", 
+            "method": "GET", 
+            "name": "/v3/groups/{group_id}", 
+            "desc": "Shows details for a specified group."
+        }, 
+        {
+            "action": "get", 
+            "object": "group", 
+            "method": "GET", 
+            "name": "/v3/groups/{group_id}/users", 
+            "desc": "Lists the users in a specified group."
+        }, 
+        {
+            "action": "put", 
+            "object": "group", 
+            "method": "PUT", 
+            "name": "/v3/groups/{group_id}/users/{user_id}", 
+            "desc": "Adds a user to a specified group."
+        }, 
+        {
+            "action": "post", 
+            "object": "credentials", 
+            "method": "POST", 
+            "name": "/v3/credentials", 
+            "desc": "Adds a credential."
+        }, 
+        {
+            "action": "get", 
+            "object": "credentials", 
+            "method": "GET", 
+            "name": "/v3/credentials/{credential_id}", 
+            "desc": "Shows details for a specified credential."
+        }, 
+        {
+            "action": "post", 
+            "object": "role", 
+            "method": "POST", 
+            "name": "/v3/roles", 
+            "desc": "Adds a role."
+        }, 
+        {
+            "action": "put", 
+            "object": "role", 
+            "method": "PUT", 
+            "name": "/v3/domains/{domain_id}/users/{user_id}/roles/{role_id}", 
+            "desc": "Grants a role to a specified domain user."
+        }, 
+        {
+            "action": "get", 
+            "object": "assignment", 
+            "method": "GET", 
+            "name": "/v3/role_assignments", 
+            "desc": "Lists role assignments."
+        }, 
+        {
+            "action": "post", 
+            "object": "", 
+            "method": "POST", 
+            "name": "/v3/policies", 
+            "desc": "Adds a policy."
+        }, 
+        {
+            "action": "get", 
+            "object": "policy", 
+            "method": "GET", 
+            "name": "/v3/policies/{policy_id}", 
+            "desc": "Shows details for a specified policy."
+        }, 
+        {
+            "action": "post", 
+            "object": "consumer", 
+            "method": "POST", 
+            "name": "/v3/OS_OAUTH1/consumers", 
+            "desc": "Enables a user to create a consumer."
+        }, 
+        {
+            "action": "get", 
+            "object": "consumer", 
+            "method": "GET", 
+            "name": "/v3/OS_OAUTH1/consumers/{consumer_id}", 
+            "desc": "Shows information for a specified consumer."
+        }, 
+        {
+            "action": "post", 
+            "object": "token", 
+            "method": "POST", 
+            "name": "/v3/OS_OAUTH1/access_token", 
+            "desc": "Enables a consumer to create an access token by exchanging a request token for an access token."
+        }, 
+        {
+            "action": "get", 
+            "object": "token", 
+            "method": "GET", 
+            "name": "/v3/OS_OAUTH1/users/{user_id}/access_tokens", 
+            "desc": "Lists authorized access tokens."
+        }, 
+        {
+            "action": "get", 
+            "object": "token", 
+            "method": "GET", 
+            "name": "/v3/OS_OAUTH1/users/{user_id}/access_tokens/{access_token_id}", 
+            "desc": "Gets an authorized access token."
+        }, 
+        {
+            "action": "get", 
+            "object": "role", 
+            "method": "GET", 
+            "name": "/v3/OS_OAUTH1/users/{user_id}/access_tokens/{access_token_id}/roles", 
+            "desc": "Lists associated roles for a specified access token."
+        }, 
+        {
+            "action": "get", 
+            "object": "role", 
+            "method": "GET", 
+            "name": "/v3/OS_OAUTH1/users/{user_id}/access_tokens/{access_token_id}/roles/{role_id}", 
+            "desc": "Gets information about a specified role for a specified access token."
+        }, 
+        {
+            "action": "get", 
+            "object": "", 
+            "method": "GET", 
+            "name": "/v2.0", 
+            "desc": "Shows details for the Identity API v2.0."
+        }, 
+        {
+            "action": "get", 
+            "object": "extension", 
+            "method": "GET", 
+            "name": "/v2.0/extensions", 
+            "desc": "Lists available extensions."
+        }, 
+        {
+            "action": "get", 
+            "object": "extension", 
+            "method": "GET", 
+            "name": "/v2.0/extensions/{alias}", 
+            "desc": "Gets detailed information for a specified extension."
+        }, 
+        {
+            "action": "post", 
+            "object": "token", 
+            "method": "POST", 
+            "name": "/v2.0/tokens", 
+            "desc": "Authenticates and generates a token."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v2.0/tenants", 
+            "desc": "Lists tenants to which the specified token has access."
+        }, 
+        {
+            "action": "get", 
+            "object": "token", 
+            "method": "GET", 
+            "name": "/v2.0/tokens/{tokenId}", 
+            "desc": "Validates a token and confirms that it belongs to a specified tenant."
+        },
+        {
+            "action": "delete",
+            "object": "token",
+            "method": "DELETE",
+            "name": "/v2.0/tokens/{tokenId}",
+            "desc": "Deletes a token."
+        },
+        {
+            "action": "get", 
+            "object": "endpoint", 
+            "method": "GET", 
+            "name": "/v2.0/tokens/{tokenId}/endpoints", 
+            "desc": "Lists the endpoints associated with a specified token."
+        }, 
+        {
+            "action": "get", 
+            "object": "user", 
+            "method": "GET", 
+            "name": "/v2.0/users/", 
+            "desc": "Gets detailed information about a specified user by user name."
+        }, 
+        {
+            "action": "get", 
+            "object": "user", 
+            "method": "GET", 
+            "name": "/v2.0/users/{user_id}", 
+            "desc": "Gets detailed information about a specified user by user ID."
+        }, 
+        {
+            "action": "get", 
+            "object": "role", 
+            "method": "GET", 
+            "name": "/v2.0/users/{user_id}/roles", 
+            "desc": "Lists global roles for a specified user. Excludes tenant roles."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v2.0/tenants/{tenantId}", 
+            "desc": "Gets detailed information about a specified tenant by ID."
+        }, 
+        {
+            "action": "get", 
+            "object": "role", 
+            "method": "GET", 
+            "name": "/v2.0/tenants/{tenantId}/users/{userId}/roles", 
+            "desc": "Lists roles for a specified user on a specified tenant. Excludes global roles."
+        }, 
+        {
+            "action": "get", 
+            "object": "user", 
+            "method": "GET", 
+            "name": "/v2.0/users", 
+            "desc": "Lists users."
+        }, 
+        {
+            "action": "put", 
+            "object": "user", 
+            "method": "PUT", 
+            "name": "/v2.0/users/{userId}", 
+            "desc": "Updates a user."
+        }, 
+        {
+            "action": "get", 
+            "object": "role", 
+            "method": "GET", 
+            "name": "/v2.0/users/{userId}/roles", 
+            "desc": "Lists global roles for a specified user."
+        }, 
+        {
+            "action": "put", 
+            "object": "role", 
+            "method": "PUT", 
+            "name": "/v2.0/users/{userId}/roles/OS_KSADM/{roleId}", 
+            "desc": "Adds a specific global role to a user."
+        }, 
+        {
+            "action": "get", 
+            "object": "user", 
+            "method": "GET", 
+            "name": "/v2.0/tenants/{tenantId}/users", 
+            "desc": "Lists all users for a tenant."
+        }, 
+        {
+            "action": "put", 
+            "object": "role", 
+            "method": "PUT", 
+            "name": "/v2.0/tenants/{tenantId}/users/{userId}/roles/OS_KSADM/{roleId}", 
+            "desc": "Adds a specified role to a user for a tenant."
+        }, 
+        {
+            "action": "get", 
+            "object": "role", 
+            "method": "GET", 
+            "name": "/v2.0/OS_KSADM/roles", 
+            "desc": "Gets a role by name."
+        }, 
+        {
+            "action": "get", 
+            "object": "role", 
+            "method": "GET", 
+            "name": "/v2.0/OS_KSADM/roles/", 
+            "desc": "Lists roles."
+        }, 
+        {
+            "action": "get", 
+            "object": "role", 
+            "method": "GET", 
+            "name": "/v2.0/OS_KSADM/roles/{roleId}", 
+            "desc": "Gets information for a specified role."
+        }, 
+        {
+            "action": "get", 
+            "object": "service", 
+            "method": "GET", 
+            "name": "/v2.0/OS_KSADM/services", 
+            "desc": "Lists services."
+        }, 
+        {
+            "action": "get", 
+            "object": "service", 
+            "method": "GET", 
+            "name": "/v2.0/OS_KSADM/services/", 
+            "desc": "Gets a service by name."
+        }, 
+        {
+            "action": "get", 
+            "object": "service", 
+            "method": "GET", 
+            "name": "/v2.0/OS_KSADM/services/{serviceId}", 
+            "desc": "Gets a service."
+        }, 
+        {
+            "action": "get", 
+            "object": "audit-log", 
+            "method": "GET", 
+            "name": "/v2.0/tenants/{tenantId}/OS_KSCATALOG/endpoints", 
+            "desc": "Lists endpoints for a tenant."
+        }, 
+        {
+            "action": "get", 
+            "object": "audit-log", 
+            "method": "GET", 
+            "name": "/v2.0/tenants/{tenantId}/OS_KSCATALOG/endpoints/{endpointId}", 
+            "desc": "Gets endpoint for a tenant."
+        }, 
+        {
+            "action": "get", 
+            "object": "audit-log", 
+            "method": "GET", 
+            "name": "/v2.0/OS_KSCATALOG/endpointTemplates", 
+            "desc": "Lists endpoint templates."
+        }, 
+        {
+            "action": "get", 
+            "object": "audit-log", 
+            "method": "GET", 
+            "name": "/v2.0/OS_KSCATALOG/endpointTemplates/{endpointTemplateId}", 
+            "desc": "Gets endpoint templates."
+        }, 
+        {
+            "action": "get", 
+            "object": "credentials", 
+            "method": "GET", 
+            "name": "/v2.0/users/{userId}/OS_KSADM/credentials", 
+            "desc": "Lists credentials."
+        }, 
+        {
+            "action": "get", 
+            "object": "credentials", 
+            "method": "GET", 
+            "name": "/v2.0/users/{userId}/OS_KSADM/credentials/OS_KSEC2:ec2Credentials", 
+            "desc": "Gets user credentials."
+        }, 
+        {
+            "action": "get", 
+            "object": "credentials", 
+            "method": "GET", 
+            "name": "/v2.0/users/{userId}/OS_KSADM/credentials/OS_KSEC2:ec2Credentials/{type}", 
+            "desc": "Lists credentials by type."
+        }, 
+        {
+            "action": "get", 
+            "object": "credentials", 
+            "method": "GET", 
+            "name": "/v2.0/users/{userId}/OS_OS_KSS3/credentials", 
+            "desc": "Lists credentials."
+        }, 
+        {
+            "action": "get", 
+            "object": "credentials", 
+            "method": "GET", 
+            "name": "/v2.0/users/{userId}/OS_OS_KSS3/credentials/s3credentials", 
+            "desc": "Gets user credentials."
+        }, 
+        {
+            "action": "get", 
+            "object": "credentials", 
+            "method": "GET", 
+            "name": "/v2.0/users/{userId}/OS_OS_KSS3/credentials/s3credentials/{type}", 
+            "desc": "Lists credentials by type."
+        }, 
+        {
+            "action": "get", 
+            "object": "token", 
+            "method": "GET", 
+            "name": "/v2.0/OS_KSVALIDATE/token/validate", 
+            "desc": "Checks that a token is valid and that it belongs to a specified tenant and service IDs. Returns the permissions for a particular client."
+        }, 
+        {
+            "action": "get", 
+            "object": "endpoint", 
+            "method": "GET", 
+            "name": "/v2.0/OS_KSVALIDATE/token/endpoints", 
+            "desc": "Lists endpoints associated with a specific token."
+        }, 
+        {
+            "action": "get", 
+            "object": "group", 
+            "method": "GET", 
+            "name": "/v2.0/RAX_GRPADM/groups", 
+            "desc": "Lists groups."
+        }, 
+        {
+            "action": "get", 
+            "object": "group", 
+            "method": "GET", 
+            "name": "/v2.0/RAX_GRPADM/groups/{groupId}", 
+            "desc": "Gets information for a group by ID."
+        }, 
+        {
+            "action": "get", 
+            "object": "group", 
+            "method": "GET", 
+            "name": "/v2.0/RAX_GRPADM/groups/{groupId}/users", 
+            "desc": "Lists users for a group."
+        }, 
+        {
+            "action": "put", 
+            "object": "group", 
+            "method": "PUT", 
+            "name": "/v2.0/RAX_GRPADM/groups/{groupId}/users/{userId}", 
+            "desc": "Adds a user to a group."
+        }, 
+        {
+            "action": "get", 
+            "object": "user", 
+            "method": "GET", 
+            "name": "/v2.0/users/{userId}/RAX_KSGRP", 
+            "desc": "Lists groups for a user."
+        }, 
+        {
+            "action": "post", 
+            "object": "credentials", 
+            "method": "POST", 
+            "name": "/v2.0/users/{userId}/OS_RAX_KSKEY/credentials", 
+            "desc": "Adds a credential to a user."
+        }, 
+        {
+            "action": "get", 
+            "object": "credentials", 
+            "method": "GET", 
+            "name": "/v2.0/users/{userId}/OS_RAX_KSKEY/credentials/", 
+            "desc": "Lists credentials."
+        }, 
+        {
+            "action": "post", 
+            "object": "credentials", 
+            "method": "POST", 
+            "name": "/v2.0/users/{userId}/OS_RAX_KSKEY/credentials/RAX_KSKEY:apiKeyCredentials", 
+            "desc": "Updates credentials."
+        }, 
+        {
+            "action": "get", 
+            "object": "user", 
+            "method": "GET", 
+            "name": "/v2.0/users/{userId}/RAX_KSQA/secretqa", 
+            "desc": "Gets a secret question and answer for a specified user."
+        }, 
+        {
+            "action": "put", 
+            "object": "image", 
+            "method": "PUT", 
+            "name": "/v2/images/{image_id}/file", 
+            "desc": "Uploads binary image data. (Since Image API v2.0.)"
+        }, 
+        {
+            "action": "put", 
+            "object": "tag", 
+            "method": "PUT", 
+            "name": "/v2/images/{image_id}/tags/{tag}", 
+            "desc": "Adds a specified tag to a specified image. (Since Image API v2.0.)"
+        }, 
+        {
+            "action": "post", 
+            "object": "member", 
+            "method": "POST", 
+            "name": "/v2/images/{image_id}/members", 
+            "desc": "Adds a specified tenant ID as an image member. (Since Image API v2.1.)"
+        }, 
+        {
+            "action": "get", 
+            "object": "member", 
+            "method": "GET", 
+            "name": "/v2/images/{image_id}/members/{member_id}", 
+            "desc": "Shows image member details."
+        }, 
+        {
+            "action": "get", 
+            "object": "image", 
+            "method": "GET", 
+            "name": "/v2/schemas/images", 
+            "desc": "Gets a json-schema document that represents an images entity. (Since Images v2.0.)"
+        }, 
+        {
+            "action": "get", 
+            "object": "image", 
+            "method": "GET", 
+            "name": "/v2/schemas/image", 
+            "desc": "Gets a json-schema document that represents an image entity. (Since Images v2.0.)"
+        }, 
+        {
+            "action": "get", 
+            "object": "member", 
+            "method": "GET", 
+            "name": "/v2/schemas/members", 
+            "desc": "Gets a json-schema document that represents an image members entity. (Since Images v2.1.)"
+        }, 
+        {
+            "action": "get", 
+            "object": "member", 
+            "method": "GET", 
+            "name": "/v2/schemas/member", 
+            "desc": "Gets a json-schema document that represents an image member entity. (Since Images v2.1.)"
+        }, 
+        {
+            "action": "post", 
+            "object": "image", 
+            "method": "POST", 
+            "name": "/v1/images", 
+            "desc": "Registers a virtual machine (VM) image."
+        }, 
+        {
+            "action": "get", 
+            "object": "image", 
+            "method": "GET", 
+            "name": "/v1/images/detail", 
+            "desc": "Lists details for available images."
+        }, 
+        {
+            "action": "get", 
+            "object": "image", 
+            "method": "GET", 
+            "name": "/v1/images/{image_id}", 
+            "desc": "Returns the image details as headers and the image binary in the body of the response."
+        }, 
+        {
+            "action": "put", 
+            "object": "member", 
+            "method": "PUT", 
+            "name": "/v1/images/{image_id}/members", 
+            "desc": "Replaces a membership list for an image."
+        }, 
+        {
+            "action": "put", 
+            "object": "member", 
+            "method": "PUT", 
+            "name": "/v1/images/{image_id}/members/{owner_id}", 
+            "desc": "Adds a member to an image."
+        }, 
+        {
+            "action": "get", 
+            "object": "image", 
+            "method": "GET", 
+            "name": "/v1/shared_images/{owner}", 
+            "desc": "Lists the VM images shared with a specified owner. The owner ID is the tenant ID."
+        }, 
+        {
+            "action": "get", 
+            "object": "network", 
+            "method": "GET", 
+            "name": "/v2.0/networks", 
+            "desc": "Lists networks to which the specified tenant has access."
+        }, 
+        {
+            "action": "get", 
+            "object": "network", 
+            "method": "GET", 
+            "name": "/v2.0/networks/{network_id}", 
+            "desc": "Shows information for a specified network."
+        }, 
+        {
+            "action": "get", 
+            "object": "subnet", 
+            "method": "GET", 
+            "name": "/v2.0/subnets", 
+            "desc": "Lists subnets to which the specified tenant has access."
+        }, 
+        {
+            "action": "get", 
+            "object": "subnet", 
+            "method": "GET", 
+            "name": "/v2.0/subnets/{subnet_id}", 
+            "desc": "Shows information for a specified subnet."
+        }, 
+        {
+            "action": "get", 
+            "object": "port", 
+            "method": "GET", 
+            "name": "/v2.0/ports", 
+            "desc": "Lists ports to which the tenant has access."
+        }, 
+        {
+            "action": "get", 
+            "object": "port", 
+            "method": "GET", 
+            "name": "/v2.0/ports/{port_id}", 
+            "desc": "Shows information for a specified port."
+        }, 
+        {
+            "action": "get", 
+            "object": "quota", 
+            "method": "GET", 
+            "name": "/v2.0/quotas", 
+            "desc": "Lists quotas for tenants who have non-default quota values."
+        }, 
+        {
+            "action": "get", 
+            "object": "quota", 
+            "method": "GET", 
+            "name": "/v2.0/quotas/{tenant_id}", 
+            "desc": "Shows quotas for a specified tenant."
+        }, 
+        {
+            "action": "get", 
+            "object": "group", 
+            "method": "GET", 
+            "name": "/v2.0/security_groups", 
+            "desc": "Lists all OpenStack Networking security groups to which the specified tenant has access."
+        }, 
+        {
+            "action": "get", 
+            "object": "group", 
+            "method": "GET", 
+            "name": "/v2.0/security_groups/{security_group_id}", 
+            "desc": "Shows information for a specified security group."
+        }, 
+        {
+            "action": "get", 
+            "object": "group", 
+            "method": "GET", 
+            "name": "/v2.0/security_group_rules", 
+            "desc": "Lists a summary of all OpenStack Networking security group rules that the specified tenant can access."
+        }, 
+        {
+            "action": "get", 
+            "object": "group", 
+            "method": "GET", 
+            "name": "/v2.0/security_group_rules/{rules_security_groups_id}", 
+            "desc": "Shows detailed information for a specified security group rule."
+        }, 
+        {
+            "action": "get", 
+            "object": "router", 
+            "method": "GET", 
+            "name": "/v2.0/routers", 
+            "desc": "Lists logical routers that are accessible to the tenant who submits the request."
+        }, 
+        {
+            "action": "get", 
+            "object": "router", 
+            "method": "GET", 
+            "name": "/v2.0/routers/{router_id}", 
+            "desc": "Shows details for a specified router."
+        }, 
+        {
+            "action": "put", 
+            "object": "router", 
+            "method": "PUT", 
+            "name": "/v2.0/routers/{router_id}/add_router_interface", 
+            "desc": "Adds an internal interface to a logical router."
+        }, 
+        {
+            "action": "put", 
+            "object": "router", 
+            "method": "PUT", 
+            "name": "/v2.0/routers/remove_router_interface", 
+            "desc": "Removes an internal interface from a logical router."
+        }, 
+        {
+            "action": "post", 
+            "object": "floating-ip", 
+            "method": "POST", 
+            "name": "/v2.0/floatingips", 
+            "desc": "Creates a floating IP, and, if you specify port information, associates the floating IP with an internal port."
+        }, 
+        {
+            "action": "get", 
+            "object": "floating-ip", 
+            "method": "GET", 
+            "name": "/v2.0/floatingips/{floatingip_id}", 
+            "desc": "Shows details for a specified floating IP."
+        }, 
+        {
+            "action": "get", 
+            "object": "meter", 
+            "method": "GET", 
+            "name": "/v2.0/metering_labels", 
+            "desc": "Lists all l3 metering labels that belong to the specified tenant."
+        }, 
+        {
+            "action": "get", 
+            "object": "meter", 
+            "method": "GET", 
+            "name": "/v2.0/metering_labels/{metering_label_id}", 
+            "desc": "Shows informations for a specified metering label."
+        }, 
+        {
+            "action": "get", 
+            "object": "meter", 
+            "method": "GET", 
+            "name": "/v2.0/metering_label_rules", 
+            "desc": "Lists a summary of all l3 metering label rules belonging to the specified tenant."
+        }, 
+        {
+            "action": "get", 
+            "object": "meter", 
+            "method": "GET", 
+            "name": "/v2.0/metering_label_rules/{metering_label_rule_id}", 
+            "desc": "Shows detailed informations for a specified metering label rule."
+        }, 
+        {
+            "action": "get", 
+            "object": "vips", 
+            "method": "GET", 
+            "name": "/v2.0/lb/vips", 
+            "desc": "Lists VIPs."
+        }, 
+        {
+            "action": "get", 
+            "object": "vips", 
+            "method": "GET", 
+            "name": "/v2.0/lb/vips/{vip_id}", 
+            "desc": "Shows details for a specified VIP."
+        }, 
+        {
+            "action": "get", 
+            "object": "monitor", 
+            "method": "GET", 
+            "name": "/v2.0/lb/healthmonitors", 
+            "desc": "Lists health monitors."
+        }, 
+        {
+            "action": "get", 
+            "object": "monitor", 
+            "method": "GET", 
+            "name": "/v2.0/lb/healthmonitors/{health_monitor_id}", 
+            "desc": "Shows details for a specified health monitor."
+        }, 
+        {
+            "action": "get", 
+            "object": "pool", 
+            "method": "GET", 
+            "name": "/v2.0/lb/pools", 
+            "desc": "Lists pools."
+        }, 
+        {
+            "action": "get", 
+            "object": "pool", 
+            "method": "GET", 
+            "name": "/v2.0/lb/pools/{pool_id}", 
+            "desc": "Shows details for a specified pool."
+        }, 
+        {
+            "action": "post", 
+            "object": "pool", 
+            "method": "POST", 
+            "name": "/v2.0/lb/pools/{pool_id}/health_monitors", 
+            "desc": "Associates a health monitor with a specified pool."
+        }, 
+        {
+            "action": "delete", 
+            "object": "pool", 
+            "method": "DELETE", 
+            "name": "/v2.0/lb/pools/{pool_id}/health_monitors/{health_monitor_id}", 
+            "desc": "Disassociates a specified health monitor from a pool."
+        }, 
+        {
+            "action": "get", 
+            "object": "member", 
+            "method": "GET", 
+            "name": "/v2.0/lb/members", 
+            "desc": "Lists members."
+        }, 
+        {
+            "action": "get", 
+            "object": "member", 
+            "method": "GET", 
+            "name": "/v2.0/lb/members/{member_id}", 
+            "desc": "Shows details for a specified member."
+        }, 
+        {
+            "action": "get", 
+            "object": "", 
+            "method": "GET", 
+            "name": "/v1/{account}", 
+            "desc": "Shows details for a specified account and lists containers, sorted by name, in the account."
+        }, 
+        {
+            "action": "get", 
+            "object": "container", 
+            "method": "GET", 
+            "name": "/v1/{account}/{container}", 
+            "desc": "Shows details for a specified container and lists objects, sorted by name, in the container."
+        }, 
+        {
+            "action": "get", 
+            "object": "container", 
+            "method": "GET", 
+            "name": "/v1/{account}/{container}/{object}", 
+            "desc": "Downloads the object content and gets the object metadata."
+        }, 
+        {
+            "action": "post", 
+            "object": "tenant", 
+            "method": "POST", 
+            "name": "/v1/{tenant_id}/stacks", 
+            "desc": "Creates a stack."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/stacks/{stack_name}", 
+            "desc": "Finds the canonical URL for a specified stack."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/stacks/{stack_name}/{stack_id}", 
+            "desc": "Shows details for a specified stack."
+        }, 
+        {
+            "action": "post", 
+            "object": "tenant", 
+            "method": "POST", 
+            "name": "/v1/{tenant_id}/stacks/preview", 
+            "desc": "Previews a stack."
+        }, 
+        {
+            "action": "delete", 
+            "object": "tenant", 
+            "method": "DELETE", 
+            "name": "/v1/{tenant_id}/stacks/{stack_name}/{stack_id}/abandon", 
+            "desc": "Deletes a specified stack but leaves its resources intact, and returns data describing the stack and its resources."
+        }, 
+        {
+            "action": "post", 
+            "object": "action", 
+            "method": "POST", 
+            "name": "/v1/{tenant_id}/stacks/{stack_name}/{stack_id}/actions", 
+            "desc": "Suspends a stack."
+        }, 
+        {
+            "action": "get", 
+            "object": "resource", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/stacks/{stack_name}/resources", 
+            "desc": "Finds the canonical URL for the resource list of a specified stack."
+        }, 
+        {
+            "action": "get", 
+            "object": "resource", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/stacks/{stack_name}/{stack_id}/resources", 
+            "desc": "Lists resources in a stack."
+        }, 
+        {
+            "action": "get", 
+            "object": "resource", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/stacks/{stack_name}/{stack_id}/resources/{resource_name}", 
+            "desc": "Shows data for a specified resource."
+        }, 
+        {
+            "action": "get", 
+            "object": "resource", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/stacks/{stack_name}/{stack_id}/resources/{resource_name}/metadata", 
+            "desc": "Shows metadata for a specified resource."
+        }, 
+        {
+            "action": "get", 
+            "object": "resource", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/resource_types", 
+            "desc": "Lists the supported template resource types."
+        }, 
+        {
+            "action": "get", 
+            "object": "resource", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/resource_types/{type_name}", 
+            "desc": "Shows the interface schema for a specified resource type."
+        }, 
+        {
+            "action": "get", 
+            "object": "template", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/resource_types/{type_name}/template", 
+            "desc": "Shows the template representation for a specified resource type."
+        }, 
+        {
+            "action": "get", 
+            "object": "event", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/stacks/{stack_name}/events", 
+            "desc": "Finds the canonical URL for the event list of a specified stack."
+        }, 
+        {
+            "action": "get", 
+            "object": "event", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/stacks/{stack_name}/{stack_id}/events", 
+            "desc": "Lists events for a specified stack."
+        }, 
+        {
+            "action": "get", 
+            "object": "resource", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/stacks/{stack_name}/{stack_id}/resources/{resource_name}/events", 
+            "desc": "Lists events for a specified stack resource."
+        }, 
+        {
+            "action": "get", 
+            "object": "resource", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/stacks/{stack_name}/{stack_id}/resources/{resource_name}/events/{event_id}", 
+            "desc": "Shows details for a specified event."
+        }, 
+        {
+            "action": "get", 
+            "object": "template", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/stacks/{stack_name}/{stack_id}/template", 
+            "desc": "Gets a template for a specified stack."
+        }, 
+        {
+            "action": "post", 
+            "object": "tenant", 
+            "method": "POST", 
+            "name": "/v1/{tenant_id}/validate", 
+            "desc": "Validates a specified template."
+        }, 
+        {
+            "action": "get", 
+            "object": "tenant", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/build_info", 
+            "desc": "Shows build information for a heat deployment."
+        }, 
+        {
+            "action": "post", 
+            "object": "software", 
+            "method": "POST", 
+            "name": "/v1/{tenant_id}/software_configs", 
+            "desc": "Creates a software configuration."
+        }, 
+        {
+            "action": "get", 
+            "object": "software", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/software_configs/{config_id}", 
+            "desc": "Shows details for a software configuration."
+        }, 
+        {
+            "action": "get", 
+            "object": "software", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/software_deployments", 
+            "desc": "Lists all available software deployments."
+        }, 
+        {
+            "action": "get", 
+            "object": "software", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/software_deployments/metadata/{server_id}", 
+            "desc": "Shows the deployment configuration metadata for a specified server."
+        }, 
+        {
+            "action": "get", 
+            "object": "software", 
+            "method": "GET", 
+            "name": "/v1/{tenant_id}/software_deployments/{deployment_id}", 
+            "desc": "Shows details for a specified software deployment."
+        }, 
+        {
+            "action": "get", 
+            "object": "alarm", 
+            "method": "GET", 
+            "name": "/v2/alarms", 
+            "desc": "Lists alarms, based on the specified query."
+        }, 
+        {
+            "action": "get", 
+            "object": "alarm", 
+            "method": "GET", 
+            "name": "/v2/alarms/{alarm_id}", 
+            "desc": "Shows information for a specified alarm."
+        }, 
+        {
+            "action": "put", 
+            "object": "alarm", 
+            "method": "PUT", 
+            "name": "/v2/alarms/{alarm_id}/state", 
+            "desc": "Sets the state of a specified alarm."
+        }, 
+        {
+            "action": "get", 
+            "object": "alarm", 
+            "method": "GET", 
+            "name": "/v2/alarms/{alarm_id}/history", 
+            "desc": "Assembles the history for a specified alarm."
+        }, 
+        {
+            "action": "get", 
+            "object": "meter", 
+            "method": "GET", 
+            "name": "/v2/meters", 
+            "desc": "Lists meters, based on the data recorded so far."
+        }, 
+        {
+            "action": "get", 
+            "object": "meter", 
+            "method": "GET", 
+            "name": "/v2/meters/{meter_name}", 
+            "desc": "Gets samples for a specified meter."
+        }, 
+        {
+            "action": "get", 
+            "object": "meter", 
+            "method": "GET", 
+            "name": "/v2/meters/{meter_name}/statistics", 
+            "desc": "Computes the statistics of the samples in a specified time range."
+        }, 
+        {
+            "action": "get", 
+            "object": "resource", 
+            "method": "GET", 
+            "name": "/v2/resources", 
+            "desc": "Lists definitions for all resources."
+        }, 
+        {
+            "action": "get", 
+            "object": "resource", 
+            "method": "GET", 
+            "name": "/v2/resources/{resource_id}", 
+            "desc": "Gets details for a specified resource."
+        }, 
+        {
+            "action": "post", 
+            "desc": "set a token.", 
+            "object": "token", 
+            "method": "POST", 
+            "name": "/v2.0/tokens"
+        }
+    ], 
+    "actions": [
+        "get", 
+        "put", 
+        "trace", 
+        "delete", 
+        "head", 
+        "patch", 
+        "options", 
+        "connect", 
+        "post"
+    ]
+}

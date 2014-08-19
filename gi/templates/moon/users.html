@@ -19,7 +19,7 @@
     {% if users %}
         <ul>
         {% for u in users %}
-            <li><a href="/users/{{ u.id }}/">{{ u.name }}</a></li>
+            <li><a href="/users/{{ u.uuid }}/">{{ u.name }}</a></li>
         {% endfor %}
         </ul>
     {% elif user %}

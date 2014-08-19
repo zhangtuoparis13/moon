@@ -1,1 +1,1 @@
-__author__ = 'vdsq3226'
+from moon.core.pip.core import get_pip

@@ -1,0 +1,189 @@
+    {
+        "name": "Intra-Example",
+        "description": "This is an example of how an intra extension would be defined",
+        "tenant": {},
+        "perimeter": {
+            "subjects": [],
+            "objects": []
+        },
+
+        "configuration": {
+            "metadata": {
+                "subject": [
+                    "roles",
+                    "groups"
+                ],
+                "object": [
+                    "type",
+                    "action",
+                    "security",
+                    "size"
+                ]
+            },
+            "rules": [
+                {
+                    "name": "rule_token",
+                    "s_attr": [
+                        { "category": "role", "value": "*" }
+                    ],
+                    "o_attr": [
+                        { "category": "type", "value": "token" },
+                        { "category": "action", "value": "*" }
+                    ],
+                    "description": "Authorize all token manipulations for authentication purposes."
+                },
+                {
+                    "name": "rule_list_user",
+                    "s_attr": [
+                        { "category": "role", "value": "admin" }
+                    ],
+                    "o_attr": [
+                        { "category": "type", "value": "user" },
+                        { "category": "action", "value": "get*" }
+                    ],
+                    "description": "Authorize the listing of users by users who have the admin role."
+                },
+                {
+                    "name": "rule_start_server",
+                    "s_attr": [
+                        { "category": "role", "value": "admin" }
+                    ],
+                    "o_attr": [
+                        { "category": "type", "value": "server" },
+                        { "category": "action", "value": "post.os-start" }
+                    ],
+                    "description": "Authorize the start of VM by users who have the admin role."
+                },
+                {
+                    "name": "rule_server_details",
+                    "s_attr": [
+                        { "category": "role", "value": "*" }
+                    ],
+                    "o_attr": [
+                        { "category": "type", "value": "detail" },
+                        { "category": "action", "value": "*" }
+                    ],
+                    "description": "Authorize the start of VM by users who have the admin role."
+                },
+                {
+                    "name": "rule_example_mls",
+                    "s_attr": [
+                        { "category": "security_level", "value": "high" }
+                    ],
+                    "o_attr": [
+                        { "category": "security_level", "value": "medium" },
+                        { "category": "action", "value": "get" }
+                    ],
+                    "description": "Authorize the start of VM by users who have the admin role."
+                }
+            ]
+        },
+
+        "profiles": {
+            "s_attr": [
+                { "uuid": "high-security", "category": "security_level", "value": "high", "description": "high security needed" },
+                { "uuid": "medium-security", "category": "security_level", "value": "medium", "description": "medium security needed" },
+                { "uuid": "low-security", "category": "security_level", "value": "low", "description": "low security needed" }
+            ],
+            "o_attr": [
+                { "uuid": "type-tenant", "category": "type", "value": [ "tenant", "project" ], "description": "" },
+                { "uuid": "type-cloudpipe", "category": "type", "value": "cloudpipe", "description": "" },
+                { "uuid": "type-user", "category": "type", "value": "user", "description": "" },
+                { "uuid": "type-interface", "category": "type", "value": "interface", "description": "" },
+                { "uuid": "type-aggregate", "category": "type", "value": "aggregate", "description": "" },
+                { "uuid": "type-agent", "category": "type", "value": "agent", "description": "" },
+                { "uuid": "type-quota", "category": "type", "value": "quota", "description": "" },
+                { "uuid": "type-limit", "category": "type", "value": "limit", "description": "" },
+                { "uuid": "type-image", "category": "type", "value": "image", "description": "" },
+                { "uuid": "type-key", "category": "type", "value": "key", "description": "" },
+                { "uuid": "type-flavor", "category": "type", "value": "flavor", "description": "" },
+                { "uuid": "type-vm", "category": "type", "value": [ "vm", "server" ], "description": "" },
+                { "uuid": "type-network", "category": "type", "value": "network", "description": "" },
+                { "uuid": "type-metadata", "category": "type", "value": "metadata", "description": "" },
+                { "uuid": "type-volume", "category": "type", "value": "volume", "description": "" },
+                { "uuid": "type-token", "category": "type", "value": "token", "description": "" },
+                { "uuid": "type-association", "category": "type", "value": "association", "description": "" },
+                { "uuid": "type-extension", "category": "type", "value": "extension", "description": "" },
+                { "uuid": "type-event", "category": "type", "value": "event", "description": "" },
+                { "uuid": "type-software", "category": "type", "value": "software", "description": "" },
+                { "uuid": "type-resource", "category": "type", "value": "resource", "description": "" },
+                { "uuid": "type-container", "category": "type", "value": "container", "description": "" },
+                { "uuid": "type-monitor", "category": "type", "value": "monitor", "description": "" },
+                { "uuid": "type-metering-label", "category": "type", "value": "metering-label", "description": "" },
+                { "uuid": "type-router", "category": "type", "value": "router", "description": "" },
+                { "uuid": "type-floating-ip", "category": "type", "value": [ "floating-ip", "floatingip" ], "description": "" },
+                { "uuid": "type-subnet", "category": "type", "value": "subnet", "description": "" },
+                { "uuid": "type-member", "category": "type", "value": "member", "description": "" },
+                { "uuid": "type-tag", "category": "type", "value": "tag", "description": "" },
+                { "uuid": "type-group", "category": "type", "value": "group", "description": "" },
+                { "uuid": "type-template", "category": "type", "value": "template", "description": "" },
+                { "uuid": "type-endpoint", "category": "type", "value": "endpoint", "description": "" },
+                { "uuid": "type-service", "category": "type", "value": "service", "description": "" },
+                { "uuid": "type-domain", "category": "type", "value": "domain", "description": "" },
+                { "uuid": "type-region", "category": "type", "value": "region", "description": "" },
+                { "uuid": "type-policy", "category": "type", "value": "policy", "description": "" },
+                { "uuid": "type-consumer", "category": "type", "value": "consumer", "description": "" },
+                { "uuid": "type-credentials", "category": "type", "value": "credentials", "description": "" },
+                { "uuid": "type-database", "category": "type", "value": "database", "description": "" },
+                { "uuid": "type-action", "category": "type", "value": "action", "description": "" },
+                { "uuid": "type-hypervisor", "category": "type", "value": "hypervisor", "description": "" },
+                { "uuid": "type-host", "category": "type", "value": "host", "description": "" },
+                { "uuid": "type-migration", "category": "type", "value": "migration", "description": "" },
+                { "uuid": "type-keypair", "category": "type", "value": "keypair", "description": "" },
+                { "uuid": "type-alarm", "category": "type", "value": "alarm", "description": "" },
+                { "uuid": "type-pool", "category": "type", "value": "pool", "description": "" },
+                { "uuid": "type-vips", "category": "type", "value": "vips", "description": "" },
+                { "uuid": "type-port", "category": "type", "value": "port", "description": "" },
+                { "uuid": "type-role", "category": "type", "value": "role", "description": "" },
+                { "uuid": "type-meter", "category": "type", "value": "meter", "description": "" },
+                { "uuid": "type-assignment", "category": "type", "value": "assignment", "description": "" },
+                { "uuid": "type-instance", "category": "type", "value": "instance", "description": "" },
+                { "uuid": "type-audit-log", "category": "type", "value": [ "audit-log", "audit", "log" ], "description": "" },
+                { "uuid": "type-cell", "category": "type", "value": "cell", "description": "" },
+
+                { "uuid": "action-get", "category": "action", "value": "get", "description": "" },
+                { "uuid": "action-post.os-start", "category": "action", "value": "post.os-start", "description": "Start a VM" },
+                { "uuid": "action-post.os-stop", "category": "action", "value": "post.os-stop", "description": "Stop a VM" },
+                { "uuid": "action-post", "category": "action", "value": "post", "description": "" },
+                { "uuid": "action-trace", "category": "action", "value": "trace", "description": "" },
+                { "uuid": "action-delete", "category": "action", "value": "delete", "description": "" },
+                { "uuid": "action-head", "category": "action", "value": "head", "description": "" },
+                { "uuid": "action-patch", "category": "action", "value": "patch", "description": "" },
+                { "uuid": "action-options", "category": "action", "value": "options", "description": "" },
+                { "uuid": "action-connect", "category": "action", "value": "connect", "description": "" },
+                { "uuid": "action-put", "category": "action", "value": "put", "description": "" },
+
+                { "uuid": "high-security", "category": "security_level", "value": "high", "description": "high security needed" },
+                { "uuid": "medium-security", "category": "security_level", "value": "medium", "description": "medium security needed" },
+                { "uuid": "low-security", "category": "security_level", "value": "low", "description": "low security needed" },
+                { "uuid": "high-size", "category": "size", "value": "50", "description": "high size needed" },
+                { "uuid": "medium-size", "category": "size", "value": "30", "description": "medium size needed" },
+                { "uuid": "low-size", "category": "size", "value": "10", "description": "low size needed" }
+            ],
+            "s_attr_assign": [
+                {
+                    "uuid": "123456567",
+                    "subject": "subject11",
+                    "attributes": [ "high-security" ]
+                }
+            ],
+            "o_attr_assign": [
+                {
+                    "uuid": "tenant-size",
+                    "object": "tenant",
+                    "attributes": [ "high-size", "medium-size" ]
+                },
+                {
+                    "uuid": "tenant-type",
+                    "object": "tenant",
+                    "attributes": [ "storage", "network" ]
+                },
+                {
+                    "uuid": "123456",
+                    "object": "VM1",
+                    "attributes": [ "medium-security" ]
+                }
+            ]
+        }
+
+    }

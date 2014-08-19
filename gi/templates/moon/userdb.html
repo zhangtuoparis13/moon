@@ -1,0 +1,92 @@
+{% extends "moon/base_site.html" %}
+
+{% block tcontent %}User DB administration page
+{% endblock %}
+{% block pmenu %}
+    {{ block.super }}
+    {% if graph %}
+        <img src="/static/{{ graph }}" width="300"/>
+    {% endif %}
+{% endblock %}
+{% block pcontent %}
+    {% if tables %}
+        <div id="tablesselection">
+        <form method="get" action="#">
+{#            {{ tables.as_p }}#}
+            {% for field in tables.visible_fields %}
+{#                <div class="fieldWrapper">#}
+                    {{ field.errors }}
+                    {{ field.label_tag }} {{ field }}
+{#                </div>#}
+            {% endfor %}
+            <input type="submit" value="Show"/>
+            <input type="hidden" name='csrfmiddlewaretoken' value="{{ csrf_token }}"/>
+            <input type="hidden" name='action' value="select"/>
+
+        </form>
+    </div>
+    {% endif %}
+    {% if selected_table %}
+        <h2>{{ selected_table }}</h2>
+        <a href="#" onclick="opendiv('#elementadd')" style="display: block;">Add content...</a>
+        <div id="elementadd">
+            <form method="post" action="/userdb/">
+                <input type="hidden" name='csrfmiddlewaretoken' value="{{ csrf_token }}"/>
+                <input type="hidden" name='selected_table' value="{{ selected_table }}"/>
+                <input type="hidden" name='action' value="add"/>
+                <table>
+                    {% for column in addcolumns %}
+                        <tr>
+                            <td><label for="{{ column }}">{{ column }}:</label></td>
+                            <td>{{ column|get_widget }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                <input type="submit" value="Add element in table"/>
+            </form>
+        </div>
+    {% endif %}
+    {% if elements %}
+        <form method="post" action="/userdb/">
+            <input type="hidden" name='csrfmiddlewaretoken' value="{{ csrf_token }}"/>
+            <input type="hidden" name='selected_table' value="{{ selected_table }}"/>
+            <table border="1">
+            {% if addcolumns %}
+                <tr>
+                    <th>Actions</th>
+                    {% for column in addcolumns %}
+                    <th>{{ column }}</th>
+                    {% endfor %}
+                </tr>
+            {% endif %}
+            {% for element in elements %}
+                <tr class="{% cycle 'row1' 'row2' %}">
+                {% if edit_uuid and element|get_item:"uuid" == edit_uuid %}
+                    <td>
+                        <input type="submit" name="submit" value="Update"/>
+                        <input type="hidden" name='uuid' value="{{ edit_uuid }}"/>
+                    </td>
+                    {% for column in addcolumns %}
+{#                        <td><input type="text" name="{{ column }}" value="{{ element|get_item:column }}"/></td>#}
+                        <td>{{ column|get_widget:element }}</td>
+                    {% endfor %}
+                {% else %}
+                    <td>
+                        {% if "Assignment" not in selected_table%}
+                            <a href="?edit&uuid={{ element|get_item:"uuid" }}&table={{ selected_table }}">Edit</a>
+                        {% endif %}
+                        <a href="?delete&uuid={{ element|get_item:"uuid" }}&table={{ selected_table }}">Delete</a>
+                    </td>
+                    {% for column in addcolumns %}
+                        <td>{{ element|get_item:column }}</td>
+                    {% endfor %}
+                {% endif %}
+                </tr>
+            {% endfor %}
+            </table>
+        </form>
+    {% elif selected_table %}
+        <p>No data for selected table.</p>
+    {% endif %}
+{% endblock %}
+

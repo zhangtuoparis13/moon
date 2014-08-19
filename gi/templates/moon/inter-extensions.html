@@ -1,0 +1,107 @@
+{% extends "moon/base_site.html" %}
+
+{% block tcontent %}Inter Extension administration page
+{% endblock %}
+{% block pmenu %}
+    {{ block.super }}
+{#    {% if graph %}#}
+{#        <img src="/static/{{ graph }}" width="300"/>#}
+{#    {% endif %}#}
+{% endblock %}
+{% block pcontent %}
+    {% if error %}
+        <div id="error">{{ error }}</div>
+    {% endif %}
+    {% if extension %}
+        <b>uuid:</b> {{ extension.uuid }}<br/>
+        <b>Requesting tenant:</b> {{ extension.requesting_tenant|get_tenant_name }}<br/>
+        <b>Requested tenant:</b> {{ extension.requested_tenant|get_tenant_name  }}<br/>
+        <b>type:</b>{{ extension.connection_type }}<br/>
+        <b>category:</b>{{ extension.category }}<br/>
+        <a href="#" onclick="delete_inter_extension('{{ extension.uuid }}')">Delete</a>
+    {% elif extensions %}
+        <div id="inter_extensions_list">
+            <table border="1">
+                <tr>
+                    <th>UUID</th>
+                    <th>Description</th>
+                </tr>
+                {% for ext in extensions %}
+                <tr>
+                    <td>
+                        <a href="/inter-extensions/{{ ext.uuid }}/">{{ ext.uuid }}</a>
+                    </td>
+                    <td>
+                        {{ ext.html }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endif %}
+        <div id="inter_extensions_add">
+            <a href="#" onclick="show_inter_extensions_add_actions()">Add Inter Extension rule</a>
+            <div id="add_inter_rule">
+                <form action="/inter-extensions/" method="post">
+                    <input type="hidden" name='csrfmiddlewaretoken' value="{{ csrf_token }}"/>
+                    <table border="1">
+                        <tr>
+                            <td><label for="requesting">Requesting tenant:</label></td>
+                            <td>
+                                <select id="requesting" name="requesting" onchange="get_subjects('requesting', undefined, undefined, true)">
+                                    <option value="None" selected>Choose a requesting tenant</option>
+                                    {% for tenant in tenants %}
+                                        {% if tenant.uuid == selected_tenant1.uuid %}
+                                            <option value="{{ tenant.uuid }}" selected>{{ tenant.name }}</option>
+                                        {% else %}
+                                            <option value="{{ tenant.uuid }}">{{ tenant.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <div id="subjects_list">
+                                {% for subject in subjects %}
+                                <input type="checkbox" name="subject_{{ subject.uuid }}" value="{{ subject.uuid }}">{{ subject.name }}<br>
+                                {% endfor %}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="requested">Requested tenant:</label></td>
+                            <td>
+                                <select id="requested" name="requested" onchange="get_objects('requested',  undefined, undefined, true)">
+                                    <option value="None" selected>Choose a requested tenant</option>
+                                    {% for tenant in tenants %}
+                                        {% if tenant.uuid == selected_tenant2.uuid %}
+                                            <option value="{{ tenant.uuid }}" selected>{{ tenant.name }}</option>
+                                        {% else %}
+                                            <option value="{{ tenant.uuid }}">{{ tenant.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <div id="objects_list">
+                                {% for object in objects %}
+                                <input type="checkbox" name="object_{{ object.uuid }}" value="{{ object.uuid }}">{{ object.name }}<br>
+                                {% endfor %}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="type">Type:</label></td>
+                            <td>
+                                <select id="type" name="type">
+                                    <option value="trust">trust</option>
+                                    <option value="coordinate">coordinate</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <label>Add a new rule:</label>
+                    <input type="submit" value="Add"/>
+                </form>
+            </div>
+        </div>
+{% endblock %}

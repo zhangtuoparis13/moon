@@ -1,0 +1,117 @@
+    {
+        "name": "RBAC administration",
+        "model": "RBAC administration",
+        "description": "",
+        "tenant": {},
+        "perimeter": {
+            "subjects": [],
+            "objects": [
+                {
+                    "name": "tenant",
+                    "uuid": "id_tenant"
+                },
+                {
+                    "name": "perimeter.subjects",
+                    "uuid": "id_subjects_list"
+                },
+                {
+                    "name": "perimeter.objects",
+                    "uuid": "id_objects_list"
+                },
+                {
+                    "name": "configuration.rules",
+                    "uuid": "id_rules_list"
+                },
+                {
+                    "name": "profiles.s_attr",
+                    "uuid": "id_s_attr_list"
+                },
+                {
+                    "name": "profiles.o_attr",
+                    "uuid": "id_o_attr_list"
+                },
+                {
+                    "name": "profiles.s_attr_assign",
+                    "uuid": "id_s_attr_assign_list"
+                },
+                {
+                    "name": "profiles.o_attr_assign",
+                    "uuid": "id_o_attr_assign_list"
+                }
+            ]
+        },
+
+        "configuration": {
+            "metadata": {
+                "subject": [
+                    "roles"
+                ],
+                "object": [
+                    "id",
+                    "action"
+                ]
+            },
+            "rules": [],
+            "protocol": "/etc/moon/rbac_conf/inter_rbac_admin_protocol.py:RBACAdminIntraExtension"
+        },
+
+        "profiles": {
+            "s_attr": [],
+            "o_attr": [
+                { "uuid": "action-read", "category": "action", "value": "read", "description": "" },
+                { "uuid": "action-write", "category": "action", "value": "write", "description": "" }
+            ],
+            "s_attr_assign": [],
+            "o_attr_assign": [
+                {
+                    "uuid": "o_attr_assign_id_tenant",
+                    "object": "id_tenant",
+                    "attributes": ["id_tenant", "action-read"],
+                    "description": ""
+                },
+                {
+                    "uuid": "o_attr_assign_id_subjects_list",
+                    "object": "id_subjects_list",
+                    "attributes": ["id_subjects_list", "action-read", "action-write"],
+                    "description": ""
+                },
+                {
+                    "uuid": "o_attr_assign_id_objects_list",
+                    "object": "id_objects_list",
+                    "attributes": ["id_objects_list", "action-read", "action-write"],
+                    "description": ""
+                },
+                {
+                    "uuid": "o_attr_assign_id_rules_list",
+                    "object": "id_rules_list",
+                    "attributes": ["id_rules_list", "action-read", "action-write"],
+                    "description": ""
+                },
+                {
+                    "uuid": "o_attr_assign_s_attr_list",
+                    "object": "id_s_attr_list",
+                    "attributes": ["id_s_attr_list", "action-read", "action-write"],
+                    "description": ""
+                },
+                {
+                    "uuid": "o_attr_assign_o_attr_list",
+                    "object": "id_o_attr_list",
+                    "attributes": ["id_o_attr_list", "action-read", "action-write"],
+                    "description": ""
+                },
+                {
+                    "uuid": "o_attr_assign_s_attr_assign_list",
+                    "object": "id_s_attr_assign_list",
+                    "attributes": ["id_s_attr_assign_list", "action-read", "action-write"],
+                    "description": ""
+                },
+                {
+                    "uuid": "o_attr_assign_o_attr_assign_list",
+                    "object": "id_o_attr_assign_list",
+                    "attributes": ["id_o_attr_assign_list", "action-read", "action-write"],
+                    "description": ""
+                }
+            ]
+        }
+
+    }

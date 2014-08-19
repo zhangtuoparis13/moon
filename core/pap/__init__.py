@@ -1,2 +1,1 @@
-
-#from core.pap.core import PAP
+from moon.core.pap.core import get_pap
