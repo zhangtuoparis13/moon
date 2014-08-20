@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 MySQLPASSWD="P4ssw0rd"
-OPENSTACK_SERVER="SET A IP HERE!"
+OPENSTACK_SERVER="192.168.119.113"
 
 #if necessary, set a proxy
 #export http_proxy="http://myproxy:8080";
@@ -38,6 +38,7 @@ pip install django_openstack_auth
 pip install python-keystoneclient
 pip install python-novaclient
 pip install pymongo
+pip install oslo.config
 
 #Hack to simplify the installation and development process
 ln -s /moon/ /usr/local/lib/python2.7/dist-packages/moon
