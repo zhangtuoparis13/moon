@@ -103,6 +103,9 @@ def save_auth(function):
             username = globals().get("username")
         except IndexError:
             username = globals().get("username")
+        except KeyError:
+            #When authenticating, username is not set
+            username = ""
         # print("\033[32mCalling {}({})\033[m".format(function.__name__, username))
         result = function(*args, **kwargs)
         function.__globals__["username"] = None
