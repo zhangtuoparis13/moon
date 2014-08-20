@@ -1,19 +1,12 @@
 #!/usr/bin/env bash
 
 MySQLPASSWD="P4ssw0rd"
-ping -c 1 www-cache.aql.fr
-if [ $? == 0 ] ; then
-    export http_proxy="http://vis:visiteur@www-cache.aql.fr:3128";
-    export https_proxy="http://vis:visiteur@www-cache.aql.fr:3128";
-    echo Configuring proxy to $http_proxy;
-fi
+OPENSTACK_SERVER="SET A IP HERE!"
 
-ping -c 1 proxy.rd.francetelecom.fr
-if [ $? == 0 ] ; then
-    export http_proxy="http://proxy.rd.francetelecom.fr:8080";
-    export https_proxy="http://proxy.rd.francetelecom.fr:8080";
-    echo Configuring proxy to $http_proxy;
-fi
+#if necessary, set a proxy
+#export http_proxy="http://myproxy:8080";
+#export https_proxy="http://myproxy:8080";
+#export no_proxy="127.0.0.1"
 
 apt-get update
 apt-get install -y language-pack-fr
@@ -46,8 +39,9 @@ pip install python-keystoneclient
 pip install python-novaclient
 pip install pymongo
 
-ln -s /vagrant/ /usr/local/lib/python2.7/dist-packages/moon
-ln -s /vagrant/samples/moon /etc/moon
+#Hack to simplify the installation and development process
+ln -s /moon/ /usr/local/lib/python2.7/dist-packages/moon
+ln -s /moon/samples/moon /etc/moon
 
 mysql -uroot -p$MySQLPASSWD <<EOF
 create database user_db;
@@ -72,6 +66,6 @@ cat <<EOF > /etc/logrotate.d/moon
 }
 EOF
 
-echo -e "\n192.168.119.113 openstackserver" >> /etc/hosts
+echo -e "\n$OPENSTACK_SERVER openstackserver" >> /etc/hosts
 
-#python /vagrant/moon_server.py --run "syncdb"
+#python -m moon.moon_server --run "syncdb"
