@@ -40,10 +40,23 @@ if __name__ == "__main__":
             pap.sync_db_with_keystone()
             toggle_init_flag()
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "moon.gi.settings")
-        from django.core.management import execute_from_command_line
         d_args = [sys.argv[0]]
         d_args.extend(args.djangoargs)
-        execute_from_command_line(d_args)
+        if "syncdb" in d_args:
+            from django.contrib.auth.management.commands import changepassword
+            from django.db.utils import IntegrityError
+            from django.core.management import call_command
+            try:
+                call_command('createsuperuser', interactive=False, username="superuser", email="xx@xx.net")
+                command = changepassword.Command()
+                command._get_pass = lambda *args: 'password'
+                command.execute("superuser")
+            except IntegrityError:
+                pass
+            call_command(" ".join(d_args[1:]), interactive=False)
+        else:
+            from django.core.management import execute_from_command_line
+            execute_from_command_line(d_args)
     elif args.keystone_sync:
         toggle_init_flag()
         pap.sync_db_with_keystone()
