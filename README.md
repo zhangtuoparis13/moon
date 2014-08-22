@@ -10,6 +10,7 @@ Download the code and install the Keystone and Nova hooks on your OpenStack serv
 Install Vagrant [http://www.vagrantup.com/] in your system and start it:
 
     cd tests/vagrant/
+    #Modify the bootstrap.sh to fit your needs (openstack server and proxy)
     vagrant up
 
 Go in your new server and configure django:
