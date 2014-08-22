@@ -94,5 +94,5 @@ Session.vim
 .netrwhist
 *~
 
-
+test/vagrant/.vagrant/
 
