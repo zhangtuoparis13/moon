@@ -94,5 +94,6 @@ Session.vim
 .netrwhist
 *~
 
-test/vagrant/.vagrant/
-
+tests/vagrant/.vagrant/
+tests/vagrant/.vagrant/machines/default/virtualbox/id
+ruan.note
