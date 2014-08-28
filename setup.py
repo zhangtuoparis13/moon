@@ -2,7 +2,7 @@ import os
 import sys
 import subprocess
 from setuptools import setup, find_packages
-from pkg_resources import Requirement, resource_filename
+from pkg_resources import resource_filename
 confdir = resource_filename(__name__, "samples/moon")
 
 setup(
