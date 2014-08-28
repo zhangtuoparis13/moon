@@ -3,7 +3,7 @@ import sys
 import subprocess
 from setuptools import setup, find_packages
 from pkg_resources import Requirement, resource_filename
-confdir = resource_filename(Requirement.parse("moon"), "samples/moon")
+confdir = resource_filename(__name__, "samples/moon")
 
 setup(
     name='Moon',
@@ -45,6 +45,8 @@ EOF""".format(password=moon_password), shell=True)
     try:
         os.mkdir("/var/log/moon/")
     except OSError:
+        pass
+    except IOError:
         pass
     subprocess.call("chown -R moon /var/log/moon/", shell=True)
     subprocess.call("""cat <<EOF > /etc/logrotate.d/moon
