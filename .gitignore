@@ -93,6 +93,4 @@ com_crashlytics_export_strings.xml
 Session.vim
 .netrwhist
 *~
-
-
-
+test/vagrant/.vagrant
