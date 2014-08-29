@@ -19,7 +19,7 @@ setup(
     install_requires=['django_openstack_auth', 'python-keystoneclient', 'python-novaclient', 'pymongo'],
 )
 
-if sys.argv[0] == "install" and os.name == "posix":
+if sys.argv[1] == "install" and os.name == "posix":
     print("Copying {} to /etc".format(confdir))
     import shutil
     shutil.copy(confdir, "/etc")
