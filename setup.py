@@ -22,7 +22,7 @@ setup(
 if sys.argv[1] == "install" and os.name == "posix":
     print("Copying {} to /etc".format(confdir))
     import shutil
-    shutil.copy(confdir, "/etc")
+    shutil.copytree(confdir, "/etc")
     print("Adding user 'moon'")
     subprocess.call("adduser --no-create-home --system  --disabled-password --disabled-login moon", shell=True)
     print("Populating MySQL database")
