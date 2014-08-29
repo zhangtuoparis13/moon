@@ -1,4 +1,4 @@
-# from moon.core.pdp.core import get_internal_authz
+from moon.tools.exceptions import AdminException
 #
 # authz_manager = get_internal_authz()
 
@@ -20,14 +20,15 @@ def enforce(objs, mode="r"):
                     tenant = ext.get_tenant()
                     toggle_auth_flag()
                 except IndexError:
-                    raise Exception("Unable to get extension for authentication...")
+                    raise AdminException("Unable to get extension for authentication...")
                 except AttributeError:
-                    raise Exception("Unable to get tenant for authentication...")
+                    raise AdminException("Unable to get tenant for authentication...")
                 # username = locals().get("kwargs").get("username")
                 user_uuid = globals().get("username")
                 if not user_uuid:
-                    raise Exception("Unable to authenticate connection...")
+                    raise AdminException("Unable to authenticate connection...")
                 for obj in objs:
+                    # print("in wrapped", obj)
                     auth = {
                         "auth": False,
                         "rule_name": "None",
@@ -39,6 +40,14 @@ def enforce(objs, mode="r"):
                         "extension_name": ext.get_name(),
                     }
                     auth = ext.authz(auth=auth)
+                    # print("\033[32min wrapped\033[m")
+                    # try:
+                    #     auth = ext.authz(auth=auth)
+                    #     print(auth)
+                    #     print("\033[32m----------------------------------------\033[m")
+                    # except:
+                    #     import sys
+                    #     print("\033[31mException\033[m", sys.exc_info())
                     # print("\t-> {subject} {action} {object_name} {auth}: {message}".format(**auth))
                     if auth["auth"] is not True:
                         print("\033[31mCalling {} for {}/{} on {}/{}\033[m".format(
@@ -47,11 +56,15 @@ def enforce(objs, mode="r"):
                             user_uuid,
                             obj,
                             mode))
-                        raise Exception(auth["message"])
+                        raise AdminException(auth["message"])
             result = None
             if readonly_flag and mode != "r":
-                raise Exception("Read only mode set and write access required!")
-            return function(*args, **kwargs)
+                raise AdminException("Read only mode set and write access required!")
+            try:
+                return function(*args, **kwargs)
+            except TypeError:
+                import sys
+                print("\033[31mException (TypeError) in {}: {}\033[m".format(function.__name__, sys.exc_info()[1]))
         return wrapped
     return enforce_decorator
 

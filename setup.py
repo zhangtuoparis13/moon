@@ -2,8 +2,8 @@ import os
 import sys
 import subprocess
 from setuptools import setup, find_packages
-from pkg_resources import Requirement, resource_filename
-confdir = resource_filename(Requirement.parse("moon"), "samples/moon")
+from pkg_resources import resource_filename
+confdir = resource_filename(__name__, "samples/moon")
 
 setup(
     name='Moon',
@@ -19,10 +19,10 @@ setup(
     install_requires=['django_openstack_auth', 'python-keystoneclient', 'python-novaclient', 'pymongo'],
 )
 
-if sys.argv[0] == "install" and os.name == "posix":
+if sys.argv[1] == "install" and os.name == "posix":
     print("Copying {} to /etc".format(confdir))
     import shutil
-    shutil.copy(confdir, "/etc")
+    shutil.copytree(confdir, "/etc")
     print("Adding user 'moon'")
     subprocess.call("adduser --no-create-home --system  --disabled-password --disabled-login moon", shell=True)
     print("Populating MySQL database")
@@ -45,6 +45,8 @@ EOF""".format(password=moon_password), shell=True)
     try:
         os.mkdir("/var/log/moon/")
     except OSError:
+        pass
+    except IOError:
         pass
     subprocess.call("chown -R moon /var/log/moon/", shell=True)
     subprocess.call("""cat <<EOF > /etc/logrotate.d/moon

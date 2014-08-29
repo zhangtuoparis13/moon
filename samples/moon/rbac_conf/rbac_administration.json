@@ -37,6 +37,10 @@
                 {
                     "name": "profiles.o_attr_assign",
                     "uuid": "id_o_attr_assign_list"
+                },
+                {
+                    "name": "rules",
+                    "uuid": "id_rules_list"
                 }
             ]
         },
@@ -109,6 +113,12 @@
                     "uuid": "o_attr_assign_o_attr_assign_list",
                     "object": "id_o_attr_assign_list",
                     "attributes": ["id_o_attr_assign_list", "action-read", "action-write"],
+                    "description": ""
+                },
+                {
+                    "uuid": "id_rules_assignment",
+                    "object": "id_rules_list",
+                    "attributes": ["id_rules_list", "action-read", "action-write"],
                     "description": ""
                 }
             ]

@@ -216,7 +216,7 @@ function get_attributes(name, uuid) {
                 for (var o in obj.attributes) {
                     if (obj.attributes[o].category == category) {
                         opt = document.createElement('option');
-                        opt.value = obj.attributes[o].value;
+                        opt.value = obj.attributes[o].uuid;
                         opt.innerHTML = obj.attributes[o].value;
                         value_select.appendChild(opt);
                     }
