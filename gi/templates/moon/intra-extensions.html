@@ -69,13 +69,13 @@
         </div>
         <br>
         <b>subjects:</b> <ul>
-        {% for subject in extension.get_subject %}
+        {% for subject in extension.get_subjects %}
             <li><b>{{ subject.name }}</b> ({{ subject.uuid }})</li>
         {% endfor %}
         </ul>
         <b>objects:</b> <ul>
-        {% for object in extension.get_object %}
-            <li><b>{{ object.name }}</b> ({{ object.uuid }})</li>
+        {% for object in extension.get_objects %}
+            <li><b>{{ object.1name }}</b> ({{ object.uuid }})</li>
         {% endfor %}
         </ul>
         <b>rules:</b>
@@ -87,18 +87,18 @@
         </tr>
         {% for rule in extension.get_rules %}
             {% cycle 'row1' 'row2' as divcolors silent%}
-            {% for orule in rule.s_attr %}
+            {% for srule in rule.s_rules %}
             <tr class={{ divcolors }}>
                 {% if forloop.first %}
                 <td rowspan="{{ rule|rule_length }}">{{ rule.name }}</td>
                 {% endif %}
-                <td>Subject:</td><td>{{ orule.category }}</td><td>{{ orule.value }}</td>
+                <td>Subject:</td><td>{{ srule.category }}</td><td>{{ srule.value }}</td>
                 {% if forloop.first %}
                 <td rowspan="{{ rule|rule_length }}">{{ rule.description }}</td>
                 {% endif %}
             </tr>
             {% endfor %}
-            {% for orule in rule.o_attr %}
+            {% for orule in rule.o_rules %}
             <tr class={{ divcolors }}>
                 <td>Object:</td><td>{{ orule.category }}</td><td>{{ orule.value }}</td>
             </tr>

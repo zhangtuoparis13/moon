@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.template.defaultfilters import register
 from keystoneclient.v3 import client
-from gi import settings
+from moon.gi import settings
 from django.utils.safestring import mark_safe
 import json
 from django.http import HttpResponse
@@ -80,11 +80,11 @@ def intra_extension(request, id=None):
             name = request.POST.get("name", "NO-NAME")
             description = request.POST.get("description", "")
             rules_str = request.POST.get("rules_list", "")
-            rule = dict()
-            rule["name"] = name
-            rule["description"] = description
-            rule["s_attr"] = []
-            rule["o_attr"] = []
+            # rule = dict()
+            # rule["name"] = name
+            # rule["description"] = description
+            # rule["s_attr"] = []
+            # rule["o_attr"] = []
             s_attr = []
             o_attr = []
             for line in rules_str.splitlines():
@@ -95,14 +95,23 @@ def intra_extension(request, id=None):
                     elif _type == "object":
                         o_attr.append({"category": _category, "value": _value})
                 except:
+                    import sys
+                    print("Exception in view", sys.exc_info())
                     continue
-            rule["s_attr"] = s_attr
-            rule["o_attr"] = o_attr
+            # rule["s_attr"] = s_attr
+            # rule["o_attr"] = o_attr
             extension = pap.get_intra_extensions(uuid=id)[0]
-            extension.add_rule(rule)
+            extension.add_rule(
+                name=name,
+                description=description,
+                subject_attrs=s_attr,
+                object_attrs=o_attr
+            )
     try:
         extension = pap.get_intra_extensions(uuid=id)[0]
     except IndexError:
+        extension = {}
+    except TypeError:
         extension = {}
     return render(request, "moon/intra-extensions.html", {
         "extension": extension,
@@ -163,10 +172,14 @@ def inter_extensions(request):
 @save_auth
 def get_subjects(request, id=None, **kwargs):
     pap = get_pap()
-    subjects = pap.get_users(
-        tenant_uuid=id
-    )
-    return HttpResponse(json.dumps({"subjects": subjects}))
+    try:
+        subjects = pap.get_users(
+            tenant_uuid=id
+        )
+    except:
+        import traceback
+        print(traceback.print_exc())
+    return HttpResponse(json.dumps({"subjects": list(subjects)}))
 
 
 @login_required(login_url='/auth/login/')
@@ -177,7 +190,7 @@ def get_objects(request, id=None):
         tenant_uuid=id
     )
     # return HttpResponse(json.dumps({"objects": objects}), mimetype='application/json')
-    return HttpResponse(json.dumps({'objects': objects}))
+    return HttpResponse(json.dumps({'objects': list(objects)}))
 
 
 @login_required(login_url='/auth/login/')
@@ -217,11 +230,12 @@ def intra_extension_attributes(request, id=None, type=None):
     pap = get_pap()
     attributes = []
     if type.lower() == "subject":
-        attributes = pap.get_subject_attributes(extension_uuid=id)
+        attributes = list(pap.get_subject_attributes(extension_uuid=id))
     elif type.lower() == "object":
-        attributes = pap.get_object_attributes(extension_uuid=id)
+        attributes = list(pap.get_object_attributes(extension_uuid=id))
     categories = list(set(map(lambda x: x["category"], attributes)))
-    return HttpResponse(json.dumps({'attributes': attributes, "categories": categories}))
+    return HttpResponse(json.dumps({'attributes': attributes, "categories": list(categories)}))
+
 
 @register.filter
 def get_log(dictionary, key):
@@ -252,7 +266,7 @@ def get_vent_category_name(uuid):
 
 @register.filter
 def rule_length(dictionary):
-    return len(dictionary["o_attr"])+len(dictionary["s_attr"])
+    return len(dictionary["o_rules"])+len(dictionary["s_rules"])
 
 
 @register.filter

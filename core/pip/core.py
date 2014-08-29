@@ -127,6 +127,7 @@ class PIP:
             assignment = {}
             _uuid = str(uuid4()).replace("-", "")
             assignment["uuid"] = _uuid
+            assignment["category"] = "role"
             assignment["subject"] = user["uuid"]
             assignment["description"] = "Role assignment for {}".format(user["name"])
             assignment["attributes"] = []
@@ -142,6 +143,7 @@ class PIP:
             assignments = {}
             _uuid = str(uuid4()).replace("-", "")
             assignments["uuid"] = _uuid
+            assignments["category"] = "group"
             assignments["object"] = user["uuid"]
             assignments["description"] = "Group assignment for {}".format(user["name"])
             assignments["attributes"] = []

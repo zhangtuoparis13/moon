@@ -1,47 +1,24 @@
 from moon.core.pdp.intra_extension import IntraExtension
 from uuid import uuid4
+from moon.tools.exceptions import *
 
 
 class RBACIntraExtension(IntraExtension):
 
-    # def __init__(
-    #         self,
-    #         name="",
-    #         uuid=None,
-    #         subjects=None,
-    #         objects=None,
-    #         metadata=None,
-    #         rules=None,
-    #         profiles=None,
-    #         description="",
-    #         tenant=None,
-    #         model="RBAC",
-    #         protocol=None,
-    #         administration=None):
-    #     super(RBACIntraExtension, self).__init__(
-    #         name=name,
-    #         uuid=uuid,
-    #         subjects=subjects,
-    #         objects=objects,
-    #         metadata=metadata,
-    #         rules=rules,
-    #         profiles=profiles,
-    #         description=description,
-    #         tenant=tenant,
-    #         model=model,
-    #         protocol=protocol,
-    #         administration=administration)
-
-    def add_object(self, uuid=None, name=None, enabled=True, description=""):
-        uuid = uuid.replace("-", "")
-        IntraExtension.add_object(self, uuid=uuid, name=name, enabled=enabled, description=description)
+    def add_object(self, name, uuid="", enabled=True, description="", project=None):
+        if uuid:
+            uuid = uuid.replace("-", "")
+        IntraExtension.add_object(self, uuid=uuid, name=name, enabled=enabled, description=description, project=project)
         # Default: all objects (ie all VM) have the attribute id linked to the uuid of the object
-        attr_uuid = self.add_object_attribute(category="id", value=uuid, description="attribute id for {}".format(name))
-        self.add_object_attributes_relation(object=uuid, attributes=[attr_uuid])
+        attr = self.add_object_attributes(
+            category="id",
+            value=uuid,
+            description="attribute id for {}".format(name))
+        self.add_object_attribute_assignments(object_name=uuid, category="id", attributes=[attr["uuid"]])
         # Default: all objects (ie all VM) have all attribute action
-        actions = self.get_object_attributes(category="action")
-        for action in actions:
-            self.add_object_attributes_relation(object=uuid, attributes=[action["uuid"]])
+        actions = map(lambda x: x["uuid"], self.get_object_attributes(category="action"))
+        # for action in actions:
+        self.add_object_attribute_assignments(object_name=uuid, category="action", attributes=actions)
 
     def add_subject(self, uuid=None, name=None, domain="default", enabled=True, mail="", project="", description=""):
         IntraExtension.add_subject(
@@ -58,16 +35,58 @@ class RBACIntraExtension(IntraExtension):
 
     def delete_attributes_from_vent(self, vent_uuid):
         attributes = []
-        if self.has_object_attributes(name="virtual_entity_role_{}".format(vent_uuid)):
-            attributes.append(self.delete_object_attributes(name="virtual_entity_role_{}".format(vent_uuid)))
-        if self.has_subject_attributes(name="virtual_entity_role_{}".format(vent_uuid)):
-            attributes.append(self.delete_subject_attributes(name="virtual_entity_role_{}".format(vent_uuid)))
-        if self.has_subject_attributes(name=vent_uuid, category="id"):
-            attributes.append(self.delete_subject_attributes(name=vent_uuid))
-        if self.has_object_attributes(name=vent_uuid, category="id"):
-            attributes.append(self.delete_object_attributes(name=vent_uuid))
-        self.delete_attributes_relations(s_attrs=attributes, o_attrs=attributes)
-        IntraExtension.delete_attributes_from_vent(self, vent_uuid=vent_uuid)
+        #Delete attributes
+        try:
+            attr = self.get_object_attributes(
+                value="virtual_entity_role_{}".format(vent_uuid),
+                category="role").next()
+            self.del_object_attributes(uuid=attr["uuid"])
+            attributes.append(attr["uuid"])
+        except StopIteration:
+            pass
+        try:
+            attr = self.get_subject_attributes(
+                value="virtual_entity_role_{}".format(vent_uuid),
+                category="role").next()
+            self.del_subject_attributes(uuid=attr["uuid"])
+            attributes.append(attr["uuid"])
+        except StopIteration:
+            pass
+        try:
+            attr = self.get_subject_attributes(
+                value="virtual_entity_role_{}".format(vent_uuid),
+                category="id").next()
+            self.del_subject_attributes(uuid=attr["uuid"])
+            attributes.append(attr["uuid"])
+        except StopIteration:
+            pass
+        try:
+            attr = self.get_object_attributes(
+                value="virtual_entity_role_{}".format(vent_uuid),
+                category="id").next()
+            self.del_object_attributes(uuid=attr["uuid"])
+            attributes.append(attr["uuid"])
+        except StopIteration:
+            pass
+        #Delete attribute assignments
+        for attr in attributes:
+            try:
+                self.del_subject_attribute_assignments(attr)
+            except SubjectAssignmentNotFoundException:
+                pass
+            try:
+                self.del_object_attribute_assignments(attr)
+            except ObjectAssignmentNotFoundException:
+                pass
+        #Delete VENT
+        try:
+            self.del_subject(uuid=vent_uuid)
+        except SubjectNotFoundException:
+            pass
+        try:
+            self.del_object(uuid=vent_uuid)
+        except ObjectNotFoundException:
+            pass
 
     def delete_rules(self, s_attrs=[], o_attrs=[]):
         if type(s_attrs) not in (list, tuple):
@@ -75,116 +94,126 @@ class RBACIntraExtension(IntraExtension):
         if type(o_attrs) not in (list, tuple):
             o_attrs = [o_attrs, ]
         indexes = []
-        for index, rule in enumerate(self.get_rules()):
+        for rule in self.get_rules():
             for s_attr in s_attrs:
                 vent_role_uuid = self.get_subject_attributes(
-                        name="virtual_entity_role_{}".format(s_attr),
-                        category="role")[0]["uuid"]
+                    value="virtual_entity_role_{}".format(s_attr),
+                    category="role").next()["uuid"]
                 if vent_role_uuid in map(lambda x: x["value"], rule["s_attr"]):
-                    indexes.append(index)
+                    indexes.append(vent_role_uuid)
                     break
-        indexes.reverse()
         for index in indexes:
             try:
-                self.get_rules().pop(index)
-            except IndexError:
+                self.del_rule(uuid=index)
+            except RuleNotFoundException:
                 pass
-        IntraExtension.delete_rules(self, s_attrs=s_attrs, o_attrs=o_attrs)
 
     def requesting_vent_create(self, vent, subjects_list):
-        if not self.has_object(uuid=vent.uuid):
+        try:
             self.add_object(uuid=vent.uuid, name=vent.name, description="virtual entity")
+        except DuplicateObjectException:
+            pass
         # Get or Create the virtual entity role
         try:
             vent_role = self.get_subject_attributes(
-                name="virtual_entity_role_{}".format(vent.uuid),
-                category="role")[0]
-        except IndexError:
+                value="virtual_entity_role_{}".format(vent.uuid),
+                category="role").next()
+        except StopIteration:
             #Create it
-            self.add_subject_attribute(
+            vent_role = self.add_subject_attributes(
                 value="virtual_entity_role_{}".format(vent.uuid),
                 category="role",
                 description="The role for managing virtual entities")
-            vent_role = self.get_subject_attributes(
-                name="virtual_entity_role_{}".format(vent.uuid),
-                category="role")[0]
         #Create relation between subjects and virtual_entity_role
         for subject_uuid in subjects_list:
-            if not self.has_subject_attributes_relation(uuid=subject_uuid, attribute=vent_role["uuid"]):
-                self.add_subject_attributes_relation(
-                    subject=subject_uuid,
-                    attributes=[vent_role["uuid"]]
-                )
+            try:
+                assignments = self.get_subject_attribute_assignments(subject_name=subject_uuid, category="role").next()
+            except StopIteration:
+                self.add_subject_attribute_assignments(
+                    subject_name=subject_uuid,
+                    category="role",
+                    attributes=[subject_uuid,])
+            else:
+                attributes = assignments["attributes"]
+                attributes.append(subject_uuid)
+                self.set_subject_attribute_assignments(
+                    uuid=assignments["uuid"],
+                    attributes=attributes)
         # Create an attribute "id" for the Vent
-        if not self.has_object_attributes(name=vent.uuid, category="id"):
-            _uuid = self.add_object_attribute(
+        try:
+            _uuid = self.add_object_attributes(
                 category="id",
                 value=vent.uuid,
                 description="object attribute for the vent")
-            self.add_object_attributes_relation(object=vent.uuid, attributes=[_uuid, ])
+            self.add_object_attribute_assignments(object_name=vent.uuid, category="id", attributes=[_uuid, ])
+        except DuplicateObjectAttributeException:
+            pass
         # Assign all actions to the virtual entity
         actions = self.get_object_attributes(category="action")
         for action in actions:
-            self.add_object_attributes_relation(object=vent.uuid, attributes=[action["uuid"]])
-        # Add rules
-        rule = {
-            "name": "requesting_rule_vent_{}".format(str(uuid4())),
-            "description": "Rule for role {} in order to use the virtual entity {}".format(
+            self.add_object_attribute_assignments(object_name=vent.uuid, category="action", attributes=[action["uuid"]])
+        self.add_rule(
+            name="requesting_rule_vent_{}".format(str(uuid4())),
+            description="Rule for role {} in order to use the virtual entity {}".format(
                 vent_role["uuid"],
                 vent.uuid
             ),
-            "s_attr": [
+            subject_attrs=[
                 {u'category': u'role', u'value': vent_role["value"]},
             ],
-            "o_attr": [
+            object_attrs=[
                 {u'category': u'id', u'value': vent.name},
-                {u'category': u'action', u'value': [x["value"] for x in actions]},
-            ],
-        }
-        self.add_rule(rule)
+                {u'category': u'action', u'value': [x["uuid"] for x in actions]},
+            ]
+        )
 
     def requested_vent_create(self, vent, objects_list):
-        if not self.has_subject(uuid=vent.uuid):
+        try:
             self.add_subject(uuid=vent.uuid, name=vent.name, description="virtual entity")
+        except DuplicateSubjectException:
+            pass
         # Get or Create the virtual entity role
         try:
             vent_role = self.get_subject_attributes(
-                name="virtual_entity_role_{}".format(vent.uuid),
-                category="role")[0]
-        except IndexError:
+                value="virtual_entity_role_{}".format(vent.uuid),
+                category="role").next()
+        except StopIteration:
             #Create it
-            self.add_subject_attribute(
+            self.add_subject_attributes(
                 value="virtual_entity_role_{}".format(vent.uuid),
                 category="role",
                 description="The role for managing virtual entities")
             vent_role = self.get_subject_attributes(
-                name="virtual_entity_role_{}".format(vent.uuid),
-                category="role")[0]
+                value="virtual_entity_role_{}".format(vent.uuid),
+                category="role").next()
         #Create relation between virtual entity and virtual_entity_role
-        self.add_subject_attributes_relation(
-            subject=vent.uuid,
+        self.add_subject_attribute_assignments(
+            subject_name=vent.uuid,
+            category="role",
             attributes=[vent_role["uuid"]]
         )
         # Add rules
         actions = self.get_object_attributes(category="action")
         for obj in objects_list:
-            _id_obj = self.get_object_attributes(category="id", name=obj)[0]["value"]
+            _id_obj = self.get_object_attributes(category="id", value=obj).next()["value"]
             _actions = []
             for action in actions:
-                if self.has_object_attributes_relation(uuid=obj, attribute=action["uuid"]):
+                if action["uuid"] in self.get_object_attribute_assignments(
+                    object_name=obj,
+                    category="action"
+                ).next()["attributes"]:
                     _actions.append(action)
-            rule = {
-                "name": "requested_rule_vent_{}".format(str(uuid4())),
-                "description": "Rule for role {} in order to use the virtual entity {}".format(
+            self.add_rule(
+                name="requested_rule_vent_{}".format(str(uuid4())),
+                description="Rule for role {} in order to use the virtual entity {}".format(
                     vent_role["uuid"],
                     vent.uuid
                 ),
-                "s_attr": [
-                    {u'category': u'role', u'value': vent_role["value"]},
+                subject_attrs=[
+                    {u'category': u'role', u'value': vent_role["uuid"]},
                 ],
-                "o_attr": [
+                object_attrs=[
                     {u'category': u'id', u'value': _id_obj},
                     {u'category': u'action', u'value': [x["value"] for x in _actions]},
-                ],
-            }
-            self.add_rule(rule)
+                ]
+            )
