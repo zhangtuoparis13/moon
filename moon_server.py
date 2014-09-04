@@ -41,7 +41,7 @@ if __name__ == "__main__":
             toggle_init_flag()
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "moon.gi.settings")
         d_args = [sys.argv[0]]
-        d_args.extend(args.djangoargs)
+        d_args.extend(args.djangoargs[1:]) 
         if "syncdb" in d_args:
             from django.contrib.auth.management.commands import changepassword
             from django.db.utils import IntegrityError
