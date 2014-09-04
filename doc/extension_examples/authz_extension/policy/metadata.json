@@ -1,0 +1,26 @@
+{
+    "name": "MLS metadata",
+    "model": "MLS",
+    "description": "",
+
+    "subject_category": [
+        "subject_security_level"
+    ],
+    "object_category": [
+        "object_security_level",
+        "action"
+    ],
+    "meta_rule": [
+        [
+            "subject_security_level > object_security_level",
+            "action == READ",
+            true
+        ],
+        [
+            "subject_security_level < object_security_level",
+            "action == WRITE",
+            true
+        ]
+    ]
+
+}

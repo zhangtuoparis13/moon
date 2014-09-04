@@ -16,21 +16,6 @@ from moon.intra_extension_manager import get_dispatcher
 from moon.tools.exceptions import *
 logger = logging.getLogger(__name__)
 
-#
-# def enforce(param, mode="r"):
-#     def enforce_decorated(function):
-#         def wrapped(*args, **kwargs):
-#             interface = locals().get("args")[0]
-#             raw_extension = getattr(interface, "_PublicAdminInterface__extension")
-#             try:
-#                 interface.adminAuthz()
-#             except AuthzException:
-#                 pass
-#             result = function(*args, **kwargs)
-#             return result
-#         return wrapped
-#     return enforce_decorated
-
 
 class PublicAuthzInterface:
 
@@ -365,9 +350,9 @@ rule(
     def get_tenant(self):
         return self.__extension.get_tenant()
 
-    @enforce("perimeter.subjects")
-    def get_subjects(self, uuid="", name=""):
-        return self.__extension.get_subjects(uuid=uuid, name=name)
+    def get_subjects(self, intra_extension, user_uuid):
+        intra_extension.admin_extension.enforce(user_uuid, "subjects", "r")
+        return intra_extension.get_subjects()
 
     @enforce("perimeter.subjects", "w")
     def add_subject(self, name, description="", domain="Default", enabled=True, project=None, mail=""):
@@ -407,7 +392,7 @@ rule(
             description=description,
             project=project)
 
-    @enforce("configuration.metadata")
+    @enforce("configuration.metadata") #TODO get_subject_categories
     def get_subject_attribute_categories(self, name):
         """ Return all categories for subjects
 
@@ -431,7 +416,7 @@ rule(
         """
         return self.__extension.del_subject_attribute_categories(name)
 
-    @enforce("configuration.metadata")
+    @enforce("configuration.metadata") #TODO get_object_categories
     def get_object_attribute_categories(self):
         """ Return all categories for objects
 
@@ -455,7 +440,7 @@ rule(
         """
         return self.__extension.del_object_attribute_categories(name)
 
-    @enforce("profiles.s_attr")
+    @enforce("profiles.s_attr")  #TODO get_subject_category_values
     def get_subject_attributes(self, uuid=None, value=None, category=None):
         """
 
@@ -483,7 +468,7 @@ rule(
         """
         return self.__extension.del_subject_attributes(uuid)
 
-    @enforce("profiles.s_attr", "w")
+    @enforce("profiles.s_attr", "w") #TODO delete
     def set_subject_attributes(self, uuid, value="", category=None, description=""):
         """
 
@@ -495,7 +480,7 @@ rule(
             category=category,
             description=description)
 
-    @enforce("profiles.o_attr")
+    @enforce("profiles.o_attr")  #TODO get_object_category_values
     def get_object_attributes(self, uuid=None, value=None, category=None):
         """
 
@@ -523,7 +508,7 @@ rule(
         """
         return self.__extension.del_object_attributes(uuid)
 
-    @enforce("profiles.o_attr", "w")
+    @enforce("profiles.o_attr", "w") #TODO delete
     def set_object_attributes(self, uuid, value="", category=None, description=""):
         """
 
@@ -535,7 +520,7 @@ rule(
             category=category,
             description=description)
 
-    @enforce("profiles.s_attr_assign")
+    @enforce("profiles.s_attr_assign") #TODO get_subject_assignments(category_id)
     def get_subject_attribute_assignments(self, uuid=None, subject_name=None, category=None):
         """
 
@@ -546,7 +531,7 @@ rule(
             subject_name=subject_name,
             category=category)
 
-    @enforce("profiles.s_attr_assign", "w")
+    @enforce("profiles.s_attr_assign", "w") #TODO add_subject_assignment(category_id, subject_id, category_value)
     def add_subject_attribute_assignments(self, subject_name, category, uuid=None, attributes=None):
         """
 
@@ -558,7 +543,7 @@ rule(
             uuid=uuid,
             attributes=attributes)
 
-    @enforce("profiles.s_attr_assign", "w")
+    @enforce("profiles.s_attr_assign", "w") #TODO del_subject_assignment(category_id, subject_id, category_value)
     def del_subject_attribute_assignments(self, uuid=None, subject_name=None, category=None):
         """
 
@@ -570,7 +555,7 @@ rule(
             subject_name=subject_name,
             category=category)
 
-    @enforce("profiles.s_attr_assign", "w")
+    @enforce("profiles.s_attr_assign", "w") #TODO delete
     def set_subject_attribute_assignments(self, uuid=None, subject_name=None, category=None, attributes=None):
         """
 
@@ -582,7 +567,7 @@ rule(
             category=category,
             attributes=attributes)
 
-    @enforce("profiles.o_attr_assign")
+    @enforce("profiles.o_attr_assign") #TODO get_object_assignments(category_id)
     def get_object_attribute_assignments(self, uuid=None, object_name=None, category=None):
         """
 
@@ -593,7 +578,7 @@ rule(
             object_name=object_name,
             category=category)
 
-    @enforce("profiles.o_attr_assign", "w")
+    @enforce("profiles.o_attr_assign", "w") #TODO add_object_assignment(category_id, object_id, category_value)
     def add_object_attribute_assignments(self, uuid=None, object_name=None, category=None, attributes=None):
         """
 
@@ -605,7 +590,7 @@ rule(
             category=category,
             attributes=attributes)
 
-    @enforce("profiles.o_attr_assign", "w")
+    @enforce("profiles.o_attr_assign", "w") #TODO del_object_assignment(category_id, object_id, category_value)
     def del_object_attribute_assignments(self, uuid=None, object_name=None, category=None):
         """
 
@@ -616,7 +601,7 @@ rule(
             object_name=object_name,
             category=category)
 
-    @enforce("profiles.o_attr_assign", "w")
+    @enforce("profiles.o_attr_assign", "w") #TODO  delete
     def set_object_attribute_assignments(self, uuid=None, object_name=None, category=None, attributes=None):
         """
 
@@ -644,7 +629,7 @@ rule(
             object_attrs=object_attrs,
             description=description)
 
-    @enforce("rules", "w")
+    @enforce("rules", "w") #TODO  delete
     def set_rule(self, uuid, name="", subject_attrs=None, object_attrs=None, description=""):
         return self.__extension.set_rule(
             uuid=uuid,

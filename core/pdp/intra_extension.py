@@ -10,6 +10,430 @@ from moon.tools.exceptions import *
 logger = logging.getLogger(__name__)
 
 
+class Metadata:
+    def __init__(self):
+        self.subject_categories = set()
+        # examples: "role" , "security_level"
+        self.object_categories = set()
+        self.meta_rules = None
+
+
+class Configuration:
+    def __init__(self):
+        self.subject_category_values = dict()
+        # examples: { "role": {"admin", "dev", }, }
+        self.object_category_values = dict()
+        self.rules = list()
+
+
+class Perimeter:
+    def __init__(self):
+        self.subjects = set()
+        self.objects = set()
+
+
+class Assignment:
+    def __init__(self):
+        self.subject_category_assignments = dict()
+        # examples: { "role": {"user1": {"dev", "admin"}, "user2": {"admin",}}, }
+        self.object_category_assignments = dict()
+
+
+class Extension:
+    def __init__(self):
+        self.__metadata = Metadata()
+        self.__configuration = Configuration()
+        self.__perimeter = Perimeter()
+        self.__assignment = Assignment()
+
+
+class AdminExtension(Extension):
+    def enforce(self, user_uuid, object_uuid, action):
+        """Authz interface
+        """
+        auth = {
+            "auth": False,
+            "rule_name": "None",
+            "message": "",
+            "subject": user_uuid,
+            "action": "action-write" if mode == "w" else "action-read",
+            "object_name": obj,
+            "tenant_name": tenant["name"],
+            "extension_name": ext.get_name(),
+        }
+        if "objects" not in self.__administration:
+            auth["message"] = "No administration protocol for extension"
+            auth["auth"] = True
+            return auth
+        if self.__tenant["name"] != auth["tenant_name"]:
+            auth["message"] = "Tenant not found."
+            return auth
+        if auth["subject"] not in map(lambda x: x["uuid"], self.__subjects):
+            auth["message"] = "User not found."
+            return auth
+        if auth["object_name"] not in map(lambda x: x["name"], self.__administration["objects"]):
+            auth["message"] = "Object not found."
+            return auth
+        for obj in self.__administration["objects"]:
+            if obj["name"] == auth["object_name"]:
+                auth["object_uuid"] = obj["uuid"]
+                break
+        for rule in self.__administration["rules"]:
+            _auth = False
+            for s_rule in rule["s_attr"]:
+                data = self.__subjectsAssignments
+                attribute = s_rule["value"]
+                for sbj in data:
+                    if type(attribute) not in (list, tuple):
+                        attribute = [attribute, ]
+                    for att in attribute:
+                        if auth["subject"] == sbj["subject"] and att in sbj["attributes"]:
+                            _auth = True
+                            break
+            if not _auth:
+                auth["message"] = "Rules on subject don't match."
+                continue
+            for o_rule in rule["o_attr"]:
+                    if o_rule["category"] == "action":
+                        _auth = self.__has_admin_assignment(
+                            object_uuid=auth["object_uuid"],
+                            attribute_uuid=auth["action"])
+                        if not _auth:
+                            auth["message"] = "Rules on action assignments don't match."
+                            break
+                        if auth["action"] not in o_rule["value"]:
+                            auth["message"] = "Rules on action don't match."
+                            break
+                    else:
+                        _auth = self.__has_admin_assignment(
+                            object_uuid=auth["object_uuid"],
+                            attribute_uuid=o_rule["value"])
+                        if not _auth:
+                            auth["message"] = "Rules on object don't match."
+                            print(auth["object_uuid"], o_rule["value"])
+                            break
+            else:
+                auth["message"] = ""
+                auth["auth"] = True
+                break
+        # auth = ext.authz(auth=auth)
+        # print("\033[32min wrapped\033[m")
+        # try:
+        #     auth = ext.authz(auth=auth)
+        #     print(auth)
+        #     print("\033[32m----------------------------------------\033[m")
+        # except:
+        #     import sys
+        #     print("\033[31mException\033[m", sys.exc_info())
+        # print("\t-> {subject} {action} {object_name} {auth}: {message}".format(**auth))
+        if auth["auth"] is not True:
+            print("\033[31mCalling {} for {}/{} on {}/{}\033[m".format(
+                function.__name__,
+                tenant["name"],
+                user_uuid,
+                obj,
+                mode))
+            raise AdminException(auth["message"])
+
+
+class AuthzExtension(Extension):
+    def authz(self):
+        """Authz interface
+        """
+        pass
+
+    def get_subjects(self):
+        return set(self.__perimeter.subjects)
+    #
+    # @enforce("perimeter.subjects", "w")
+    # def add_subject(self, name, description="", domain="Default", enabled=True, project=None, mail=""):
+    #     return self.__extension.add_subjects(name, description, domain, enabled, project, mail)
+    #
+    # @enforce("perimeter.subjects", "w")
+    # def del_subject(self, uuid):
+    #     return self.__extension.del_subject(uuid)
+    #
+    # @enforce("perimeter.subjects", "w")
+    # def set_subject(self, uuid, name="", description="", domain="Default", enabled=True, project=None, mail=""):
+    #     return self.__extension.set_subject(self, uuid, name, description, domain, enabled, project, mail)
+    #
+    # @enforce("perimeter.objects")
+    # def get_objects(self, uuid="", name=""):
+    #     return self.__extension.get_objects(uuid, name)
+    #
+    # @enforce("perimeter.objects", "w")
+    # def add_object(self, name, uuid="", description="", enabled=True, project=None):
+    #     return self.__extension.add_objects(
+    #         name=name,
+    #         uuid=uuid,
+    #         description=description,
+    #         enabled=enabled,
+    #         project=project)
+    #
+    # @enforce("perimeter.objects", "w")
+    # def del_object(self, uuid):
+    #     return self.__extension.del_object(uuid)
+    #
+    # @enforce("perimeter.objects", "w")
+    # def set_object(self, uuid, name="", enabled=True, description="", project=None):
+    #     return self.__extension.set_objects(
+    #         uuid=uuid,
+    #         name=name,
+    #         enabled=enabled,
+    #         description=description,
+    #         project=project)
+    #
+    # @enforce("configuration.metadata") #TODO get_subject_categories
+    # def get_subject_attribute_categories(self, name):
+    #     """ Return all categories for subjects
+    #
+    #     :return:
+    #     """
+    #     return self.__extension.get_subject_attribute_categories(name)
+    #
+    # @enforce("configuration.metadata", "w")
+    # def add_subject_attribute_categories(self, name):
+    #     """ Return all categories for subjects
+    #
+    #     :return:
+    #     """
+    #     return self.__extension.add_subject_attribute_categories(name)
+    #
+    # @enforce("configuration.metadata", "w")
+    # def del_subject_attribute_categories(self, name):
+    #     """ Return all categories for subjects
+    #
+    #     :return:
+    #     """
+    #     return self.__extension.del_subject_attribute_categories(name)
+    #
+    # @enforce("configuration.metadata") #TODO get_object_categories
+    # def get_object_attribute_categories(self):
+    #     """ Return all categories for objects
+    #
+    #     :return:
+    #     """
+    #     return self.__extension.get_object_attribute_categories()
+    #
+    # @enforce("configuration.metadata", "w")
+    # def add_object_attribute_categories(self, name):
+    #     """ Return all categories for subjects
+    #
+    #     :return:
+    #     """
+    #     return self.__extension.add_object_attribute_categories(name)
+    #
+    # @enforce("configuration.metadata", "w")
+    # def del_object_attribute_categories(self, name):
+    #     """ Return all categories for subjects
+    #
+    #     :return:
+    #     """
+    #     return self.__extension.del_object_attribute_categories(name)
+    #
+    # @enforce("profiles.s_attr")  #TODO get_subject_category_values
+    # def get_subject_attributes(self, uuid=None, value=None, category=None):
+    #     """
+    #
+    #     :return: a list of dict with value and category
+    #     """
+    #     return self.__extension.get_subject_attributes(uuid=uuid, value=value, category=category)
+    #
+    # @enforce("profiles.s_attr", "w")
+    # def add_subject_attributes(self, value, uuid=None, category=None, description=""):
+    #     """
+    #
+    #     :return: a list of dict with value and category
+    #     """
+    #     return self.__extension.add_subject_attributes(
+    #         value=value,
+    #         uuid=uuid,
+    #         category=category,
+    #         description=description)
+    #
+    # @enforce("profiles.s_attr", "w")
+    # def del_subject_attributes(self, uuid):
+    #     """
+    #
+    #     :return: a list of dict with value and category
+    #     """
+    #     return self.__extension.del_subject_attributes(uuid)
+    #
+    # @enforce("profiles.s_attr", "w") #TODO delete
+    # def set_subject_attributes(self, uuid, value="", category=None, description=""):
+    #     """
+    #
+    #     :return: a list of dict with value and category
+    #     """
+    #     return self.__extension.set_subject_attributes(
+    #         uuid=uuid,
+    #         value=value,
+    #         category=category,
+    #         description=description)
+    #
+    # @enforce("profiles.o_attr")  #TODO get_object_category_values
+    # def get_object_attributes(self, uuid=None, value=None, category=None):
+    #     """
+    #
+    #     :return: a list of dict with value and category
+    #     """
+    #     return self.__extension.get_object_attributes(uuid=uuid, value=value, category=category)
+    #
+    # @enforce("profiles.o_attr", "w")
+    # def add_object_attributes(self, value, uuid=None, category=None, description=""):
+    #     """
+    #
+    #     :return: a list of dict with value and category
+    #     """
+    #     return self.__extension.add_object_attributes(
+    #         value=value,
+    #         uuid=uuid,
+    #         category=category,
+    #         description=description)
+    #
+    # @enforce("profiles.o_attr", "w")
+    # def del_object_attributes(self, uuid):
+    #     """
+    #
+    #     :return: a list of dict with value and category
+    #     """
+    #     return self.__extension.del_object_attributes(uuid)
+    #
+    # @enforce("profiles.o_attr", "w") #TODO delete
+    # def set_object_attributes(self, uuid, value="", category=None, description=""):
+    #     """
+    #
+    #     :return: a list of dict with value and category
+    #     """
+    #     return self.__extension.set_object_attributes(
+    #         uuid=uuid,
+    #         value=value,
+    #         category=category,
+    #         description=description)
+    #
+    # @enforce("profiles.s_attr_assign") #TODO get_subject_assignments(category_id)
+    # def get_subject_attribute_assignments(self, uuid=None, subject_name=None, category=None):
+    #     """
+    #
+    #     :return: a list of dict with value and category
+    #     """
+    #     return self.__extension.get_subject_attribute_assignments(
+    #         uuid=uuid,
+    #         subject_name=subject_name,
+    #         category=category)
+    #
+    # @enforce("profiles.s_attr_assign", "w") #TODO add_subject_assignment(category_id, subject_id, category_value)
+    # def add_subject_attribute_assignments(self, subject_name, category, uuid=None, attributes=None):
+    #     """
+    #
+    #     :return: a list of dict with value and category
+    #     """
+    #     return self.__extension.add_subject_attribute_assignments(
+    #         subject_name=subject_name,
+    #         category=category,
+    #         uuid=uuid,
+    #         attributes=attributes)
+    #
+    # @enforce("profiles.s_attr_assign", "w") #TODO del_subject_assignment(category_id, subject_id, category_value)
+    # def del_subject_attribute_assignments(self, uuid=None, subject_name=None, category=None):
+    #     """
+    #
+    #     :param subject_name:
+    #     :return: a list of dict with value and category
+    #     """
+    #     return self.__extension.del_subject_attribute_assignments(
+    #         uuid=uuid,
+    #         subject_name=subject_name,
+    #         category=category)
+    #
+    # @enforce("profiles.s_attr_assign", "w") #TODO delete
+    # def set_subject_attribute_assignments(self, uuid=None, subject_name=None, category=None, attributes=None):
+    #     """
+    #
+    #     :return: a list of dict with value and category
+    #     """
+    #     return self.__extension.set_subject_attribute_assignments(
+    #         uuid=uuid,
+    #         subject_name=subject_name,
+    #         category=category,
+    #         attributes=attributes)
+    #
+    # @enforce("profiles.o_attr_assign") #TODO get_object_assignments(category_id)
+    # def get_object_attribute_assignments(self, uuid=None, object_name=None, category=None):
+    #     """
+    #
+    #     :return: a list of dict with value and category
+    #     """
+    #     return self.__extension.get_object_attribute_assignments(
+    #         uuid=uuid,
+    #         object_name=object_name,
+    #         category=category)
+    #
+    # @enforce("profiles.o_attr_assign", "w") #TODO add_object_assignment(category_id, object_id, category_value)
+    # def add_object_attribute_assignments(self, uuid=None, object_name=None, category=None, attributes=None):
+    #     """
+    #
+    #     :return: a list of dict with value and category
+    #     """
+    #     return self.__extension.add_object_attribute_assignments(
+    #         uuid=uuid,
+    #         object_name=object_name,
+    #         category=category,
+    #         attributes=attributes)
+    #
+    # @enforce("profiles.o_attr_assign", "w") #TODO del_object_assignment(category_id, object_id, category_value)
+    # def del_object_attribute_assignments(self, uuid=None, object_name=None, category=None):
+    #     """
+    #
+    #     :return: a list of dict with value and category
+    #     """
+    #     return self.__extension.del_object_attribute_assignments(
+    #         uuid=uuid,
+    #         object_name=object_name,
+    #         category=category)
+    #
+    # @enforce("profiles.o_attr_assign", "w") #TODO  delete
+    # def set_object_attribute_assignments(self, uuid=None, object_name=None, category=None, attributes=None):
+    #     """
+    #
+    #     :return: a list of dict with value and category
+    #     """
+    #     return self.__extension.set_object_attribute_assignments(
+    #         uuid=uuid,
+    #         object_name=object_name,
+    #         category=category,
+    #         attributes=attributes)
+    #
+    # @enforce("rules")
+    # def get_rules(self):
+    #     """
+    #
+    #     :return:
+    #     """
+    #     return self.__extension.get_rules()
+    #
+    # @enforce("rules", "w")
+    # def add_rule(self, name, subject_attrs, object_attrs, description=""):
+    #     return self.__extension.add_rule(
+    #         name=name,
+    #         subject_attrs=subject_attrs,
+    #         object_attrs=object_attrs,
+    #         description=description)
+    #
+    # @enforce("rules", "w") #TODO  delete
+    # def set_rule(self, uuid, name="", subject_attrs=None, object_attrs=None, description=""):
+    #     return self.__extension.set_rule(
+    #         uuid=uuid,
+    #         name=name,
+    #         subject_attrs=subject_attrs,
+    #         object_attrs=object_attrs,
+    #         description=description)
+    #
+    # @enforce("rules", "w")
+    # def del_rule(self, uuid):
+    #     return self.__extension.del_rule(uuid=uuid)
+
+
 class IntraExtension(object):
 
     def __init__(
@@ -27,24 +451,27 @@ class IntraExtension(object):
             protocol=None,
             administration=None):
         self.__name = name
-        if not uuid:
-            self.__uuid = str(uuid4()).replace("-", "")
-        else:
-            self.__uuid = str(uuid).replace("-", "")
-        self.__subjects = subjects
-        self.__objects = objects
-        self.__metadata = metadata
-        self.__rules = rules
-        self.__objectsAttributes = profiles["o_attr"]
-        self.__subjectsAttributes = profiles["s_attr"]
-        self.__objectsAssignments = profiles["o_attr_assign"]
-        self.__subjectsAssignments = profiles["s_attr_assign"]
-        self.__description = description
-        self.__tenant = tenant
-        self.__model = model
-        self.__protocol = protocol
-        self.__administration = administration
+        self.__uuid = tenant["uuid"]
+        # if not uuid:
+        #     self.__uuid = str(uuid4()).replace("-", "")
+        # else:
+        #     self.__uuid = str(uuid).replace("-", "")
+        # self.__subjects = subjects
+        # self.__objects = objects
+        # self.__metadata = metadata
+        # self.__rules = rules
+        # self.__objectsAttributes = profiles["o_attr"]
+        # self.__subjectsAttributes = profiles["s_attr"]
+        # self.__objectsAssignments = profiles["o_attr_assign"]
+        # self.__subjectsAssignments = profiles["s_attr_assign"]
+        # self.__description = description
+        # self.__tenant = tenant
+        # self.__model = model
+        # self.__protocol = protocol
+        # self.__administration = administration
         self.__dispatcher = get_dispatcher()
+        self.authz_extension = AuthzExtension()
+        self.admin_extension = AdminExtension()
 
     def get_uuid(self):
         return self.__uuid

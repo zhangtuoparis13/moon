@@ -38,5 +38,12 @@ Legend:
 
 ###Graphical interface
 
-###Senario for "Salon de recherche"
+###Misc
+|Title        | Description                              | Percentage of work |
+|------------ | ---------------------------------------- | ------------------ |
+|Restructure the moon_server |                           |  0%                |
+|Complete the configuration.json | | 0% |
+|Send the user_uuid to the interface | don't use the save_auth | 0% |
+
+
 

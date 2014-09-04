@@ -173,7 +173,7 @@ def inter_extensions(request):
 def get_subjects(request, id=None, **kwargs):
     pap = get_pap()
     try:
-        subjects = pap.get_users(
+        subjects = pap.get_subjects(
             tenant_uuid=id
         )
     except:

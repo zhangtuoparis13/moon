@@ -5,7 +5,7 @@ import os
 import json
 from uuid import uuid4
 from moon import settings
-from moon.core.pdp import get_inter_extentions, get_intra_extentions
+from moon.core import pdp
 from moon.core.pip import get_pip
 
 logger = logging.getLogger("moon.pap")
@@ -14,7 +14,8 @@ logger = logging.getLogger("moon.pap")
 class PAP:
 
     def __init__(self):
-        self.intra_pdps = get_intra_extentions()
+        self.intra_pdps = pdp.get_intra_extentions()
+        self.__pdp = get_pdp()
         self.inter_pdps = get_inter_extentions()
         self.tenants = get_inter_extentions().tenants
 
@@ -36,10 +37,15 @@ class PAP:
     def get_tenants(name=None):
         return get_pip().get_tenants(name=name)
 
-    def get_users(self, extension_uuid=None, uuid=None, name=None, tenant_uuid=None):
-        if tenant_uuid:
+    def get_subjects(self, extension_uuid=None, user_uuid=None):
             try:
-                ext = self.intra_pdps.get(attributes={"tenant.uuid": tenant_uuid})[0]
+                pdp.intra_extensions[extension_uuid].admin_extension.authz(
+                    user_uuid,
+                    "subjects",
+                    "r"
+                )
+                return pdp.intra_extensions[extension_uuid].authz_extension.get_subjects()
+                # ext = self.intra_pdps.get(attributes={"tenant.uuid": tenant_uuid})[0]
             except IndexError:
                 return []
             return self.intra_pdps.get(ext.get_uuid())[0].get_subjects(uuid=uuid, name=name)
