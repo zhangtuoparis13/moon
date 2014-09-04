@@ -4,9 +4,9 @@ MySQLPASSWD="P4ssw0rd"
 OPENSTACK_SERVER="192.168.119.113"
 
 #if necessary, set a proxy
-#export http_proxy="http://myproxy:8080";
-#export https_proxy="http://myproxy:8080";
-#export no_proxy="127.0.0.1"
+export http_proxy="http://vis:visiteur@www-cache.aql.fr:3128";
+export https_proxy="http://vis:visiteur@www-cache.aql.fr:3128";
+export no_proxy="127.0.0.1"
 
 apt-get update
 apt-get install -y language-pack-fr
@@ -33,6 +33,13 @@ apt-get install -y --force-yes \
     python-sqlalchemy \
     python-pygraphviz \
     mongodb-server
+
+#apt-get install swi-prolog
+#cd /tmp
+#wget https://code.google.com/p/pyswip/downloads/detail?name=pyswip-0.2.3.tar.gz -O pyswip-0.2.3.tar.gz
+#tar xvfz pyswip-0.2.3.tar.gz
+#cd pyswip-0.2.3/
+#python setup.py install
 
 pip install django_openstack_auth
 pip install python-keystoneclient
