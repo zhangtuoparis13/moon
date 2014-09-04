@@ -48,7 +48,7 @@ class Extension:
 
 
 class AdminExtension(Extension):
-    def enforce(self, user_uuid, object_uuid, action):
+    def authz(self, user_uuid, object_uuid, action):
         """Authz interface
         """
         auth = {
