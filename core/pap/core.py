@@ -99,48 +99,69 @@ class PAP:
 
     def add_subject_category_values(self, extension_uuid, user_uuid, category_id, category_value):
         self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "subject_category_values", "w")
-        return self.intra_extensions[extension_uuid].authz_extension.add_subject_category_values(category_id, category_value)
+        self.intra_extensions[extension_uuid].authz_extension.add_subject_category_values(category_id, category_value)
 
     def del_subject_category_values(self, extension_uuid, user_uuid, category_id, category_value):
-        raise NotImplemented
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "subject_category_values", "w")
+        self.intra_extensions[extension_uuid].authz_extension.del_subject_category_values(category_id, category_value)
         #TODO need to check if the value is not in other tables like assignment
 
     def get_object_category_values(self, extension_uuid, user_uuid, category_id):
-        raise NotImplemented
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "object_category_values", "r")
+        return self.intra_extensions[extension_uuid].authz_extension.get_object_category_values(category_id)
 
     def add_object_category_values(self, extension_uuid, user_uuid, category_id, category_value):
-        raise NotImplemented
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "object_category_values", "w")
+        self.intra_extensions[extension_uuid].authz_extension.add_object_category_values(category_id, category_value)
 
     def del_object_category_values(self, extension_uuid, user_uuid, category_id, category_value):
-        raise NotImplemented
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "object_category_values", "w")
+        self.intra_extensions[extension_uuid].authz_extension.del_object_category_values(category_id, category_value)
         #TODO need to check if the value is not in other tables like assignment
 
     def get_subject_assignments(self, extension_uuid, user_uuid, category_id):
-        raise NotImplemented
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "subject_category_assignments", "r")
+        return self.intra_extensions[extension_uuid].authz_extension.get_subject_assignments(category_id)
 
     def add_subject_assignment(self, extension_uuid, user_uuid, category_id, subject_id, category_value):
-        raise NotImplemented
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "subject_category_assignments", "w")
+        self.intra_extensions[extension_uuid].authz_extension.add_subject_assignment(
+            category_id, subject_id, category_value
+        )
 
     def del_subject_assignment(self, extension_uuid, user_uuid, category_id, subject_id, category_value):
-        raise NotImplemented
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "subject_category_assignments", "w")
+        self.intra_extensions[extension_uuid].authz_extension.del_subject_assignment(
+            category_id, subject_id, category_value
+        )
 
     def get_object_assignments(self, extension_uuid, user_uuid, category_id):
-        raise NotImplemented
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "object_category_assignments", "r")
+        return self.intra_extensions[extension_uuid].authz_extension.get_object_assignments(category_id)
 
     def add_object_assignment(self, extension_uuid, user_uuid, category_id, object_id, category_value):
-        raise NotImplemented
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "object_category_assignments", "w")
+        self.intra_extensions[extension_uuid].authz_extension.add_object_assignment(
+            category_id, object_id, category_value
+        )
 
     def del_object_assignment(self, extension_uuid, user_uuid, category_id, object_id, category_value):
-        raise NotImplemented
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "object_category_assignments", "w")
+        self.intra_extensions[extension_uuid].authz_extension.del_object_assignment(
+            category_id, object_id, category_value
+        )
 
     def get_rules(self, extension_uuid, user_uuid):
-        raise NotImplemented
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "rules", "r")
+        return self.intra_extensions[extension_uuid].authz_extension.get_rules()
 
     def add_rule(self, extension_uuid, user_uuid, name, subject_attrs, object_attrs, description=""):
-        raise NotImplemented
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "rules", "w")
+        self.intra_extensions[extension_uuid].authz_extension.add_rules(name, subject_attrs, object_attrs, description)
 
     def del_rule(self, extension_uuid, user_uuid, rule_id):
-        raise NotImplemented
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "rules", "w")
+        self.intra_extensions[extension_uuid].authz_extension.add_rules(rule_id)
 
 
 

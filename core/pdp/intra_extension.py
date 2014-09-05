@@ -264,11 +264,10 @@ class IntraExtension(object):
             protocol=None,
             administration=None):
         self.__name = name
-        self.__uuid = tenant["uuid"]
-        # if not uuid:
-        #     self.__uuid = str(uuid4()).replace("-", "")
-        # else:
-        #     self.__uuid = str(uuid).replace("-", "")
+        if not uuid:
+            self.__uuid = tenant["uuid"]
+        else:
+            self.__uuid = uuid
         # self.__subjects = subjects
         # self.__objects = objects
         # self.__metadata = metadata
