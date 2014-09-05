@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.template.defaultfilters import register
 from keystoneclient.v3 import client
-from moon.gi import settings
+from moon.gui import settings
 from django.utils.safestring import mark_safe
 import json
 from django.http import HttpResponse
