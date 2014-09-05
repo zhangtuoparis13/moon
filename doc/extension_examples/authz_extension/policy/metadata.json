@@ -3,24 +3,28 @@
     "model": "MLS",
     "description": "",
 
-    "subject_category": [
+    "subject_categories": [
         "subject_security_level"
     ],
-    "object_category": [
+
+    "object_categories": [
         "object_security_level",
         "action"
     ],
-    "meta_rule": [
-        [
-            "subject_security_level > object_security_level",
-            "action == READ",
-            true
-        ],
-        [
-            "subject_security_level < object_security_level",
-            "action == WRITE",
-            true
-        ]
-    ]
 
+    "meta_rule": {
+        "sub_meta_rules":[
+            {
+                "subject_categories": [0],
+                "object_categories": [0],
+                "relation": "relation_super"
+            },
+            {
+                "subject_categories": [],
+                "object_categories": [1],
+                "relation": "relation_equal_constant"
+            }
+        ],
+        "aggregation": "and_true_aggregation"
+    }
 }
