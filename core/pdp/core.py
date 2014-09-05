@@ -1041,6 +1041,6 @@ class IntraExtensions:
 intra_extentions = IntraExtensions()
 
 
-def get_intra_extentions():
+def get_intra_extensions():
     return intra_extentions
 

@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.template.defaultfilters import register
 from keystoneclient.v3 import client
-from moon.gi import settings
+from moon.gui import settings
 from django.utils.safestring import mark_safe
 import json
 from django.http import HttpResponse
@@ -173,9 +173,7 @@ def inter_extensions(request):
 def get_subjects(request, id=None, **kwargs):
     pap = get_pap()
     try:
-        subjects = pap.get_subjects(
-            tenant_uuid=id
-        )
+        subjects = pap.get_subjects(extension_uuid=id, user_uuid=request.session['user_id'])
     except:
         import traceback
         print(traceback.print_exc())
