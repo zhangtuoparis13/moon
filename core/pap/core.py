@@ -5,7 +5,8 @@ import os
 import json
 from uuid import uuid4
 from moon import settings
-from moon.core import pdp
+from moon.core.pdp import get_intra_extensions
+from moon.core.pdp import get_inter_extensions
 from moon.core.pip import get_pip
 
 logger = logging.getLogger("moon.pap")
@@ -14,71 +15,165 @@ logger = logging.getLogger("moon.pap")
 class PAP:
 
     def __init__(self):
-        self.intra_pdps = pdp.get_intra_extentions()
-        self.__pdp = get_pdp()
-        self.inter_pdps = get_inter_extentions()
-        self.tenants = get_inter_extentions().tenants
+        self.intra_extensions = get_intra_extensions()
+        self.inter_extensions = get_inter_extensions()
+        self.tenants = get_inter_extensions().tenants
 
-    def get_intra_extensions(self, uuid=None, tenant_uuid=None, tenant_name=None, **kwargs):
-        if not uuid and not tenant_uuid:
-            return self.intra_pdps.get()
-        elif uuid and uuid in self.intra_pdps.keys():
-            return self.intra_pdps.get(uuid=uuid)
-        elif tenant_uuid:
-            for ext in self.intra_pdps.get():
-                if ext.get_tenant()["uuid"] == tenant_uuid:
-                    return ext
-        elif tenant_name:
-            for ext in self.intra_pdps.get():
-                if ext.get_tenant()["name"] == tenant_name:
-                    return ext
+    def get_intra_extensions(self, uuid=None):
+        if not uuid:
+            return self.intra_extensions.values()
+        elif uuid and uuid in self.intra_extensions.keys():
+            return self.intra_extensions[uuid]
 
     @staticmethod
     def get_tenants(name=None):
         return get_pip().get_tenants(name=name)
 
-    def get_subjects(self, extension_uuid=None, user_uuid=None):
-            try:
-                pdp.intra_extensions[extension_uuid].admin_extension.authz(
-                    user_uuid,
-                    "subjects",
-                    "r"
-                )
-                return pdp.intra_extensions[extension_uuid].authz_extension.get_subjects()
-                # ext = self.intra_pdps.get(attributes={"tenant.uuid": tenant_uuid})[0]
-            except IndexError:
-                return []
-            return self.intra_pdps.get(ext.get_uuid())[0].get_subjects(uuid=uuid, name=name)
-        else:
-            return self.intra_pdps.get(extension_uuid)[0].get_subjects(uuid=uuid, name=name)
+    def get_subjects(self, extension_uuid, user_uuid):
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "subjects", "r")
+        return self.intra_extensions[extension_uuid].authz_extension.get_subjects()
 
-    def get_objects(self, extension_uuid=None, uuid=None, name=None, tenant_uuid=None):
-        if tenant_uuid:
-            try:
-                ext = self.intra_pdps.get(attributes={"tenant.uuid": tenant_uuid})[0]
-                return ext.get_objects(uuid=uuid, name=name)
-            except IndexError:
-                return []
-        else:
-            return self.intra_pdps.get(extension_uuid)[0].get_object(uuid=uuid, name=name)
+    def add_subject(self, extension_uuid, user_uuid, subject_id):
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "subjects", "w")
+        self.intra_extensions[extension_uuid].authz_extension.add_subject(subject_id)
 
-    def get_roles(self, extension_uuid=None, uuid=None, name=None):
-        return self.intra_pdps.get(uuid=extension_uuid)[0].get_subject_attributes(uuid=uuid, name=name, category="role")
+    def del_subject(self, extension_uuid, user_uuid, subject_id):
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "subjects", "w")
+        self.intra_extensions[extension_uuid].authz_extension.del_subject(subject_id)
+        #TODO need to check if the subject is not in other tables like assignment
 
-    def get_groups(self, extension_uuid=None, uuid=None, name=None):
-        return self.intra_pdps.get(uuid=extension_uuid)[0].get_subject_attributes(uuid=uuid, name=name, category="group")
+    def get_objects(self, extension_uuid, user_uuid):
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "objects", "r")
+        return self.intra_extensions[extension_uuid].authz_extension.get_objects()
 
-    def get_object_attributes(self, extension_uuid=None, uuid=None, name=None, category=None):
-        return self.intra_pdps.get(uuid=extension_uuid)[0].get_object_attributes(uuid=uuid, value=name, category=category)
+    def add_object(self, extension_uuid, user_uuid, object_id):
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "objects", "w")
+        self.intra_extensions[extension_uuid].authz_extension.add_object(object_id)
 
-    def get_subject_attributes(self, extension_uuid=None, uuid=None, name=None, category=None):
-        return self.intra_pdps.get(uuid=extension_uuid)[0].get_subject_attributes(uuid=uuid, value=name, category=category)
+    def del_object(self, extension_uuid, user_uuid, object_id):
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "objects", "w")
+        self.intra_extensions[extension_uuid].authz_extension.del_object(object_id)
+        #TODO need to check if the subject is not in other tables like assignment
 
-    def get_tenant(self, tenant_uuid=None, tenant_name=None):
-        if not tenant_uuid and not tenant_name:
-            return self.inter_pdps.list()
-        else:
-            return self.inter_pdps.get(uuid=tenant_uuid, name=tenant_name)
+    def get_subject_categories(self, extension_uuid, user_uuid):
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "subject_categories", "r")
+        return self.intra_extensions[extension_uuid].authz_extension.get_subject_categories()
+
+    def add_subject_category(self, extension_uuid, user_uuid, category_id):
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "subject_categories", "w")
+        self.intra_extensions[extension_uuid].authz_extension.add_subject_category(category_id)
+
+    def del_subject_category(self, extension_uuid, user_uuid, category_id):
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "subject_categories", "w")
+        self.intra_extensions[extension_uuid].authz_extension.del_subject_category(category_id)
+
+    def get_object_categories(self, extension_uuid, user_uuid):
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "object_categories", "r")
+        return self.intra_extensions[extension_uuid].authz_extension.get_object_categories()
+
+    def add_object_category(self, extension_uuid, user_uuid, category_id):
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "object_categories", "w")
+        self.intra_extensions[extension_uuid].authz_extension.add_object_category(category_id)
+
+    def del_object_category(self, extension_uuid, user_uuid, category_id):
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "object_categories", "w")
+        self.intra_extensions[extension_uuid].authz_extension.del_object_category(category_id)
+
+    def get_meta_rules(self, extension_uuid, user_uuid):
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "meta_rules", "r")
+        return self.intra_extensions[extension_uuid].authz_extension.get_meta_rules()
+
+    def add_meta_rules(self, extension_uuid, user_uuid, rule):
+        #TODO to be defined
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "meta_rules", "w")
+        self.intra_extensions[extension_uuid].authz_extension.add_meta_rules(rule)
+
+    def del_meta_rules(self, extension_uuid, user_uuid, rule_id):
+        #TODO to be defined
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "meta_rules", "w")
+        self.intra_extensions[extension_uuid].authz_extension.del_meta_rules(rule_id)
+
+    def get_subject_category_values(self, extension_uuid, user_uuid, category_id):
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "subject_category_values", "r")
+        return self.intra_extensions[extension_uuid].authz_extension.get_subject_category_values(category_id)
+
+    def add_subject_category_values(self, extension_uuid, user_uuid, category_id, category_value):
+        self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "subject_category_values", "w")
+        return self.intra_extensions[extension_uuid].authz_extension.add_subject_category_values(category_id, category_value)
+
+    def del_subject_category_values(self, extension_uuid, user_uuid, category_id, category_value):
+        raise NotImplemented
+        #TODO need to check if the value is not in other tables like assignment
+
+    def get_object_category_values(self, extension_uuid, user_uuid, category_id):
+        raise NotImplemented
+
+    def add_object_category_values(self, extension_uuid, user_uuid, category_id, category_value):
+        raise NotImplemented
+
+    def del_object_category_values(self, extension_uuid, user_uuid, category_id, category_value):
+        raise NotImplemented
+        #TODO need to check if the value is not in other tables like assignment
+
+    def get_subject_assignments(self, extension_uuid, user_uuid, category_id):
+        raise NotImplemented
+
+    def add_subject_assignment(self, extension_uuid, user_uuid, category_id, subject_id, category_value):
+        raise NotImplemented
+
+    def del_subject_assignment(self, extension_uuid, user_uuid, category_id, subject_id, category_value):
+        raise NotImplemented
+
+    def get_object_assignments(self, extension_uuid, user_uuid, category_id):
+        raise NotImplemented
+
+    def add_object_assignment(self, extension_uuid, user_uuid, category_id, object_id, category_value):
+        raise NotImplemented
+
+    def del_object_assignment(self, extension_uuid, user_uuid, category_id, object_id, category_value):
+        raise NotImplemented
+
+    def get_rules(self, extension_uuid, user_uuid):
+        raise NotImplemented
+
+    def add_rule(self, extension_uuid, user_uuid, name, subject_attrs, object_attrs, description=""):
+        raise NotImplemented
+
+    def del_rule(self, extension_uuid, user_uuid, rule_id):
+        raise NotImplemented
+
+
+
+
+
+
+    # def get_objects(self, extension_uuid=None, uuid=None, name=None, tenant_uuid=None):
+    #     if tenant_uuid:
+    #         try:
+    #             ext = self.intra_pdps.get(attributes={"tenant.uuid": tenant_uuid})[0]
+    #             return ext.get_objects(uuid=uuid, name=name)
+    #         except IndexError:
+    #             return []
+    #     else:
+    #         return self.intra_pdps.get(extension_uuid)[0].get_object(uuid=uuid, name=name)
+    #
+    # def get_roles(self, extension_uuid=None, uuid=None, name=None):
+    #     return self.intra_pdps.get(uuid=extension_uuid)[0].get_subject_attributes(uuid=uuid, name=name, category="role")
+    #
+    # def get_groups(self, extension_uuid=None, uuid=None, name=None):
+    #     return self.intra_pdps.get(uuid=extension_uuid)[0].get_subject_attributes(uuid=uuid, name=name, category="group")
+    #
+    # def get_object_attributes(self, extension_uuid=None, uuid=None, name=None, category=None):
+    #     return self.intra_pdps.get(uuid=extension_uuid)[0].get_object_attributes(uuid=uuid, value=name, category=category)
+    #
+    # def get_subject_attributes(self, extension_uuid=None, uuid=None, name=None, category=None):
+    #     return self.intra_pdps.get(uuid=extension_uuid)[0].get_subject_attributes(uuid=uuid, value=name, category=category)
+    #
+    # def get_tenant(self, tenant_uuid=None, tenant_name=None):
+    #     if not tenant_uuid and not tenant_name:
+    #         return self.inter_pdps.list()
+    #     else:
+    #         return self.inter_pdps.get(uuid=tenant_uuid, name=tenant_name)
 
     def get_inter_extensions(self, uuid=None):
         return self.inter_pdps.get(uuid=uuid)
@@ -121,64 +216,64 @@ class PAP:
         requested_extension.requested_vent_create(vent, requested_objects)
         return assignment
 
-    def add_subject_attributes(
-            self,
-            uuid=None,
-            extension_uuid=None,
-            tenant_uuid=None,
-            attributes=[],
-            category="role",
-            description=""):
-        if tenant_uuid and type(tenant_uuid) not in (list, tuple):
-            tenant_uuid = [tenant_uuid, ]
-        for _uuid in tenant_uuid:
-            ext = self.get_intra_extensions(uuid=extension_uuid, tenant_uuid=_uuid)
-            if type(attributes) not in (list, tuple):
-                attributes = [attributes, ]
-            for attribute in attributes:
-                ext.add_subject_attribute(
-                    uuid=uuid,
-                    value=attribute,
-                    category=category,
-                    description=description)
-
-    def add_object_attributes(
-            self,
-            extension_uuid=None,
-            tenant_uuid=None,
-            attributes=[],
-            category="type",
-            description=""):
-        ext = self.get_intra_extensions(uuid=extension_uuid, tenant_uuid=tenant_uuid)
-        if type(attributes) not in (list, tuple):
-            attributes = [attributes, ]
-        for attribute in attributes:
-            ext.add_object_attribute(
-                value=attribute,
-                category=category,
-                description=description)
-
-    def delete_subject_attributes(
-            self,
-            extension_uuid=None,
-            tenant_uuid=None,
-            attributes=[]):
-        ext = self.get_intra_extensions(uuid=extension_uuid, tenant_uuid=tenant_uuid)[0]
-        if type(attributes) not in (list, tuple):
-            attributes = [attributes, ]
-        for attribute in attributes:
-            ext.delete_subject_attributes(uuid=attribute)
-
-    def delete_object_attributes(
-            self,
-            extension_uuid=None,
-            tenant_uuid=None,
-            attributes=[]):
-        ext = self.get_intra_extensions(uuid=extension_uuid, tenant_uuid=tenant_uuid)
-        if type(attributes) not in (list, tuple):
-            attributes = [attributes, ]
-        for attribute in attributes:
-            ext.delete_object_attributes(uuid=attribute)
+    # def add_subject_attributes(
+    #         self,
+    #         uuid=None,
+    #         extension_uuid=None,
+    #         tenant_uuid=None,
+    #         attributes=[],
+    #         category="role",
+    #         description=""):
+    #     if tenant_uuid and type(tenant_uuid) not in (list, tuple):
+    #         tenant_uuid = [tenant_uuid, ]
+    #     for _uuid in tenant_uuid:
+    #         ext = self.get_intra_extensions(uuid=extension_uuid, tenant_uuid=_uuid)
+    #         if type(attributes) not in (list, tuple):
+    #             attributes = [attributes, ]
+    #         for attribute in attributes:
+    #             ext.add_subject_attribute(
+    #                 uuid=uuid,
+    #                 value=attribute,
+    #                 category=category,
+    #                 description=description)
+    #
+    # def add_object_attributes(
+    #         self,
+    #         extension_uuid=None,
+    #         tenant_uuid=None,
+    #         attributes=[],
+    #         category="type",
+    #         description=""):
+    #     ext = self.get_intra_extensions(uuid=extension_uuid, tenant_uuid=tenant_uuid)
+    #     if type(attributes) not in (list, tuple):
+    #         attributes = [attributes, ]
+    #     for attribute in attributes:
+    #         ext.add_object_attribute(
+    #             value=attribute,
+    #             category=category,
+    #             description=description)
+    #
+    # def delete_subject_attributes(
+    #         self,
+    #         extension_uuid=None,
+    #         tenant_uuid=None,
+    #         attributes=[]):
+    #     ext = self.get_intra_extensions(uuid=extension_uuid, tenant_uuid=tenant_uuid)[0]
+    #     if type(attributes) not in (list, tuple):
+    #         attributes = [attributes, ]
+    #     for attribute in attributes:
+    #         ext.delete_subject_attributes(uuid=attribute)
+    #
+    # def delete_object_attributes(
+    #         self,
+    #         extension_uuid=None,
+    #         tenant_uuid=None,
+    #         attributes=[]):
+    #     ext = self.get_intra_extensions(uuid=extension_uuid, tenant_uuid=tenant_uuid)
+    #     if type(attributes) not in (list, tuple):
+    #         attributes = [attributes, ]
+    #     for attribute in attributes:
+    #         ext.delete_object_attributes(uuid=attribute)
 
     def get_virtual_entity(self, uuid=None, name=None):
         return self.inter_pdps.get_virtual_entity(uuid=uuid, name=name)
@@ -258,7 +353,7 @@ class PAP:
 
     def new_intra_extension(self, tenant, test_only=False, json_data=None):
         pip = get_pip()
-        existing_extension = get_intra_extentions().get(attributes={"tenant.uuid": tenant["uuid"]})
+        existing_extension = self.intra_extensions().get(attributes={"tenant.uuid": tenant["uuid"]})
         if not json_data:
             filename = getattr(settings, "DEFAULT_EXTENSION_TABLE")
             #TODO: deals with errors in json file
@@ -304,7 +399,7 @@ class PAP:
                     json_data["configuration"]["protocol"]
                 ))
         if not test_only:
-            get_intra_extentions().new_from_json(json_data=json_data)
+            self.intra_extensions().new_from_json(json_data=json_data)
 
     def sync_db_with_keystone(self, tenant_uuid=None):
         pip = get_pip()
@@ -342,7 +437,7 @@ class PAP:
                 logger.warning("Cannot authenticate in tenant {}".format(tenant["name"]))
                 logs += " KO (Cannot authenticate in tenant)\n"
                 continue
-            get_inter_extentions().add_tenant(
+            self.inter_extensions().add_tenant(
                 name=tenant["name"],
                 description=tenant["description"],
                 enabled=tenant["enabled"],
@@ -359,47 +454,47 @@ class PAP:
         return logs
 
     def delete_tables(self):
-        get_intra_extentions().delete_tables()
-        get_inter_extentions().delete_tables()
+        self.intra_extensions.delete_tables()
+        self.inter_extensions.delete_tables()
 
-    def create_roles(self, name=None, description="", tenants=[]):
-        krole = None
-        if name and len(name) > 0:
-            krole = get_pip().create_roles(name=name, description=description)
-        if krole:
-            for uuid in tenants:
-                self.add_subject_attributes(
-                    uuid=krole.id,
-                    tenant_uuid=uuid,
-                    attributes=name,
-                    category="role",
-                    description=description)
-        return krole
-
-    def delete_roles(self, uuid=None, tenants=[]):
-        message = ""
-        if tenants and type(tenants) not in (list, tuple):
-            tenants = [tenants, ]
-        if len(tenants) == 0:
-            tenants = get_pip().get_tenants()
-        if uuid and len(uuid) > 0:
-            for tenant in tenants:
-                if type(tenant) in (unicode, str):
-                    tenant = list(get_pip().get_tenants(uuid=tenant))[0]
-                role = None
-                try:
-                    role = list(get_pip().get_roles(uuid=uuid, tenant=tenant))[0]
-                except IndexError:
-                    # Role may have been already deleted
-                    continue
-                if not role:
-                    return "Unknown role {}".format(uuid)
-                #Check if role is not a mandatory role for OpenStack
-                if role["value"] not in ("admin", "_member_", "Member", "heat_stack_user", "service", "heat_stack_owner"):
-                    message = get_pip().delete_roles(uuid)
-                    for ext in get_intra_extentions().values():
-                        self.delete_subject_attributes(extension_uuid=ext.uuid, attributes=[uuid, ])
-        return message
+    # def create_roles(self, name=None, description="", tenants=[]):
+    #     krole = None
+    #     if name and len(name) > 0:
+    #         krole = get_pip().create_roles(name=name, description=description)
+    #     if krole:
+    #         for uuid in tenants:
+    #             self.add_subject_attributes(
+    #                 uuid=krole.id,
+    #                 tenant_uuid=uuid,
+    #                 attributes=name,
+    #                 category="role",
+    #                 description=description)
+    #     return krole
+    #
+    # def delete_roles(self, uuid=None, tenants=[]):
+    #     message = ""
+    #     if tenants and type(tenants) not in (list, tuple):
+    #         tenants = [tenants, ]
+    #     if len(tenants) == 0:
+    #         tenants = get_pip().get_tenants()
+    #     if uuid and len(uuid) > 0:
+    #         for tenant in tenants:
+    #             if type(tenant) in (unicode, str):
+    #                 tenant = list(get_pip().get_tenants(uuid=tenant))[0]
+    #             role = None
+    #             try:
+    #                 role = list(get_pip().get_roles(uuid=uuid, tenant=tenant))[0]
+    #             except IndexError:
+    #                 # Role may have been already deleted
+    #                 continue
+    #             if not role:
+    #                 return "Unknown role {}".format(uuid)
+    #             #Check if role is not a mandatory role for OpenStack
+    #             if role["value"] not in ("admin", "_member_", "Member", "heat_stack_user", "service", "heat_stack_owner"):
+    #                 message = get_pip().delete_roles(uuid)
+    #                 for ext in get_intra_extentions().values():
+    #                     self.delete_subject_attributes(extension_uuid=ext.uuid, attributes=[uuid, ])
+    #     return message
 
 
 pap = PAP()

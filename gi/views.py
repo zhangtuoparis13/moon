@@ -173,9 +173,7 @@ def inter_extensions(request):
 def get_subjects(request, id=None, **kwargs):
     pap = get_pap()
     try:
-        subjects = pap.get_subjects(
-            tenant_uuid=id
-        )
+        subjects = pap.get_subjects(extension_uuid=id, user_uuid=request.session['user_id'])
     except:
         import traceback
         print(traceback.print_exc())

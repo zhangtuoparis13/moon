@@ -367,8 +367,8 @@ class InterExtensions:
         self.extensions[assignment].sync()
         return self.extensions[assignment]
 
-inter_extentions = InterExtensions()
+inter_extensions = InterExtensions()
 
 
-def get_inter_extentions():
-    return inter_extentions
+def get_inter_extensions():
+    return inter_extensions
