@@ -1,5 +1,8 @@
+import json
+
 class Metadata:
-    def __init__(self):
+    def __init__(self, jsonfile):
+        _json_data = json.loads(jsonfile.read())
         self.subject_categories = list()
         # examples: "role" , "security_level"
         self.object_categories = list()
@@ -13,10 +16,6 @@ class Metadata:
             ],
             'aggregation': ''
         }
-
-    def load(self, jasonfile):
-        # example: load metadata.json
-        pass
 
 
 class Configuration:

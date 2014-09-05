@@ -1,8 +1,8 @@
+import os.path
 import argparse
-from moon.core.pdp.extension import Extension
-from moon.core.pdp.intra_extension_authz import AuthzExtension
-from moon.core.pdp.intra_extension_admin import AdminExtension
-from moon.core.pdp.intra_extension import IntraExtension
+import pkg_resources
+
+from moon.core.pdp.extension import Metadata
 
 '''
 this module tests the core, intra-extention, inter-extention code
@@ -22,7 +22,13 @@ if __name__ == "__main__":
         print('testing core/pdp/intra_extension.py/'+args.intra_extension+' function starting ...')
 
         if args.intra_extension == 'extension':
-            pass
+            metadatadir = pkg_resources.resource_filename("moon", "core/pdp/extension_setting")
+            metadatapath = os.path.join(metadatadir, "metadata.json")
+            f = open(metadatapath)
+            metadata = Metadata(f)
+            print(dir(metadata))
+            print(metadata.meta_rules["aggregation"])
+
         elif args.intra_extension == 'authz':
             pass
         elif args.intra_extension == 'admin':
