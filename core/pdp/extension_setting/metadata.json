@@ -1,6 +1,7 @@
 {
-    "name": "MLS metadata",
+    "name": "MLS_metadata",
     "model": "MLS",
+    "type": "authz"
     "description": "",
 
     "subject_categories": [

@@ -1,21 +1,24 @@
 import json
 
 class Metadata:
-    def __init__(self, jsonfile):
-        _json_data = json.loads(jsonfile.read())
-        self.subject_categories = list()
-        # examples: "role" , "security_level"
-        self.object_categories = list()
-        self.meta_rules = {
-            'sub_meta_rules': [
-                {
-                    'subject_categories': [],
-                    'object_categories': [],
-                    'relation': ''
-                }
-            ],
-            'aggregation': ''
-        }
+    def __init__(self, metadata_json):
+        self.name = metadata_json['name']
+        self.model = metadata_json['model']
+        self.type = metadata_json['type']
+        self.description = metadata_json['description']
+        self.subject_categories = list(metadata_json['subject_categories'])
+        self.object_categories = list(metadata_json['object_categories'])
+        self.meta_rules = dict()
+        self.meta_rules['sub_meta_rules']=list()
+        
+        for sub_rule in metadata_json['meta_rule']['sub_meta_rules']:
+            tmp_sub_rule = dict()
+            tmp_sub_rule['subject_categorries'] = list(sub_rule['subject_categories'])
+            tmp_sub_rule['object_categorries'] = list(sub_rule['object_categories'])
+            tmp_sub_rule['relation'] = sub_rule['relation']
+            self.meta_rules['sub_meta_rules'].apprend(tmp_sub_rule)
+            
+        self.meta_rules['aggregation'] = metadata_json['meta_rule']['aggregation']
 
 
 class Configuration:
