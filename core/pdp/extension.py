@@ -1,24 +1,28 @@
+import os.path
+import copy
 import json
 
 class Metadata:
-    def __init__(self, metadata_json):
-        self.name = metadata_json['name']
-        self.model = metadata_json['model']
-        self.type = metadata_json['type']
-        self.description = metadata_json['description']
-        self.subject_categories = list(metadata_json['subject_categories'])
-        self.object_categories = list(metadata_json['object_categories'])
+    def __init__(self, extension_setting_dir):
+        metadata_path = os.path.joint(extension_setting_dir, 'metadata.json')
+        json_metadata = json.load(metadat_path)
+        self.name = metadata['name']
+        self.model = json_metadata_json['model']
+        self.type = json_metadata['type']
+        self.description = json_metadata['description']
+        self.subject_categories = copy.deepcopy(json_metadata['subject_categories'])
+        self.object_categories = copy.deepcopy(json_metadata['object_categories'])
         self.meta_rules = dict()
         self.meta_rules['sub_meta_rules']=list()
         
-        for sub_rule in metadata_json['meta_rule']['sub_meta_rules']:
+        for sub_rule in json_metadata['meta_rule']['sub_meta_rules']:
             tmp_sub_rule = dict()
-            tmp_sub_rule['subject_categorries'] = list(sub_rule['subject_categories'])
-            tmp_sub_rule['object_categorries'] = list(sub_rule['object_categories'])
+            tmp_sub_rule['subject_categorries'] = copy.deepcopy(sub_rule['subject_categories'])
+            tmp_sub_rule['object_categorries'] = copy.deepcopy(sub_rule['object_categories'])
             tmp_sub_rule['relation'] = sub_rule['relation']
             self.meta_rules['sub_meta_rules'].apprend(tmp_sub_rule)
             
-        self.meta_rules['aggregation'] = metadata_json['meta_rule']['aggregation']
+        self.meta_rules['aggregation'] = json_metadatan['meta_rule']['aggregation']
 
 
 class Configuration:
@@ -67,6 +71,12 @@ class Extension:
         self.__configuration = Configuration()
         self.__perimeter = Perimeter()
         self.__assignment = Assignment()
+
+    def load_from_json(self, extension_setting_dir):
+        self.__metadata.load_from_json(extension_setting_dir)
+        self.__configuration.load_from_json(extension_setting_dir)
+        self.__perimeter.load_from_json(extension_setting_dir)
+        self.__assignment.load_from_json(extension_setting_dir)
 
     def authz(self, sub, obj, act):
         authz_data = AuthzData(sub, obj, act)

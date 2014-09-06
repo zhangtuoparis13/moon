@@ -1,7 +1,13 @@
+import json
 from moon.core.pdp.extension import Extension
 
 
 class AuthzExtension(Extension):
+    def load_from_json(self, extension_setting_dir):
+        authz_extension_setting_dir = os.path.joint(extension_setting_dir, 'authz')
+        ??? call Extension.load_from_json
+
+
     def authz(self, sub, obj, act):
         pass
 

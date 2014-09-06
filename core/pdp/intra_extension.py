@@ -1,3 +1,4 @@
+import os.path
 from uuid import uuid4
 import logging
 try:
@@ -13,9 +14,12 @@ logger = logging.getLogger(__name__)
 
 
 class IntraExtension(object):
-    def __init__(self):
+    def __init__(self, extension_setting_abs_dir):
         self.__intra_extension_authz = AuthzExtension()
+        self.__intra_extension_authz.load_from_json(os.path.join(extension_setting_abs_dir,'authz'))
         self.__intra_extension_admin = AdminExtension()
+        self.__intra_extension_admin(os.path.joint(extension_setting_abs_dir,'admin'))
+        self.name=self.__intra_extension_authz.metadata.name
 
     def authz(self, sub, obj, act):
         return self.__intra_extension_authz.authz(sub, obj, act)
