@@ -11,7 +11,7 @@ this module tests the core, intra-extention, inter-extention code
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--core', action='store_true')
-    parser.add_argument('--intra_extension', action='store')
+    parser.add_argument('--intra_extension', action='store',choices=('extension','authz','admin','intra'))
     parser.add_argument('--inter_extension', action='store_true')
     args = parser.parse_args()
 
@@ -30,7 +30,7 @@ if __name__ == "__main__":
             print(metadata.meta_rules["aggregation"])
 
         elif args.intra_extension == 'authz':
-            pass
+            print ('authz option is: '+args.intra_extension)
         elif args.intra_extension == 'admin':
             pass
         elif args.intra_extension == 'intra':
