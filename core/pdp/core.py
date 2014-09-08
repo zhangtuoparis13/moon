@@ -2,7 +2,7 @@
 Policy Decision Point
 """
 
-from moon.core.pdp.inter_extension import get_inter_extentions
+from moon.core.pdp.inter_extension import get_inter_extensions
 import os
 import imp
 import logging
@@ -707,7 +707,7 @@ class IntraExtensions:
             self.__secured_extensions[ext["uuid"]] = PublicAdminInterface(self.__extensions[ext["uuid"]])
         self.__PublicAuthzInterface = PublicAuthzInterface(
             intra_extensions=self.get(),
-            inter_extensions=get_inter_extentions().get()
+            inter_extensions=get_inter_extensions().get()
         )
 
     def values(self):

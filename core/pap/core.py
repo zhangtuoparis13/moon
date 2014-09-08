@@ -25,9 +25,17 @@ class PAP:
         elif uuid and uuid in self.intra_extensions.keys():
             return self.intra_extensions[uuid]
 
+    ##########################################
+    # Specific functions for Keystone and Nova
+    ##########################################
+
     @staticmethod
-    def get_tenants(name=None):
-        return get_pip().get_tenants(name=name)
+    def get_tenants(name=None, uuid=None):
+        return get_pip().get_tenants(name=name, uuid=uuid)
+
+    ##################################################
+    # Specific functions for Intra-Extension interface
+    ##################################################
 
     def get_subjects(self, extension_uuid, user_uuid):
         self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "subjects", "r")
@@ -163,152 +171,9 @@ class PAP:
         self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "rules", "w")
         self.intra_extensions[extension_uuid].authz_extension.add_rules(rule_id)
 
-
-
-
-
-
-    # def get_objects(self, extension_uuid=None, uuid=None, name=None, tenant_uuid=None):
-    #     if tenant_uuid:
-    #         try:
-    #             ext = self.intra_pdps.get(attributes={"tenant.uuid": tenant_uuid})[0]
-    #             return ext.get_objects(uuid=uuid, name=name)
-    #         except IndexError:
-    #             return []
-    #     else:
-    #         return self.intra_pdps.get(extension_uuid)[0].get_object(uuid=uuid, name=name)
-    #
-    # def get_roles(self, extension_uuid=None, uuid=None, name=None):
-    #     return self.intra_pdps.get(uuid=extension_uuid)[0].get_subject_attributes(uuid=uuid, name=name, category="role")
-    #
-    # def get_groups(self, extension_uuid=None, uuid=None, name=None):
-    #     return self.intra_pdps.get(uuid=extension_uuid)[0].get_subject_attributes(uuid=uuid, name=name, category="group")
-    #
-    # def get_object_attributes(self, extension_uuid=None, uuid=None, name=None, category=None):
-    #     return self.intra_pdps.get(uuid=extension_uuid)[0].get_object_attributes(uuid=uuid, value=name, category=category)
-    #
-    # def get_subject_attributes(self, extension_uuid=None, uuid=None, name=None, category=None):
-    #     return self.intra_pdps.get(uuid=extension_uuid)[0].get_subject_attributes(uuid=uuid, value=name, category=category)
-    #
-    # def get_tenant(self, tenant_uuid=None, tenant_name=None):
-    #     if not tenant_uuid and not tenant_name:
-    #         return self.inter_pdps.list()
-    #     else:
-    #         return self.inter_pdps.get(uuid=tenant_uuid, name=tenant_name)
-
-    def get_inter_extensions(self, uuid=None):
-        return self.inter_pdps.get(uuid=uuid)
-
-    def add_inter_extension(self,
-                            requesting=None,
-                            requested=None,
-                            connexion_type=None,
-                            requesting_subjects=None,
-                            requested_objects=None):
-        """Add a new Inter Tenant Extension
-
-        :param requesting: UUID of the requesting tenant
-        :param requested: UUID of the requested tenant
-        :param connexion_type: connexion_type of the connection ("trust", "coordinate", ...)
-        :param requesting_subjects: list of subjects for rule creation
-        :param requested_objects: list of objects for rule creation
-        :return: new extension
-
-        Methodology:
-        - Add tenant assignment
-        - Add virtual entity object vent1 in requesting tenant
-        - Add relation (in o_attrs_assignment) from vent1 to o_attrs.virtual_entity in requesting tenant
-        - Add virtual entity subject vent2 in requested tenant
-        - Add relation (in o_attrs_assignment) from vent2 to o_attrs.virtual_entity in requested tenant
-        - Add rule from one or more subjects to vent1 in requesting tenant
-        - Add rule from one or more objects to vent2 in requested tenant
-        """
-        #Add tenant assignment
-        assignment = self.inter_pdps.add_tenant_assignment(
-            requested=requested,
-            requesting=requesting,
-            type=connexion_type,
-        )
-        requesting_extension = self.get_intra_extensions(tenant_uuid=requesting)
-        requested_extension = self.get_intra_extensions(tenant_uuid=requested)
-        #Get the Virtual entity created during the creation of "assignment"
-        vent = self.get_virtual_entity(uuid=assignment.category)[0]
-        requesting_extension.requesting_vent_create(vent, requesting_subjects)
-        requested_extension.requested_vent_create(vent, requested_objects)
-        return assignment
-
-    # def add_subject_attributes(
-    #         self,
-    #         uuid=None,
-    #         extension_uuid=None,
-    #         tenant_uuid=None,
-    #         attributes=[],
-    #         category="role",
-    #         description=""):
-    #     if tenant_uuid and type(tenant_uuid) not in (list, tuple):
-    #         tenant_uuid = [tenant_uuid, ]
-    #     for _uuid in tenant_uuid:
-    #         ext = self.get_intra_extensions(uuid=extension_uuid, tenant_uuid=_uuid)
-    #         if type(attributes) not in (list, tuple):
-    #             attributes = [attributes, ]
-    #         for attribute in attributes:
-    #             ext.add_subject_attribute(
-    #                 uuid=uuid,
-    #                 value=attribute,
-    #                 category=category,
-    #                 description=description)
-    #
-    # def add_object_attributes(
-    #         self,
-    #         extension_uuid=None,
-    #         tenant_uuid=None,
-    #         attributes=[],
-    #         category="type",
-    #         description=""):
-    #     ext = self.get_intra_extensions(uuid=extension_uuid, tenant_uuid=tenant_uuid)
-    #     if type(attributes) not in (list, tuple):
-    #         attributes = [attributes, ]
-    #     for attribute in attributes:
-    #         ext.add_object_attribute(
-    #             value=attribute,
-    #             category=category,
-    #             description=description)
-    #
-    # def delete_subject_attributes(
-    #         self,
-    #         extension_uuid=None,
-    #         tenant_uuid=None,
-    #         attributes=[]):
-    #     ext = self.get_intra_extensions(uuid=extension_uuid, tenant_uuid=tenant_uuid)[0]
-    #     if type(attributes) not in (list, tuple):
-    #         attributes = [attributes, ]
-    #     for attribute in attributes:
-    #         ext.delete_subject_attributes(uuid=attribute)
-    #
-    # def delete_object_attributes(
-    #         self,
-    #         extension_uuid=None,
-    #         tenant_uuid=None,
-    #         attributes=[]):
-    #     ext = self.get_intra_extensions(uuid=extension_uuid, tenant_uuid=tenant_uuid)
-    #     if type(attributes) not in (list, tuple):
-    #         attributes = [attributes, ]
-    #     for attribute in attributes:
-    #         ext.delete_object_attributes(uuid=attribute)
-
-    def get_virtual_entity(self, uuid=None, name=None):
-        return self.inter_pdps.get_virtual_entity(uuid=uuid, name=name)
-
-    def delete_inter_extension(self, uuid):
-        ext = self.inter_pdps.get(uuid=uuid)[0]
-        vent_uuid = ext.get_vent()
-        self.intra_pdps.delete_rules(s_attrs=vent_uuid, o_attrs=vent_uuid)
-        try:
-            self.intra_pdps.delete_attributes_from_vent(uuid=vent_uuid)
-        except:
-            import sys
-            print(sys.exc_info())
-        self.inter_pdps.delete(uuid=uuid)
+    ########################################
+    # Specific functions for Intra-Extension
+    ########################################
 
     def update_from_json(self, existing_extension=None, tenant=None, json_data=None):
         #TODO: wrong method: when updating we must not re-create the extension
@@ -422,6 +287,69 @@ class PAP:
         if not test_only:
             self.intra_extensions().new_from_json(json_data=json_data)
 
+    #########################################
+    # Specific functions for Inter Extensions
+    #########################################
+
+    def get_inter_extensions(self, uuid=None):
+        return self.inter_pdps.get(uuid=uuid)
+
+    def add_inter_extension(self,
+                            requesting=None,
+                            requested=None,
+                            connexion_type=None,
+                            requesting_subjects=None,
+                            requested_objects=None):
+        """Add a new Inter Tenant Extension
+
+        :param requesting: UUID of the requesting tenant
+        :param requested: UUID of the requested tenant
+        :param connexion_type: connexion_type of the connection ("trust", "coordinate", ...)
+        :param requesting_subjects: list of subjects for rule creation
+        :param requested_objects: list of objects for rule creation
+        :return: new extension
+
+        Methodology:
+        - Add tenant assignment
+        - Add virtual entity object vent1 in requesting tenant
+        - Add relation (in o_attrs_assignment) from vent1 to o_attrs.virtual_entity in requesting tenant
+        - Add virtual entity subject vent2 in requested tenant
+        - Add relation (in o_attrs_assignment) from vent2 to o_attrs.virtual_entity in requested tenant
+        - Add rule from one or more subjects to vent1 in requesting tenant
+        - Add rule from one or more objects to vent2 in requested tenant
+        """
+        #Add tenant assignment
+        assignment = self.inter_pdps.add_tenant_assignment(
+            requested=requested,
+            requesting=requesting,
+            type=connexion_type,
+        )
+        requesting_extension = self.get_intra_extensions(tenant_uuid=requesting)
+        requested_extension = self.get_intra_extensions(tenant_uuid=requested)
+        #Get the Virtual entity created during the creation of "assignment"
+        vent = self.get_virtual_entity(uuid=assignment.category)[0]
+        requesting_extension.requesting_vent_create(vent, requesting_subjects)
+        requested_extension.requested_vent_create(vent, requested_objects)
+        return assignment
+
+    def get_virtual_entity(self, uuid=None, name=None):
+        return self.inter_pdps.get_virtual_entity(uuid=uuid, name=name)
+
+    def delete_inter_extension(self, uuid):
+        ext = self.inter_pdps.get(uuid=uuid)[0]
+        vent_uuid = ext.get_vent()
+        self.intra_pdps.delete_rules(s_attrs=vent_uuid, o_attrs=vent_uuid)
+        try:
+            self.intra_pdps.delete_attributes_from_vent(uuid=vent_uuid)
+        except:
+            import sys
+            print(sys.exc_info())
+        self.inter_pdps.delete(uuid=uuid)
+
+    ###########################################
+    # Misc functions for Intra/Inter-Extensions
+    ###########################################
+
     def sync_db_with_keystone(self, tenant_uuid=None):
         pip = get_pip()
         logs = ""
@@ -477,45 +405,6 @@ class PAP:
     def delete_tables(self):
         self.intra_extensions.delete_tables()
         self.inter_extensions.delete_tables()
-
-    # def create_roles(self, name=None, description="", tenants=[]):
-    #     krole = None
-    #     if name and len(name) > 0:
-    #         krole = get_pip().create_roles(name=name, description=description)
-    #     if krole:
-    #         for uuid in tenants:
-    #             self.add_subject_attributes(
-    #                 uuid=krole.id,
-    #                 tenant_uuid=uuid,
-    #                 attributes=name,
-    #                 category="role",
-    #                 description=description)
-    #     return krole
-    #
-    # def delete_roles(self, uuid=None, tenants=[]):
-    #     message = ""
-    #     if tenants and type(tenants) not in (list, tuple):
-    #         tenants = [tenants, ]
-    #     if len(tenants) == 0:
-    #         tenants = get_pip().get_tenants()
-    #     if uuid and len(uuid) > 0:
-    #         for tenant in tenants:
-    #             if type(tenant) in (unicode, str):
-    #                 tenant = list(get_pip().get_tenants(uuid=tenant))[0]
-    #             role = None
-    #             try:
-    #                 role = list(get_pip().get_roles(uuid=uuid, tenant=tenant))[0]
-    #             except IndexError:
-    #                 # Role may have been already deleted
-    #                 continue
-    #             if not role:
-    #                 return "Unknown role {}".format(uuid)
-    #             #Check if role is not a mandatory role for OpenStack
-    #             if role["value"] not in ("admin", "_member_", "Member", "heat_stack_user", "service", "heat_stack_owner"):
-    #                 message = get_pip().delete_roles(uuid)
-    #                 for ext in get_intra_extentions().values():
-    #                     self.delete_subject_attributes(extension_uuid=ext.uuid, attributes=[uuid, ])
-    #     return message
 
 
 pap = PAP()

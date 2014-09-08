@@ -152,7 +152,7 @@ class PIP:
                 assignments["attributes"].extend(groups)
             yield assignments
 
-    def get_tenants(self, uuid=None, name=None, pap=None, **kwargs):
+    def get_tenants(self, name, uuid=None, pap=None):
         for tenant in self.kclient.projects.list():
             t = dict()
             t["name"] = tenant.name
@@ -176,10 +176,10 @@ class PIP:
                 continue
             yield t
 
-    def create_roles(self, name=None, description=""):
+    def create_roles(self, name, description=""):
         return self.kclient.roles.create(name=name, description=description)
 
-    def delete_roles(self, uuid=None):
+    def delete_roles(self, uuid):
         return self.kclient.roles.delete(uuid)
 
 
