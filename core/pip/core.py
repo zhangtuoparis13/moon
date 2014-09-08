@@ -6,6 +6,7 @@ from moon.tools.openstack_credentials import get_keystone_creds, get_nova_creds
 import logging
 from uuid import uuid4
 from keystoneclient.openstack.common.apiclient.exceptions import Unauthorized, Forbidden
+from moon import settings
 
 logger = logging.getLogger("moon.pip")
 
@@ -39,6 +40,18 @@ class PIP:
         ncreds = get_nova_creds()
         ncreds["project_id"] = tenant_name
         self.nclient = nova_client.Client("1.1", **ncreds)
+
+    def set_creds_from_token(self, token):
+        """Get an authentication client from a token got from Moon Server
+
+        :param token:
+        :return:
+        """
+        from keystoneclient.v3 import client as keystone_client
+        auth_url = getattr(settings, "OPENSTACK_KEYSTONE_URL")
+        self.kclient = keystone_client.Client(token=token.id, auth_url=auth_url)
+        from novaclient import client as nova_client
+        self.nclient = nova_client.Client("3", auth_token=token.id, auth_url=auth_url)
 
     def get_subjects(self, tenant=None):
         if type(tenant) is dict:

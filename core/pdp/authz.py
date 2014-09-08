@@ -1,4 +1,5 @@
 from moon.tools.exceptions import AdminException
+from moon.core.pip import get_pip
 #
 # authz_manager = get_internal_authz()
 
@@ -109,6 +110,7 @@ def translate_auth(function):
 def save_auth(function):
     def wrapped(*args, **kwargs):
         #FIXME: what happen if 2 different users use the application at the same time
+        get_pip().set_creds_from_token(args[0].session["token"])
         try:
             username = args[0].session['user_id']
             globals()["username"] = username
