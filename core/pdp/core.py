@@ -24,7 +24,7 @@ class IntraExtensions:
     def install_extension_from_json(self, extension_setting_dir):
         extension_setting_abs_dir = pkg_resources.resource_filename("moon", extension_setting_dir)
         intra_extension = IntraExtension(extension_setting_abs_dir)
-        _installed_extension[intra_extension.name] = intra_extension
+        _installed_extensions[intra_extension.name] = intra_extension
 
         # metadata_path = os.path.join(metadatadir, "metadata.json")
         # f = open(metadata_path)

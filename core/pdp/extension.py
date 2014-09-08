@@ -2,27 +2,48 @@ import os.path
 import copy
 import json
 
+
 class Metadata:
-    def __init__(self, extension_setting_dir):
-        metadata_path = os.path.joint(extension_setting_dir, 'metadata.json')
-        json_metadata = json.load(metadat_path)
-        self.name = metadata['name']
-        self.model = json_metadata_json['model']
-        self.type = json_metadata['type']
-        self.description = json_metadata['description']
-        self.subject_categories = copy.deepcopy(json_metadata['subject_categories'])
-        self.object_categories = copy.deepcopy(json_metadata['object_categories'])
-        self.meta_rules = dict()
-        self.meta_rules['sub_meta_rules']=list()
-        
+    def __init__(self):
+        self.__name = ''
+        self.__model = ''
+        self.__type = ''
+        self.__description = ''
+        self.__subject_categories = set()
+        self.__object_categories = set()
+        self.__meta_rule = dict()
+        self.__meta_rule['sub_meta_rules'] = list()
+        self.__meta_rule['aggregation'] = ''
+
+    def load_from_json(self, extension_setting_dir):
+        metadata_path = os.path.join(extension_setting_dir, 'metadata.json')
+        f = open(metadata_path)
+        json_metadata = json.load(f)
+        self.__name = json_metadata['name']
+        self.__model = json_metadata['model']
+        self.__type = json_metadata['type']
+        self.__description = json_metadata['description']
+        self.__subject_categories = copy.deepcopy(json_metadata['subject_categories'])
+        self.__object_categories = copy.deepcopy(json_metadata['object_categories'])
+        self.__meta_rule['aggregation'] = json_metadata['meta_rule']['aggregation']
+
         for sub_rule in json_metadata['meta_rule']['sub_meta_rules']:
             tmp_sub_rule = dict()
             tmp_sub_rule['subject_categorries'] = copy.deepcopy(sub_rule['subject_categories'])
             tmp_sub_rule['object_categorries'] = copy.deepcopy(sub_rule['object_categories'])
             tmp_sub_rule['relation'] = sub_rule['relation']
-            self.meta_rules['sub_meta_rules'].apprend(tmp_sub_rule)
-            
-        self.meta_rules['aggregation'] = json_metadatan['meta_rule']['aggregation']
+            self.__meta_rule['sub_meta_rules'].append(tmp_sub_rule)
+
+    def print_metadata(self):
+        print('name: ', self.__name)
+        print('model: ', self.__model)
+        print('type: ', self.__type)
+        print('description: ', self.__description)
+        print('subject categories: ', self.__subject_categories)
+        print('object categories: ', self.__object_categories)
+        print('meta_rules.aggregation: ', self.__meta_rule['aggregation'])
+        for i in self.__meta_rule['sub_meta_rules']:
+            print(i)
 
 
 class Configuration:
@@ -67,16 +88,19 @@ class AuthzData:
 
 class Extension:
     def __init__(self):
-        self.__metadata = Metadata()
-        self.__configuration = Configuration()
-        self.__perimeter = Perimeter()
-        self.__assignment = Assignment()
+        self.metadata = Metadata()
+        # self.__configuration = Configuration()
+        # self.__perimeter = Perimeter()
+        # self.__assignment = Assignment()
 
     def load_from_json(self, extension_setting_dir):
-        self.__metadata.load_from_json(extension_setting_dir)
-        self.__configuration.load_from_json(extension_setting_dir)
-        self.__perimeter.load_from_json(extension_setting_dir)
-        self.__assignment.load_from_json(extension_setting_dir)
+        self.metadata.load_from_json(extension_setting_dir)
+        # self.__configuration.load_from_json(extension_setting_dir)
+        # self.__perimeter.load_from_json(extension_setting_dir)
+        # self.__assignment.load_from_json(extension_setting_dir)
+
+    def print_extension(self):
+        self.metadata.print_metadata()
 
     def authz(self, sub, obj, act):
         authz_data = AuthzData(sub, obj, act)
