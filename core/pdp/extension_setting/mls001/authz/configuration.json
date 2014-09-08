@@ -1,0 +1,16 @@
+{
+    "subject_category_values": {
+        "subject_security_level": ["high", "medium", "low"]
+    },
+
+    "object_category_values": {
+        "object_security_level": ["high", "medium", "low"],
+        "action": ["read", "write","execute"]
+    },
+
+    "rules":[
+        ["high", "medium", "read"],
+        ["high", "low", "read"],
+        ["medium", "low", "read"]
+    ]
+}

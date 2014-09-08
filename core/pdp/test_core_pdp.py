@@ -1,6 +1,5 @@
 import argparse
-import pkg_resources
-from moon.core.pdp.extension import Extension
+from moon.core.pdp.core import get_intra_extensions
 
 '''
 this module tests the core, intra-extention, inter-extention code
@@ -20,10 +19,10 @@ if __name__ == "__main__":
         print('testing core/pdp/intra_extension.py/'+args.intra_extension+' function starting ...')
 
         if args.intra_extension == 'extension':
-            extension = Extension()
-            extension_dir = pkg_resources.resource_filename('moon', 'core/pdp/extension_setting/mls001/authz')
-            extension.load_from_json(extension_dir)
-            extension.print_extension()
+            intra_extensions = get_intra_extensions()
+            intra_extensions.install_intra_extension_from_json('core/pdp/extension_setting/mls001')
+            for ixk in intra_extensions.get_installed_intra_extensions():
+                print(intra_extensions.get_installed_intra_extensions()[ixk].authz('user1', 'vm1', 'read'))
 
         elif args.intra_extension == 'authz':
             print ('authz option is: '+args.intra_extension)

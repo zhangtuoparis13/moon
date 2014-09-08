@@ -17,6 +17,9 @@ class IntraExtensions:
         intra_extension.load_from_json(extension_setting_abs_dir)
         self.__installed_intra_extensions[intra_extension.get_name()] = intra_extension
 
+    def get_installed_intra_extensions(self):
+        return self.__installed_intra_extensions
+
 
 intra_extentions = IntraExtensions()
 

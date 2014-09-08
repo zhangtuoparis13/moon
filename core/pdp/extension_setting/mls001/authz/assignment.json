@@ -1,0 +1,20 @@
+{
+    "subject_category_assignment": {
+        "subject_security_level":{
+            "user1": ["4"],
+            "user2": ["2"]
+        }
+    },
+    "object_category_assignment": {
+        "object_security_level": {
+            "vm1": ["4", "3"],
+            "vm2": ["3", "2"],
+            "vm3": ["2", "1"]
+        },
+        "action": {
+            "vm1": ["read", "write"],
+            "vm2": ["read", "write"],
+            "vm3": ["read", "write"]
+        }
+    }
+}
