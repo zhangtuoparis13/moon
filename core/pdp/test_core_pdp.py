@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
         if args.intra_extension == 'extension':
             extension = Extension()
-            extension_dir = pkg_resources.resource_filename('moon', 'core/pdp/extension_setting/mls001')
+            extension_dir = pkg_resources.resource_filename('moon', 'core/pdp/extension_setting/mls001/authz')
             extension.load_from_json(extension_dir)
             extension.print_extension()
 

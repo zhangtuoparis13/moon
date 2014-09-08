@@ -34,10 +34,13 @@ class Metadata:
             tmp_sub_rule['relation'] = sub_rule['relation']
             self.__meta_rule['sub_meta_rules'].append(tmp_sub_rule)
 
+    def get_name(self):
+        return self.__name
+
     def print_metadata(self):
         print('name: ', self.__name)
         print('model: ', self.__model)
-        print('type: ', self.__type)
+        print('type: ', self.__model_type)
         print('description: ', self.__description)
         print('subject categories: ', self.__subject_categories)
         print('object categories: ', self.__object_categories)
