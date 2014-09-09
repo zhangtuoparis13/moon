@@ -23,6 +23,31 @@ class IntraExtensions:
     def get_installed_intra_extensions(self):
         return self.__installed_intra_extensions
 
+    def authz(
+            self,
+            subject,
+            action,
+            object_name,
+            object_type,
+            object_tenant,
+            subject_tenant
+    ):
+        auth = {
+            "auth": False,
+            "tenant_name": "None",
+            "rule_name": "None",
+            "message": "",
+            "subject": subject,
+            "action": action,
+            "object_name": object_name,
+            "object_uuid": "",
+            "subject_tenant": subject_tenant,
+            "object_type": object_type,
+            "object_tenant": object_tenant,
+            "extension_name": "None"
+        }
+        return auth
+
     def sync_db(self):
         pass
 
