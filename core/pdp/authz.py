@@ -132,6 +132,7 @@ def save_auth(function):
         # print("\033[32mCalling {}({})\033[m".format(function.__name__, username))
         result = function(*args, **kwargs)
         function.__globals__["username"] = None
+        get_pip().unset_creds()
         return result
     return wrapped
 
