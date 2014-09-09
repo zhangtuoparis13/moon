@@ -12,14 +12,14 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'index'),
     url(r'^sync/$', 'sync'),
-    url(r'^sync/(?P<id>\w{32})/$', 'sync'),
+    url(r'^sync/(?P<uuid>\w{32})/$', 'sync'),
     url(r"^auth/", include('openstack_auth.urls')),
-    url(r'^intra-extensions/(?P<id>\w{32})/$', 'intra_extension'),
-    url(r'^intra-extensions/(?P<id>\w{32})/type/(?P<type>\w+)/$', 'intra_extension_attributes'),  # return JSON
-    url(r'^inter-extensions/(?P<id>\w{32})/$', 'inter_extension'),
+    url(r'^intra-extensions/(?P<uuid>\w{32})/$', 'intra_extension'),
+    url(r'^intra-extensions/(?P<uuid>\w{32})/type/(?P<type>\w+)/$', 'intra_extension_attributes'),  # return JSON
+    url(r'^inter-extensions/(?P<uuid>\w{32})/$', 'inter_extension'),
     url(r'^intra-extensions/', 'intra_extensions'),
     url(r'^inter-extensions/', 'inter_extensions'),
-    url(r'^tenants/$', 'get_tenants'),
+    url(r'^tenants/$', 'tenants'),
     # url(r'^authz/$', 'authz'),
     url(r'^roles/$', 'roles'),
     # url(r'^users/(?P<id>\w{32})/$', 'user'),
@@ -28,11 +28,11 @@ urlpatterns = patterns(
     # url(r'^userdb/', 'userdb'),
     # url(r'^policies/', 'policy_repository'),
     # URL that send JSON objects
-    url(r'^tenant/(?P<id>\w{32})/$', 'get_tenant'),  # return JSON
-    url(r'^tenant/(?P<id>\w{32})/subjects', 'get_subjects'),  # return JSON
-    url(r'^tenant/(?P<id>\w{32})/objects', 'get_objects'),  # return JSON
+    url(r'^tenant/(?P<uuid>\w{32})/$', 'get_tenants'),  # return JSON
+    url(r'^tenant/(?P<uuid>\w{32})/subjects', 'get_subjects'),  # return JSON
+    url(r'^tenant/(?P<uuid>\w{32})/objects', 'get_objects'),  # return JSON
     url(r'^logs/', 'logs_repository'),
-    url(r'^roles/(?P<id>\w{32})/$', 'roles'),
+    url(r'^roles/(?P<uuid>\w{32})/$', 'roles'),
     # URL for the authorisation API for Keystone, Nova, ...
     url(r"^mrm/", include('mrm.urls')),
 )
