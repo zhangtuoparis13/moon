@@ -13,7 +13,7 @@ from moon import settings as moon_settings
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-TEMPLATE_DIRS = (BASE_DIR, os.path.join(BASE_DIR, 'gi/templates'))
+TEMPLATE_DIRS = (BASE_DIR, os.path.join(BASE_DIR, 'gui/templates'))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
@@ -48,9 +48,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'moon.gi.urls'
+ROOT_URLCONF = 'moon.gui.urls'
 
-WSGI_APPLICATION = 'moon.gi.wsgi.application'
+WSGI_APPLICATION = 'moon.gui.wsgi.application'
 
 
 # Database
@@ -111,7 +111,7 @@ SITE_ID = 1
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "gi/static"),
+    os.path.join(BASE_DIR, "gui/static"),
 )
 
 INSTALLED_APPS = (
@@ -126,7 +126,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    "moon.gi",
+    "moon.gui",
     "moon.mrm",
     #"repositery",,
     # 'mongoengine.django.debug_toolbar',
