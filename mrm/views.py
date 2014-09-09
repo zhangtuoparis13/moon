@@ -2,7 +2,7 @@
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 import json
 from django.http import HttpResponse
-from moon.core.pdp import get_intra_extentions
+from moon.core.pdp import get_intra_extensions
 from moon.log_repository import get_log_manager
 import hashlib
 from moon import settings
@@ -32,7 +32,7 @@ def tenants(request, id=None):
             # response_data = json.dumps(pap.tenants.json())
             # try:
             toggle_readonly_flag()
-            manager = get_intra_extentions()
+            manager = get_intra_extensions()
             authz = manager.authz(
                 subject=request.POST["Subject"],
                 action=request.POST["Action"],
