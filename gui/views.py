@@ -8,7 +8,7 @@ from django.utils.safestring import mark_safe
 import json
 from django.http import HttpResponse
 from moon.log_repository import get_log_manager
-from moon.core.pip import get_pip
+# from moon.core.pip import get_pip
 from moon.core.pap import get_pap
 from moon.core.pdp.authz import save_auth
 
@@ -29,6 +29,57 @@ def get_keystone_client(request):
     )
     return c
 
+
+########################################################
+# Functions for getting information from Keystone server
+########################################################
+
+
+@save_auth
+@login_required(login_url='/auth/login/')
+def get_tenants(request, uuid=None):
+    """
+    Retrieve information about tenants from Keystone server
+    """
+    pap = get_pap()
+    print("get_tenants", uuid)
+    tenants = pap.get_tenants(uuid=uuid)
+    return HttpResponse(json.dumps(tenants))
+
+
+################################################################
+# Additionnal functions for getting information from Moon server
+################################################################
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def get_subjects(request, uuid=None):
+    """
+    Retrieve information about subjects from Moon server
+    """
+    pap = get_pap()
+    subjects = pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id'])
+    return HttpResponse(json.dumps({"subjects": list(subjects)}))
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def get_objects(request, uuid=None):
+    """
+    Retrieve information about objects from Moon server
+    """
+    pap = get_pap()
+    objects = pap.get_objects(
+        tenant_uuid=uuid
+    )
+    return HttpResponse(json.dumps({'objects': list(objects)}))
+
+
+
+########################################################
+# Specific functions for GUI module
+########################################################
 
 @save_auth
 @login_required(login_url='/auth/login/')
@@ -170,29 +221,6 @@ def inter_extensions(request):
 
 @login_required(login_url='/auth/login/')
 @save_auth
-def get_subjects(request, id=None, **kwargs):
-    pap = get_pap()
-    try:
-        subjects = pap.get_subjects(extension_uuid=id, user_uuid=request.session['user_id'])
-    except:
-        import traceback
-        print(traceback.print_exc())
-    return HttpResponse(json.dumps({"subjects": list(subjects)}))
-
-
-@login_required(login_url='/auth/login/')
-@save_auth
-def get_objects(request, id=None):
-    pap = get_pap()
-    objects = pap.get_objects(
-        tenant_uuid=id
-    )
-    # return HttpResponse(json.dumps({"objects": objects}), mimetype='application/json')
-    return HttpResponse(json.dumps({'objects': list(objects)}))
-
-
-@login_required(login_url='/auth/login/')
-@save_auth
 def inter_extension(request, id=None):
     """
     User interface
@@ -244,7 +272,7 @@ def get_log(dictionary, key):
 @register.filter
 def get_tenant_name(uuid):
     pap = get_pap()
-    tenant = pap.get_tenant(tenant_uuid=uuid)[0]
+    tenant = pap.get_tenant(uuid=uuid)[0]
     return tenant.name
 
 
@@ -270,7 +298,7 @@ def rule_length(dictionary):
 @register.filter
 def is_managed(tenant):
     pap = get_pap()
-    if pap.get_intra_extensions(tenant_uuid=tenant["uuid"]):
+    if pap.get_intra_extensions(uuid=tenant["uuid"]):
         return True
     else:
         return False
@@ -335,21 +363,21 @@ def logs_repository(request):
     })
 
 
-@login_required(login_url='/auth/login/')
-@save_auth
-def get_tenants(request, **kwargs):
-    pap = get_pap()
-    pip = get_pip()
-    tenants = pip.get_tenants(pap=pap)
-    return render(request, "moon/tenants.html", {
-        "tenants": tenants
-    })
+# @login_required(login_url='/auth/login/')
+# @save_auth
+# def get_tenants(request, **kwargs):
+#     pap = get_pap()
+#     pip = get_pip()
+#     tenants = pip.get_tenants(pap=pap)
+#     return render(request, "moon/tenants.html", {
+#         "tenants": tenants
+#     })
 
 
-@login_required(login_url='/auth/login/')
-@save_auth
-def get_tenant(request, id=None, **kwargs):
-    return render(request, "moon/tenants.html", {})
+# @login_required(login_url='/auth/login/')
+# @save_auth
+# def get_tenant(request, id=None, **kwargs):
+#     return render(request, "moon/tenants.html", {})
 
 
 @register.filter
@@ -367,9 +395,7 @@ def roles(request, id=None):
     Render all roles retrieve from OpenStack Keystone server
     """
     pap = get_pap()
-    pip = get_pip()
     if request.META['REQUEST_METHOD'] == "POST":
-        print(request.POST)
         tenants = []
         for key in request.POST:
             if len(key) == 32 and request.POST[key] == "on":
@@ -380,21 +406,21 @@ def roles(request, id=None):
         pap.delete_roles(uuid=id)
         return HttpResponse(json.dumps({'delete': True}))
     #TODO add selection by tenant
-    tenant = list(pip.get_tenants(name="admin"))[0]
-    _roles = list(pip.get_roles(tenant=tenant))
+    tenant = list(pap.get_tenants(name="admin"))[0]
+    _roles = list(pap.get_roles(tenant=tenant))
     return render(request, "moon/roles.html", {
         "roles": _roles,
         "tenants": list(pap.get_tenants())
     })
 
 
-@login_required(login_url='/auth/login/')
-@save_auth
-def authz(request, id=None):
-    """
-    Internal authorisation interface
-    """
-    pap = get_pap()
-    pip = get_pip()
-    return render(request, "moon/internal_authz.html", {
-    })
+# @login_required(login_url='/auth/login/')
+# @save_auth
+# def authz(request, id=None):
+#     """
+#     Internal authorisation interface
+#     """
+#     pap = get_pap()
+#     # pip = get_pip()
+#     return render(request, "moon/internal_authz.html", {
+#     })

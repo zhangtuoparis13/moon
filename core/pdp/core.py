@@ -2,6 +2,9 @@
 Policy Decision Point
 """
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 import pkg_resources
 from moon.core.pdp.intra_extension import IntraExtension
@@ -20,6 +23,8 @@ class IntraExtensions:
     def get_installed_intra_extensions(self):
         return self.__installed_intra_extensions
 
+    def sync_db(self):
+        pass
 
 intra_extentions = IntraExtensions()
 

@@ -13,7 +13,7 @@
         <b>uuid:</b> {{ extension.get_uuid }}<br/>
         <b>name:</b> {{ extension.get_name }}<br/>
         <b>description:</b> {{ extension.description  }}<br/>
-        <b>tenant:</b> {{ extension.get_tenant.name }} ({{ extension.get_tenant.uuid }})<br/>
+        <b>tenant:</b> {{ extension.get_tenant|extension.get_uuid }}<br/>
         <a href="#" onclick="show_rule_add_actions()">Add Rule</a>
         <div id="add_intra_rule">
             <form action="/intra-extensions/{{ extension.get_uuid }}/" method="post" id="rules">
