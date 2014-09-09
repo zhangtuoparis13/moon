@@ -23,6 +23,15 @@ class IntraExtensions:
     def get_installed_intra_extensions(self):
         return self.__installed_intra_extensions
 
+    def __getitem__(self, key):
+        if key in self.__installed_intra_extensions:
+            return self.__installed_intra_extensions[key]
+        else:
+            return None
+
+    def __setitem__(self, key, item):
+        self.__installed_intra_extensions[key] = item
+
     def authz(
             self,
             subject,
