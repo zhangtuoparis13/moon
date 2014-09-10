@@ -13,7 +13,7 @@ class IntraExtension:
 
     def load_from_json(self, extension_setting_abs_dir):
         self.__intra_extension_authz.load_from_json(os.path.join(extension_setting_abs_dir, 'authz'))
-        # self.intra_extension_admin.load_from_json(os.path.join(extension_setting_abs_dir, 'admin'))
+        self.__intra_extension_admin.load_from_json(os.path.join(extension_setting_abs_dir, 'admin'))
 
     def get_data(self):
         data = dict()

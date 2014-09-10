@@ -79,9 +79,6 @@ class Configuration:
         self.__subject_category_values = copy.deepcopy(json_configuration['subject_category_values'])
         self.__object_category_values = copy.deepcopy(json_configuration['object_category_values'])
         self.__rules = copy.deepcopy(json_configuration['rules'])
-        # print(self.__subject_category_values)
-        # print(self.__object_category_values)
-        # print(self.__rules)
 
     def get_subject_category_values(self):
         return self.__subject_category_values
