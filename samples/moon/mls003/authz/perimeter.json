@@ -1,0 +1,14 @@
+{
+    "subjects": [
+        "admin",
+        "it_user1",
+        "it_user2",
+        "rh_user1",
+        "rh_user2"
+    ],
+    "objects": [
+        "vm1",
+        "vm2",
+        "vm3"
+    ]
+}
