@@ -18,13 +18,13 @@ driver = importlib.import_module(drivername)
 class Dispatcher:
 
     def __init__(self):
-        self.db = driver.DB(name=db_name, collection_name="interextensions")
+        self.db = driver.DB(db_name=db_name, collection_name="interextensions")
 
     def add(self, attributes={}):
         return self.db.add(attributes=attributes)
 
-    def list(self, type="tenant"):
-        return self.db.list(type=type)
+    def list(self, object_type="tenant"):
+        return self.db.get({"type": object_type})
 
     def get(self, attributes=None):
         return self.db.get(attributes=attributes)
