@@ -14,13 +14,13 @@ from moon.core.pip import get_pip
 def start_server():
     pid = os.fork()
     if pid == 0:
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "moon.gi.settings")
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "moon.gui.settings")
         from django.core.management import execute_from_command_line
         d_args = ["{}.py".format(__name__), "runserver", "127.0.0.1:8080"]
         execute_from_command_line(d_args)
 
-start_server()
-time.sleep(5)
+# start_server()
+# time.sleep(5)
 
 MOON_SERVER_IP = {
     "HOST": "127.0.0.1",
@@ -32,7 +32,7 @@ MOON_SERVER_IP = {
 class TestMRMFunctions(unittest.TestCase):
 
     def setUp(self):
-        self.pip = get_pip(standalone=True)
+        self.pip = get_pip()
 
     def tearDown(self):
         pass
@@ -55,5 +55,27 @@ class TestMRMFunctions(unittest.TestCase):
             ('key', key)]
         result = urllib2.urlopen(url, urllib.urlencode(post_data))
         content = json.loads(result.read())
-        print(content["key"])
-        print(str(crypt_key))
+        self.assertIn("key", content)
+        self.assertNotEqual(content["key"], crypt_key.hexdigest())
+        password = "P4ssw0rd"
+        key = uuid.uuid4()
+        crypt_key = hashlib.sha256()
+        crypt_key.update(str(key))
+        crypt_key.update(password)
+        post_data = [
+            ('Object', ""),
+            ('ObjectType', ""),
+            ('Subject', ""),
+            ('Action', ""),
+            ('Subject_Tenant', ""),
+            ('Object_Tenant', ""),
+            ('RAW_PATH_INFO', ""),
+            ('key', key)]
+        result = urllib2.urlopen(url, urllib.urlencode(post_data))
+        content = json.loads(result.read())
+        self.assertIn("key", content)
+        self.assertEqual(content["key"], crypt_key.hexdigest())
+
+
+if __name__ == '__main__':
+    unittest.main()

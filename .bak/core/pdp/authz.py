@@ -1,5 +1,6 @@
 from moon.tools.exceptions import AdminException
 from moon.core.pip import get_pip
+from keystoneclient import exceptions
 #
 # authz_manager = get_internal_authz()
 
@@ -110,7 +111,14 @@ def translate_auth(function):
 def save_auth(function):
     def wrapped(*args, **kwargs):
         #FIXME: what happen if 2 different users use the application at the same time
-        get_pip().set_creds_from_token(args[0].session["token"])
+        try:
+            get_pip().set_creds_from_token(args[0].session["token"])
+        except KeyError:
+            # No token so not authenticated
+            pass
+        except exceptions.Unauthorized:
+            # Token is not valid, user must re-authenticate
+            pass
         try:
             username = args[0].session['user_id']
             globals()["username"] = username
@@ -122,8 +130,16 @@ def save_auth(function):
             #When authenticating, username is not set
             username = ""
         # print("\033[32mCalling {}({})\033[m".format(function.__name__, username))
+        result = None
+        # try:
         result = function(*args, **kwargs)
+        # except:
+        #     import traceback
+        #     print("\033[41mException in "+__name__)
+        #     print(traceback.print_exc())
+        #     print("\033[m")
         function.__globals__["username"] = None
+        get_pip().unset_creds()
         return result
     return wrapped
 

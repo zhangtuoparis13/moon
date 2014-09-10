@@ -35,21 +35,19 @@ def get_keystone_client(request):
 ########################################################
 
 
-@save_auth
 @login_required(login_url='/auth/login/')
+@save_auth
 def get_tenants(request, uuid=None):
     """
     Retrieve information about tenants from Keystone server
     """
     pap = get_pap()
-    print("get_tenants", uuid)
-    tenants = pap.get_tenants(uuid=uuid)
-    return HttpResponse(json.dumps(tenants))
+    return HttpResponse(json.dumps(list(pap.get_tenants(uuid=uuid))))
 
 
-################################################################
-# Additionnal functions for getting information from Moon server
-################################################################
+###############################################################
+# Additional functions for getting information from Moon server
+###############################################################
 
 
 @login_required(login_url='/auth/login/')
@@ -59,8 +57,9 @@ def get_subjects(request, uuid=None):
     Retrieve information about subjects from Moon server
     """
     pap = get_pap()
-    subjects = pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id'])
-    return HttpResponse(json.dumps({"subjects": list(subjects)}))
+    return HttpResponse(json.dumps({"subjects": list(
+        pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id'])
+    )}))
 
 
 @login_required(login_url='/auth/login/')
@@ -70,16 +69,15 @@ def get_objects(request, uuid=None):
     Retrieve information about objects from Moon server
     """
     pap = get_pap()
-    objects = pap.get_objects(
-        tenant_uuid=uuid
-    )
-    return HttpResponse(json.dumps({'objects': list(objects)}))
-
+    return HttpResponse(json.dumps({'objects': list(
+        pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id'])
+    )}))
 
 
 ########################################################
 # Specific functions for GUI module
 ########################################################
+
 
 @save_auth
 @login_required(login_url='/auth/login/')
@@ -92,16 +90,26 @@ def index(request):
 
 @save_auth
 @login_required(login_url='/auth/login/')
-def sync(request, id=None):
+def sync(request, uuid=None):
     """
     Interface of the application for syncing Moon database with Keystone and Nova databases
     """
     pap = get_pap()
-    sync_results = pap.sync_db_with_keystone(tenant_uuid=id)
+    sync_results = pap.sync_db_with_keystone(tenant_uuid=uuid)
     sync_results = sync_results.replace("\n", "<br/>\n")
     sync_results = sync_results.replace("KO", "<span class=\"notauthorized\">Error</span>\n")
     sync_results = sync_results.replace("OK", "<span class=\"authorized\">OK</span>\n")
     return render(request, "moon/base_site.html", {"sync_results": mark_safe(sync_results)})
+
+@save_auth
+@login_required(login_url='/auth/login/')
+def tenants(request, uuid=None):
+    """
+    Interface of the application for syncing Moon database with Keystone and Nova databases
+    """
+    pap = get_pap()
+    t = pap.get_tenants(uuid=uuid)
+    return render(request, "moon/tenants.html", {"tenants": t})
 
 
 @save_auth
@@ -120,7 +128,7 @@ def intra_extensions(request):
 
 @login_required(login_url='/auth/login/')
 @save_auth
-def intra_extension(request, id=None):
+def intra_extension(request, uuid=None):
     """
     User interface
     Render one user retrieve from OpenStack Keystone server
@@ -151,7 +159,7 @@ def intra_extension(request, id=None):
                     continue
             # rule["s_attr"] = s_attr
             # rule["o_attr"] = o_attr
-            extension = pap.get_intra_extensions(uuid=id)[0]
+            extension = pap.get_intra_extensions(uuid=uuid)[0]
             extension.add_rule(
                 name=name,
                 description=description,
@@ -159,7 +167,7 @@ def intra_extension(request, id=None):
                 object_attrs=o_attr
             )
     try:
-        extension = pap.get_intra_extensions(uuid=id)[0]
+        extension = pap.get_intra_extensions(uuid=uuid)[0]
     except IndexError:
         extension = {}
     except TypeError:
@@ -221,7 +229,7 @@ def inter_extensions(request):
 
 @login_required(login_url='/auth/login/')
 @save_auth
-def inter_extension(request, id=None):
+def inter_extension(request, uuid=None):
     """
     User interface
     Render one user retrieve from OpenStack Keystone server
@@ -231,7 +239,7 @@ def inter_extension(request, id=None):
     extension = pap.get_inter_extensions(uuid=id)[0]
     if request.META['REQUEST_METHOD'] == "DELETE":
         #TODO: check if deletion is OK
-        pap.delete_inter_extension(uuid=id)
+        pap.delete_inter_extension(uuid=uuid)
         return HttpResponse(json.dumps({'delete': True}))
         # return render(request, "moon/inter-extensions.html", {
         #     "extensions": pap.admin_manager.get_inter_extensions(),
@@ -247,7 +255,7 @@ def inter_extension(request, id=None):
 
 @login_required(login_url='/auth/login/')
 @save_auth
-def intra_extension_attributes(request, id=None, type=None):
+def intra_extension_attributes(request, uuid=None, type=None):
     """
     User interface
     Render one user retrieve from OpenStack Keystone server
@@ -256,9 +264,9 @@ def intra_extension_attributes(request, id=None, type=None):
     pap = get_pap()
     attributes = []
     if type.lower() == "subject":
-        attributes = list(pap.get_subject_attributes(extension_uuid=id))
+        attributes = list(pap.get_subject_attributes(extension_uuid=uuid))
     elif type.lower() == "object":
-        attributes = list(pap.get_object_attributes(extension_uuid=id))
+        attributes = list(pap.get_object_attributes(extension_uuid=uuid))
     categories = list(set(map(lambda x: x["category"], attributes)))
     return HttpResponse(json.dumps({'attributes': attributes, "categories": list(categories)}))
 
@@ -389,7 +397,7 @@ def has_subject_attribute(tenant, object_uuid=None):
 
 @login_required(login_url='/auth/login/')
 @save_auth
-def roles(request, id=None):
+def roles(request, uuid=None):
     """
     Users interface
     Render all roles retrieve from OpenStack Keystone server
@@ -403,7 +411,7 @@ def roles(request, id=None):
         pap.create_roles(name=request.POST["name"], description=request.POST["description"], tenants=tenants)
     elif request.META['REQUEST_METHOD'] == "DELETE":
         #TODO: check if deletion is OK
-        pap.delete_roles(uuid=id)
+        pap.delete_roles(uuid=uuid)
         return HttpResponse(json.dumps({'delete': True}))
     #TODO add selection by tenant
     tenant = list(pap.get_tenants(name="admin"))[0]

@@ -41,6 +41,10 @@ class PIP:
         ncreds["project_id"] = tenant_name
         self.nclient = nova_client.Client("1.1", **ncreds)
 
+    def unset_creds(self):
+        self.kclient = None
+        self.nclient = None
+
     def set_creds_from_token(self, token):
         """Get an authentication client from a token got from Moon Server
 

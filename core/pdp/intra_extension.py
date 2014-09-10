@@ -1,12 +1,15 @@
 import os.path
 from moon.core.pdp.extension import Extension
 from moon.core.pdp.sync_db import Intra_Extension_Syncer
+from uuid import uuid4
 
-class IntraExtension():
+
+class IntraExtension:
     def __init__(self):
         self.__intra_extension_authz = Extension()
         self.__intra_extension_admin = Extension()
         self.__syncer = Intra_Extension_Syncer()
+        self.__uuid = str(uuid4())
 
     def load_from_json(self, extension_setting_abs_dir):
         self.__intra_extension_authz.load_from_json(os.path.join(extension_setting_abs_dir, 'authz'))
@@ -20,6 +23,9 @@ class IntraExtension():
 
     def sync(self):
         self.__syncer.sync(self.get_data())
+
+    def get_uuid(self):
+        return str(self.__uuid)
 
     def get_name(self):
         return self.__intra_extension_authz.metadata.get_name()

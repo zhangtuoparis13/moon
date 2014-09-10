@@ -1,0 +1,31 @@
+{
+    "name": "MLS_metadata",
+    "model": "MLS",
+    "type": "authz",
+    "description": "",
+
+    "subject_categories": [
+        "subject_security_level"
+    ],
+
+    "object_categories": [
+        "object_security_level",
+        "action"
+    ],
+
+    "meta_rule": {
+        "sub_meta_rules":[
+            {
+                "subject_categories": ["subject_security_level"],
+                "object_categories": ["object_security_level"],
+                "relation": "relation_super"
+            },
+            {
+                "subject_categories": [],
+                "object_categories": ["action"],
+                "relation": "relation_equal_constant"
+            }
+        ],
+        "aggregation": "and_true_aggregation"
+    }
+}
