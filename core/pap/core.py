@@ -7,6 +7,7 @@ from uuid import uuid4
 from moon import settings
 from moon.core.pdp import get_intra_extensions
 from moon.core.pdp import get_inter_extensions
+from moon.core.pdp import Extension
 from moon.core.pip import get_pip
 
 logger = logging.getLogger("moon.pap")
@@ -316,6 +317,9 @@ class PAP:
                 ))
         if not test_only:
             self.intra_extensions().new_from_json(json_data=json_data)
+
+    def add_from_json(self, json_directory):
+        get_intra_extensions().install_intra_extension_from_json(json_directory)
 
     #########################################
     # Specific functions for Inter Extensions

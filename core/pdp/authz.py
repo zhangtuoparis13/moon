@@ -131,13 +131,13 @@ def save_auth(function):
             username = ""
         # print("\033[32mCalling {}({})\033[m".format(function.__name__, username))
         result = None
-        try:
-            result = function(*args, **kwargs)
-        except:
-            import traceback
-            print("\033[41mException in "+__name__)
-            print(traceback.print_exc())
-            print("\033[m")
+        # try:
+        result = function(*args, **kwargs)
+        # except:
+        #     import traceback
+        #     print("\033[41mException in "+__name__)
+        #     print(traceback.print_exc())
+        #     print("\033[m")
         function.__globals__["username"] = None
         get_pip().unset_creds()
         return result
