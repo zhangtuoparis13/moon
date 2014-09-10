@@ -10,8 +10,8 @@ class Metadata:
         self.__model = ''
         self.__type = ''
         self.__description = ''
-        self.__subject_categories = set()
-        self.__object_categories = set()
+        self.__subject_categories = list()
+        self.__object_categories = list()
         self.__meta_rule = dict()
         self.__meta_rule['sub_meta_rules'] = list()
         self.__meta_rule['aggregation'] = ''
@@ -27,7 +27,6 @@ class Metadata:
         self.__subject_categories = copy.deepcopy(json_metadata['subject_categories'])
         self.__object_categories = copy.deepcopy(json_metadata['object_categories'])
         self.__meta_rule = copy.deepcopy(json_metadata['meta_rule'])
-
 
         # self.__meta_rule['aggregation'] = json_metadata['meta_rule']['aggregation']
         # for sub_rule in json_metadata['meta_rule']['sub_meta_rules']:
@@ -51,6 +50,19 @@ class Metadata:
 
     def get_meta_rule_sub_meta_rules(self):
         return self.__meta_rule['sub_meta_rules']
+
+    def get_data(self):
+        data = dict()
+        data["name"] = self.get_name()
+        data["model"] = self.__model
+        data["type"] = self.__type
+        data["description"] = self.__description
+        data["subject_categories"] = self.get_subject_categories()
+        data["object_categories"] = self.get_object_categories()
+        data["meta_rule"] = dict()
+        data["meta_rule"]["sub_meta_rules"] = self.get_meta_rule_sub_meta_rules()
+        data["meta_rule"]["aggregation"] = self.get_meta_rule_aggregation()
+        return data
 
 
 class Configuration:
@@ -80,6 +92,14 @@ class Configuration:
     def get_rules(self):
         return self.__rules
 
+    def get_data(self):
+        data = dict()
+        data["subject_category_values"] = self.get_subject_category_values()
+        data["object_category_values"] = self.get_object_category_values()
+        data["rules"] = self.get_rules()
+        return data
+
+
 class Perimeter:
     def __init__(self):
         self.__subjects = set()
@@ -99,6 +119,12 @@ class Perimeter:
 
     def get_objects(self):
         return self.__objects
+
+    def get_data(self):
+        data = dict()
+        data["subjects"] = self.get_subjects()
+        data["object"] = self.get_objects()
+        return data
 
 
 class Assignment:
@@ -129,6 +155,12 @@ class Assignment:
     def get_object_category_attr(self, object_category, obj):
         return self.__object_category_assignments[object_category][obj]
 
+    def get_data(self):
+        data= dict()
+        data["subject_category_assignments"] = self.get_subject_category_assignments()
+        data["object_category_assignments"] = self.get_object_category_assignments()
+        return data
+
 
 class AuthzData:
     def __init__(self, sub, obj, act):
@@ -149,6 +181,17 @@ class Extension:
         self.configuration = Configuration()
         self.perimeter = Perimeter()
         self.assignment = Assignment()
+
+    def get_name(self):
+        self.metadata.get_name()
+
+    def get_data(self):
+        data = dict()
+        data["metadata"] = self.metadata.get_data()
+        data["configuration"] = self.configuration.get_data()
+        data["perimeter"] = self.perimeter.get_data()
+        data["assignment"] = self.assignment.get_data()
+        return data
 
     def load_from_json(self, extension_setting_dir):
         self.metadata.load_from_json(extension_setting_dir)
