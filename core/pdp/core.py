@@ -22,7 +22,7 @@ class IntraExtensions:
             extension_setting_abs_dir = pkg_resources.resource_filename("moon", extension_setting_dir)
         intra_extension = IntraExtension()
         intra_extension.load_from_json(extension_setting_abs_dir)
-        self.__installed_intra_extensions[str(uuid4())] = intra_extension
+        self.__installed_intra_extensions[intra_extension.get_uuid()] = intra_extension
 
     def get_installed_intra_extensions(self):
         return self.__installed_intra_extensions
