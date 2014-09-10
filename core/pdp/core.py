@@ -35,6 +35,9 @@ class IntraExtensions:
     def __setitem__(self, key, item):
         self.__installed_intra_extensions[key] = item
 
+    def values(self):
+        return self.__installed_intra_extensions
+
     def authz(
             self,
             subject,
