@@ -153,7 +153,7 @@ class Assignment:
         return self.__object_category_assignments[object_category][obj]
 
     def get_data(self):
-        data= dict()
+        data = dict()
         data["subject_category_assignments"] = self.get_subject_category_assignments()
         data["object_category_assignments"] = self.get_object_category_assignments()
         return data

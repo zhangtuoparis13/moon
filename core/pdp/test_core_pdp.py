@@ -23,6 +23,7 @@ if __name__ == "__main__":
             intra_extensions.install_intra_extension_from_json('core/pdp/extension_setting/mls001')
             for ixk in intra_extensions.get_installed_intra_extensions():
                 print(intra_extensions.get_installed_intra_extensions()[ixk].authz('user1', 'vm1', 'read'))
+                print(intra_extensions.get_installed_intra_extensions()[ixk].admin('user1', 'subjects', 'read'))
 
         elif args.intra_extension == 'authz':
             print ('authz option is: '+args.intra_extension)

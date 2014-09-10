@@ -1,9 +1,9 @@
 {
-    "subject_category_assignment": {
+    "subject_category_assignments": {
         "role":{
             "user1": ["admin"],
             "user2": ["dev"]
         }
     },
-    "object_category_assignment": {}
+    "object_category_assignments": {}
 }
