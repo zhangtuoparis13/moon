@@ -10,7 +10,7 @@ class DB:
 
     def sync(self, extension_data):
         _extensions = self.collection.find()
-        _extension_data = self.collection.find_one({"name": extension_data["name"]})
+        _extension_data = self.collection.find_one({"_id": extension_data["_id"]})
         if _extension_data:
             _extensions.update({"_id": _extension_data["_id"]}, extension_data)
         else:
