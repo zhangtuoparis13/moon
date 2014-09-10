@@ -21,6 +21,7 @@ if __name__ == "__main__":
     parser.add_argument("djangoargs", nargs='*', help="Set Django specific arguments")
     parser.add_argument("--dbdrop", action='store_true', help="Delete local DBs")
     parser.add_argument("--keystone_sync", "--sync", action='store_true', help="Synchronize local DBs with Keystone DB")
+    parser.add_argument("--json_sync", help="Synchronize local DBs with json files (give a directory)")
     parser.add_argument("--run", action='store_true', help="Create local DBs and populate them")
     # parser.add_argument("--username", "-u", type=str, help="Username for Keystone remote database")
     # parser.add_argument("--userpass", "-p", type=str, help="Password for Keystone remote database")
@@ -33,7 +34,10 @@ if __name__ == "__main__":
 
     if args.dbdrop:
         pap.delete_tables()
-    elif args.run:
+    elif args.json_sync:
+        for filename in args.json_sync.split(","):
+            pap.add_from_json(filename)
+    if args.run:
         LOGS.write("Starting application")
         if args.keystone_sync:
             toggle_init_flag()
