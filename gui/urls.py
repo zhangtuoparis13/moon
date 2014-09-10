@@ -14,9 +14,9 @@ urlpatterns = patterns(
     url(r'^sync/$', 'sync'),
     url(r'^sync/(?P<uuid>\w{32})/$', 'sync'),
     url(r"^auth/", include('openstack_auth.urls')),
-    url(r'^intra-extensions/(?P<uuid>\w{32})/$', 'intra_extension'),
-    url(r'^intra-extensions/(?P<uuid>\w{32})/type/(?P<type>\w+)/$', 'intra_extension_attributes'),  # return JSON
-    url(r'^inter-extensions/(?P<uuid>\w{32})/$', 'inter_extension'),
+    url(r'^intra-extensions/(?P<uuid>[\w-]{32,36})/$', 'intra_extension'),
+    url(r'^intra-extensions/(?P<uuid>[\w-]{32,36})/type/(?P<type>\w+)/$', 'intra_extension_attributes'),  # return JSON
+    url(r'^inter-extensions/(?P<uuid>[\w-]{32,36})/$', 'inter_extension'),
     url(r'^intra-extensions/', 'intra_extensions'),
     url(r'^inter-extensions/', 'inter_extensions'),
     url(r'^tenants/$', 'tenants'),
