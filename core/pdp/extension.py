@@ -138,8 +138,8 @@ class Assignment:
         f = open(assignment_path)
         json_assignment = json.load(f)
 
-        self.__subject_category_assignments = dict(copy.deepcopy(json_assignment['subject_category_assignment']))
-        self.__object_category_assignments = dict(copy.deepcopy(json_assignment['object_category_assignment']))
+        self.__subject_category_assignments = dict(copy.deepcopy(json_assignment['subject_category_assignments']))
+        self.__object_category_assignments = dict(copy.deepcopy(json_assignment['object_category_assignments']))
         # print(self.__subject_category_assignments)
         # print(self.__object_category_assignments)
 
@@ -236,6 +236,14 @@ class Extension:
                 elif sub_meta_rule['relation'] == 'relation_equal_constant':
                     for _relation_arg in _relation_args:
                         if _relation_arg[0] == 'read':
+                            _resulat = True
+                            break
+                        else:
+                            _resulat = False
+
+                elif sub_meta_rule['relation'] == 'permission':
+                    for _relation_arg in _relation_args:
+                        if _relation_arg in self.configuration.get_rules():
                             _resulat = True
                             break
                         else:

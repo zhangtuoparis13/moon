@@ -1,11 +1,11 @@
 {
-    "subject_category_assignment": {
+    "subject_category_assignments": {
         "subject_security_level":{
             "user1": ["4"],
             "user2": ["2"]
         }
     },
-    "object_category_assignment": {
+    "object_category_assignments": {
         "object_security_level": {
             "vm1": ["4", "3"],
             "vm2": ["3", "2"],

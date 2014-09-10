@@ -1,0 +1,47 @@
+{
+    "subject_category_values": {
+        "role": ["admin", "dev"]
+    },
+
+    "object_category_values": {
+        "action": [
+            "read",
+            "write",
+            "execute"
+        ],
+        "object_id": [
+            "subjects",
+            "objects",
+            "subject_category_values",
+            "object_category_values",
+            "rules",
+            "subject_category_assignments",
+            "object_category_assignments"
+        ]
+    },
+
+    "rules":[
+        ["admin", "read", "subjects"],
+        ["admin", "read", "objects"],
+        ["admin", "read", "subject_category_values"],
+        ["admin", "read", "object_category_values"],
+        ["admin", "read", "rules"],
+        ["admin", "read", "subject_category_assignments"],
+        ["admin", "read", "object_category_assignments"],
+        ["admin", "write", "subjects"],
+        ["admin", "write", "objects"],
+        ["admin", "write", "subject_category_values"],
+        ["admin", "write", "object_category_values"],
+        ["admin", "write", "rules"],
+        ["admin", "write", "subject_category_assignments"],
+        ["admin", "write", "object_category_assignments"],
+        ["dev", "read", "subjects"],
+        ["dev", "read", "objects"],
+        ["dev", "read", "subject_category_values"],
+        ["dev", "read", "object_category_values"],
+        ["dev", "read", "rules"],
+        ["dev", "read", "subject_category_assignments"],
+        ["dev", "read", "object_category_assignments"]
+
+    ]
+}

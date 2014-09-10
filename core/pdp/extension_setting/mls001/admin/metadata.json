@@ -1,0 +1,26 @@
+{
+    "name": "RBAC_metadata",
+    "model": "RBAC",
+    "type": "admin",
+    "description": "",
+
+    "subject_categories": [
+        "role"
+    ],
+
+    "object_categories": [
+        "action",
+        "object_id"
+    ],
+
+    "meta_rule": {
+        "sub_meta_rules":[
+            {
+                "subject_categories": ["role"],
+                "object_categories": ["action", "object_id"],
+                "relation": "permission"
+            }
+        ],
+        "aggregation": "and_true_aggregation"
+    }
+}

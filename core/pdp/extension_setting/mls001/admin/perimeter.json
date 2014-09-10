@@ -1,0 +1,15 @@
+{
+    "subjects": [
+        "user1",
+        "user2"
+    ],
+    "objects": [
+        "subjects",
+        "objects",
+        "subject_category_values",
+        "object_category_values",
+        "rules",
+        "subject_category_assignments",
+        "object_category_assignments"
+    ]
+}
