@@ -36,10 +36,10 @@ class IntraExtension:
 
     def __str__(self):
         return """IntraExtension {}
-subjects: {}
-objects: {}
+    subjects: {}
+    objects: {}
         """.format(
-            self.__intra_extension_authz.get_name(),
+            self.get_uuid(),
             self.__intra_extension_authz.get_subjects(),
             self.__intra_extension_authz.get_objects(),
         )
