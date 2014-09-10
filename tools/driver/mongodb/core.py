@@ -16,5 +16,10 @@ class DB:
         else:
             self.collection.insert(extension_data)
 
+    def get(self, attributes=dict()):
+        """Return a list of extensions with attributes"""
+        collections = tuple(self.collection.find(attributes))
+        return collections
+
     def drop(self):
         self.collection.drop()
