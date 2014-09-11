@@ -11,9 +11,6 @@
 {% block pcontent %}
     {% if extension %}
         <b>uuid:</b> {{ extension.get_uuid }}<br/>
-        <b>name:</b> {{ extension.get_name }}<br/>
-        <b>description:</b> {{ extension.description  }}<br/>
-        <b>tenant:</b> {{ extension.get_tenant|extension.get_uuid }}<br/>
         <a href="#" onclick="show_rule_add_actions()">Add Rule</a>
         <div id="add_intra_rule">
             <form action="/intra-extensions/{{ extension.get_uuid }}/" method="post" id="rules">
@@ -69,13 +66,13 @@
         </div>
         <br>
         <b>subjects:</b> <ul>
-        {% for subject in extension.get_subjects %}
-            <li><b>{{ subject.name }}</b> ({{ subject.uuid }})</li>
+        {% for subject in subjects %}
+            <li><b>{{ subject }}</b></li>
         {% endfor %}
         </ul>
         <b>objects:</b> <ul>
-        {% for object in extension.get_objects %}
-            <li><b>{{ object.1name }}</b> ({{ object.uuid }})</li>
+        {% for object in objects %}
+            <li><b>{{ object }}</b></li>
         {% endfor %}
         </ul>
         <b>rules:</b>
@@ -85,7 +82,7 @@
             <th colspan="3">Attribute rules</th>
             <th>description</th>
         </tr>
-        {% for rule in extension.get_rules %}
+        {% for rule in rules %}
             {% cycle 'row1' 'row2' as divcolors silent%}
             {% for srule in rule.s_rules %}
             <tr class={{ divcolors }}>
@@ -118,7 +115,7 @@
                         <a href="/intra-extensions/{{ ext.get_uuid }}/">{{ ext.get_uuid }}</a>
                     </td>
                     <td>
-                        {{ ext.html }}
+                        {{ ext }}
                     </td>
                 </tr>
                 {% endfor %}

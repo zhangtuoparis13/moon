@@ -196,36 +196,36 @@ class InterExtensions:
         self.virtual_entities = {}
         #FIXME: when using the link named "sync" in the interface after a drop database,
         # the InterExtensions is initialized twice
-        for tenant in self.dispatcher.list(type="tenant"):
-            t = Tenant(
-                uuid=tenant["uuid"],
-                name=tenant["name"],
-                description=tenant["description"],
-                enabled=tenant["enabled"],
-                domain=tenant["domain"]
-            )
-            t.sync()
-            self.tenants[tenant["uuid"]] = t
-        for ext in self.dispatcher.list(type="assignment"):
-            e = InterExtension(
-                uuid=ext["uuid"],
-                name=ext["name"],
-                requesting_tenant=ext["requesting"],
-                requesting_tenant_name=self.tenants[ext["requesting"]].name,
-                requested_tenant=ext["requested"],
-                requested_tenant_name=self.tenants[ext["requested"]].name,
-                connection_type=ext["connection_type"],
-                category=ext["category"]
-            )
-            e.sync()
-            self.extensions[ext["uuid"]] = e
-        for vent in self.dispatcher.list(type="virtual_entity"):
-            v = VirtualEntity(
-                uuid=vent["uuid"],
-                name=vent["name"],
-            )
-            v.sync()
-            self.virtual_entities[vent["uuid"]] = v
+        # for tenant in self.dispatcher.list(object_type="tenant"):
+        #     t = Tenant(
+        #         uuid=tenant["uuid"],
+        #         name=tenant["name"],
+        #         description=tenant["description"],
+        #         enabled=tenant["enabled"],
+        #         domain=tenant["domain"]
+        #     )
+        #     t.sync()
+        #     self.tenants[tenant["uuid"]] = t
+        # for ext in self.dispatcher.list(object_type="assignment"):
+        #     e = InterExtension(
+        #         uuid=ext["uuid"],
+        #         name=ext["name"],
+        #         requesting_tenant=ext["requesting"],
+        #         requesting_tenant_name=self.tenants[ext["requesting"]].name,
+        #         requested_tenant=ext["requested"],
+        #         requested_tenant_name=self.tenants[ext["requested"]].name,
+        #         connection_type=ext["connection_type"],
+        #         category=ext["category"]
+        #     )
+        #     e.sync()
+        #     self.extensions[ext["uuid"]] = e
+        # for vent in self.dispatcher.list(object_type="virtual_entity"):
+        #     v = VirtualEntity(
+        #         uuid=vent["uuid"],
+        #         name=vent["name"],
+        #     )
+        #     v.sync()
+        #     self.virtual_entities[vent["uuid"]] = v
 
     def __getitem__(self, item):
         return self.extensions[item]

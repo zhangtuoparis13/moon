@@ -5,7 +5,7 @@ import argparse
 from moon.core.pap import get_pap
 import logging
 from moon.log_repository import get_log_manager
-from moon.core.pdp.authz import toggle_init_flag
+# from moon.core.pdp.authz import toggle_init_flag
 
 LOG_LEVEL = logging.INFO
 LOGS = get_log_manager()
@@ -40,9 +40,9 @@ if __name__ == "__main__":
     if args.run:
         LOGS.write("Starting application")
         if args.keystone_sync:
-            toggle_init_flag()
+            # toggle_init_flag()
             pap.sync_db_with_keystone()
-            toggle_init_flag()
+            # toggle_init_flag()
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "moon.gui.settings")
         d_args = [sys.argv[0]]
         d_args.extend(args.djangoargs)
@@ -62,9 +62,9 @@ if __name__ == "__main__":
             from django.core.management import execute_from_command_line
             execute_from_command_line(d_args)
     elif args.keystone_sync:
-        toggle_init_flag()
+        # toggle_init_flag()
         pap.sync_db_with_keystone()
-        toggle_init_flag()
+        # toggle_init_flag()
     # elif args.test:
     #     sys.argv.remove("--test")
     #     # TODO: add tests

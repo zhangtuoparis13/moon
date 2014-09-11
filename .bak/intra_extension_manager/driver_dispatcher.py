@@ -52,7 +52,7 @@ class Dispatcher:
         )
 
     def list(self, type="extension"):
-        return self.db.list(type=type)
+        return self.db.list(object_type=type)
 
     def get(self, attributes=None):
         return self.db.get(attributes=attributes)
