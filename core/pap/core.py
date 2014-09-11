@@ -39,9 +39,10 @@ class PAP:
     ##################################################
 
     def get_subjects(self, extension_uuid, user_uuid):
-        if extension_uuid in self.intra_extensions:
-            self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "subjects", "r")
-            return self.intra_extensions[extension_uuid].authz_extension.get_subjects()
+        # print(extension_uuid, user_uuid)
+        if extension_uuid in self.intra_extensions.values():
+            print("authz", self.intra_extensions[extension_uuid].authz(user_uuid, "subjects", "r"))
+            return self.intra_extensions[extension_uuid].intra_extension_authz.get_subjects()
 
     def add_subject(self, extension_uuid, user_uuid, subject_id):
         if extension_uuid in self.intra_extensions:
