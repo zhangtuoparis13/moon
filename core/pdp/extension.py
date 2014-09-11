@@ -102,8 +102,8 @@ class Configuration:
 
 class Perimeter:
     def __init__(self):
-        self.__subjects = set()
-        self.__objects = set()
+        self.__subjects = list()
+        self.__objects = list()
 
     def load_from_json(self, extension_setting_dir):
         perimeter_path = os.path.join(extension_setting_dir, 'perimeter.json')
@@ -331,7 +331,7 @@ class Extension:
         if subject_id in self.assignment.get_subject_category_assignments()[category_id]:
             self.assignment.get_subject_category_assignments()[category_id][subject_id].append(category_value)
         else:
-            self.assignment.get_subject_category_assignments()[category_id][subject_id] = set(category_id)
+            self.assignment.get_subject_category_assignments()[category_id][subject_id] = list(category_id)
 
     def del_subject_assignment(self, category_id, subject_id, category_value):
         self.assignment.get_subject_category_assignments()[category_id][subject_id].remove(category_value)
@@ -346,7 +346,7 @@ class Extension:
         if object_id in self.assignment.get_object_category_assignments()[category_id]:
             self.assignment.get_object_category_assignments()[category_id][object_id].append(category_value)
         else:
-            self.assignment.get_object_category_assignments()[category_id][object_id] = set(category_id)
+            self.assignment.get_object_category_assignments()[category_id][object_id] = list(category_id)
 
     def del_object_assignment(self, category_id, object_id, category_value):
         self.assignment.get_object_category_assignments()[category_id][object_id].remove(category_value)
