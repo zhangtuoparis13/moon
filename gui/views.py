@@ -5,16 +5,52 @@ from django.template.defaultfilters import register
 from keystoneclient.v3 import client
 from moon.gui import settings
 from django.utils.safestring import mark_safe
+from keystoneclient import exceptions
 import json
 from django.http import HttpResponse
 from moon.log_repository import get_log_manager
-# from moon.core.pip import get_pip
+from moon.core.pip import get_pip
 from moon.core.pap import get_pap
-from moon.core.pdp.authz import save_auth
 
 
 logger = logging.getLogger("moon.django")
 LOGS = get_log_manager()
+
+
+def save_auth(function):
+    def wrapped(*args, **kwargs):
+        #FIXME: what happen if 2 different users use the application at the same time
+        try:
+            get_pip().set_creds_from_token(args[0].session["token"])
+        except KeyError:
+            # No token so not authenticated
+            pass
+        except exceptions.Unauthorized:
+            # Token is not valid, user must re-authenticate
+            pass
+        try:
+            username = args[0].session['user_id']
+            globals()["username"] = username
+        except AttributeError:
+            username = globals().get("username")
+        except IndexError:
+            username = globals().get("username")
+        except KeyError:
+            #When authenticating, username is not set
+            username = ""
+        # print("\033[32mCalling {}({})\033[m".format(function.__name__, username))
+        result = None
+        # try:
+        result = function(*args, **kwargs)
+        # except:
+        #     import traceback
+        #     print("\033[41mException in "+__name__)
+        #     print(traceback.print_exc())
+        #     print("\033[m")
+        function.__globals__["username"] = None
+        get_pip().unset_creds()
+        return result
+    return wrapped
 
 
 def get_keystone_client(request):
@@ -28,50 +64,6 @@ def get_keystone_client(request):
         debug=settings.DEBUG
     )
     return c
-
-
-########################################################
-# Functions for getting information from Keystone server
-########################################################
-
-
-@login_required(login_url='/auth/login/')
-@save_auth
-def get_tenants(request, uuid=None):
-    """
-    Retrieve information about tenants from Keystone server
-    """
-    pap = get_pap()
-    return HttpResponse(json.dumps(list(pap.get_tenants(uuid=uuid))))
-
-
-###############################################################
-# Additional functions for getting information from Moon server
-###############################################################
-
-
-@login_required(login_url='/auth/login/')
-@save_auth
-def get_subjects(request, uuid=None):
-    """
-    Retrieve information about subjects from Moon server
-    """
-    pap = get_pap()
-    return HttpResponse(json.dumps({"subjects": list(
-        pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id'])
-    )}))
-
-
-@login_required(login_url='/auth/login/')
-@save_auth
-def get_objects(request, uuid=None):
-    """
-    Retrieve information about objects from Moon server
-    """
-    pap = get_pap()
-    return HttpResponse(json.dumps({'objects': list(
-        pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id'])
-    )}))
 
 
 ########################################################
@@ -120,7 +112,7 @@ def intra_extensions(request):
     Render one user retrieve from OpenStack Keystone server
     """
     pap = get_pap()
-    extensions = pap.get_intra_extensions()
+    extensions = pap.get_intra_extensions().values()
     return render(request, "moon/intra-extensions.html", {
         "extensions": extensions
     })
@@ -166,14 +158,29 @@ def intra_extension(request, uuid=None):
                 subject_attrs=s_attr,
                 object_attrs=o_attr
             )
+    extension = {}
+    subjects = None
+    objects = None
+    rules = None
     try:
-        extension = pap.get_intra_extensions(uuid=uuid)[0]
+        print("looking for extention {}".format(uuid))
+        extension = pap.get_intra_extensions(uuid=uuid)
+        print(extension)
+        subjects = pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id'])
+        print(subjects)
+        objects = pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id'])
+        print(objects)
+        rules = pap.get_rules(extension_uuid=uuid, user_uuid=request.session['user_id'])
+        print(rules)
     except IndexError:
-        extension = {}
+        pass
     except TypeError:
-        extension = {}
+        pass
     return render(request, "moon/intra-extensions.html", {
         "extension": extension,
+        "sujects": subjects,
+        "objects": objects,
+        "rules": rules,
     })
 
 
