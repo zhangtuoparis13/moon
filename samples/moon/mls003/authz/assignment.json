@@ -1,14 +1,14 @@
 {
-    "subject_category_assignment": {
+    "subject_category_assignments": {
         "subject_security_level":{
-            "admin": [4],
+            "dbc8d8e2c967477faa656174e21cd738": [4],
             "it_user1": [3],
             "it_user2": [3],
             "rh_user1": [2],
             "rh_user2": [1]
         }
     },
-    "object_category_assignment": {
+    "object_category_assignments": {
         "object_security_level": {
             "vm1": [4, 3],
             "vm2": [3, 2],

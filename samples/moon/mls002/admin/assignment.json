@@ -1,0 +1,10 @@
+{
+    "subject_category_assignments": {
+        "role":{
+            "dbc8d8e2c967477faa656174e21cd738": ["admin"],
+            "user1": ["admin"],
+            "user2": ["dev"]
+        }
+    },
+    "object_category_assignments": {}
+}
