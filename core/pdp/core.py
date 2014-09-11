@@ -39,6 +39,9 @@ class IntraExtensions:
     def values(self):
         return self.__installed_intra_extensions
 
+    def keys(self):
+        return set(self.__installed_intra_extensions.keys())
+
 
 intra_extentions = IntraExtensions()
 
