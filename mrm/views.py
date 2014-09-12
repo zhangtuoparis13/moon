@@ -6,7 +6,6 @@ from moon.core.pdp import get_intra_extensions
 from moon.log_repository import get_log_manager
 import hashlib
 from moon import settings
-from moon.core.pdp.authz import toggle_readonly_flag
 # from moon.core.pap.core import PAP
 
 import logging
@@ -31,7 +30,6 @@ def tenants(request, id=None):
             # print(pap.tenants.json())
             # response_data = json.dumps(pap.tenants.json())
             # try:
-            toggle_readonly_flag()
             manager = get_intra_extensions()
             authz = manager.authz(
                 subject=request.POST["Subject"],
@@ -41,7 +39,6 @@ def tenants(request, id=None):
                 object_tenant=request.POST["Object_Tenant"],
                 subject_tenant=request.POST["Subject_Tenant"]
             )
-            toggle_readonly_flag()
             tenant = request.POST.get("Subject_Tenant", "None")
             args = {
                 "tname": authz["tenant_name"],
