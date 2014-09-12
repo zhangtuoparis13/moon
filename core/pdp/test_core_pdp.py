@@ -69,6 +69,8 @@ if __name__ == "__main__":
                     result = intra_extensions.get_installed_intra_extensions()[ixk].admin(sub, obj, act)
                     print('yyyyyyyy test admin: ', result)
 
+                intra_extensions.get_installed_intra_extensions()[ixk].sync()
+
         elif args.intra_extension == 'authz':
             print ('authz option is: '+args.intra_extension)
         elif args.intra_extension == 'admin':
