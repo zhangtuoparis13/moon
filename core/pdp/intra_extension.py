@@ -2,7 +2,6 @@ import os.path
 from uuid import uuid4
 from moon.core.pdp.extension import Extension
 from moon.core.pdp.sync_db import Intra_Extension_Syncer
-from moon.log_repository import authz_logger
 
 
 class IntraExtension:
@@ -14,7 +13,7 @@ class IntraExtension:
 
     def load_from_json(self, extension_setting_abs_dir):
         self.intra_extension_authz.load_from_json(os.path.join(extension_setting_abs_dir, 'authz'))
-        # self.intra_extension_admin.load_from_json(os.path.join(extension_setting_abs_dir, 'admin'))
+        self.intra_extension_admin.load_from_json(os.path.join(extension_setting_abs_dir, 'admin'))
 
     def get_data(self):
         data = dict()
@@ -30,7 +29,7 @@ class IntraExtension:
         return str(self.__uuid)
 
     def authz(self, sub, obj, act):
-        authz_logger.warning('intra_extension request: sub {}, obj {}, act {}'.format(sub, obj, act))
+        # authz_logger.warning('intra_extension/authz request: [sub {}, obj {}, act {}]'.format(sub, obj, act))
         return self.intra_extension_authz.authz(sub, obj, act)
 
     def admin(self, sub, obj, act):

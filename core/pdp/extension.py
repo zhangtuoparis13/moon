@@ -138,8 +138,6 @@ class Assignment:
 
         self.__subject_category_assignments = dict(copy.deepcopy(json_assignment['subject_category_assignments']))
         self.__object_category_assignments = dict(copy.deepcopy(json_assignment['object_category_assignments']))
-        # print(self.__subject_category_assignments)
-        # print(self.__object_category_assignments)
 
     def get_subject_category_assignments(self):
         return self.__subject_category_assignments
@@ -199,19 +197,24 @@ class Extension:
 
     def authz(self, sub, obj, act):
         authz_data = AuthzData(sub, obj, act)
-        authz_logger.warning('extension/authz request: sub {}, obj {}, act {}'.format(sub, obj, act))
-
+        authz_logger.warning('extension/authz request: [sub {}, obj {}, act {}]'.format(sub, obj, act))
 
         if authz_data.subject in self.perimeter.get_subjects() and authz_data.object in self.perimeter.get_objects():
             authz_data.type = "intra-tenant"
 
             for subject_category in self.metadata.get_subject_categories():
                 authz_data.subject_attrs[subject_category] = copy.copy(self.assignment.get_subject_category_attr(subject_category, sub))
+                authz_logger.warning('extension/authz subject attribute: [subject attr: {}]'.format(self.assignment.get_subject_category_attr(subject_category, sub)))
 
             for object_category in self.metadata.get_object_categories():
-                authz_data.object_attrs[object_category] = copy.copy(self.assignment.get_object_category_attr(object_category, obj))
+                if object_category == 'action':
+                    authz_data.object_attrs[object_category] = [act]
+                    authz_logger.warning('extension/authz object attribute: [object attr: {}]'.format([act]))
+                else:
+                    authz_data.object_attrs[object_category] = copy.copy(self.assignment.get_object_category_attr(object_category, obj))
+                    authz_logger.warning('extension/authz object attribute: [object attr: {}]'.format(self.assignment.get_object_category_attr(object_category, obj)))
 
-            _aggreation_args = list()
+            _aggregation_data = dict()
 
             for sub_meta_rule in self.metadata.get_meta_rule_sub_meta_rules():  # sub_meta_rules is a list
                 _tmp_relation_args = list()
@@ -223,38 +226,32 @@ class Extension:
                     _tmp_relation_args.append(authz_data.object_attrs[sub_object_category])
 
                 _relation_args = list(itertools.product(*_tmp_relation_args))
-                print('_relation_args', _relation_args)
+                # print('_relation_args: ', _relation_args)
 
                 if sub_meta_rule['relation'] == 'relation_super':  # TODO: replace by Prolog Engine
+                    _aggregation_data['relation_super'] = dict()
+                    _aggregation_data['relation_super']['result'] = False
                     for _relation_arg in _relation_args:
-                        if int(_relation_arg[0]) > int(_relation_arg[1]):
-                            _resulat = True
+                        if list(_relation_arg) in self.configuration.get_rules():
+                            authz_logger.warning('extension/authz relation super OK: [sub_sl: {}, obj_sl: {}, action: {}]'.format(_relation_arg[0], _relation_arg[1], _relation_arg[2]))
+                            _aggregation_data['relation_super']['result'] = True
                             break
-                        else:
-                            _resulat = False
-
-                elif sub_meta_rule['relation'] == 'relation_equal_constant':
-                    for _relation_arg in _relation_args:
-                        if _relation_arg[0] == 'read':
-                            _resulat = True
-                            break
-                        else:
-                            _resulat = False
+                    _aggregation_data['relation_super']['status'] = 'finished'
 
                 elif sub_meta_rule['relation'] == 'permission':
+                    _aggregation_data['permission'] = dict()
+                    _aggregation_data['permission']['result'] = False
                     for _relation_arg in _relation_args:
-                        if _relation_arg in self.configuration.get_rules():
-                            _resulat = True
+                        if list(_relation_arg) in self.configuration.get_rules():
+                            authz_logger.warning('extension/authz relation permission OK: [role: {}, object: {}, action: {}]'.format(_relation_arg[0], _relation_arg[1], _relation_arg[2]))
+                            _aggregation_data['permission']['result'] = True
                             break
-                        else:
-                            _resulat = False
-
-                _aggreation_args.append(_resulat)
+                    _aggregation_data['permission']['status'] = 'finished'
 
             if self.metadata.get_meta_rule_aggregation() == 'and_true_aggregation':
                 authz_data.validation = True
-                for _resulat in _aggreation_args:
-                    if not _resulat:
+                for relation in _aggregation_data:
+                    if _aggregation_data[relation]['status'] == 'finished' and _aggregation_data[relation]['result'] == False:
                         authz_data.validation = False
         else:
             authz_data.validation = 'Out of Scope'

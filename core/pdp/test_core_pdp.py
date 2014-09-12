@@ -14,6 +14,11 @@ REQUESTS = {
         },
         {
             'subject': 'user1',
+            'object': 'vm2',
+            'action': 'read'
+        },
+        {
+            'subject': 'user1',
             'object': 'vm3',
             'action': 'write'
         }
@@ -23,6 +28,11 @@ REQUESTS = {
             'subject': 'user1',
             'object': 'subjects',
             'action': 'read'
+        },
+        {
+            'subject': 'user2',
+            'object': 'subjects',
+            'action': 'write'
         }
     ]
 }
@@ -45,14 +55,19 @@ if __name__ == "__main__":
             intra_extensions = get_intra_extensions()
             intra_extensions.install_intra_extension_from_json('core/pdp/extension_setting/mls001')
             for ixk in intra_extensions.get_installed_intra_extensions():
-                # print(intra_extensions.get_installed_intra_extensions()[ixk].authz('user1', 'vm1', 'read'))
                 for i in range(len(REQUESTS['authz'])):
-                    sub = REQUESTS['authz'][0]['subject']
-                    obj = REQUESTS['authz'][0]['object']
-                    act = REQUESTS['authz'][0]['action']
+                    sub = REQUESTS['authz'][i]['subject']
+                    obj = REQUESTS['authz'][i]['object']
+                    act = REQUESTS['authz'][i]['action']
                     result = intra_extensions.get_installed_intra_extensions()[ixk].authz(sub, obj, act)
                     print('xxxxxxxx test authz: ', result)
-                    # print(intra_extensions.get_installed_intra_extensions()[ixk].admin('user1', 'subjects', 'read'))
+
+                for i in range(len(REQUESTS['admin'])):
+                    sub = REQUESTS['admin'][i]['subject']
+                    obj = REQUESTS['admin'][i]['object']
+                    act = REQUESTS['admin'][i]['action']
+                    result = intra_extensions.get_installed_intra_extensions()[ixk].admin(sub, obj, act)
+                    print('yyyyyyyy test admin: ', result)
 
         elif args.intra_extension == 'authz':
             print ('authz option is: '+args.intra_extension)
