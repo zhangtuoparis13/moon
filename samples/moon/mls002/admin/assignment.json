@@ -6,5 +6,52 @@
             "user2": ["dev"]
         }
     },
-    "object_category_assignments": {}
+    "object_category_assignments": {
+        "object_id": {
+            "vm1": [
+                "subjects",
+                "objects",
+                "subject_category_values",
+                "object_category_values",
+                "rules",
+                "subject_category_assignments",
+                "object_category_assignments"
+            ],
+            "vm2": [
+                "subjects",
+                "objects",
+                "subject_category_values",
+                "object_category_values",
+                "rules",
+                "subject_category_assignments",
+                "object_category_assignments"
+            ],
+            "vm3": [
+                "subjects",
+                "objects",
+                "subject_category_values",
+                "object_category_values",
+                "rules",
+                "subject_category_assignments",
+                "object_category_assignments"
+            ]
+        },
+        "action": {
+            "vm1": [
+                "read",
+                "write",
+                "execute"
+            ],
+            "vm2": [
+                "read",
+                "write",
+                "execute"
+            ],
+            "vm3": [
+                "read",
+                "write",
+                "execute"
+            ]
+        }
+    }
 }
