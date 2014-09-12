@@ -14,7 +14,7 @@
         "action": {
             "vm1": ["read", "write"],
             "vm2": ["read", "write"],
-            "vm3": ["read", "write"]
+            "vm3": ["read"]
         }
     }
 }

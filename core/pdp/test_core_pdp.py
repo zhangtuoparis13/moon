@@ -5,6 +5,29 @@ from moon.core.pdp.core import get_intra_extensions
 this module tests the core, intra-extention, inter-extention code
 '''
 
+REQUESTS = {
+    'authz': [
+        {
+            'subject': 'user1',
+            'object': 'vm1',
+            'action': 'read'
+        },
+        {
+            'subject': 'user1',
+            'object': 'vm3',
+            'action': 'write'
+        }
+    ],
+    'admin': [
+        {
+            'subject': 'user1',
+            'object': 'subjects',
+            'action': 'read'
+        }
+    ]
+}
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--core', action='store_true')
@@ -22,8 +45,14 @@ if __name__ == "__main__":
             intra_extensions = get_intra_extensions()
             intra_extensions.install_intra_extension_from_json('core/pdp/extension_setting/mls001')
             for ixk in intra_extensions.get_installed_intra_extensions():
-                print(intra_extensions.get_installed_intra_extensions()[ixk].authz('user1', 'vm1', 'read'))
-                print(intra_extensions.get_installed_intra_extensions()[ixk].admin('user1', 'subjects', 'read'))
+                # print(intra_extensions.get_installed_intra_extensions()[ixk].authz('user1', 'vm1', 'read'))
+                for i in range(len(REQUESTS['authz'])):
+                    sub = REQUESTS['authz'][0]['subject']
+                    obj = REQUESTS['authz'][0]['object']
+                    act = REQUESTS['authz'][0]['action']
+                    result = intra_extensions.get_installed_intra_extensions()[ixk].authz(sub, obj, act)
+                    print('xxxxxxxx test authz: ', result)
+                    # print(intra_extensions.get_installed_intra_extensions()[ixk].admin('user1', 'subjects', 'read'))
 
         elif args.intra_extension == 'authz':
             print ('authz option is: '+args.intra_extension)

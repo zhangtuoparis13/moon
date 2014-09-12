@@ -2,6 +2,7 @@ import os.path
 import copy
 import json
 import itertools
+from moon.log_repository import authz_logger
 
 
 class Metadata:
@@ -198,6 +199,8 @@ class Extension:
 
     def authz(self, sub, obj, act):
         authz_data = AuthzData(sub, obj, act)
+        authz_logger.warning('extension/authz request: sub {}, obj {}, act {}'.format(sub, obj, act))
+
 
         if authz_data.subject in self.perimeter.get_subjects() and authz_data.object in self.perimeter.get_objects():
             authz_data.type = "intra-tenant"

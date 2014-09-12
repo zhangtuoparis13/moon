@@ -1,1 +1,2 @@
 from driver_dispatcher import get_log_manager
+from authz_log import authz_logger

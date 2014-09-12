@@ -6,8 +6,8 @@ from moon.core.pdp import get_intra_extensions
 from moon.log_repository import get_log_manager
 import hashlib
 from moon import settings
-
 import logging
+
 
 logger = logging.getLogger(__name__)
 LOGS = get_log_manager()
