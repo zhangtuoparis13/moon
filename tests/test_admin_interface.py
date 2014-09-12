@@ -82,14 +82,15 @@ class TestAdminInterface(unittest.TestCase):
             self.assertIsInstance(_data, dict)
             self.assertIn("subjects", _data)
             self.assertIsInstance(_data["subjects"], list)
-            # for k in [u'admin', u'authz', u'_id']:
-            #     self.assertIn(k, _data.keys())
-            # for k in [u'perimeter', u'assignment', u'configuration', u'metadata']:
-            #     self.assertIn(k, _data['admin'].keys())
-            # for k in [u'perimeter', u'assignment', u'configuration', u'metadata']:
-            #     self.assertIn(k, _data['authz'].keys())
-            # self.assertIsInstance(_data["_id"], unicode)
-            # print(json.dumps(_data, indent=4))
+
+    def test_get_objects(self):
+        data = get_url("json/intra-extensions/")
+        self.assertIsInstance(data, list)
+        for ext in data:
+            _data = get_url("json/intra-extension/"+ext+"/objects/")
+            self.assertIsInstance(_data, dict)
+            self.assertIn("objects", _data)
+            self.assertIsInstance(_data["objects"], list)
 
 
 if __name__ == '__main__':
