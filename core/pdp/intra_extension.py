@@ -1,6 +1,5 @@
 import os.path
-from uuid import uuid4
-from moon.core.pdp.extension import Extension
+from moon.core.pdp.extension import Extension, VirtualEntity
 from moon.core.pdp.sync_db import Intra_Extension_Syncer
 from moon.log_repository import authz_logger
 
@@ -35,6 +34,18 @@ class IntraExtension:
 
     def admin(self, sub, obj, act):
         return self.intra_extension_admin.authz(sub, obj, act)
+
+    def create_requesting_collaboration(self, type, subs, vent, act):
+        if type == 'authz':
+            self.intra_extension_authz.create_requesting_collaboration(subs, vent, act)
+        elif type == 'admin':
+            self.intra_extension_admin.create_requesting_collaboration(subs, vent, act)
+
+    def create_requested_collaboration(self, type, vent, objs, act):
+        if type == 'authz':
+            self.intra_extension_authz.create_requested_collaboration(vent, objs, act)
+        elif type == 'admin':
+            self.intra_extension_admin.create_requested_collaboration(vent, objs, act)
 
     def __str__(self):
         return """IntraExtension {}
