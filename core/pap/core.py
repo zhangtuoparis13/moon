@@ -39,9 +39,8 @@ class PAP:
     ##################################################
 
     def get_subjects(self, extension_uuid, user_uuid):
-        print(extension_uuid, user_uuid)
         if extension_uuid in self.intra_extensions.values():
-            print(self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "r"))
+            print("subjects authz", self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "r"))
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "r") == True:
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_subjects()
 
@@ -57,9 +56,10 @@ class PAP:
             #TODO need to check if the subject is not in other tables like assignment
 
     def get_objects(self, extension_uuid, user_uuid):
-         if extension_uuid in self.intra_extensions:
-            self.intra_extensions[extension_uuid].admin_extension.authz(user_uuid, "objects", "r")
-            return self.intra_extensions[extension_uuid].authz_extension.get_objects()
+        if extension_uuid in self.intra_extensions.values():
+            print("objects authz", self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "r"))
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "r") == True:
+                    return self.intra_extensions[extension_uuid].authz_extension.get_objects()
 
     def add_object(self, extension_uuid, user_uuid, object_id):
         if extension_uuid in self.intra_extensions:

@@ -6,9 +6,8 @@ from moon.core.pdp import get_intra_extensions
 from moon.log_repository import get_log_manager
 import hashlib
 from moon import settings
-# from moon.core.pap.core import PAP
-
 import logging
+
 
 logger = logging.getLogger(__name__)
 LOGS = get_log_manager()
@@ -16,7 +15,7 @@ LOGS = get_log_manager()
 # TODO: this must be authenticated/secured!!!
 # TODO: this must be CSRF protected!!!
 @csrf_exempt
-def tenants(request, id=None):
+def tenants(request):
     response_data = {"auth": False}
     try:
         if request.method == 'POST':

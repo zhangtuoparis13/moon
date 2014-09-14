@@ -6,5 +6,24 @@
             "user2": ["dev"]
         }
     },
-    "object_category_assignments": {}
+    "object_category_assignments": {
+        "action": {
+            "subjects": ["read", "write"],
+            "objects": ["read", "write"],
+            "subject_category_values": ["read", "write"],
+            "object_category_values": ["read", "write"],
+            "rules": ["read", "write"],
+            "subject_category_assignments": ["read", "write"],
+            "object_category_assignments": ["read", "write"]
+        },
+        "object_id": {
+            "subjects": ["subjects"],
+            "objects": ["objects"],
+            "subject_category_values": ["subject_category_values"],
+            "object_category_values": ["object_category_values"],
+            "rules": ["rules"],
+            "subject_category_assignments": ["subject_category_assignments"],
+            "object_category_assignments": ["object_category_assignments"]
+        }
+    }
 }

@@ -63,16 +63,15 @@ def get_subjects(request, uuid=None):
     """
     Retrieve information about subjects from Moon server
     """
-    print("-------------------------------------")
     pap = get_pap()
     try:
-        print(pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id']))
+        # print(pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id']))
         return HttpResponse(json.dumps({"subjects": list(
             pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id'])
         )}))
     except:
-        import traceback
-        print(traceback.print_exc())
+        # import traceback
+        # print(traceback.print_exc())
         return HttpResponse(json.dumps({}))
 
 
@@ -83,8 +82,14 @@ def get_objects(request, uuid=None):
     Retrieve information about objects from Moon server
     """
     pap = get_pap()
-    return HttpResponse(json.dumps({'objects': list(
-        pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id'])
-    )}))
+    try:
+        # print(pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id']))
+        return HttpResponse(json.dumps({'objects': list(
+            pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id'])
+        )}))
+    except:
+        # import traceback
+        # print(traceback.print_exc())
+        return HttpResponse(json.dumps({}))
 
 
