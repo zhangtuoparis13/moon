@@ -73,9 +73,137 @@ class TestCorePDPExtension(unittest.TestCase):
         print("self.extension.get_subject_categories(): ", self.extension.get_subject_categories())
         self.assertIsInstance(self.extension.get_subject_categories(), list)
 
+    def test_add_subject_category(self):
+        print("self.extension.get_object_categories(): ", self.extension.get_object_categories())
+        self.extension.add_subject_category("ssss")
+        print("self.extension.get_object_categories(): ", self.extension.get_object_categories())
+
+    def test_del_subject_category(self):
+        print("self.extension.get_object_categories(): ", self.extension.get_object_categories())
+        self.extension.del_subject_category("ssss")
+        print("self.extension.get_object_categories(): ", self.extension.get_object_categories())
+
     def test_get_object_categories(self):
         print("self.extension.get_object_categories(): ", self.extension.get_object_categories())
         self.assertIsInstance(self.extension.get_object_categories(), list)
+
+    def test_add_object_category(self):
+        print("self.extension.get_object_categories(): ", self.extension.get_object_categories())
+        self.extension.add_object_category("oooo")
+        print("self.extension.get_object_categories(): ", self.extension.get_object_categories())
+
+    def test_del_object_category(self):
+        print("self.extension.get_object_categories(): ", self.extension.get_object_categories())
+        self.extension.del_object_category("oooo")
+        print("self.extension.get_object_categories(): ", self.extension.get_object_categories())
+
+    def test_get_subject_category_values(self):
+        print("self.extension.get_subject_category_values(subject_security_level): ", self.extension.get_subject_category_values()["subject_security_level"])
+        self.assertIsInstance(self.extension.get_subject_category_values()["subject_security_level"], list)
+
+    def test_add_subject_category_value(self):
+        print("self.extension.get_subject_category_values(subject_security_level): ", self.extension.get_subject_category_values()["subject_security_level"])
+        self.extension.add_subject_category_value("subject_security_level", "xxxx")
+        print("self.extension.get_subject_category_values(subject_security_level): ", self.extension.get_subject_category_values()["subject_security_level"])
+
+    def test_del_subject_category_value(self):
+        print("self.extension.get_subject_category_values(subject_security_level): ", self.extension.get_subject_category_values()["subject_security_level"])
+        self.extension.del_subject_category_value("subject_security_level", "xxxx")
+        print("self.extension.get_subject_category_values(subject_security_level): ", self.extension.get_subject_category_values()["subject_security_level"])
+
+    def test_get_object_category_values(self):
+        print("self.extension.get_object_category_values(object_security_level): ", self.extension.get_object_category_values()["object_security_level"])
+        self.assertIsInstance(self.extension.get_object_category_values()["object_security_level"], list)
+
+    def test_add_object_category_value(self):
+        print("self.extension.get_object_category_values(object_security_level): ", self.extension.get_object_category_values()["object_security_level"])
+        self.extension.add_object_category_value("object_security_level", "yyyy")
+        print("self.extension.get_object_category_values(object_security_level): ", self.extension.get_object_category_values()["object_security_level"])
+
+    def test_del_object_category_value(self):
+        print("self.extension.get_object_category_values(object_security_level): ", self.extension.get_object_category_values()["object_security_level"])
+        self.extension.del_object_category_value("object_security_level", "yyyy")
+        print("self.extension.get_object_category_values(object_security_level): ", self.extension.get_object_category_values()["object_security_level"])
+
+    def test_get_rules(self):
+        print("self.extension.get_rules(): ", self.extension.get_rules())
+        self.assertIsInstance(self.extension.get_rules(), list)
+        self.assertIsInstance(self.extension.get_rules()[0], list)
+
+    def test_add_rule(self):
+        print("self.extension.get_rules(): ", self.extension.get_rules())
+        sub_cat_value = {"subject_security_level": "xxxx"}
+        obj_cat_value = {"object_security_level": "yyyy", "action": "zzz"}
+        self.extension.add_rule(sub_cat_value, obj_cat_value)
+        print("self.extension.get_rules(): ", self.extension.get_rules())
+
+    def test_get_subjects(self):
+        print("self.extension.get_subjects(): ", self.extension.get_subjects())
+        self.assertIsInstance(self.extension.get_subjects(), list)
+
+    def test_add_subject(self):
+        print("self.extension.get_subjects(): ", self.extension.get_subjects())
+        self.extension.add_subject("aaaa")
+        print("self.extension.get_subjects(): ", self.extension.get_subjects())
+
+    def test_del_subject(self):
+        print("self.extension.get_subjects(): ", self.extension.get_subjects())
+        self.extension.del_subject("aaaa")
+        print("self.extension.get_subjects(): ", self.extension.get_subjects())
+
+    def test_get_objects(self):
+        print("self.extension.get_objects(): ", self.extension.get_objects())
+        self.assertIsInstance(self.extension.get_objects(), list)
+
+    def test_add_object(self):
+        print("self.extension.get_objects(): ", self.extension.get_objects())
+        self.extension.add_object("bbbb")
+        print("self.extension.get_objects(): ", self.extension.get_objects())
+
+    def test_del_object(self):
+        print("self.extension.get_objects(): ", self.extension.get_objects())
+        self.extension.del_object("bbbb")
+        print("self.extension.get_objects(): ", self.extension.get_objects())
+
+    def test_get_subject_assignments(self):
+        print("self.extension.get_subject_assignments(): ", self.extension.get_subject_assignments())
+        self.assertIsInstance(self.extension.get_subject_assignments(), dict)
+        self.assertIsInstance(self.extension.get_subject_assignments()["subject_security_level"], dict)
+        self.assertIsInstance(self.extension.get_subject_assignments()["subject_security_level"]["user1"], list)
+
+    def test_add_subject_assignment(self):
+        print("self.extension.get_subject_assignments(): ", self.extension.get_subject_assignments())
+        self.extension.add_subject_assignment("subject_security_level", "userx", "aaaa")
+        print("self.extension.get_subject_assignments(): ", self.extension.get_subject_assignments())
+
+    def test_del_subject_assignment(self):
+        print("self.extension.get_subject_assignments(): ", self.extension.get_subject_assignments())
+        self.extension.del_subject_assignment("subject_security_level", "userx", "aaaa")
+        print("self.extension.get_subject_assignments(): ", self.extension.get_subject_assignments())
+
+    def test_get_subject_attr(self):
+        print("self.extension.get_subject_attr(): ", self.extension.get_subject_attr("subject_security_level", "user1"))
+        self.assertIsInstance(self.extension.get_subject_attr("subject_security_level", "user1"), str)
+
+    def test_get_object_assignments(self):
+        print("self.extension.get_object_assignments(): ", self.extension.get_object_assignments())
+        self.assertIsInstance(self.extension.get_object_assignments(), dict)
+        self.assertIsInstance(self.extension.get_object_assignments()["object_security_level"], dict)
+        self.assertIsInstance(self.extension.get_object_assignments()["object_security_level"]["vm1"], list)
+
+    def test_add_object_assignment(self):
+        print("self.extension.get_object_assignments(): ", self.extension.get_object_assignments())
+        self.extension.add_object_assignment("object_security_level", "vmx", "bbbb")
+        print("self.extension.get_object_assignments(): ", self.extension.get_object_assignments())
+
+    def test_del_object_assignment(self):
+        print("self.extension.get_object_assignments(): ", self.extension.get_object_assignments())
+        self.extension.del_object_assignment("object_security_level", "vmx", "bbbb")
+        print("self.extension.get_object_assignments(): ", self.extension.get_object_assignments())
+
+    def test_get_object_attr(self):
+        print("self.extension.get_object_attr(): ", self.extension.get_object_attr("object_security_level", "vm1"))
+        self.assertIsInstance(self.extension.get_object_attr("object_security_level", "vm1"), str)
 
 
 class TestCorePDPIntraExtension(unittest.TestCase):
