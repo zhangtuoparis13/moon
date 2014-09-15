@@ -15,6 +15,10 @@ class IntraExtension:
         self.intra_extension_authz.load_from_json(os.path.join(extension_setting_abs_dir, 'authz'))
         self.intra_extension_admin.load_from_json(os.path.join(extension_setting_abs_dir, 'admin'))
 
+    def load_from_db(self, extension_setting_abs_dir):
+        self.intra_extension_authz.load_from_json(os.path.join(extension_setting_abs_dir, 'authz'))
+        self.intra_extension_admin.load_from_json(os.path.join(extension_setting_abs_dir, 'admin'))
+
     def get_data(self):
         data = dict()
         data["_id"] = self.__uuid

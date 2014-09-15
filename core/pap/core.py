@@ -208,7 +208,8 @@ class PAP:
     # Specific functions for Intra-Extension
     ########################################
 
-    def update_from_json(self, existing_extension=None, tenant=None, json_data=None):
+    #TODO: delete
+    def __update_from_json(self, existing_extension=None, tenant=None, json_data=None):
         #TODO: wrong method: when updating we must not re-create the extension
         # because a bug appears on the internal authz system when extension.__subjects is empty
         # see intra_extensions.py line 757 and 771
@@ -270,7 +271,8 @@ class PAP:
         json_data["configuration"]["rules"] = rules
         return json_data
 
-    def new_intra_extension(self, tenant, test_only=False, json_data=None):
+    #TODO: delete
+    def __new_intra_extension(self, tenant, test_only=False, json_data=None):
         pip = get_pip()
         existing_extension = self.intra_extensions().get(attributes={"tenant.uuid": tenant["uuid"]})
         if not json_data:
@@ -322,6 +324,9 @@ class PAP:
 
     def add_from_json(self, json_directory):
         get_intra_extensions().install_intra_extension_from_json(json_directory)
+
+    def add_from_db(self):
+        get_intra_extensions().install_intra_extension_from_db()
 
     #########################################
     # Specific functions for Inter Extensions
