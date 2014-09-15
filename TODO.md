@@ -73,8 +73,9 @@ Legend:
 
 | Title                   | Description                               | Percentage of work |
 | ----------------------- | ----------------------------------------- | ------------------ |
-| Understand Tun code     |                                           | 0%                |
+| Understand Tun code     |                                           | 0%                 |
 | Include code in Moon    |                                           | 0%                 |
+| Mutiple Sub-rule Integration|                                       | 0%                 |
 
 
 ###Evaluation and tests on Moon
