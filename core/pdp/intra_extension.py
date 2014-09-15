@@ -4,6 +4,7 @@ from moon.core.pdp.extension import Extension
 from moon.core.pdp.sync_db import IntraExtensionSyncer
 
 
+
 class IntraExtension:
     def __init__(self):
         self.__uuid = str(uuid4())
@@ -27,8 +28,8 @@ class IntraExtension:
     def set_data(self, data):
         self.__uuid = data["_id"]
         self.__tenant_uuid = data["tenant_uuid"]
-        # self.intra_extension_authz.set_data(data["authz"]) TODO: to add for each component
-        # self.intra_extension_admin.set_data(data["admin"]) TODO: to add for each component
+        self.intra_extension_authz.set_data(data["authz"])
+        self.intra_extension_admin.set_data(data["admin"])
 
     def set_to_db(self):
         self.__syncer.set_to_db(self.get_data())

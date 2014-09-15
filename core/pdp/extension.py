@@ -242,7 +242,9 @@ class Extension:
 
             for subject_category in self.metadata.get_subject_categories():
                 authz_data.subject_attrs[subject_category] = copy.copy(self.assignment.get_subject_category_attr(subject_category, sub))
-                authz_logger.warning('extension/authz subject attribute: [subject attr: {}]'.format(self.assignment.get_subject_category_attr(subject_category, sub)))
+                authz_logger.warning('extension/authz subject attribute: [subject attr: {}]'.format(
+                    self.assignment.get_subject_category_attr(subject_category, sub))
+                )
 
             for object_category in self.metadata.get_object_categories():
                 if object_category == 'action':
@@ -250,7 +252,9 @@ class Extension:
                     authz_logger.warning('extension/authz object attribute: [object attr: {}]'.format([act]))
                 else:
                     authz_data.object_attrs[object_category] = copy.copy(self.assignment.get_object_category_attr(object_category, obj))
-                    authz_logger.warning('extension/authz object attribute: [object attr: {}]'.format(self.assignment.get_object_category_attr(object_category, obj)))
+                    authz_logger.warning('extension/authz object attribute: [object attr: {}]'.format(
+                        self.assignment.get_object_category_attr(object_category, obj))
+                    )
 
             _aggregation_data = dict()
 
@@ -271,7 +275,9 @@ class Extension:
                     _aggregation_data['relation_super']['result'] = False
                     for _relation_arg in _relation_args:
                         if list(_relation_arg) in self.configuration.get_rules():
-                            authz_logger.warning('extension/authz relation super OK: [sub_sl: {}, obj_sl: {}, action: {}]'.format(_relation_arg[0], _relation_arg[1], _relation_arg[2]))
+                            authz_logger.warning('extension/authz relation super OK: [sub_sl: {}, obj_sl: {}, action: {}]'.format(
+                                _relation_arg[0], _relation_arg[1], _relation_arg[2])
+                            )
                             _aggregation_data['relation_super']['result'] = True
                             break
                     _aggregation_data['relation_super']['status'] = 'finished'
@@ -281,22 +287,24 @@ class Extension:
                     _aggregation_data['permission']['result'] = False
                     for _relation_arg in _relation_args:
                         if list(_relation_arg) in self.configuration.get_rules():
-                            authz_logger.warning('extension/authz relation permission OK: [role: {}, object: {}, action: {}]'.format(_relation_arg[0], _relation_arg[1], _relation_arg[2]))
+                            authz_logger.warning('extension/authz relation permission OK: [role: {}, object: {}, action: {}]'.format(
+                                _relation_arg[0], _relation_arg[1], _relation_arg[2])
+                            )
                             _aggregation_data['permission']['result'] = True
                             break
                     _aggregation_data['permission']['status'] = 'finished'
 
             if self.metadata.get_meta_rule_aggregation() == 'and_true_aggregation':
-                authz_data.validation = True
+                authz_data.validation = "OK"
                 for relation in _aggregation_data:
                     if _aggregation_data[relation]['status'] == 'finished' and _aggregation_data[relation]['result'] == False:
-                        authz_data.validation = False
+                        authz_data.validation = "KO"
         else:
             authz_data.validation = 'Out of Scope'
 
         return authz_data.validation
 
-# ---------------- metadate api ----------------
+    # ---------------- metadate api ----------------
 
     def get_subject_categories(self):
         return self.metadata.get_subject_categories()
@@ -316,7 +324,7 @@ class Extension:
     def del_object_category(self, category_id):
         self.get_object_categories().remove(category_id)
 
-# ---------------- configuration api ----------------
+    # ---------------- configuration api ----------------
 
     def get_subject_category_values(self, category_id):
         return self.configuration.get_subject_category_values()[category_id]
@@ -339,7 +347,7 @@ class Extension:
     def get_rules(self):
         return self.get_rules()
 
-    def add_rule(self, sub_cat_value, obj_cat_value): # TODO to test
+    def add_rule(self, sub_cat_value, obj_cat_value):  # TODO to test
         _rule = list()
         for sub_meta_rule in self.metadata.get_meta_rule_sub_meta_rules():  # sub_meta_rules is a list
             for sub_subject_category in sub_meta_rule["subject_categories"]:
@@ -353,7 +361,7 @@ class Extension:
     def del_rule(self):  # TODO later
         pass
 
-# ---------------- perimeter api ----------------
+    # ---------------- perimeter api ----------------
 
     def get_subjects(self):
         return self.perimeter.get_subjects()
@@ -368,12 +376,12 @@ class Extension:
         return self.perimeter.get_objects()
 
     def add_object(self, object_id):
-        self.perimeter.get_objects().append(object_id)
+       self.perimeter.get_objects().append(object_id)
 
     def del_object(self, object_id):  # TODO later
-        pass
+       pass
 
-# ---------------- assignment api ----------------
+    # ---------------- assignment api ----------------
 
     def get_subject_assignments(self, category_id):
         return self.assignment.get_subject_category_assignments()[category_id]
@@ -407,7 +415,7 @@ class Extension:
 
 # ---------------- inter-extension API ----------------
 
-    def create_requesting_collaboration(self, subs, vent, act): # TODO to test
+    def create_requesting_collaboration(self, subs, vent, act):  # TODO to test
         _sub_cat_values = dict()
         _obj_cat_values = dict()
         _sub_cats = self.get_subject_categories()
@@ -434,7 +442,7 @@ class Extension:
 
         self.add_rule(_sub_cat_values, _obj_cat_values, act)
 
-    def create_requested_collaboration(self, vent, objs, act): # TODO to test
+    def create_requested_collaboration(self, vent, objs, act):  # TODO to test
         _sub_cat_values = dict()
         _obj_cat_values = dict()
         _sub_cats = self.get_subject_categories()
