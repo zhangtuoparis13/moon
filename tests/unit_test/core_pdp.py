@@ -1,9 +1,10 @@
+"""
+unit test for moon/core/pdp
+"""
+
 import argparse
 from moon.core.pdp.core import get_intra_extensions
 
-'''
-this module tests the core, intra-extention, inter-extention code
-'''
 
 REQUESTS = {
     'authz': [
