@@ -1,20 +1,20 @@
 {
     "subject_category_assignments": {
         "subject_security_level":{
-            "user1": ["4"],
-            "user2": ["2"]
+            "user1": ["high"],
+            "user2": ["medium"]
         }
     },
     "object_category_assignments": {
         "object_security_level": {
-            "vm1": ["4", "3"],
-            "vm2": ["3", "2"],
-            "vm3": ["2", "1"]
+            "vm1": ["high"],
+            "vm2": ["medium"],
+            "vm3": ["low"]
         },
         "action": {
-            "vm1": ["read", "write"],
-            "vm2": ["read", "write"],
-            "vm3": ["read"]
+            "vm1": [],
+            "vm2": [],
+            "vm3": []
         }
     }
 }

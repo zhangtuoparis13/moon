@@ -4,7 +4,7 @@ Policy Decision Point
 
 import logging
 import os
-from uuid import uuid4
+from moon.core.pdp.inter_extension import InterExtension
 logger = logging.getLogger(__name__)
 
 
@@ -43,8 +43,34 @@ class IntraExtensions:
         return set(self.__installed_intra_extensions.keys())
 
 
-intra_extentions = IntraExtensions()
+class InterExtensions:  # TODO to test
+    def __init__(self, installed_intra_extensions):
+        self.__installed_intra_extensions = installed_intra_extensions
+        self.__installed_inter_extensions = dict()
+
+    def create_collaboration(self, requesting_intra_extension_uuid, requested_intra_extension_uuid, type, subs, objs, act):
+        for _intra_extension in self.__installed_intra_extensions:
+            if _intra_extension.get_uuid() == requesting_intra_extension_uuid:
+                _requesting_intra_extension = _intra_extension
+            elif _intra_extension.get_uuid() == requested_intra_extension_uuid:
+                _requested_intra_extension = _intra_extension
+            else:
+                pass
+            _inter_extension = InterExtension(_requesting_intra_extension, _requested_intra_extension)
+            _inter_extension.create_collaboration(type, subs, objs, act)
+            self.__installed_inter_extensions[_requesting_intra_extension.get_uudi()][_requested_intra_extension.get_uudi()][_inter_extension.get_uuid()] = _inter_extension
+
+    def get_installed_inter_extensions(self):
+        return self.__installed_inter_extensions
+
+
+intra_extensions = IntraExtensions()
+inter_extensions = InterExtensions(intra_extensions)
 
 
 def get_intra_extensions():
-    return intra_extentions
+    return intra_extensions
+
+
+def get_inter_extension():
+    return inter_extensions

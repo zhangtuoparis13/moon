@@ -12,7 +12,6 @@ db_driver = importlib.import_module(db_driver_name)
 
 
 class Intra_Extension_Syncer():
-
     def __init__(self):
         self.db = db_driver.DB(db_name, "intraextensions")
 
@@ -22,3 +21,13 @@ class Intra_Extension_Syncer():
     def drop(self):
         return self.db.drop()
 
+
+class Inter_Extension_Syncer():
+    def __init__(self):
+        self.db = db_driver.DB(db_name, "interextensions")
+
+    def sync(self, data):
+        self.db.sync(data)
+
+    def drop(self):
+        return self.db.drop()
