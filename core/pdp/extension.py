@@ -207,11 +207,7 @@ class Extension:
 
     def authz(self, sub, obj, act):
         authz_data = AuthzData(sub, obj, act)
-<<<<<<< HEAD
-        authz_logger.warning('extension/authz request: [sub {}, obj {}, act {}]'.format(sub, obj, act))
-=======
         authz_logger.warning('extension/authz request: sub {}, obj {}, act {}'.format(sub, obj, act))
->>>>>>> dev
 
         if authz_data.subject in self.perimeter.get_subjects() and authz_data.object in self.perimeter.get_objects():
             authz_data.type = "intra-tenant"
@@ -272,7 +268,7 @@ class Extension:
 
         return authz_data.validation
 
-# ---------------- metadate api ----------------
+    # ---------------- metadate api ----------------
 
     def get_subject_categories(self):
         return self.metadata.get_subject_categories()
@@ -292,7 +288,7 @@ class Extension:
     def del_object_category(self, category_id):
         self.get_object_categories().remove(category_id)
 
-# ---------------- configuration api ----------------
+    # ---------------- configuration api ----------------
 
     def get_subject_category_values(self, category_id):
         return self.configuration.get_subject_category_values()[category_id]
@@ -329,7 +325,7 @@ class Extension:
     def del_rule(self):  # TODO later
         pass
 
-# ---------------- perimeter api ----------------
+    # ---------------- perimeter api ----------------
 
     def get_subjects(self):
         return self.perimeter.get_subjects()
@@ -344,12 +340,12 @@ class Extension:
         return self.perimeter.get_objects()
 
     def add_object(self, object_id):
-        self.perimeter.get_objects().append(object_id)
+       self.perimeter.get_objects().append(object_id)
 
     def del_object(self, object_id):  # TODO later
-        pass
+       pass
 
-# ---------------- assignment api ----------------
+    # ---------------- assignment api ----------------
 
     def get_subject_assignments(self, category_id):
         return self.assignment.get_subject_category_assignments()[category_id]
