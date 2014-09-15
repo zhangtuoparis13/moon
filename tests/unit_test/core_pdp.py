@@ -91,6 +91,18 @@ class TestCorePDPInterExtension(unittest.TestCase):
         pass
 
 
+class TestCorePDPSyncdb(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test_get_name(self):
+        pass
+
+
 class TestCorePDPCore(unittest.TestCase):
 
     def setUp(self):
