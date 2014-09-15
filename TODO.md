@@ -18,30 +18,30 @@ Legend:
 
 ###Core/PDP
 
-| Title               | Actor       | Description       | Percentage of work |
-| ------------------- | ----------- | ----------------- | ------------------ |
-| extension           | WuKong      |                   | 90%                |
-| intra_extension     | WuKong      |                   | 70%                |
-| inter_extension     | WuKong      |                   | 40%                |
-| core                | WuKong      |                   | 40%                |
-| sync_db             | WuKong      |                   | 40%                |
+| Title               | Actor       | Description       | Deadline      | Percentage of work |
+| ------------------- | ----------- | ----------------- | ------------- | ------------------ |
+| extension           | WuKong      |                   | 16/09         | 90%                |
+| intra_extension     | WuKong      |                   | 16/09         | 70%                |
+| inter_extension     | WuKong      |                   | 18/09         | 40%                |
+| core                | WuKong      |                   | 16/09         | 40%                |
+| sync_db             | WuKong      |                   | 16/09         | 40%                |
 
 
 ###Core/PAP
 
-| Title               | Actor       | Description       | Percentage of work |
-| ------------------- | ----------- | ----------------- | ------------------ |
-| core                | Tom         |                   | 80%                |
+| Title               | Actor       | Description       | Deadline      | Percentage of work |
+| ------------------- | ----------- | ----------------- | ------------- | ------------------ |
+| core                | Tom         |                   | 16/09         | 80%                |
 
 
 
 ###Testing framework
 
-| Title               | Actor       | Description       | Percentage of work |
-| ------------------- | ----------- | ----------------- | ------------------ |
-| Core/PDP            | WuKong      | unit test         | 0%                 |
-| Core/PAP            | Tom         | unit test         | 0%                 |
-| GUI + PAP + PDP     | Tom         | integration test  | 0%                 |
+| Title               | Actor       | Description       | Deadline      | Percentage of work |
+| ------------------- | ----------- | ----------------- | ------------- | ------------------ |
+| Core/PDP            | WuKong      | unit test         | 19/09         | 0%                 |
+| Core/PAP            | Tom         | unit test         | 19/09         | 0%                 |
+| GUI + PAP + PDP     | Tom         | integration test  | 26/09         | 0%                 |
 
 
 

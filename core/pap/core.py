@@ -9,8 +9,10 @@ from moon.core.pdp import get_intra_extensions
 from moon.core.pdp import get_inter_extensions
 # from moon.core.pdp import Extension
 from moon.core.pip import get_pip
+from moon.tools.log import get_sys_logger
 
-logger = logging.getLogger("moon.pap")
+
+sys_logger = get_sys_logger()
 
 
 class PAP:
@@ -41,7 +43,7 @@ class PAP:
     def get_subjects(self, extension_uuid, user_uuid):
         if extension_uuid in self.intra_extensions.values():
             print("subjects authz", self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "r"))
-            if self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "r") == True:
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "r") == "OK":
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_subjects()
 
     def add_subject(self, extension_uuid, user_uuid, subject_id):
@@ -58,7 +60,7 @@ class PAP:
     def get_objects(self, extension_uuid, user_uuid):
         if extension_uuid in self.intra_extensions.values():
             print("objects authz", self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "r"))
-            if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "r") == True:
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "r") == "OK":
                     return self.intra_extensions[extension_uuid].authz_extension.get_objects()
 
     def add_object(self, extension_uuid, user_uuid, object_id):

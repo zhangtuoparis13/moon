@@ -339,8 +339,16 @@ class Extension:
     def get_rules(self):
         return self.get_rules()
 
-    def add_rule(self):  # TODO  later
-        pass
+    def add_rule(self, sub_cat_value, obj_cat_value): # TODO to test
+        _rule = list()
+        for sub_meta_rule in self.metadata.get_meta_rule_sub_meta_rules():  # sub_meta_rules is a list
+            for sub_subject_category in sub_meta_rule["subject_categories"]:
+                _rule.append(sub_cat_value[sub_subject_category])
+
+            for sub_object_category in sub_meta_rule["object_categories"]:
+                _rule.append(obj_cat_value[sub_object_category])
+
+            self.configuration.get_rules().append(_rule)
 
     def del_rule(self):  # TODO later
         pass
@@ -396,3 +404,58 @@ class Extension:
 
     def get_object_attr(self, category_id, object_id):
         return self.get_object_attr(category_id, object_id)
+
+# ---------------- inter-extension API ----------------
+
+    def create_requesting_collaboration(self, subs, vent, act): # TODO to test
+        _sub_cat_values = dict()
+        _obj_cat_values = dict()
+        _sub_cats = self.get_subject_categories()
+        _obj_cats = self.get_object_categories()
+
+        for _sub_cat_id in _sub_cats:
+            _sub_cat_value = str(uuid4())
+            self.add_subject_category_value(_sub_cat_id, _sub_cat_value)
+            _sub_cat_values[_sub_cat_id] = _sub_cat_value
+
+            for _sub in subs:
+                self.add_subject_assignment(_sub_cat_id, _sub, _sub_cat_value)
+
+        self.add_object(vent.get_uuid)
+
+        for _obj_cat_id in _obj_cats:
+            if _obj_cat_id == 'action':
+                _obj_cat_values[_obj_cat_id] = act
+            else:
+                _obj_cat_value = str(uuid4())
+                self.add_object_category_value(_obj_cat_id, _obj_cat_value)
+                _obj_cat_values[_obj_cat_id] = _obj_cat_value
+                self.add_object_assignment(_obj_cat_id, vent, _obj_cat_value)
+
+        self.add_rule(_sub_cat_values, _obj_cat_values, act)
+
+    def create_requested_collaboration(self, vent, objs, act): # TODO to test
+        _sub_cat_values = dict()
+        _obj_cat_values = dict()
+        _sub_cats = self.get_subject_categories()
+        _obj_cats = self.get_object_categories()
+
+        self.add_object(vent.get_uuid)
+
+        for _sub_cat_id in _sub_cats:
+            _sub_cat_value = str(uuid4())
+            self.add_subject_category_value(_sub_cat_id, _sub_cat_value)
+            _sub_cat_values[_sub_cat_id] = _sub_cat_value
+            self.add_subject_assignment(_sub_cat_id, vent, _sub_cat_value)
+
+        for _obj_cat_id in _obj_cats:
+            if _obj_cat_id == 'action':
+                _obj_cat_values[_obj_cat_id] = act
+            else:
+                _obj_cat_value = str(uuid4())
+                self.add_object_category_value(_obj_cat_id, _obj_cat_value)
+                _obj_cat_values[_obj_cat_id] = _obj_cat_value
+                for _obj in objs:
+                    self.add_object_assignment(_obj_cat_id, _obj, _obj_cat_value)
+
+            self.add_rule(_sub_cat_values, _obj_cat_values, act)
