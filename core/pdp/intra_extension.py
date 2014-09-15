@@ -1,4 +1,5 @@
 import os.path
+from uuid import uuid4
 from moon.core.pdp.extension import Extension, VirtualEntity
 from moon.core.pdp.sync_db import Intra_Extension_Syncer
 
