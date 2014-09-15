@@ -15,19 +15,19 @@ REQUESTS = {
             'subject': 'user1',
             'object': 'vm1',
             'action': 'read',
-            '_result': 'False'
+            '_result': 'KO'
         },
         {
             'subject': 'user1',
             'object': 'vm2',
             'action': 'read',
-            '_result': 'True'
+            '_result': 'OK'
         },
         {
             'subject': 'user1',
             'object': 'vm3',
             'action': 'write',
-            '_result': 'False'
+            '_result': 'KO'
         }
     ],
     'admin': [
@@ -35,13 +35,13 @@ REQUESTS = {
             'subject': 'user1',
             'object': 'subjects',
             'action': 'read',
-            '_result': 'True'
+            '_result': 'OK'
         },
         {
             'subject': 'user2',
             'object': 'subjects',
             'action': 'write',
-            '_result': 'False'
+            '_result': 'KO'
         }
     ]
 }
@@ -50,21 +50,32 @@ REQUESTS = {
 class TestCorePDPExtension(unittest.TestCase):
 
     def setUp(self):
-        self.extension_authz = Extension()
-        extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'core/pdp/extension_setting/mls001/authz')
-        print(extension_setting_abs_dir)
-        self.extension_authz.load_from_json(extension_setting_abs_dir)
-
-        self.extension_admin = Extension()
-        extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'core/pdp/extension_setting/mls001/admin')
-        self.extension_admin.load_from_json(extension_setting_abs_dir)
+        self.extension = Extension()
+        extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'samples/mls001/authz')
+        # extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'samples/mls001/admin')
+        self.extension.load_from_json(extension_setting_abs_dir)
 
     def tearDown(self):
         pass
 
     def test_get_name(self):
-        self.assertIsInstance(self.extension_authz.get_name(), unicode)
-        self.assertIsInstance(self.extension_admin.get_name(), unicode)
+        self.assertIsInstance(self.extension.get_name(), unicode)
+
+    def test_authz(self):
+        for i in range(len(REQUESTS['authz'])):
+            sub = REQUESTS['authz'][i]['subject']
+            obj = REQUESTS['authz'][i]['object']
+            act = REQUESTS['authz'][i]['action']
+            _result = REQUESTS['authz'][i]['_result']
+            self.assertIs(self.extension.authz(sub, obj, act), _result)
+
+    def test_get_subject_categories(self):
+        print("self.extension.get_subject_categories(): ", self.extension.get_subject_categories())
+        self.assertIsInstance(self.extension.get_subject_categories(), list)
+
+    def test_get_object_categories(self):
+        print("self.extension.get_object_categories(): ", self.extension.get_object_categories())
+        self.assertIsInstance(self.extension.get_object_categories(), list)
 
 
 class TestCorePDPIntraExtension(unittest.TestCase):

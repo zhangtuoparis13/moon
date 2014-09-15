@@ -85,5 +85,5 @@ def get_intra_extensions():
     return intra_extensions
 
 
-def get_inter_extension():
+def get_inter_extensions():
     return inter_extensions

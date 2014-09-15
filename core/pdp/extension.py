@@ -3,10 +3,14 @@ import copy
 import json
 import itertools
 from uuid import uuid4
-from moon.log_repository import authz_logger
+from moon.tools.log import get_authz_logger
+
+
+authz_logger = get_authz_logger()
 
 
 class Metadata:
+
     def __init__(self):
         self.__name = ''
         self.__model = ''
@@ -29,14 +33,6 @@ class Metadata:
         self.__subject_categories = copy.deepcopy(json_metadata['subject_categories'])
         self.__object_categories = copy.deepcopy(json_metadata['object_categories'])
         self.__meta_rule = copy.deepcopy(json_metadata['meta_rule'])
-
-        # self.__meta_rule['aggregation'] = json_metadata['meta_rule']['aggregation']
-        # for sub_rule in json_metadata['meta_rule']['sub_meta_rules']:
-        #     tmp_sub_rule = dict()
-        #     tmp_sub_rule['subject_categories'] = copy.deepcopy(sub_rule['subject_categories'])
-        #     tmp_sub_rule['object_categories'] = copy.deepcopy(sub_rule['object_categories'])
-        #     tmp_sub_rule['relation'] = sub_rule['relation']
-        #     self.__meta_rule['sub_meta_rules'].append(tmp_sub_rule)
 
     def get_name(self):
         return self.__name
@@ -210,28 +206,14 @@ class Extension:
         self.perimeter = Perimeter()
         self.assignment = Assignment()
 
-    def get_name(self):
-        self.metadata.get_name()
-
-    def get_data(self):
-        data = dict()
-        data["metadata"] = self.metadata.get_data()
-        data["configuration"] = self.configuration.get_data()
-        data["perimeter"] = self.perimeter.get_data()
-        data["assignment"] = self.assignment.get_data()
-        return data
-
-    def set_data(self, extension_data):
-        self.metadata.set_data(extension_data["metadata"])
-        self.configuration.set_data(extension_data["configuration"])
-        self.perimeter.set_data(extension_data["perimeter"])
-        self.assignment.set_data(extension_data["assignment"])
-
     def load_from_json(self, extension_setting_dir):
         self.metadata.load_from_json(extension_setting_dir)
         self.configuration.load_from_json(extension_setting_dir)
         self.perimeter.load_from_json(extension_setting_dir)
         self.assignment.load_from_json(extension_setting_dir)
+
+    def get_name(self):
+        return self.metadata.get_name()
 
     def authz(self, sub, obj, act):
         authz_data = AuthzData(sub, obj, act)
@@ -316,7 +298,7 @@ class Extension:
         self.get_subject_categories().remove(category_id)
 
     def get_object_categories(self):
-        return self.get_object_categories()
+        return self.metadata.get_object_categories()
 
     def add_object_category(self, category_id):
         self.get_object_categories().append(category_id)
@@ -412,6 +394,22 @@ class Extension:
 
     def get_object_attr(self, category_id, object_id):
         return self.get_object_attr(category_id, object_id)
+
+# ---------------- SyncDB API ----------------
+
+    def get_data(self):
+        data = dict()
+        data["metadata"] = self.metadata.get_data()
+        data["configuration"] = self.configuration.get_data()
+        data["perimeter"] = self.perimeter.get_data()
+        data["assignment"] = self.assignment.get_data()
+        return data
+
+    def set_data(self, extension_data):
+        self.metadata.set_data(extension_data["metadata"])
+        self.configuration.set_data(extension_data["configuration"])
+        self.perimeter.set_data(extension_data["perimeter"])
+        self.assignment.set_data(extension_data["assignment"])
 
 # ---------------- inter-extension API ----------------
 
