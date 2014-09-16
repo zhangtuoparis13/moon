@@ -2,18 +2,9 @@
 import os
 import sys
 import argparse
-from moon.core.pap import get_pap
-import logging
-from moon.log_repository import get_log_manager
+from moon.tools.log import get_sys_logger
 
-LOG_LEVEL = logging.INFO
-LOGS = get_log_manager()
-
-FORMAT = "%(name)s-%(levelname)s %(message)s\033[1;m"
-logging.basicConfig(format=FORMAT, level=LOG_LEVEL)
-logging.addLevelName(logging.INFO, "\033[1;32m%s" % logging.getLevelName(logging.INFO))
-logging.addLevelName(logging.WARNING, "\033[1;31m%s" % logging.getLevelName(logging.WARNING))
-logging.addLevelName(logging.ERROR, "\033[1;41m%s" % logging.getLevelName(logging.ERROR))
+sys_logger = get_sys_logger()
 
 
 def start_django(args):
@@ -46,22 +37,26 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    pap = get_pap()
-
     if args.init:
         init_django()
     if args.dbdrop:
+        from moon.core.pap import get_pap
+        pap = get_pap()
         pap.delete_tables()
     elif args.sync:
+        from moon.core.pap import get_pap
+        pap = get_pap()
         if args.sync == "db":
             pap.add_from_db()
         else:
             pap.add_from_json(args.sync)
+        sys_logger.info("Starting application")
         d_args = [sys.argv[0]]
         d_args.extend(args.djangoargs)
         start_django(d_args)
     elif args.run:
-        LOGS.write("Starting application")
+        from moon.core.pap import get_pap
+        sys_logger.info("Starting application")
         d_args = [sys.argv[0]]
         d_args.extend(args.djangoargs)
         start_django(d_args)
