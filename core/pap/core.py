@@ -1,13 +1,10 @@
 """
 """
-import logging
 import os
 import json
-from uuid import uuid4
 from moon import settings
 from moon.core.pdp import get_intra_extensions
 from moon.core.pdp import get_inter_extensions
-# from moon.core.pdp import Extension
 from moon.core.pip import get_pip
 from moon.tools.log import get_sys_logger
 
@@ -20,7 +17,7 @@ class PAP:
     def __init__(self):
         self.intra_extensions = get_intra_extensions()
         self.inter_extensions = get_inter_extensions()
-        self.tenants = get_inter_extensions().tenants
+        # self.tenants = get_inter_extensions().tenants
 
     def get_intra_extensions(self, uuid=None):
         if not uuid:
