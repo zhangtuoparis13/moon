@@ -28,7 +28,7 @@ class IntraExtensions:
 
     def install_intra_extension_from_db(self):
         intra_extension = IntraExtension()
-        intra_extension.load_from_db()
+        intra_extension.get_from_db()
         self.__installed_intra_extensions[intra_extension.get_uuid()] = intra_extension
 
     def get_installed_intra_extensions(self):
