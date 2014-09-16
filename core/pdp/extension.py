@@ -37,6 +37,9 @@ class Metadata:
     def get_name(self):
         return self.__name
 
+    def get_type(self):
+        return self.__type
+
     def get_subject_categories(self):
         return self.__subject_categories
 
@@ -215,6 +218,9 @@ class Extension:
     def get_name(self):
         return self.metadata.get_name()
 
+    def get_type(self):
+        return self.metadata.get_type()
+
     def authz(self, sub, obj, act):
         authz_data = AuthzData(sub, obj, act)
         authz_logger.warning('extension/authz request: [sub {}, obj {}, act {}]'.format(sub, obj, act))
@@ -314,8 +320,8 @@ class Extension:
     def add_subject_category_value(self, category_id, category_value):
         self.configuration.get_subject_category_values()[category_id].append(category_value)
 
-    def del_subject_category_value(self, category_id, category_value):  # TODO later
-        pass
+    def del_subject_category_value(self, category_id, category_value):
+        self.configuration.get_subject_category_values()[category_id].remove(category_value)
 
     def get_object_category_values(self, category_id):
         return self.configuration.get_object_category_values()[category_id]
@@ -323,11 +329,11 @@ class Extension:
     def add_object_category_value(self, category_id, category_value):
         self.configuration.get_object_category_values()[category_id].append(category_value)
 
-    def del_object_category_value(self, category_id, category_value):  # TODO later
-        pass
+    def del_object_category_value(self, category_id, category_value):
+        self.configuration.get_object_category_values()[category_id].remove(category_value)
 
     def get_rules(self):
-        return self.get_rules()
+        return self.configuration.get_rules()
 
     def add_rule(self, sub_cat_value, obj_cat_value):  # TODO to test
         _rule = list()
@@ -349,19 +355,19 @@ class Extension:
         return self.perimeter.get_subjects()
 
     def add_subject(self, subject_id):
-        self.perimeter.get_objects().append(subject_id)
+        self.perimeter.get_subjects().append(subject_id)
 
-    def del_subject(self, subject_id):  # TODO later
-        pass
+    def del_subject(self, subject_id):
+        self.perimeter.get_subjects().remove(subject_id)
 
     def get_objects(self):
         return self.perimeter.get_objects()
 
     def add_object(self, object_id):
-       self.perimeter.get_objects().append(object_id)
+        self.perimeter.get_objects().append(object_id)
 
-    def del_object(self, object_id):  # TODO later
-       pass
+    def del_object(self, object_id):
+        self.perimeter.get_objects().remove(object_id)
 
     # ---------------- assignment api ----------------
 
@@ -370,30 +376,36 @@ class Extension:
 
     def add_subject_assignment(self, category_id, subject_id, category_value):
         if subject_id in self.assignment.get_subject_category_assignments()[category_id]:
-            self.assignment.get_subject_category_assignments()[category_id][subject_id].append(category_value)
+            self.assignment.get_subject_category_assignments()[category_id][subject_id].extend([category_value])
         else:
-            self.assignment.get_subject_category_assignments()[category_id][subject_id] = list(category_id)
+            self.assignment.get_subject_category_assignments()[category_id][subject_id] = [category_value]
 
     def del_subject_assignment(self, category_id, subject_id, category_value):
-        self.assignment.get_subject_category_assignments()[category_id][subject_id].remove(category_value)
+        if len(self.assignment.get_subject_category_assignments()[category_id][subject_id]) >= 2:
+            self.assignment.get_subject_category_assignments()[category_id][subject_id].remove(category_value)
+        else:
+            self.assignment.get_subject_category_assignments()[category_id].pop(subject_id)
 
-    def get_subject_attr(self, category_id, subject_id):
-        return self.get_subject_attr(category_id, subject_id)
+    def get_subject_category_attr(self, category_id, subject_id):
+        return self.assignment.get_subject_category_attr(category_id, subject_id)
 
     def get_object_assignments(self, category_id):
         return self.assignment.get_object_category_assignments()[category_id]
 
     def add_object_assignment(self, category_id, object_id, category_value):
         if object_id in self.assignment.get_object_category_assignments()[category_id]:
-            self.assignment.get_object_category_assignments()[category_id][object_id].append(category_value)
+            self.assignment.get_object_category_assignments()[category_id][object_id].extend([category_value])
         else:
-            self.assignment.get_object_category_assignments()[category_id][object_id] = list(category_id)
+            self.assignment.get_object_category_assignments()[category_id][object_id] = [category_value]
 
     def del_object_assignment(self, category_id, object_id, category_value):
-        self.assignment.get_object_category_assignments()[category_id][object_id].remove(category_value)
+        if len(self.assignment.get_object_category_assignments()[category_id][object_id]) >= 2:
+            self.assignment.get_object_category_assignments()[category_id][object_id].remove(category_value)
+        else:
+            self.assignment.get_object_category_assignments()[category_id].pop(object_id)
 
-    def get_object_attr(self, category_id, object_id):
-        return self.get_object_attr(category_id, object_id)
+    def get_object_category_attr(self, category_id, object_id):
+        return self.assignment.get_object_category_attr(category_id, object_id)
 
 # ---------------- SyncDB API ----------------
 
