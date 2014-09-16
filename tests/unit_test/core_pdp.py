@@ -400,15 +400,11 @@ class TestCorePDPIntraExtension(unittest.TestCase):
         print("[test_set_data]----------------: ")
         self.assertIsInstance(self.intra_extension.get_data(), dict)
 
-    # TODO after sync_db
-    # def test_set_to_db(self):
-    #     print("[test_set_to_db]----------------: ", self.intra_extension.set_to_db())
-    #
-    # def test_get_from_db(self):
-    #     _uuid = self.intra_extension.get_uuid()
-    #     self.intra_extension.get_from_db(_uuid)
-    #     print("[test_get_from_db]----------------: ", self.intra_extension.get_data())
-
+    def test_set_to_db_and_get_from_db(self):
+        print("[test_set_to_db_and_get_from_db]----------------: ", self.intra_extension.get_data())
+        self.intra_extension.set_to_db()
+        self.intra_extension.get_from_db(self.intra_extension.get_uuid())
+        print("[test_set_to_db_and_get_from_db]----------------: ", self.intra_extension.get_data())
 
 
 class TestCorePDPInterExtension(unittest.TestCase):
@@ -422,7 +418,7 @@ class TestCorePDPInterExtension(unittest.TestCase):
     def test_get_name(self):
         pass
 
-
+"""
 class TestCorePDPSyncdb(unittest.TestCase):
 
     def setUp(self):
@@ -452,6 +448,7 @@ class TestCorePDPSyncdb(unittest.TestCase):
         print("[test_intra_extension_set_to_db_and_get_from_db] for", _uuid, "----------------: ", self.intra_extension_syncer.get_from_db(_uuid))
         print("[test_intra_extension_set_to_db_and_get_from_db]----------------: ", self.intra_extension_syncer.get_from_db())
 
+"""
 
 class TestCorePDPCore(unittest.TestCase):
 
