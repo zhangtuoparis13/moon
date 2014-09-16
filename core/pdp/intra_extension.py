@@ -16,6 +16,19 @@ class IntraExtension:
         self.intra_extension_authz.load_from_json(os.path.join(extension_setting_abs_dir, 'authz'))
         self.intra_extension_admin.load_from_json(os.path.join(extension_setting_abs_dir, 'admin'))
 
+    def get_uuid(self):
+        return str(self.__uuid)
+
+    def get_tenant_uuid(self):
+        return self.__tenant_uuid
+
+    def authz(self, sub, obj, act):
+        # authz_logger.warning('intra_extension/authz request: [sub {}, obj {}, act {}]'.format(sub, obj, act))
+        return self.intra_extension_authz.authz(sub, obj, act)
+
+    def admin(self, sub, obj, act):
+        return self.intra_extension_admin.authz(sub, obj, act)
+
     def get_data(self):
         data = dict()
         data["_id"] = self.__uuid
@@ -35,19 +48,6 @@ class IntraExtension:
 
     def get_from_db(self, uuid):
         self.set_data(self.__syncer.get_from_db(uuid))
-
-    def get_uuid(self):
-        return str(self.__uuid)
-
-    def get_tenant_uuid(self):
-        return self.__tenant_uuid
-
-    def authz(self, sub, obj, act):
-        # authz_logger.warning('intra_extension/authz request: [sub {}, obj {}, act {}]'.format(sub, obj, act))
-        return self.intra_extension_authz.authz(sub, obj, act)
-
-    def admin(self, sub, obj, act):
-        return self.intra_extension_admin.authz(sub, obj, act)
 
     def create_requesting_collaboration(self, type, subs, vent, act):
         if type == 'authz':
