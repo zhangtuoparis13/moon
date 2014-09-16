@@ -9,8 +9,8 @@
     ],
 
     "object_categories": [
-        "action",
-        "object_id"
+        "object_id",
+        "action"
     ],
 
     "meta_rule": {

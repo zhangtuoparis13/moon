@@ -9,8 +9,8 @@
     ],
 
     "object_categories": [
-        "action",
-        "object_security_level"
+        "object_security_level",
+        "action"
     ],
 
     "meta_rule": {
