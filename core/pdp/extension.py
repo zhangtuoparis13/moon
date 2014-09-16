@@ -327,7 +327,7 @@ class Extension:
         pass
 
     def get_rules(self):
-        return self.get_rules()
+        return self.configuration.get_rules()
 
     def add_rule(self, sub_cat_value, obj_cat_value):  # TODO to test
         _rule = list()
@@ -370,30 +370,36 @@ class Extension:
 
     def add_subject_assignment(self, category_id, subject_id, category_value):
         if subject_id in self.assignment.get_subject_category_assignments()[category_id]:
-            self.assignment.get_subject_category_assignments()[category_id][subject_id].append(category_value)
+            self.assignment.get_subject_category_assignments()[category_id][subject_id].extend([category_value])
         else:
-            self.assignment.get_subject_category_assignments()[category_id][subject_id] = list(category_id)
+            self.assignment.get_subject_category_assignments()[category_id][subject_id] = [category_value]
 
     def del_subject_assignment(self, category_id, subject_id, category_value):
-        self.assignment.get_subject_category_assignments()[category_id][subject_id].remove(category_value)
+        if len(self.assignment.get_subject_category_assignments()[category_id][subject_id]) >= 2:
+            self.assignment.get_subject_category_assignments()[category_id][subject_id].remove(category_value)
+        else:
+            self.assignment.get_subject_category_assignments()[category_id].pop(subject_id)
 
-    def get_subject_attr(self, category_id, subject_id):
-        return self.get_subject_attr(category_id, subject_id)
+    def get_subject_category_attr(self, category_id, subject_id):
+        return self.assignment.get_subject_category_attr(category_id, subject_id)
 
     def get_object_assignments(self, category_id):
         return self.assignment.get_object_category_assignments()[category_id]
 
     def add_object_assignment(self, category_id, object_id, category_value):
         if object_id in self.assignment.get_object_category_assignments()[category_id]:
-            self.assignment.get_object_category_assignments()[category_id][object_id].append(category_value)
+            self.assignment.get_object_category_assignments()[category_id][object_id].extend([category_value])
         else:
-            self.assignment.get_object_category_assignments()[category_id][object_id] = list(category_id)
+            self.assignment.get_object_category_assignments()[category_id][object_id] = [category_value]
 
     def del_object_assignment(self, category_id, object_id, category_value):
-        self.assignment.get_object_category_assignments()[category_id][object_id].remove(category_value)
+        if len(self.assignment.get_object_category_assignments()[category_id][object_id]) >= 2:
+            self.assignment.get_object_category_assignments()[category_id][object_id].remove(category_value)
+        else:
+            self.assignment.get_object_category_assignments()[category_id].pop(object_id)
 
-    def get_object_attr(self, category_id, object_id):
-        return self.get_object_attr(category_id, object_id)
+    def get_object_category_attr(self, category_id, object_id):
+        return self.assignment.get_object_category_attr(category_id, object_id)
 
 # ---------------- SyncDB API ----------------
 
