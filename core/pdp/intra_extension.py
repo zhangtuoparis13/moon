@@ -43,11 +43,11 @@ class IntraExtension:
         self.intra_extension_authz.set_data(data["authz"])
         self.intra_extension_admin.set_data(data["admin"])
 
-    def set_to_db(self):
-        self.__syncer.set_to_db(self.get_data())
+    def backup_intra_extension_to_db(self):
+        self.__syncer.backup_intra_extension_to_db(self.get_data())
 
-    def get_from_db(self, uuid):
-        self.set_data(self.__syncer.get_from_db(uuid))
+    def get_intra_extension_from_db(self, uuid):
+        self.set_data(self.__syncer.get_intra_extension_from_db(uuid))
 
     def create_requesting_collaboration(self, type, subs, vent, act):
         if type == 'authz':

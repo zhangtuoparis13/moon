@@ -22,23 +22,27 @@ class IntraExtensions:
         extension_setting_abs_dir = extension_setting_dir
         if not os.path.isdir(extension_setting_dir):
             extension_setting_abs_dir = pkg_resources.resource_filename("moon", extension_setting_dir)
-        intra_extension = IntraExtension()
-        intra_extension.load_from_json(extension_setting_abs_dir)
-        self.__installed_intra_extensions[intra_extension.get_uuid()] = intra_extension
+        _intra_extension = IntraExtension()
+        _intra_extension.load_from_json(extension_setting_abs_dir)
+        self.__installed_intra_extensions[_intra_extension.get_uuid()] = _intra_extension
 
     def get_installed_intra_extensions(self):
         return self.__installed_intra_extensions
 
-    def set_to_db(self):
-        for _intra_extension in self.__installed_intra_extensions:
-            _intra_extension.set_to_db()
+    def get_intra_extensions_from_db(self):
+        return self.__syncer.get_intra_extensions_from_db()
 
-    def get_from_db(self):
+    def backup_intra_extensions_to_db(self):  # TODO: to test
+        for _intra_extension in self.__installed_intra_extensions:
+            self.__installed_intra_extensions[_intra_extension].backup_intra_extension_to_db()
+
+    def install_intra_extensions_from_db(self):  # TODO: to test
         _intra_extension_dict = self.__syncer.get_intra_extensions_from_db()
         for _intra_extension_uuid in _intra_extension_dict:
-            _intra_extension = IntraExtension()
-            _intra_extension.set_data(_intra_extension_dict[_intra_extension_uuid])
-            self.__installed_intra_extensions[_intra_extension_uuid] = _intra_extension
+            if _intra_extension_uuid not in self.__installed_intra_extensions:
+                _intra_extension = IntraExtension()
+                _intra_extension.set_data(_intra_extension_dict[_intra_extension_uuid])
+                self.__installed_intra_extensions[_intra_extension_uuid] = _intra_extension
 
     def __getitem__(self, key):
         if key in self.__installed_intra_extensions:

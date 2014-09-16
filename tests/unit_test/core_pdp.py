@@ -7,7 +7,8 @@ import pkg_resources
 import argparse
 from moon.core.pdp.intra_extension import IntraExtension
 from moon.core.pdp.extension import Extension
-from moon.core.pdp.sync_db import InterExtensionSyncer
+from moon.core.pdp.sync_db import IntraExtensionSyncer, IntraExtensionsSyncer
+from moon.core.pdp.core import IntraExtensions
 
 
 REQUESTS = {
@@ -349,7 +350,6 @@ class TestCorePDPExtension(unittest.TestCase):
         print("[test_set_data]----------------: ")
         # print("[test_set_data]----------------: ", self.extension.get_data())
 
-"""
 
 class TestCorePDPIntraExtension(unittest.TestCase):
 
@@ -418,11 +418,12 @@ class TestCorePDPInterExtension(unittest.TestCase):
     def test_get_name(self):
         pass
 
-"""
+
 class TestCorePDPSyncdb(unittest.TestCase):
 
     def setUp(self):
-        self.intra_extension_syncer = InterExtensionSyncer()
+        self.intra_extension_syncer = IntraExtensionSyncer()
+        self.intra_extensions_syncer = IntraExtensionsSyncer()
 
     def tearDown(self):
         pass
@@ -431,35 +432,72 @@ class TestCorePDPSyncdb(unittest.TestCase):
         self.intra_extension_syncer.drop()
         print("[test_intra_extension_drop]----------------: ")
 
-    def test_intra_extension_set_to_db_and_get_from_db(self):
+    def test_intra_extension_backup_to_db_and_get_from_db(self):
         _intra_extension = IntraExtension()
         _intra_extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'samples/mls001')
         _intra_extension.load_from_json(_intra_extension_setting_abs_dir)
         _data = _intra_extension.get_data()
-        self.intra_extension_syncer.set_to_db(_data)
+        self.intra_extension_syncer.backup_intra_extension_to_db(_data)
 
         _intra_extension = IntraExtension()
         _intra_extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'samples/mls002')
         _intra_extension.load_from_json(_intra_extension_setting_abs_dir)
         _data = _intra_extension.get_data()
-        self.intra_extension_syncer.set_to_db(_data)
+        self.intra_extension_syncer.backup_intra_extension_to_db(_data)
 
         _uuid = _intra_extension.get_uuid()
-        print("[test_intra_extension_set_to_db_and_get_from_db] for", _uuid, "----------------: ", self.intra_extension_syncer.get_from_db(_uuid))
-        print("[test_intra_extension_set_to_db_and_get_from_db]----------------: ", self.intra_extension_syncer.get_from_db())
+        print("[test_intra_extension_backup_to_db_and_get_from_db] for", _uuid, "----------------: ",
+              self.intra_extension_syncer.get_intra_extension_from_db(_uuid))
 
+    # def test_intra_extensions_drop(self):
+    #     self.intra_extension_syncer.drop()
+    #     print("[test_intra_extensions_drop]----------------: ")
+
+    def test_intra_extensions_backup_from_db(self):
+        print("[test_intra_extensions_backup_from_db]----------------: ",
+              self.intra_extensions_syncer.get_intra_extensions_from_db())
 """
+
 
 class TestCorePDPCore(unittest.TestCase):
 
     def setUp(self):
-        pass
+        self.intra_extensions = IntraExtensions()
 
     def tearDown(self):
         pass
 
-    def test_get_name(self):
-        pass
+    def test_intra_extensions_get_installed_intra_extensions(self):
+        print("[test_intra_extensions_get_installed_intra_extensions]----------------: ",
+              self.intra_extensions.get_installed_intra_extensions())
+
+    def test_intra_extensions_install_intra_extension_from_json(self):
+        print("[test_intra_extensions_install_intra_extension_from_json]----------------: ",
+              self.intra_extensions.get_installed_intra_extensions())
+        _extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'samples/mls001')
+        self.intra_extensions.install_intra_extension_from_json(_extension_setting_abs_dir)
+        print("[test_intra_extensions_install_intra_extension_from_json]----------------: ",
+              self.intra_extensions.get_installed_intra_extensions())
+
+    def test_intra_extensions_get_from_db(self):
+        print("[test_intra_extensions_get_from_db]----------------: ",
+              self.intra_extensions.get_intra_extensions_from_db().keys())
+
+    def test_intra_extensions_backup_intra_extensions_to_db(self):
+        _extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'samples/mls001')
+        self.intra_extensions.install_intra_extension_from_json(_extension_setting_abs_dir)
+        print("[test_intra_extensions_backup_intra_extensions_to_db]----------------: ",
+              self.intra_extensions.get_intra_extensions_from_db().keys())
+        self.intra_extensions.backup_intra_extensions_to_db()
+        print("[test_intra_extensions_backup_intra_extensions_to_db]----------------: ",
+              self.intra_extensions.get_intra_extensions_from_db().keys())
+
+    def test_install_intra_extensions_from_db(self):
+        print("[test_install_intra_extensions_from_db]----------------: ",
+              self.intra_extensions.get_installed_intra_extensions())
+        self.intra_extensions.install_intra_extensions_from_db()
+        print("[test_install_intra_extensions_from_db]----------------: ",
+              self.intra_extensions.get_installed_intra_extensions())
 
 
 if __name__ == "__main__":
