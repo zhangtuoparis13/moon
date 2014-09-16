@@ -51,21 +51,19 @@ class TestCorePDPExtension(unittest.TestCase):
 
     def setUp(self):
         self.extension = Extension()
-        extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'samples/mls001/authz')
-        # extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'samples/mls001/admin')
+        # extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'samples/mls001/authz')
+        extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'samples/mls001/admin')
         self.extension.load_from_json(extension_setting_abs_dir)
 
     def tearDown(self):
         pass
 
     def test_get_name(self):
-        print("[test_get_name]----------------: self.extension.get_name(): ",
-              self.extension.get_name())
+        print("[test_get_name]----------------: ", self.extension.get_name())
         self.assertIsInstance(self.extension.get_name(), unicode)
 
     def test_get_type(self):
-        print("[test_get_type]----------------: self.extension.get_type(): ",
-              self.extension.get_type())
+        print("[test_get_type]----------------: ", self.extension.get_type())
         self.assertIsInstance(self.extension.get_type(), unicode)
 
     def test_authz(self):
@@ -89,9 +87,9 @@ class TestCorePDPExtension(unittest.TestCase):
 
     def test_del_subject_category(self):
         self.extension.add_subject_category("ssss")
-        print("[test_add_subject_category]----------------: ", self.extension.get_subject_categories())
+        print("[test_del_subject_category]----------------: ", self.extension.get_subject_categories())
         self.extension.del_subject_category("ssss")
-        print("[test_add_subject_category]----------------: ", self.extension.get_subject_categories())
+        print("[test_del_subject_category]----------------: ", self.extension.get_subject_categories())
 
     def test_get_object_categories(self):
         print("[test_get_object_categories]----------------: ", self.extension.get_object_categories())
@@ -105,9 +103,9 @@ class TestCorePDPExtension(unittest.TestCase):
 
     def test_del_object_category(self):
         self.extension.add_object_category("oooo")
-        print("[test_add_object_category]----------------: ", self.extension.get_object_categories())
+        print("[test_del_object_category]----------------: ", self.extension.get_object_categories())
         self.extension.del_object_category("oooo")
-        print("[test_add_object_category]----------------: ", self.extension.get_object_categories())
+        print("[test_del_object_category]----------------: ", self.extension.get_object_categories())
 
     def test_get_subject_category_values(self):
         _sub_cat_id = self.extension.get_subject_categories()[0]
@@ -164,8 +162,10 @@ class TestCorePDPExtension(unittest.TestCase):
 
     def test_add_rule(self):
         print("[test_add_rule]----------------: ", self.extension.get_rules())
-        sub_cat_value = {"subject_security_level": "xxxx"}
-        obj_cat_value = {"object_security_level": "yyyy", "action": "zzz"}
+        # sub_cat_value = {"subject_security_level": "xxxx"}
+        # obj_cat_value = {"object_security_level": "yyyy", "action": "zzz"}
+        sub_cat_value = {self.extension.get_subject_categories()[0]: "xxxx"}
+        obj_cat_value = {self.extension.get_object_categories()[0]: "yyyy", self.extension.get_object_categories()[1]: "zzz"}
         self.extension.add_rule(sub_cat_value, obj_cat_value)
         print("[test_add_rule]----------------: ", self.extension.get_rules())
 
@@ -247,31 +247,35 @@ class TestCorePDPExtension(unittest.TestCase):
         self.assertIsInstance(self.extension.get_object_assignments(_obj_cat_id), dict)
 
     def test_add_object_assignment(self):
-        print("[test_add_object_assignment]----------------: "
-              "self.extension.get_object_assignments('object_security_level''): ",
-              self.extension.get_object_assignments("object_security_level"))
-        self.extension.add_object_assignment("object_security_level", "vmx", "bbbb")
-        self.extension.add_object_assignment("object_security_level", "vmx", "bbbb2")
-        print("[test_add_object_assignment]----------------: "
-              "self.extension.get_object_assignments('object_security_level''): ",
-              self.extension.get_object_assignments("object_security_level"))
-        self.extension.del_object_assignment("object_security_level", "vmx", "bbbb")
-        self.extension.del_object_assignment("object_security_level", "vmx", "bbbb2")
+        _obj_cat_id = self.extension.get_object_categories()[0]
+        print("[test_add_object_assignment] for ", _obj_cat_id, "----------------: ",
+              self.extension.get_object_assignments(_obj_cat_id))
+        self.extension.add_object_assignment(_obj_cat_id, "vmx", "bbbb")
+        self.extension.add_object_assignment(_obj_cat_id, "vmx", "bbbb2")
+        self.extension.add_object_assignment(_obj_cat_id, "vm3", "bbbb3")
+        print("[test_add_object_assignment] for ", _obj_cat_id, "----------------: ",
+              self.extension.get_object_assignments(_obj_cat_id))
+        self.extension.del_object_assignment(_obj_cat_id, "vmx", "bbbb")
+        self.extension.del_object_assignment(_obj_cat_id, "vmx", "bbbb2")
+        self.extension.del_object_assignment(_obj_cat_id, "vm3", "bbbb3")
 
     def test_del_object_assignment(self):
-        self.extension.add_object_assignment("object_security_level", "vmx", "bbbb")
-        print("[test_del_object_assignment]----------------: "
-              "self.extension.get_object_assignments('object_security_level'): ",
-              self.extension.get_object_assignments("object_security_level"))
-        self.extension.del_object_assignment("object_security_level", "vmx", "bbbb")
-        print("[test_del_object_assignment]----------------: "
-              "self.extension.get_object_assignments('object_security_level'): ",
-              self.extension.get_object_assignments("object_security_level"))
+        _obj_cat_id = self.extension.get_object_categories()[0]
+        self.extension.add_object_assignment(_obj_cat_id, "vmx", "bbbb")
+        self.extension.add_object_assignment(_obj_cat_id, "vm3", "bbbb3")
+        print("[test_del_object_assignment] for ", _obj_cat_id, "----------------: ",
+              self.extension.get_object_assignments(_obj_cat_id))
+        self.extension.del_object_assignment(_obj_cat_id, "vmx", "bbbb")
+        self.extension.del_object_assignment(_obj_cat_id, "vm3", "bbbb3")
+        print("[test_del_object_assignment] for ", _obj_cat_id, "----------------: ",
+              self.extension.get_object_assignments(_obj_cat_id))
 
     def test_get_object_category_attr(self):
-        print("[test_get_object_category_attr]----------------: self.extension.get_object_attr(): ",
-              self.extension.get_object_category_attr("object_security_level", "vm1"))
-        self.assertIsInstance(self.extension.get_object_category_attr("object_security_level", "vm1"), list)
+        _obj_cat_id = self.extension.get_object_categories()[0]
+        _object_id = self.extension.get_objects()[0]
+        print("[test_get_object_category_attr] for ", _obj_cat_id, _object_id, "----------------: ",
+              self.extension.get_object_category_attr(_obj_cat_id, _object_id))
+        self.assertIsInstance(self.extension.get_object_category_attr(_obj_cat_id, _object_id), list)
 
 
 class TestCorePDPIntraExtension(unittest.TestCase):
