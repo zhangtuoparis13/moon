@@ -20,11 +20,11 @@ Legend:
 
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
-| extension           | WuKong      |                   | 16/09         | 90%                |
-| intra_extension     | WuKong      |                   | 16/09         | 70%                |
+| extension           | WuKong      |                   | 16/09         | 100%               |
+| intra_extension     | WuKong      |                   | 16/09         | 100%               |
 | inter_extension     | WuKong      |                   | 18/09         | 40%                |
-| core                | WuKong      |                   | 16/09         | 40%                |
-| sync_db             | WuKong      |                   | 16/09         | 40%                |
+| core                | WuKong      |                   | 16/09         | 50%                |
+| sync_db             | WuKong      |                   | 16/09         | 80%                |
 
 
 ###Core/PAP
@@ -39,7 +39,7 @@ Legend:
 
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
-| Core/PDP            | WuKong      | unit test         | 19/09         | 0%                 |
+| Core/PDP            | WuKong      | unit test         | 19/09         | 60%                |
 | Core/PAP            | Tom         | unit test         | 19/09         | 0%                 |
 | GUI + PAP + PDP     | Tom         | integration test  | 26/09         | 0%                 |
 
