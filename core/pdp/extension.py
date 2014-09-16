@@ -189,6 +189,14 @@ class AuthzData:
         self.requesting_tenant = ""  # "subject_tenant": subject_tenant,
         self.requested_tenant = ""  # "object_tenant": object_tenant,
 
+    def __str__(self):
+        return """AuthzData:
+        validation={}
+        subject={}
+        object={}
+        action={}
+        """.format(self.validation, self.subject, self.object, self.action)
+
 
 class VirtualEntity:
     def __init__(self, type):
