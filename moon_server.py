@@ -49,7 +49,8 @@ if __name__ == "__main__":
         if args.sync == "db":
             pap.add_from_db()
         else:
-            pap.add_from_json(args.sync)
+            for dirname in args.sync.split(","):
+                pap.add_from_json(dirname.strip())
         sys_logger.info("Starting application")
         d_args = [sys.argv[0]]
         d_args.extend(args.djangoargs)
