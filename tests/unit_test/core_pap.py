@@ -125,7 +125,7 @@ class TestCorePDPExtension(unittest.TestCase):
 
     def test_meta_rules(self):
         meta_rules = self.pap.get_meta_rules(self.extension.get_uuid(), "user1")
-        self.assertIn(meta_rules, dict)
+        self.assertIsInstance(meta_rules, dict)
         self.assertIn("sub_meta_rules", meta_rules.keys())
         self.assertIn("subject_categories", meta_rules["sub_meta_rules"].keys())
         self.assertIn("object_categories", meta_rules["sub_meta_rules"].keys())
