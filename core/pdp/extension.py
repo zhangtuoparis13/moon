@@ -37,6 +37,9 @@ class Metadata:
     def get_name(self):
         return self.__name
 
+    def get_type(self):
+        return self.__type
+
     def get_subject_categories(self):
         return self.__subject_categories
 
@@ -215,6 +218,9 @@ class Extension:
     def get_name(self):
         return self.metadata.get_name()
 
+    def get_type(self):
+        return self.metadata.get_type()
+
     def authz(self, sub, obj, act):
         authz_data = AuthzData(sub, obj, act)
         authz_logger.warning('extension/authz request: [sub {}, obj {}, act {}]'.format(sub, obj, act))
@@ -314,8 +320,8 @@ class Extension:
     def add_subject_category_value(self, category_id, category_value):
         self.configuration.get_subject_category_values()[category_id].append(category_value)
 
-    def del_subject_category_value(self, category_id, category_value):  # TODO later
-        pass
+    def del_subject_category_value(self, category_id, category_value):
+        self.configuration.get_subject_category_values()[category_id].remove(category_value)
 
     def get_object_category_values(self, category_id):
         return self.configuration.get_object_category_values()[category_id]
@@ -323,8 +329,8 @@ class Extension:
     def add_object_category_value(self, category_id, category_value):
         self.configuration.get_object_category_values()[category_id].append(category_value)
 
-    def del_object_category_value(self, category_id, category_value):  # TODO later
-        pass
+    def del_object_category_value(self, category_id, category_value):
+        self.configuration.get_object_category_values()[category_id].remove(category_value)
 
     def get_rules(self):
         return self.configuration.get_rules()
@@ -349,19 +355,19 @@ class Extension:
         return self.perimeter.get_subjects()
 
     def add_subject(self, subject_id):
-        self.perimeter.get_objects().append(subject_id)
+        self.perimeter.get_subjects().append(subject_id)
 
-    def del_subject(self, subject_id):  # TODO later
-        pass
+    def del_subject(self, subject_id):
+        self.perimeter.get_subjects().remove(subject_id)
 
     def get_objects(self):
         return self.perimeter.get_objects()
 
     def add_object(self, object_id):
-       self.perimeter.get_objects().append(object_id)
+        self.perimeter.get_objects().append(object_id)
 
-    def del_object(self, object_id):  # TODO later
-       pass
+    def del_object(self, object_id):
+        self.perimeter.get_objects().remove(object_id)
 
     # ---------------- assignment api ----------------
 

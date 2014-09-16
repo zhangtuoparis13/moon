@@ -4,7 +4,6 @@ from moon.core.pdp.extension import Extension
 from moon.core.pdp.sync_db import IntraExtensionSyncer
 
 
-
 class IntraExtension:
     def __init__(self):
         self.__uuid = str(uuid4())
