@@ -2,11 +2,15 @@ import os.path
 import copy
 import json
 import itertools
-from uuid import uuid4, UUID
-from moon.log_repository import authz_logger
+from uuid import uuid4
+from moon.tools.log import get_authz_logger
+
+
+authz_logger = get_authz_logger()
 
 
 class Metadata:
+
     def __init__(self):
         self.__name = ''
         self.__model = ''
@@ -29,14 +33,6 @@ class Metadata:
         self.__subject_categories = copy.deepcopy(json_metadata['subject_categories'])
         self.__object_categories = copy.deepcopy(json_metadata['object_categories'])
         self.__meta_rule = copy.deepcopy(json_metadata['meta_rule'])
-
-        # self.__meta_rule['aggregation'] = json_metadata['meta_rule']['aggregation']
-        # for sub_rule in json_metadata['meta_rule']['sub_meta_rules']:
-        #     tmp_sub_rule = dict()
-        #     tmp_sub_rule['subject_categories'] = copy.deepcopy(sub_rule['subject_categories'])
-        #     tmp_sub_rule['object_categories'] = copy.deepcopy(sub_rule['object_categories'])
-        #     tmp_sub_rule['relation'] = sub_rule['relation']
-        #     self.__meta_rule['sub_meta_rules'].append(tmp_sub_rule)
 
     def get_name(self):
         return self.__name
@@ -65,6 +61,15 @@ class Metadata:
         data["meta_rule"]["sub_meta_rules"] = self.get_meta_rule_sub_meta_rules()
         data["meta_rule"]["aggregation"] = self.get_meta_rule_aggregation()
         return data
+
+    def set_data(self, data):
+        self.__name = data["name"]
+        self.__model = data["model"]
+        self.__type = data["type"]
+        self.__description = data["description"]
+        self.__subject_categories = list(data["subject_categories"])
+        self.__object_categories = list(data["object_categories"])
+        self.__meta_rule = dict(data["meta_rule"])
 
 
 class Configuration:
@@ -98,6 +103,11 @@ class Configuration:
         data["rules"] = self.get_rules()
         return data
 
+    def set_data(self, data):
+        self.__subject_category_values = list(data["subject_category_values"])
+        self.__object_category_values = list(data["object_category_values"])
+        self.__rules = list(data["rules"])
+
 
 class Perimeter:
     def __init__(self):
@@ -124,6 +134,10 @@ class Perimeter:
         data["subjects"] = self.get_subjects()
         data["object"] = self.get_objects()
         return data
+
+    def set_data(self, data):
+        self.__subjects = list(data["subjects"])
+        self.__objects = list(data["object"])
 
 
 class Assignment:
@@ -158,6 +172,10 @@ class Assignment:
         data["object_category_assignments"] = self.get_object_category_assignments()
         return data
 
+    def set_data(self, data):
+        self.__subject_category_assignments = list(data["subject_category_assignments"])
+        self.__object_category_assignments = list(data["object_category_assignments"])
+
 
 class AuthzData:
     def __init__(self, sub, obj, act):
@@ -188,33 +206,27 @@ class Extension:
         self.perimeter = Perimeter()
         self.assignment = Assignment()
 
-    def get_name(self):
-        self.metadata.get_name()
-
-    def get_data(self):
-        data = dict()
-        data["metadata"] = self.metadata.get_data()
-        data["configuration"] = self.configuration.get_data()
-        data["perimeter"] = self.perimeter.get_data()
-        data["assignment"] = self.assignment.get_data()
-        return data
-
     def load_from_json(self, extension_setting_dir):
         self.metadata.load_from_json(extension_setting_dir)
         self.configuration.load_from_json(extension_setting_dir)
         self.perimeter.load_from_json(extension_setting_dir)
         self.assignment.load_from_json(extension_setting_dir)
 
+    def get_name(self):
+        return self.metadata.get_name()
+
     def authz(self, sub, obj, act):
         authz_data = AuthzData(sub, obj, act)
-        authz_logger.warning('extension/authz request: sub {}, obj {}, act {}'.format(sub, obj, act))
+        authz_logger.warning('extension/authz request: [sub {}, obj {}, act {}]'.format(sub, obj, act))
 
         if authz_data.subject in self.perimeter.get_subjects() and authz_data.object in self.perimeter.get_objects():
             authz_data.type = "intra-tenant"
 
             for subject_category in self.metadata.get_subject_categories():
                 authz_data.subject_attrs[subject_category] = copy.copy(self.assignment.get_subject_category_attr(subject_category, sub))
-                authz_logger.warning('extension/authz subject attribute: [subject attr: {}]'.format(self.assignment.get_subject_category_attr(subject_category, sub)))
+                authz_logger.warning('extension/authz subject attribute: [subject attr: {}]'.format(
+                    self.assignment.get_subject_category_attr(subject_category, sub))
+                )
 
             for object_category in self.metadata.get_object_categories():
                 if object_category == 'action':
@@ -222,7 +234,9 @@ class Extension:
                     authz_logger.warning('extension/authz object attribute: [object attr: {}]'.format([act]))
                 else:
                     authz_data.object_attrs[object_category] = copy.copy(self.assignment.get_object_category_attr(object_category, obj))
-                    authz_logger.warning('extension/authz object attribute: [object attr: {}]'.format(self.assignment.get_object_category_attr(object_category, obj)))
+                    authz_logger.warning('extension/authz object attribute: [object attr: {}]'.format(
+                        self.assignment.get_object_category_attr(object_category, obj))
+                    )
 
             _aggregation_data = dict()
 
@@ -243,7 +257,9 @@ class Extension:
                     _aggregation_data['relation_super']['result'] = False
                     for _relation_arg in _relation_args:
                         if list(_relation_arg) in self.configuration.get_rules():
-                            authz_logger.warning('extension/authz relation super OK: [sub_sl: {}, obj_sl: {}, action: {}]'.format(_relation_arg[0], _relation_arg[1], _relation_arg[2]))
+                            authz_logger.warning('extension/authz relation super OK: [sub_sl: {}, obj_sl: {}, action: {}]'.format(
+                                _relation_arg[0], _relation_arg[1], _relation_arg[2])
+                            )
                             _aggregation_data['relation_super']['result'] = True
                             break
                     _aggregation_data['relation_super']['status'] = 'finished'
@@ -253,16 +269,18 @@ class Extension:
                     _aggregation_data['permission']['result'] = False
                     for _relation_arg in _relation_args:
                         if list(_relation_arg) in self.configuration.get_rules():
-                            authz_logger.warning('extension/authz relation permission OK: [role: {}, object: {}, action: {}]'.format(_relation_arg[0], _relation_arg[1], _relation_arg[2]))
+                            authz_logger.warning('extension/authz relation permission OK: [role: {}, object: {}, action: {}]'.format(
+                                _relation_arg[0], _relation_arg[1], _relation_arg[2])
+                            )
                             _aggregation_data['permission']['result'] = True
                             break
                     _aggregation_data['permission']['status'] = 'finished'
 
             if self.metadata.get_meta_rule_aggregation() == 'and_true_aggregation':
-                authz_data.validation = True
+                authz_data.validation = "OK"
                 for relation in _aggregation_data:
                     if _aggregation_data[relation]['status'] == 'finished' and _aggregation_data[relation]['result'] == False:
-                        authz_data.validation = False
+                        authz_data.validation = "KO"
         else:
             authz_data.validation = 'Out of Scope'
 
@@ -280,7 +298,7 @@ class Extension:
         self.get_subject_categories().remove(category_id)
 
     def get_object_categories(self):
-        return self.get_object_categories()
+        return self.metadata.get_object_categories()
 
     def add_object_category(self, category_id):
         self.get_object_categories().append(category_id)
@@ -320,7 +338,7 @@ class Extension:
             for sub_object_category in sub_meta_rule["object_categories"]:
                 _rule.append(obj_cat_value[sub_object_category])
 
-        self.configuration.get_rules().append(_rule)
+            self.configuration.get_rules().append(_rule)
 
     def del_rule(self):  # TODO later
         pass
@@ -377,6 +395,22 @@ class Extension:
     def get_object_attr(self, category_id, object_id):
         return self.get_object_attr(category_id, object_id)
 
+# ---------------- SyncDB API ----------------
+
+    def get_data(self):
+        data = dict()
+        data["metadata"] = self.metadata.get_data()
+        data["configuration"] = self.configuration.get_data()
+        data["perimeter"] = self.perimeter.get_data()
+        data["assignment"] = self.assignment.get_data()
+        return data
+
+    def set_data(self, extension_data):
+        self.metadata.set_data(extension_data["metadata"])
+        self.configuration.set_data(extension_data["configuration"])
+        self.perimeter.set_data(extension_data["perimeter"])
+        self.assignment.set_data(extension_data["assignment"])
+
 # ---------------- inter-extension API ----------------
 
     def create_requesting_collaboration(self, subs, vent, act):  # TODO to test
@@ -389,10 +423,12 @@ class Extension:
             _sub_cat_value = str(uuid4())
             self.add_subject_category_value(_sub_cat_id, _sub_cat_value)
             _sub_cat_values[_sub_cat_id] = _sub_cat_value
+
             for _sub in subs:
                 self.add_subject_assignment(_sub_cat_id, _sub, _sub_cat_value)
 
         self.add_object(vent.get_uuid)
+
         for _obj_cat_id in _obj_cats:
             if _obj_cat_id == 'action':
                 _obj_cat_values[_obj_cat_id] = act
@@ -411,6 +447,7 @@ class Extension:
         _obj_cats = self.get_object_categories()
 
         self.add_object(vent.get_uuid)
+
         for _sub_cat_id in _sub_cats:
             _sub_cat_value = str(uuid4())
             self.add_subject_category_value(_sub_cat_id, _sub_cat_value)
@@ -427,4 +464,4 @@ class Extension:
                 for _obj in objs:
                     self.add_object_assignment(_obj_cat_id, _obj, _obj_cat_value)
 
-        self.add_rule(_sub_cat_values, _obj_cat_values, act)
+            self.add_rule(_sub_cat_values, _obj_cat_values, act)

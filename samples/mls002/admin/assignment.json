@@ -8,13 +8,13 @@
     },
     "object_category_assignments": {
         "action": {
-            "subjects": ["read", "write"],
-            "objects": ["read", "write"],
-            "subject_category_values": ["read", "write"],
-            "object_category_values": ["read", "write"],
-            "rules": ["read", "write"],
-            "subject_category_assignments": ["read", "write"],
-            "object_category_assignments": ["read", "write"]
+            "subjects": [],
+            "objects": [],
+            "subject_category_values": [],
+            "object_category_values": [],
+            "rules": [],
+            "subject_category_assignments": [],
+            "object_category_assignments": []
         },
         "object_id": {
             "subjects": ["subjects"],

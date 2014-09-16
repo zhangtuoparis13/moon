@@ -9,8 +9,10 @@ from moon.core.pdp import get_intra_extensions
 from moon.core.pdp import get_inter_extensions
 # from moon.core.pdp import Extension
 from moon.core.pip import get_pip
+from moon.tools.log import get_sys_logger
 
-logger = logging.getLogger("moon.pap")
+
+sys_logger = get_sys_logger()
 
 
 class PAP:
@@ -303,12 +305,12 @@ class PAP:
                         if not os.path.isfile(conf["extension_conf"]):
                             raise Exception("Unable to find configuration file {}".format(conf["extension_conf"]))
                         json_data = json.loads(file(conf["extension_conf"]).read())
-            logger.info("Syncing tenant {}".format(tenant["name"]))
+            sys_logger.info("Syncing tenant {}".format(tenant["name"]))
             logs += "Syncing {}".format(tenant["name"])
             try:
                 pip.set_creds_for_tenant(tenant["name"])
             except pip.Unauthorized:
-                logger.warning("Cannot authenticate in tenant {}".format(tenant["name"]))
+                sys_logger.warning("Cannot authenticate in tenant {}".format(tenant["name"]))
                 logs += " KO (Cannot authenticate in tenant)\n"
                 continue
             self.inter_extensions().add_tenant(
@@ -322,7 +324,7 @@ class PAP:
                 self.new_intra_extension(tenant=tenant, json_data=json_data)
                 logs += " OK\n"
             except pip.Forbidden:
-                logger.warning("Cannot list users in tenant {}".format(tenant["name"]))
+                sys_logger.warning("Cannot list users in tenant {}".format(tenant["name"]))
                 logs += " KO (Cannot list users in tenant)\n"
                 continue
         return logs
