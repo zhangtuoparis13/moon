@@ -11,23 +11,40 @@ db_name = DATABASES['intra-extensions']['NAME']
 db_driver = importlib.import_module(db_driver_name)
 
 
-class Intra_Extension_Syncer():
+class IntraExtensionSyncer():
     def __init__(self):
         self.db = db_driver.DB(db_name, "intraextensions")
 
-    def sync(self, data):
-        self.db.sync(data)
+    def set_to_db(self, data):
+        self.db.set_to_db(data)
+
+    def get_from_db(self, uuid=None):
+        return self.db.get_from_db(uuid)
 
     def drop(self):
         return self.db.drop()
 
 
-class Inter_Extension_Syncer():
+class IntraExtensionsSyncer():
+    def __init__(self):
+        self.db = db_driver.DB(db_name, "intraextensions")
+
+    def get_intra_extensions_from_db(self):
+        return self.db.get_from_db()
+
+    def drop(self):
+        return self.db.drop()
+
+
+class InterExtensionSyncer():
     def __init__(self):
         self.db = db_driver.DB(db_name, "interextensions")
 
-    def sync(self, data):
-        self.db.sync(data)
+    def set_to_db(self, data):
+        self.db.set_to_db(data)
+
+    def get_from_db(self, uuid=None):
+        return self.db.get_from_db(uuid)
 
     def drop(self):
         return self.db.drop()
