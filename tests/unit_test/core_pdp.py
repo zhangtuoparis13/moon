@@ -46,6 +46,43 @@ REQUESTS = {
     ]
 }
 
+INTRAREQUESTS = {
+    'authz': [
+        {
+            'subject': 'user1',
+            'object': 'vm1',
+            'action': 'read',
+            '_result': 'KO'
+        },
+        {
+            'subject': 'user1',
+            'object': 'vm2',
+            'action': 'read',
+            '_result': 'OK'
+        },
+        {
+            'subject': 'user1',
+            'object': 'vm3',
+            'action': 'write',
+            '_result': 'KO'
+        }
+    ],
+    'admin': [
+        {
+            'subject': 'user1',
+            'object': 'subjects',
+            'action': 'read',
+            '_result': 'OK'
+        },
+        {
+            'subject': 'user2',
+            'object': 'subjects',
+            'action': 'write',
+            '_result': 'KO'
+        }
+    ]
+}
+
 
 class TestCorePDPExtension(unittest.TestCase):
 
@@ -277,19 +314,53 @@ class TestCorePDPExtension(unittest.TestCase):
               self.extension.get_object_category_attr(_obj_cat_id, _object_id))
         self.assertIsInstance(self.extension.get_object_category_attr(_obj_cat_id, _object_id), list)
 
+    def test_get_data(self):
+        print("[test_get_data]----------------: ", self.extension.get_data())
 
-class TestCorePDPIntraExtension(unittest.TestCase):
+    def test_set_data(self):
+        _extension = Extension()
+        extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'samples/mls001/authz')
+        _extension.load_from_json(extension_setting_abs_dir)
+        _data = _extension.get_data()
+        self.extension.set_data(_data)
+        print("[test_set_data]----------------: ", self.extension.get_data())
 
-    def setUp(self):
-        self.intra_extension = IntraExtension()
-        intra_extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'samples/mls001')
-        self.intra_extension.load_from_json(intra_extension_setting_abs_dir)
-
-    def tearDown(self):
-        pass
-
-    def test_get_name(self):
-        pass
+# class TestCorePDPIntraExtension(unittest.TestCase):
+#
+#     def setUp(self):
+#         self.intra_extension = IntraExtension()
+#         intra_extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'samples/mls001')
+#         self.intra_extension.load_from_json(intra_extension_setting_abs_dir)
+#
+#     def tearDown(self):
+#         pass
+#
+#     def test_get_uuid(self):
+#         print("[test_get_uuid]----------------: ", self.intra_extension.get_uuid())
+#
+#     def test_get_tenant_uuid(self):
+#         print("[test_get_tenant_uuid]----------------: ", self.intra_extension.get_tenant_uuid())
+#
+#     def test_authz(self):
+#         _type = 'authz'
+#         for i in range(len(INTRAREQUESTS[_type])):
+#             sub = INTRAREQUESTS[_type][i]['subject']
+#             obj = INTRAREQUESTS[_type][i]['object']
+#             act = INTRAREQUESTS[_type][i]['action']
+#             _result = INTRAREQUESTS[_type][i]['_result']
+#             self.assertIs(self.intra_extension.authz(sub, obj, act), _result)
+#
+#     def test_admin(self):
+#         _type = 'admin'
+#         for i in range(len(INTRAREQUESTS[_type])):
+#             sub = INTRAREQUESTS[_type][i]['subject']
+#             obj = INTRAREQUESTS[_type][i]['object']
+#             act = INTRAREQUESTS[_type][i]['action']
+#             _result = INTRAREQUESTS[_type][i]['_result']
+#             self.assertIs(self.intra_extension.admin(sub, obj, act), _result)
+#
+#     def test_get_data(self):
+#         print("[test_get_tenant_uuid]----------------: ")
 
 
 class TestCorePDPInterExtension(unittest.TestCase):

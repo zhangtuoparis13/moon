@@ -135,12 +135,12 @@ class Perimeter:
     def get_data(self):
         data = dict()
         data["subjects"] = self.get_subjects()
-        data["object"] = self.get_objects()
+        data["objects"] = self.get_objects()
         return data
 
     def set_data(self, data):
         self.__subjects = list(data["subjects"])
-        self.__objects = list(data["object"])
+        self.__objects = list(data["objects"])
 
 
 class Assignment:
