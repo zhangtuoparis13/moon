@@ -9,15 +9,15 @@
     ],
 
     "object_categories": [
-        "action",
-        "object_id"
+        "object_id",
+        "action"
     ],
 
     "meta_rule": {
         "sub_meta_rules":[
             {
                 "subject_categories": ["role"],
-                "object_categories": ["action", "object_id"],
+                "object_categories": ["object_id", "action"],
                 "relation": "permission"
             }
         ],
