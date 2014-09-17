@@ -83,6 +83,24 @@ class PIP:
             s["uuid"] = user.id
             yield s
 
+    def add_subject(self, user):
+        for key in ('domain', 'enabled', 'name', 'project', 'password', 'description'):
+            if key not in user.keys():
+                return None
+        tenants = self.kclient.projects.list()
+        my_tenant = [x for x in tenants if x.name == user["project"]][0]
+        my_user = self.kclient.users.create(
+            name=user["name"],
+            password=user["password"],
+            tenant_id=my_tenant.id,
+            description=user["description"],
+            enabled=user["enabled"],
+            domain=user["domain"])
+        return my_user.id
+
+    def del_subject(self, user_uuid):
+        self.kclient.users.delete(user_uuid)
+
     def get_objects(self, tenant=None):
         s = dict()
         for server in self.nclient.servers.list():
