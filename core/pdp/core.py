@@ -37,11 +37,11 @@ class IntraExtensions:
     def get_intra_extensions_from_db(self):
         return self.__syncer.get_intra_extensions_from_db()
 
-    def backup_intra_extensions_to_db(self):  # TODO: to test
+    def backup_intra_extensions_to_db(self):
         for _intra_extension in self.__installed_intra_extensions:
             self.__installed_intra_extensions[_intra_extension].backup_intra_extension_to_db()
 
-    def install_intra_extensions_from_db(self):  # TODO: to test
+    def install_intra_extensions_from_db(self):
         _intra_extension_dict = self.__syncer.get_intra_extensions_from_db()
         for _intra_extension_uuid in _intra_extension_dict:
             if _intra_extension_uuid not in self.__installed_intra_extensions:
@@ -70,17 +70,13 @@ class InterExtensions:  # TODO to test
         self.__installed_intra_extensions = installed_intra_extensions
         self.__installed_inter_extensions = dict()
 
-    def create_collaboration(self, requesting_intra_extension_uuid, requested_intra_extension_uuid, type, subs, objs, act):
-        for _intra_extension in self.__installed_intra_extensions:
-            if _intra_extension.get_uuid() == requesting_intra_extension_uuid:
-                _requesting_intra_extension = _intra_extension
-            elif _intra_extension.get_uuid() == requested_intra_extension_uuid:
-                _requested_intra_extension = _intra_extension
-            else:
-                pass
-            _inter_extension = InterExtension(_requesting_intra_extension, _requested_intra_extension)
-            _inter_extension.create_collaboration(type, subs, objs, act)
-            self.__installed_inter_extensions[_requesting_intra_extension.get_uudi()][_requested_intra_extension.get_uudi()][_inter_extension.get_uuid()] = _inter_extension
+    def create_collaboration(self, requesting_intra_extension_uuid, requested_intra_extension_uuid,
+                             type, sub_list, obj_list, act):
+        for _inter_extension in self.__installed_inter_extensions:
+            if _inter_extension.check_requesters(requesting_intra_extension_uuid, requested_intra_extension_uuid):
+                _inter_extension.create_collaboration(type, sub_list, obj_list, act)
+
+
 
     def get_installed_inter_extensions(self):
         return self.__installed_inter_extensions

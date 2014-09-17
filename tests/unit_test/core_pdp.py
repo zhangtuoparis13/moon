@@ -4,10 +4,11 @@ unit test for moon/core/pdp
 
 import unittest
 import pkg_resources
-from moon.core.pdp.intra_extension import IntraExtension
 from moon.core.pdp.extension import Extension
 from moon.core.pdp.sync_db import IntraExtensionSyncer, IntraExtensionsSyncer
+from moon.core.pdp.intra_extension import IntraExtension
 from moon.core.pdp.core import IntraExtensions
+from moon.core.pdp.inter_extension import VirtualEntity
 
 
 REQUESTS = {
@@ -96,7 +97,7 @@ INTRAREQUESTS = {
     ]
 }
 
-
+"""
 class TestCorePDPExtension(unittest.TestCase):
 
     def setUp(self):
@@ -333,8 +334,7 @@ class TestCorePDPExtension(unittest.TestCase):
         self.assertIsInstance(self.extension.get_object_category_attr(_obj_cat_id, _object_id), list)
 
     def test_get_data(self):
-        print("[test_get_data]----------------: ")
-        # print("[test_get_data]----------------: ", self.extension.get_data())
+        print("[test_get_data]----------------: ", self.extension.get_data().keys())
 
     def test_set_data(self):
         _extension = Extension()
@@ -345,9 +345,97 @@ class TestCorePDPExtension(unittest.TestCase):
         _extension.load_from_json(_extension_setting_abs_dir)
         _data = _extension.get_data()
         self.extension.set_data(_data)
-        print("[test_set_data]----------------: ")
-        # print("[test_set_data]----------------: ", self.extension.get_data())
+        print("[test_set_data]----------------: ", self.extension.get_data().keys())
 
+    def test_create_requesting_collaboration(self):
+        _vent1 = VirtualEntity("trust")
+        _subs = ["user1", "user2"]
+
+        print("[test_create_requesting_collaboration] get_subjects ----------------: ", self.extension.get_subjects())
+
+        for _sc in self.extension.get_subject_categories():
+            print("[test_create_requesting_collaboration] get_subject_category_values ----------------: ",
+                  self.extension.get_subject_category_values(_sc))
+            print("[test_create_requesting_collaboration] get_subject_assignments ----------------: ",
+                  self.extension.get_subject_assignments(_sc))
+
+        print("[test_create_requesting_collaboration] get_objects ----------------: ",
+              self.extension.get_objects())
+
+        for _oc in self.extension.get_object_categories():
+            print("[test_create_requesting_collaboration] get_object_category_values ----------------: ",
+                  self.extension.get_object_category_values(_oc))
+            print("[test_create_requesting_collaboration] get_object_assignments ----------------: ",
+                  self.extension.get_object_assignments(_oc))
+
+        print("[test_create_requesting_collaboration] get_rules ----------------: ", self.extension.get_rules())
+
+        self.extension.create_requesting_collaboration(_subs, _vent1, "read")
+
+        print("[test_create_requesting_collaboration] get_subjects ----------------: ", self.extension.get_subjects())
+
+        for _sc in self.extension.get_subject_categories():
+            print("[test_create_requesting_collaboration] get_subject_category_values ----------------: ",
+                  self.extension.get_subject_category_values(_sc))
+            print("[test_create_requesting_collaboration] get_subject_assignments ----------------: ",
+                  self.extension.get_subject_assignments(_sc))
+
+        print("[test_create_requesting_collaboration] get_objects ----------------: ",
+              self.extension.get_objects())
+
+        for _oc in self.extension.get_object_categories():
+            print("[test_create_requesting_collaboration] get_object_category_values ----------------: ",
+                  self.extension.get_object_category_values(_oc))
+            print("[test_create_requesting_collaboration] get_object_assignments ----------------: ",
+                  self.extension.get_object_assignments(_oc))
+
+        print("[test_create_requesting_collaboration] get_rules ----------------: ", self.extension.get_rules())
+
+    def test_create_requested_collaboration(self):
+        _vent1 = VirtualEntity("trust")
+        _objs = ["vm1", "vm2"]
+
+        print("[test_create_requested_collaboration] get_subjects ----------------: ", self.extension.get_subjects())
+
+        for _sc in self.extension.get_subject_categories():
+            print("[test_create_requested_collaboration] get_subject_category_values ----------------: ",
+                  self.extension.get_subject_category_values(_sc))
+            print("[test_create_requested_collaboration] get_subject_assignments ----------------: ",
+                  self.extension.get_subject_assignments(_sc))
+
+        print("[test_create_requested_collaboration] get_objects ----------------: ",
+              self.extension.get_objects())
+
+        for _oc in self.extension.get_object_categories():
+            print("[test_create_requested_collaboration] get_object_category_values ----------------: ",
+                  self.extension.get_object_category_values(_oc))
+            print("[test_create_requested_collaboration] get_object_assignments ----------------: ",
+                  self.extension.get_object_assignments(_oc))
+
+        print("[test_create_requested_collaboration] get_rules ----------------: ", self.extension.get_rules())
+
+        self.extension.create_requested_collaboration(_vent1, _objs, "read")
+
+        print("[test_create_requested_collaboration] get_subjects ----------------: ", self.extension.get_subjects())
+
+        for _sc in self.extension.get_subject_categories():
+            print("[test_create_requested_collaboration] get_subject_category_values ----------------: ",
+                  self.extension.get_subject_category_values(_sc))
+            print("[test_create_requested_collaboration] get_subject_assignments ----------------: ",
+                  self.extension.get_subject_assignments(_sc))
+
+        print("[test_create_requested_collaboration] get_objects ----------------: ",
+              self.extension.get_objects())
+
+        for _oc in self.extension.get_object_categories():
+            print("[test_create_requested_collaboration] get_object_category_values ----------------: ",
+                  self.extension.get_object_category_values(_oc))
+            print("[test_create_requested_collaboration] get_object_assignments ----------------: ",
+                  self.extension.get_object_assignments(_oc))
+
+        print("[test_create_requested_collaboration] get_rules ----------------: ", self.extension.get_rules())
+
+"""
 
 class TestCorePDPIntraExtension(unittest.TestCase):
 
@@ -384,8 +472,7 @@ class TestCorePDPIntraExtension(unittest.TestCase):
             self.assertEqual(self.intra_extension.admin(sub, obj, act), _result)
 
     def test_get_data(self):
-        # print("[test_get_data]----------------: ", self.intra_extension.get_data())
-        print("[test_get_data]----------------: ")
+        print("[test_get_data]----------------: ", self.intra_extension.get_data().keys())
         self.assertIsInstance(self.intra_extension.get_data(), dict)
 
     def test_set_data(self):
@@ -394,8 +481,7 @@ class TestCorePDPIntraExtension(unittest.TestCase):
         _intra_extension.load_from_json(intra_extension_setting_abs_dir)
         _data = _intra_extension.get_data()
         self.intra_extension.set_data(_data)
-        # print("[test_set_data]----------------: ", self.intra_extension.get_data())
-        print("[test_set_data]----------------: ")
+        print("[test_set_data]----------------: ", self.intra_extension.get_data().keys())
         self.assertIsInstance(self.intra_extension.get_data(), dict)
 
     def test_set_to_db_and_get_from_db(self):
@@ -403,6 +489,115 @@ class TestCorePDPIntraExtension(unittest.TestCase):
         self.intra_extension.backup_intra_extension_to_db()
         self.intra_extension.get_intra_extension_from_db(self.intra_extension.get_uuid())
         print("[test_set_to_db_and_get_from_db]----------------: ", self.intra_extension.get_data().keys())
+
+    def test_create_requesting_collaboration(self):
+        _vent = VirtualEntity("trust")
+        _sub_list = ["user1", "user2"]
+        type = "coordinate"
+
+        if type == "trust":
+            _extension = self.intra_extension.intra_extension_authz
+        elif type == "coordinate":
+            _extension = self.intra_extension.intra_extension_admin
+
+        print("[test_create_requesting_collaboration] get_subjects ----------------: ", _extension.get_subjects())
+        for _sc in _extension.get_subject_categories():
+            print("[test_create_requesting_collaboration] get_subject_category_values ----------------: ",
+                  _extension.get_subject_category_values(_sc))
+            print("[test_create_requesting_collaboration] get_subject_assignments ----------------: ",
+                  _extension.get_subject_assignments(_sc))
+        print("[test_create_requesting_collaboration] get_objects ----------------: ",
+              _extension.get_objects())
+        for _oc in _extension.get_object_categories():
+            print("[test_create_requesting_collaboration] get_object_category_values ----------------: ",
+                  _extension.get_object_category_values(_oc))
+            print("[test_create_requesting_collaboration] get_object_assignments ----------------: ",
+                  _extension.get_object_assignments(_oc))
+        print("[test_create_requesting_collaboration] get_rules ----------------: ", _extension.get_rules())
+
+        _dict = _extension.create_requesting_collaboration(_sub_list, _vent.get_uuid(), "read")
+
+        print("[test_create_requesting_collaboration] get_subjects ----------------: ", _extension.get_subjects())
+        for _sc in _extension.get_subject_categories():
+            print("[test_create_requesting_collaboration] get_subject_category_values ----------------: ",
+                  _extension.get_subject_category_values(_sc))
+            print("[test_create_requesting_collaboration] get_subject_assignments ----------------: ",
+                  _extension.get_subject_assignments(_sc))
+        print("[test_create_requesting_collaboration] get_objects ----------------: ",
+              _extension.get_objects())
+        for _oc in _extension.get_object_categories():
+            print("[test_create_requesting_collaboration] get_object_category_values ----------------: ",
+                  _extension.get_object_category_values(_oc))
+            print("[test_create_requesting_collaboration] get_object_assignments ----------------: ",
+                  _extension.get_object_assignments(_oc))
+        print("[test_create_requesting_collaboration] get_rules ----------------: ", _extension.get_rules())
+
+        _extension.destory_requesting_collaboration(_vent.get_uuid(), _sub_list, _dict["subject_category_value_dict"], _dict["object_category_value_dict"])
+
+        print("[test_create_requesting_collaboration] get_subjects ----------------: ", _extension.get_subjects())
+        for _sc in _extension.get_subject_categories():
+            print("[test_create_requesting_collaboration] get_subject_category_values ----------------: ",
+                  _extension.get_subject_category_values(_sc))
+            print("[test_create_requesting_collaboration] get_subject_assignments ----------------: ",
+                  _extension.get_subject_assignments(_sc))
+        print("[test_create_requesting_collaboration] get_objects ----------------: ",
+              _extension.get_objects())
+        for _oc in _extension.get_object_categories():
+            print("[test_create_requesting_collaboration] get_object_category_values ----------------: ",
+                  _extension.get_object_category_values(_oc))
+            print("[test_create_requesting_collaboration] get_object_assignments ----------------: ",
+                  _extension.get_object_assignments(_oc))
+        print("[test_create_requesting_collaboration] get_rules ----------------: ", _extension.get_rules())
+
+    def test_create_requested_collaboration(self):
+        _vent = VirtualEntity("trust")
+        _obj_list = ["vm1", "vm2"]
+        type = "trust"
+
+        if type == "trust":
+            _extension = self.intra_extension.intra_extension_authz
+        elif type == "coordinate":
+            _extension = self.intra_extension.intra_extension_admin
+
+        print("[test_create_requested_collaboration] get_subjects ----------------: ", _extension.get_subjects())
+
+        for _sc in _extension.get_subject_categories():
+            print("[test_create_requested_collaboration] get_subject_category_values ----------------: ",
+                  _extension.get_subject_category_values(_sc))
+            print("[test_create_requested_collaboration] get_subject_assignments ----------------: ",
+                  _extension.get_subject_assignments(_sc))
+
+        print("[test_create_requested_collaboration] get_objects ----------------: ",
+              _extension.get_objects())
+
+        for _oc in _extension.get_object_categories():
+            print("[test_create_requested_collaboration] get_object_category_values ----------------: ",
+                  _extension.get_object_category_values(_oc))
+            print("[test_create_requested_collaboration] get_object_assignments ----------------: ",
+                  _extension.get_object_assignments(_oc))
+
+        print("[test_create_requested_collaboration] get_rules ----------------: ", _extension.get_rules())
+
+        _extension.create_requested_collaboration(_vent.get_uuid(), _obj_list, "read")
+
+        print("[test_create_requested_collaboration] get_subjects ----------------: ", _extension.get_subjects())
+
+        for _sc in _extension.get_subject_categories():
+            print("[test_create_requested_collaboration] get_subject_category_values ----------------: ",
+                  _extension.get_subject_category_values(_sc))
+            print("[test_create_requested_collaboration] get_subject_assignments ----------------: ",
+                  _extension.get_subject_assignments(_sc))
+
+        print("[test_create_requested_collaboration] get_objects ----------------: ",
+              _extension.get_objects())
+
+        for _oc in _extension.get_object_categories():
+            print("[test_create_requested_collaboration] get_object_category_values ----------------: ",
+                  _extension.get_object_category_values(_oc))
+            print("[test_create_requested_collaboration] get_object_assignments ----------------: ",
+                  _extension.get_object_assignments(_oc))
+
+        print("[test_create_requested_collaboration] get_rules ----------------: ", _extension.get_rules())
 
 
 class TestCorePDPInterExtension(unittest.TestCase):
@@ -416,7 +611,7 @@ class TestCorePDPInterExtension(unittest.TestCase):
     def test_get_name(self):
         pass
 
-
+"""
 class TestCorePDPSyncdb(unittest.TestCase):
 
     def setUp(self):
@@ -495,7 +690,7 @@ class TestCorePDPCore(unittest.TestCase):
         self.intra_extensions.install_intra_extensions_from_db()
         print("[test_install_intra_extensions_from_db]----------------: ",
               self.intra_extensions.get_installed_intra_extensions())
-
+"""
 
 if __name__ == "__main__":
     unittest.main()
