@@ -13,7 +13,9 @@
             "subjects",
             "objects",
             "subject_category_values",
+            "subject_categories",
             "object_category_values",
+            "object_categories",
             "rules",
             "subject_category_assignments",
             "object_category_assignments"
