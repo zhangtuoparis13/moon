@@ -4,7 +4,6 @@ unit test for moon/core/pdp
 
 import unittest
 import pkg_resources
-import argparse
 from moon.core.pdp.intra_extension import IntraExtension
 from moon.core.pdp.extension import Extension
 from moon.core.pdp.sync_db import IntraExtensionSyncer, IntraExtensionsSyncer
@@ -97,7 +96,6 @@ INTRAREQUESTS = {
     ]
 }
 
-"""
 
 class TestCorePDPExtension(unittest.TestCase):
 
@@ -401,10 +399,10 @@ class TestCorePDPIntraExtension(unittest.TestCase):
         self.assertIsInstance(self.intra_extension.get_data(), dict)
 
     def test_set_to_db_and_get_from_db(self):
-        print("[test_set_to_db_and_get_from_db]----------------: ", self.intra_extension.get_data())
-        self.intra_extension.set_to_db()
-        self.intra_extension.get_from_db(self.intra_extension.get_uuid())
-        print("[test_set_to_db_and_get_from_db]----------------: ", self.intra_extension.get_data())
+        print("[test_set_to_db_and_get_from_db]----------------: ", self.intra_extension.get_data().keys())
+        self.intra_extension.backup_intra_extension_to_db()
+        self.intra_extension.get_intra_extension_from_db(self.intra_extension.get_uuid())
+        print("[test_set_to_db_and_get_from_db]----------------: ", self.intra_extension.get_data().keys())
 
 
 class TestCorePDPInterExtension(unittest.TestCase):
@@ -447,7 +445,7 @@ class TestCorePDPSyncdb(unittest.TestCase):
 
         _uuid = _intra_extension.get_uuid()
         print("[test_intra_extension_backup_to_db_and_get_from_db] for", _uuid, "----------------: ",
-              self.intra_extension_syncer.get_intra_extension_from_db(_uuid))
+              self.intra_extension_syncer.get_intra_extension_from_db(_uuid).keys())
 
     # def test_intra_extensions_drop(self):
     #     self.intra_extension_syncer.drop()
@@ -456,7 +454,6 @@ class TestCorePDPSyncdb(unittest.TestCase):
     def test_intra_extensions_backup_from_db(self):
         print("[test_intra_extensions_backup_from_db]----------------: ",
               self.intra_extensions_syncer.get_intra_extensions_from_db())
-"""
 
 
 class TestCorePDPCore(unittest.TestCase):
