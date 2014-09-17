@@ -99,37 +99,20 @@ class PAP:
             if self.intra_extensions[extension_uuid].admin(user_uuid, "object_categories", "write") == "OK":
                 self.intra_extensions[extension_uuid].intra_extension_authz.del_object_category(category_id)
 
-    def get_meta_rules(self, extension_uuid, user_uuid):
-        if extension_uuid in self.intra_extensions.keys():
-            if self.intra_extensions[extension_uuid].admin(user_uuid, "meta_rules", "read") == "OK":
-                return self.intra_extensions[extension_uuid].intra_extension_authz.get_meta_rules()
-
-    def add_meta_rules(self, extension_uuid, user_uuid, rule):
-        if extension_uuid in self.intra_extensions.keys():
-            #TODO to be defined
-            if self.intra_extensions[extension_uuid].admin(user_uuid, "meta_rules", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.add_meta_rules(rule)
-
-    def del_meta_rules(self, extension_uuid, user_uuid, rule_id):
-        if extension_uuid in self.intra_extensions.keys():
-            #TODO to be defined
-            if self.intra_extensions[extension_uuid].admin(user_uuid, "meta_rules", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.del_meta_rules(rule_id)
-
     def get_subject_category_values(self, extension_uuid, user_uuid, category_id):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_category_values", "read") == "OK":
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_subject_category_values(category_id)
 
-    def add_subject_category_values(self, extension_uuid, user_uuid, category_id, category_value):
+    def add_subject_category_value(self, extension_uuid, user_uuid, category_id, category_value):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_category_values", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.add_subject_category_values(category_id, category_value)
+                self.intra_extensions[extension_uuid].intra_extension_authz.add_subject_category_value(category_id, category_value)
 
-    def del_subject_category_values(self, extension_uuid, user_uuid, category_id, category_value):
+    def del_subject_category_value(self, extension_uuid, user_uuid, category_id, category_value):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_category_values", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.del_subject_category_values(category_id, category_value)
+                self.intra_extensions[extension_uuid].intra_extension_authz.del_subject_category_value(category_id, category_value)
                 #TODO need to check if the value is not in other tables like assignment
 
     def get_object_category_values(self, extension_uuid, user_uuid, category_id):
@@ -137,15 +120,15 @@ class PAP:
             if self.intra_extensions[extension_uuid].admin(user_uuid, "object_category_values", "read") == "OK":
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_object_category_values(category_id)
 
-    def add_object_category_values(self, extension_uuid, user_uuid, category_id, category_value):
+    def add_object_category_value(self, extension_uuid, user_uuid, category_id, category_value):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "object_category_values", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.add_object_category_values(category_id, category_value)
+                self.intra_extensions[extension_uuid].intra_extension_authz.add_object_category_value(category_id, category_value)
 
-    def del_object_category_values(self, extension_uuid, user_uuid, category_id, category_value):
+    def del_object_category_value(self, extension_uuid, user_uuid, category_id, category_value):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "object_category_values", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.del_object_category_values(category_id, category_value)
+                self.intra_extensions[extension_uuid].intra_extension_authz.del_object_category_value(category_id, category_value)
                 #TODO need to check if the value is not in other tables like assignment
 
     def get_subject_assignments(self, extension_uuid, user_uuid, category_id):
