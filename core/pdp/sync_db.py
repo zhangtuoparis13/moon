@@ -15,10 +15,10 @@ class IntraExtensionSyncer():
     def __init__(self):
         self.db = db_driver.DB(db_name, "intraextensions")
 
-    def set_to_db(self, data):
+    def backup_intra_extension_to_db(self, data):
         self.db.set_to_db(data)
 
-    def get_from_db(self, uuid=None):
+    def get_intra_extension_from_db(self, uuid):
         return self.db.get_from_db(uuid)
 
     def drop(self):

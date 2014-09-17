@@ -20,7 +20,11 @@ class DB:
         if uuid:
             return self.collection.find_one({"_id": uuid})
         else:
-            return self.collection.find()
+            _records = self.collection.find()
+            _record_dict = dict()
+            for _r in _records:
+                _record_dict[_r["_id"]] = _r
+            return _record_dict
 
     def drop(self):
         self.collection.drop()
