@@ -451,8 +451,8 @@ class TestCorePDPSyncdb(unittest.TestCase):
     #     self.intra_extension_syncer.drop()
     #     print("[test_intra_extensions_drop]----------------: ")
 
-    def test_intra_extensions_backup_from_db(self):
-        print("[test_intra_extensions_backup_from_db]----------------: ",
+    def test_intra_extensions_get_from_db(self):
+        print("[test_intra_extensions_get_from_db]----------------: ",
               self.intra_extensions_syncer.get_intra_extensions_from_db())
 
 
