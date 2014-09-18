@@ -119,41 +119,72 @@ class PIP:
             o["tenant"] = tenant
             yield o
 
-    def get_roles(self, tenant=None, uuid=None, name=None):
-        for role in self.kclient.roles.list(project_id=tenant["uuid"]):
-            o = dict()
-            o["value"] = role.name
-            try:
-                o["description"] = role.description
-            except AttributeError:
-                o["description"] = ""
-            try:
-                o["enabled"] = role.enabled
-            except AttributeError:
-                o["enabled"] = True
-            o["category"] = "role"
-            o["uuid"] = role.id
-            if name and o["name"] != name:
-                continue
-            if uuid and o["uuid"] != uuid:
-                continue
-            yield o
+    def add_object(self):
+        #Do we really need this function ?
+        raise NotImplemented
 
-    def get_groups(self, tenant=None):
-        for group in self.kclient.groups.list(project_id=tenant["uuid"]):
-            g = dict()
-            g["value"] = group.name
-            try:
-                g["description"] = group.description
-            except AttributeError:
-                g["description"] = ""
-            try:
-                g["enabled"] = group.enabled
-            except AttributeError:
-                g["enabled"] = True
-            g["category"] = "group"
-            g["uuid"] = group.id
-            yield g
+    def del_object(self):
+        #Do we really need this function ?
+        raise NotImplemented
+
+    def get_roles(self, tenant_name="admin", uuid=None, name=None):
+        try:
+            tenant = self.get_tenants(name=tenant_name).next()
+        except StopIteration:
+            pass
+        else:
+            for role in self.kclient.roles.list(project_id=tenant["uuid"]):
+                o = dict()
+                o["value"] = role.name
+                try:
+                    o["description"] = role.description
+                except AttributeError:
+                    o["description"] = ""
+                try:
+                    o["enabled"] = role.enabled
+                except AttributeError:
+                    o["enabled"] = True
+                o["category"] = "role"
+                o["uuid"] = role.id
+                if name and o["name"] != name:
+                    continue
+                if uuid and o["uuid"] != uuid:
+                    continue
+                yield o
+
+    def add_role(self, name, description=""):
+        role = self.kclient.roles.create(name=name, description=description)
+        return role.id
+
+    def del_role(self, uuid):
+        return self.kclient.roles.delete(uuid)
+
+    def get_groups(self, tenant_name="admin"):
+        try:
+            tenant = self.get_tenants(name=tenant_name).next()
+        except StopIteration:
+            pass
+        else:
+            for group in self.kclient.groups.list(project_id=tenant["uuid"]):
+                g = dict()
+                g["value"] = group.name
+                try:
+                    g["description"] = group.description
+                except AttributeError:
+                    g["description"] = ""
+                try:
+                    g["enabled"] = group.enabled
+                except AttributeError:
+                    g["enabled"] = True
+                g["category"] = "group"
+                g["uuid"] = group.id
+                yield g
+
+    def add_group(self, name, description=""):
+        return self.kclient.groups.create(name=name, description=description)
+
+    def del_group(self, uuid):
+        return self.kclient.groups.delete(uuid)
 
     def get_users_roles_assignment(self, tenant_uuid, users=None):
         if not users:
@@ -225,12 +256,6 @@ class PIP:
 
     def del_tenant(self, tenant_uuid):
         self.kclient.projects.delete(tenant_uuid)
-
-    def create_roles(self, name, description=""):
-        return self.kclient.roles.create(name=name, description=description)
-
-    def delete_roles(self, uuid):
-        return self.kclient.roles.delete(uuid)
 
 
 pip = None
