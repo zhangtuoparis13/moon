@@ -167,5 +167,29 @@ class TestCorePIP(unittest.TestCase):
             group_names.append(group["value"])
         self.assertNotIn("TestCorePIP", group_names)
 
+    def test_roles_assignment(self):
+        admin = filter(lambda x: x["name"] == "admin", self.pip.get_subjects(tenant="admin"))[0]
+        admin_uuid = admin["uuid"]
+        assignments = self.pip.get_users_roles_assignment()
+        user_uuids = list()
+        for assign in assignments:
+            for key in ("subject", "uuid", "description", "attributes"):
+                self.assertIn(key, assign.keys())
+            user_uuids.append(assign["subject"])
+            if assign["subject"] == admin_uuid:
+                self.assertGreater(len(assign["attributes"]), 0)
+        self.assertIn(admin_uuid, user_uuids)
+
+    def test_groups_assignment(self):
+        admin = filter(lambda x: x["name"] == "admin", self.pip.get_subjects(tenant="admin"))[0]
+        admin_uuid = admin["uuid"]
+        assignments = self.pip.get_users_groups_assignment()
+        user_uuids = list()
+        for assign in assignments:
+            for key in ("subject", "uuid", "description", "attributes"):
+                self.assertIn(key, assign.keys())
+            user_uuids.append(assign["subject"])
+        self.assertIn(admin_uuid, user_uuids)
+
 if __name__ == "__main__":
     unittest.main()
