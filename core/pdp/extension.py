@@ -469,8 +469,11 @@ class Extension:
         self.del_object(vent_uuid)
 
         for _obj_cat_id in self.get_object_categories():
-            self.del_object_category_value(_obj_cat_id, obj_cat_value_dict[_obj_cat_id])
-            self.del_object_assignment(_obj_cat_id, vent_uuid, obj_cat_value_dict[_obj_cat_id])
+            if _obj_cat_id == "action":
+                pass  # TODO: reconsidering the action as object attribute
+            else:
+                self.del_object_category_value(_obj_cat_id, obj_cat_value_dict[_obj_cat_id])
+                self.del_object_assignment(_obj_cat_id, vent_uuid, obj_cat_value_dict[_obj_cat_id])
 
         self.del_rule(sub_cat_value_dict, obj_cat_value_dict)
 
@@ -507,9 +510,12 @@ class Extension:
             self.del_subject_assignment(_sub_cat_id, vent_uuid, sub_cat_value_dict[_sub_cat_id])
 
         for _obj_cat_id in self.get_object_categories():
-            self.del_object_category_value(_obj_cat_id, obj_cat_value_dict[_obj_cat_id])
+            if _obj_cat_id == "action":
+                pass  # TODO: reconsidering the action as object attribute
+            else:
+                self.del_object_category_value(_obj_cat_id, obj_cat_value_dict[_obj_cat_id])
 
-            for _obj in obj_list:
-                self.del_object_assignment(_obj_cat_id, _obj, obj_cat_value_dict[_obj_cat_id])
+                for _obj in obj_list:
+                    self.del_object_assignment(_obj_cat_id, _obj, obj_cat_value_dict[_obj_cat_id])
 
         self.del_rule(sub_cat_value_dict, obj_cat_value_dict)

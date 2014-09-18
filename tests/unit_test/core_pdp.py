@@ -8,7 +8,7 @@ from moon.core.pdp.extension import Extension
 from moon.core.pdp.sync_db import IntraExtensionSyncer, IntraExtensionsSyncer
 from moon.core.pdp.intra_extension import IntraExtension
 from moon.core.pdp.core import IntraExtensions
-from moon.core.pdp.inter_extension import VirtualEntity
+from moon.core.pdp.inter_extension import VirtualEntity, InterExtension
 
 
 REQUESTS = {
@@ -436,7 +436,7 @@ class TestCorePDPExtension(unittest.TestCase):
         print("[test_create_requested_collaboration] get_rules ----------------: ", self.extension.get_rules())
 
 """
-
+"""
 class TestCorePDPIntraExtension(unittest.TestCase):
 
     def setUp(self):
@@ -493,7 +493,7 @@ class TestCorePDPIntraExtension(unittest.TestCase):
     def test_create_requesting_collaboration(self):
         _vent = VirtualEntity("trust")
         _sub_list = ["user1", "user2"]
-        type = "coordinate"
+        type = "trust"
 
         if type == "trust":
             _extension = self.intra_extension.intra_extension_authz
@@ -560,56 +560,84 @@ class TestCorePDPIntraExtension(unittest.TestCase):
             _extension = self.intra_extension.intra_extension_admin
 
         print("[test_create_requested_collaboration] get_subjects ----------------: ", _extension.get_subjects())
-
         for _sc in _extension.get_subject_categories():
             print("[test_create_requested_collaboration] get_subject_category_values ----------------: ",
                   _extension.get_subject_category_values(_sc))
             print("[test_create_requested_collaboration] get_subject_assignments ----------------: ",
                   _extension.get_subject_assignments(_sc))
-
         print("[test_create_requested_collaboration] get_objects ----------------: ",
               _extension.get_objects())
-
         for _oc in _extension.get_object_categories():
             print("[test_create_requested_collaboration] get_object_category_values ----------------: ",
                   _extension.get_object_category_values(_oc))
             print("[test_create_requested_collaboration] get_object_assignments ----------------: ",
                   _extension.get_object_assignments(_oc))
-
         print("[test_create_requested_collaboration] get_rules ----------------: ", _extension.get_rules())
 
-        _extension.create_requested_collaboration(_vent.get_uuid(), _obj_list, "read")
+        _dict = _extension.create_requested_collaboration(_vent.get_uuid(), _obj_list, "read")
 
         print("[test_create_requested_collaboration] get_subjects ----------------: ", _extension.get_subjects())
-
         for _sc in _extension.get_subject_categories():
             print("[test_create_requested_collaboration] get_subject_category_values ----------------: ",
                   _extension.get_subject_category_values(_sc))
             print("[test_create_requested_collaboration] get_subject_assignments ----------------: ",
                   _extension.get_subject_assignments(_sc))
-
         print("[test_create_requested_collaboration] get_objects ----------------: ",
               _extension.get_objects())
-
         for _oc in _extension.get_object_categories():
             print("[test_create_requested_collaboration] get_object_category_values ----------------: ",
                   _extension.get_object_category_values(_oc))
             print("[test_create_requested_collaboration] get_object_assignments ----------------: ",
                   _extension.get_object_assignments(_oc))
-
         print("[test_create_requested_collaboration] get_rules ----------------: ", _extension.get_rules())
 
+
+        _extension.destory_requested_collaboration(_vent.get_uuid(), _dict["subject_category_value_dict"], _obj_list, _dict["object_category_value_dict"])
+
+        print("[test_create_requested_collaboration] get_subjects ----------------: ", _extension.get_subjects())
+        for _sc in _extension.get_subject_categories():
+            print("[test_create_requested_collaboration] get_subject_category_values ----------------: ",
+                  _extension.get_subject_category_values(_sc))
+            print("[test_create_requested_collaboration] get_subject_assignments ----------------: ",
+                  _extension.get_subject_assignments(_sc))
+        print("[test_create_requested_collaboration] get_objects ----------------: ",
+              _extension.get_objects())
+        for _oc in _extension.get_object_categories():
+            print("[test_create_requested_collaboration] get_object_category_values ----------------: ",
+                  _extension.get_object_category_values(_oc))
+            print("[test_create_requested_collaboration] get_object_assignments ----------------: ",
+                  _extension.get_object_assignments(_oc))
+        print("[test_create_requested_collaboration] get_rules ----------------: ", _extension.get_rules())
+"""
 
 class TestCorePDPInterExtension(unittest.TestCase):
 
     def setUp(self):
-        pass
+        self.requesting_intra_extension = IntraExtension()
+        self.requested_intra_extension = IntraExtension()
+        intra_extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'samples/mls001')
+        self.requesting_intra_extension.load_from_json(intra_extension_setting_abs_dir)
+        self.requested_intra_extension.load_from_json(intra_extension_setting_abs_dir)
+        self.inter_extension = InterExtension(self.requesting_intra_extension, self.requested_intra_extension)
 
     def tearDown(self):
         pass
 
-    def test_get_name(self):
-        pass
+    def test_create_destroy_collaboration(self):
+        _sub_list = ['user1', 'user2']
+        _obj_list = ['vm2', 'vm3']
+        _act = "read"
+
+        _vent_uuid = self.inter_extension.create_collaboration("trust", _sub_list, _obj_list, _act)
+
+        print("[test_create_collaboration]----------------: ", self.inter_extension.get_vent_data_dict(_vent_uuid))
+
+        print("[test_destory_collaboration] vents ----------------: ", self.inter_extension.get_vents())
+
+        self.inter_extension.destroy_collaboration(_vent_uuid)
+
+        print("[test_destory_collaboration] vents ----------------: ", self.inter_extension.get_vents())
+
 
 """
 class TestCorePDPSyncdb(unittest.TestCase):
