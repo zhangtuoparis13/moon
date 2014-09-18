@@ -113,5 +113,59 @@ class TestCorePIP(unittest.TestCase):
             tenant_names.append(tenant["name"])
         self.assertNotIn("TestPIP", tenant_names)
 
+    def test_roles(self):
+        roles = self.pip.get_roles()
+        self.assertIsInstance(roles, types.GeneratorType)
+        for role in roles:
+            for key in ("value", "uuid", "description", "enabled"):
+                self.assertIn(key, role.keys())
+        roles = self.pip.get_roles(tenant_name="admin")
+        self.assertIsInstance(roles, types.GeneratorType)
+        role_uuid = self.pip.add_role(name="TestCorePIP")
+        roles = self.pip.get_roles()
+        self.assertIsInstance(roles, types.GeneratorType)
+        role_names = list()
+        for role in roles:
+            for key in ("value", "uuid", "description", "enabled"):
+                self.assertIn(key, role.keys())
+            role_names.append(role["value"])
+        self.assertIn("TestCorePIP", role_names)
+        self.pip.del_role(uuid=role_uuid)
+        roles = self.pip.get_roles()
+        self.assertIsInstance(roles, types.GeneratorType)
+        role_names = list()
+        for role in roles:
+            for key in ("value", "uuid", "description", "enabled"):
+                self.assertIn(key, role.keys())
+            role_names.append(role["value"])
+        self.assertNotIn("TestCorePIP", role_names)
+
+    def test_groups(self):
+        groups = self.pip.get_groups()
+        self.assertIsInstance(groups, types.GeneratorType)
+        for group in groups:
+            for key in ("value", "uuid", "description", "enabled"):
+                self.assertIn(key, group.keys())
+        groups = self.pip.get_groups(tenant_name="admin")
+        self.assertIsInstance(groups, types.GeneratorType)
+        group_uuid = self.pip.add_group(name="TestCorePIP")
+        groups = self.pip.get_groups()
+        self.assertIsInstance(groups, types.GeneratorType)
+        group_names = list()
+        for group in groups:
+            for key in ("value", "uuid", "description", "enabled"):
+                self.assertIn(key, group.keys())
+            group_names.append(group["value"])
+        self.assertIn("TestCorePIP", group_names)
+        self.pip.del_group(uuid=group_uuid)
+        groups = self.pip.get_groups()
+        self.assertIsInstance(groups, types.GeneratorType)
+        group_names = list()
+        for group in groups:
+            for key in ("value", "uuid", "description", "enabled"):
+                self.assertIn(key, group.keys())
+            group_names.append(group["value"])
+        self.assertNotIn("TestCorePIP", group_names)
+
 if __name__ == "__main__":
     unittest.main()
