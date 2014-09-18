@@ -25,6 +25,7 @@ class IntraExtensions:
         _intra_extension = IntraExtension()
         _intra_extension.load_from_json(extension_setting_abs_dir)
         self.__installed_intra_extensions[_intra_extension.get_uuid()] = _intra_extension
+        return _intra_extension.get_uuid()
 
     def install_intra_extension_from_db(self):
         intra_extension = IntraExtension()
