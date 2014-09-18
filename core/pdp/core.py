@@ -76,6 +76,10 @@ class InterExtensions:  # TODO: to test
                 return _installed_inter_extension.authhz(sub, obj, act)
         return "KO"
 
+    def admin(self, sub, obj, act):
+        #TODO later
+        return "OK"
+
     def create_collaboration(self, requesting_intra_extension_uuid, requested_intra_extension_uuid,
                              type, sub_list, obj_list, act):
         for _installed_inter_extension in self.__installed_inter_extensions.values():
