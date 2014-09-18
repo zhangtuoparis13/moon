@@ -92,9 +92,11 @@ class InterExtension:
         self.__syncer = InterExtensionSyncer()
 
     def authz(self, sub, obj, act):
-        for _vent in self.__vents:
-            if self.requesting_intra_extension(sub, _vent, act) and self.requested_intra_extension(_vent, obj, act):
+        for _vent in self.__vents.values():
+            if self.requesting_intra_extension.authz(sub, _vent.get_uuid(), act) == "OK" and \
+                    self.requested_intra_extension.authz(_vent.get_uuid(), obj, act) == "OK":
                 return True
+        return False
 
     def check_requesters(self, requesting_intra_extension_uuid, requested_intra_extension_uuid):
         if requesting_intra_extension_uuid == self.requesting_intra_extension.get_uuid() \

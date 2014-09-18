@@ -632,6 +632,8 @@ class TestCorePDPInterExtension(unittest.TestCase):
 
         print("[test_create_collaboration]----------------: ", self.inter_extension.get_vent_data_dict(_vent_uuid))
 
+        print("[test_create_collaboration] authz ----------------: ", self.inter_extension.authz('user1', 'vm2', 'read'))
+
         print("[test_destory_collaboration] vents ----------------: ", self.inter_extension.get_vents())
 
         self.inter_extension.destroy_collaboration(_vent_uuid)

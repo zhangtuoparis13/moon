@@ -65,18 +65,35 @@ class IntraExtensions:
         return set(self.__installed_intra_extensions.keys())
 
 
-class InterExtensions:  # TODO to test
+class InterExtensions:  # TODO: to test
     def __init__(self, installed_intra_extensions):
         self.__installed_intra_extensions = installed_intra_extensions
         self.__installed_inter_extensions = dict()
 
+    def authz(self, requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act):
+        for _installed_inter_extension in self.__installed_inter_extensions.values():
+            if _installed_inter_extension.check_requesters(requesting_intra_extension_uuid, requested_intra_extension_uuid):
+                return _installed_inter_extension.authhz(sub, obj, act)
+        return "KO"
+
     def create_collaboration(self, requesting_intra_extension_uuid, requested_intra_extension_uuid,
                              type, sub_list, obj_list, act):
-        for _inter_extension in self.__installed_inter_extensions:
-            if _inter_extension.check_requesters(requesting_intra_extension_uuid, requested_intra_extension_uuid):
-                _inter_extension.create_collaboration(type, sub_list, obj_list, act)
+        for _installed_inter_extension in self.__installed_inter_extensions.values():
+            if _installed_inter_extension.check_requesters(requesting_intra_extension_uuid, requested_intra_extension_uuid):
+                _inter_extension_uuid = _installed_inter_extension.get_uuid()
+                _vent_uuid = _installed_inter_extension.create_collaboration(type, sub_list, obj_list, act)
+                return _inter_extension_uuid, _vent_uuid
 
+        _new_inter_extension = InterExtension(self.__installed_intra_extensions[requesting_intra_extension_uuid],
+                                              self.__installed_intra_extensions[requested_intra_extension_uuid])
+        _inter_extension_uuid = _new_inter_extension.get_uuid()
+        self.__installed_inter_extensions[_inter_extension_uuid] = _new_inter_extension
+        _vent_uuid = _new_inter_extension.create_collaboration(type, sub_list, obj_list, act)
+        return _inter_extension_uuid, _vent_uuid
 
+    def destory_collaboration(self, inter_extension_uuid, vent_uuid):
+        self.__installed_inter_extensions[inter_extension_uuid].destroy_collaboration(vent_uuid)
+        self.__installed_inter_extensions.pop(inter_extension_uuid)
 
     def get_installed_inter_extensions(self):
         return self.__installed_inter_extensions
