@@ -22,8 +22,8 @@ Legend:
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
 | extension           | WuKong      |                   | 16/09         | 100%               |
 | intra_extension     | WuKong      |                   | 16/09         | 100%               |
-| inter_extension     | WuKong      |                   | 18/09         | 40%                |
-| core                | WuKong      |                   | 16/09         | 50%                |
+| inter_extension     | WuKong      |                   | 18/09         | 90%                |
+| core                | WuKong      |                   | 16/09         | 80%                |
 | sync_db             | WuKong      |                   | 16/09         | 80%                |
 
 
@@ -39,7 +39,7 @@ Legend:
 
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
-| Core/PDP            | WuKong      | unit test         | 19/09         | 60%                |
+| Core/PDP            | WuKong      | unit test         | 19/09         | 90%                |
 | Core/PAP            | Tom         | unit test         | 19/09         | 0%                 |
 | GUI + PAP + PDP     | Tom         | integration test  | 26/09         | 0%                 |
 
