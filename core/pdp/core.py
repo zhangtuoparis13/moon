@@ -91,7 +91,7 @@ class InterExtensions:  # TODO: to test
         _vent_uuid = _new_inter_extension.create_collaboration(type, sub_list, obj_list, act)
         return _inter_extension_uuid, _vent_uuid
 
-    def destory_collaboration(self, inter_extension_uuid, vent_uuid):
+    def destroy_collaboration(self, inter_extension_uuid, vent_uuid):
         self.__installed_inter_extensions[inter_extension_uuid].destroy_collaboration(vent_uuid)
         self.__installed_inter_extensions.pop(inter_extension_uuid)
 
