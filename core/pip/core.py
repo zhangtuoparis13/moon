@@ -187,7 +187,7 @@ class PIP:
                 assignments["attributes"].extend(groups)
             yield assignments
 
-    def get_tenants(self, name, uuid=None, pap=None):
+    def get_tenants(self, name=None, uuid=None, pap=None):
         for tenant in self.kclient.projects.list():
             t = dict()
             t["name"] = tenant.name
@@ -210,6 +210,21 @@ class PIP:
             if uuid and uuid != t["uuid"]:
                 continue
             yield t
+
+    def add_tenant(self, tenant):
+        for key in ("name", "description", "enabled", "domain"):
+            if key not in tenant.keys():
+                return None
+        tenant = self.kclient.projects.create(
+            name=tenant["name"],
+            domain=tenant["domain"],
+            description=tenant["description"],
+            enabled=tenant["enabled"]
+        )
+        return tenant.id
+
+    def del_tenant(self, tenant_uuid):
+        self.kclient.projects.delete(tenant_uuid)
 
     def create_roles(self, name, description=""):
         return self.kclient.roles.create(name=name, description=description)
