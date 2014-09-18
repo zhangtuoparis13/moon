@@ -207,7 +207,7 @@ class PIP:
                     assignment["attributes"].extend(roles)
                 yield assignment
 
-    def get_users_groups_assignment(self, tenant_name, users=None):
+    def get_users_groups_assignment(self, tenant_name="admin", users=None):
         try:
             tenant = self.get_tenants(name=tenant_name).next()
         except StopIteration:
@@ -220,7 +220,7 @@ class PIP:
                 _uuid = str(uuid4()).replace("-", "")
                 assignments["uuid"] = _uuid
                 assignments["category"] = "group"
-                assignments["object"] = user["uuid"]
+                assignments["subject"] = user["uuid"]
                 assignments["description"] = "Group assignment for {}".format(user["name"])
                 assignments["attributes"] = []
                 groups = map(lambda x: x.id, self.kclient.groups.list(user=user["uuid"], project=tenant["uuid"]))
