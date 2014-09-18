@@ -55,11 +55,11 @@ class IntraExtension:
         elif type == 'coordinate':
             return self.intra_extension_admin.create_requesting_collaboration(sub_list, vent_uuid, act)
 
-    def destory_requesting_collaboration(self, type, vent_uuid, sub_list, sub_cat_value, obj_cat_value):
+    def destroy_requesting_collaboration(self, type, vent_uuid, sub_list, sub_cat_value, obj_cat_value):
         if type == 'trust':
-            self.intra_extension_authz.destory_requesting_collaboration(vent_uuid, sub_list, sub_cat_value, obj_cat_value)
+            self.intra_extension_authz.destroy_requesting_collaboration(vent_uuid, sub_list, sub_cat_value, obj_cat_value)
         elif type == 'coordinate':
-            self.intra_extension_admin.destory_requesting_collaboration(vent_uuid, sub_list, sub_cat_value, obj_cat_value)
+            self.intra_extension_admin.destroy_requesting_collaboration(vent_uuid, sub_list, sub_cat_value, obj_cat_value)
 
     def create_requested_collaboration(self, type, vent_uuid, obj_list, act):
         if type == 'trust':
@@ -67,11 +67,11 @@ class IntraExtension:
         elif type == 'coordinate':
             return self.intra_extension_admin.create_requested_collaboration(vent_uuid, obj_list, act)
 
-    def destory_requested_collaboration(self, type, vent_uuid, sub_cat_value_dict, obj_list, obj_cat_value_dict):
+    def destroy_requested_collaboration(self, type, vent_uuid, sub_cat_value_dict, obj_list, obj_cat_value_dict):
         if type == 'trust':
-            self.intra_extension_authz.destory_requested_collaboration(vent_uuid, sub_cat_value_dict, obj_list, obj_cat_value_dict)
+            self.intra_extension_authz.destroy_requested_collaboration(vent_uuid, sub_cat_value_dict, obj_list, obj_cat_value_dict)
         elif type == 'coordinate':
-            self.intra_extension_admin.destory_requested_collaboration(vent_uuid, sub_cat_value_dict, obj_list, obj_cat_value_dict)
+            self.intra_extension_admin.destroy_requested_collaboration(vent_uuid, sub_cat_value_dict, obj_list, obj_cat_value_dict)
 
     def __str__(self):
         return """IntraExtension {}
