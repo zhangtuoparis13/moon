@@ -40,7 +40,7 @@ class InterExtensionSyncer():
     def __init__(self):
         self.db = db_driver.DB(db_name, "interextensions")
 
-    def set_to_db(self, data):
+    def backup_inter_extension_to_db(self, data):
         self.db.set_to_db(data)
 
     def get_from_db(self, uuid=None):

@@ -88,7 +88,7 @@ class Configuration:
         json_configuration = json.load(f)
         self.__subject_category_values = copy.deepcopy(json_configuration['subject_category_values'])
         self.__object_category_values = copy.deepcopy(json_configuration['object_category_values'])
-        self.__rules = copy.deepcopy(json_configuration['rules'])
+        self.__rules = copy.deepcopy(json_configuration['rules'])  # TODO: currently a list, will be a dict with sub-meta-rule as key
 
     def get_subject_category_values(self):
         return self.__subject_category_values
@@ -199,15 +199,6 @@ class AuthzData:
         object={}
         action={}
         """.format(self.validation, self.subject, self.object, self.action)
-
-
-class VirtualEntity:
-    def __init__(self, type):
-        self.__uuid = str(uuid4())
-        self.__type = type
-
-    def get_uuid(self):
-        return self.__uuid
 
 
 class Extension:
@@ -340,10 +331,10 @@ class Extension:
     def del_object_category_value(self, category_id, category_value):
         self.configuration.get_object_category_values()[category_id].remove(category_value)
 
-    def get_rules(self):
+    def get_rules(self):  # TODO: currently a list, will be a dict with sub-meta-rule as key
         return self.configuration.get_rules()
 
-    def add_rule(self, sub_cat_value, obj_cat_value):  # TODO to test
+    def add_rule(self, sub_cat_value, obj_cat_value):
         _rule = list()
         for sub_meta_rule in self.metadata.get_meta_rule_sub_meta_rules():  # sub_meta_rules is a list
             for sub_subject_category in sub_meta_rule["subject_categories"]:
@@ -352,10 +343,19 @@ class Extension:
             for sub_object_category in sub_meta_rule["object_categories"]:
                 _rule.append(obj_cat_value[sub_object_category])
 
-            self.configuration.get_rules().append(_rule)
+            self.configuration.get_rules().append(_rule)  # TODO: currently a list, will be a dict with sub-meta-rule as key
+        return _rule
 
-    def del_rule(self):  # TODO later
-        pass
+    def del_rule(self, sub_cat_value, obj_cat_value):  # TODO to test
+        _rule = list()
+        for sub_meta_rule in self.metadata.get_meta_rule_sub_meta_rules():  # sub_meta_rules is a list
+            for sub_subject_category in sub_meta_rule["subject_categories"]:
+                _rule.append(sub_cat_value[sub_subject_category])
+
+            for sub_object_category in sub_meta_rule["object_categories"]:
+                _rule.append(obj_cat_value[sub_object_category])
+
+            self.configuration.get_rules().remove(_rule)  # TODO: currently a list, will be a dict with sub-meta-rule as key
 
     # ---------------- perimeter api ----------------
 
@@ -433,55 +433,89 @@ class Extension:
 
 # ---------------- inter-extension API ----------------
 
-    def create_requesting_collaboration(self, subs, vent, act):  # TODO to test
+    def create_requesting_collaboration(self, sub_list, vent_uuid, act):
         _sub_cat_values = dict()
         _obj_cat_values = dict()
-        _sub_cats = self.get_subject_categories()
-        _obj_cats = self.get_object_categories()
 
-        for _sub_cat_id in _sub_cats:
+        for _sub_cat_id in self.get_subject_categories():
             _sub_cat_value = str(uuid4())
             self.add_subject_category_value(_sub_cat_id, _sub_cat_value)
             _sub_cat_values[_sub_cat_id] = _sub_cat_value
 
-            for _sub in subs:
+            for _sub in sub_list:
                 self.add_subject_assignment(_sub_cat_id, _sub, _sub_cat_value)
 
-        self.add_object(vent.get_uuid)
+        self.add_object(vent_uuid)
 
-        for _obj_cat_id in _obj_cats:
+        for _obj_cat_id in self.get_object_categories():
             if _obj_cat_id == 'action':
                 _obj_cat_values[_obj_cat_id] = act
             else:
                 _obj_cat_value = str(uuid4())
                 self.add_object_category_value(_obj_cat_id, _obj_cat_value)
                 _obj_cat_values[_obj_cat_id] = _obj_cat_value
-                self.add_object_assignment(_obj_cat_id, vent, _obj_cat_value)
+                self.add_object_assignment(_obj_cat_id, vent_uuid, _obj_cat_value)
 
-        self.add_rule(_sub_cat_values, _obj_cat_values, act)
+        _rule = self.add_rule(_sub_cat_values, _obj_cat_values)
+        return {"subject_category_value_dict": _sub_cat_values, "object_category_value_dict": _obj_cat_values, "rule": _rule}
 
-    def create_requested_collaboration(self, vent, objs, act):  # TODO to test
+    def destory_requesting_collaboration(self, vent_uuid, sub_list, sub_cat_value_dict, obj_cat_value_dict):
+        for _sub_cat_id in self.get_subject_categories():
+            self.del_subject_category_value(_sub_cat_id, sub_cat_value_dict[_sub_cat_id])
+
+            for _sub in sub_list:
+                self.del_subject_assignment(_sub_cat_id, _sub, sub_cat_value_dict[_sub_cat_id])
+
+        self.del_object(vent_uuid)
+
+        for _obj_cat_id in self.get_object_categories():
+            if _obj_cat_id == "action":
+                pass  # TODO: reconsidering the action as object attribute
+            else:
+                self.del_object_category_value(_obj_cat_id, obj_cat_value_dict[_obj_cat_id])
+                self.del_object_assignment(_obj_cat_id, vent_uuid, obj_cat_value_dict[_obj_cat_id])
+
+        self.del_rule(sub_cat_value_dict, obj_cat_value_dict)
+
+    def create_requested_collaboration(self, vent_uuid, obj_list, act):
         _sub_cat_values = dict()
         _obj_cat_values = dict()
-        _sub_cats = self.get_subject_categories()
-        _obj_cats = self.get_object_categories()
 
-        self.add_object(vent.get_uuid)
+        self.add_subject(vent_uuid)
 
-        for _sub_cat_id in _sub_cats:
+        for _sub_cat_id in self.get_subject_categories():
             _sub_cat_value = str(uuid4())
             self.add_subject_category_value(_sub_cat_id, _sub_cat_value)
             _sub_cat_values[_sub_cat_id] = _sub_cat_value
-            self.add_subject_assignment(_sub_cat_id, vent, _sub_cat_value)
+            self.add_subject_assignment(_sub_cat_id, vent_uuid, _sub_cat_value)
 
-        for _obj_cat_id in _obj_cats:
+        for _obj_cat_id in self.get_object_categories():
             if _obj_cat_id == 'action':
                 _obj_cat_values[_obj_cat_id] = act
             else:
                 _obj_cat_value = str(uuid4())
                 self.add_object_category_value(_obj_cat_id, _obj_cat_value)
                 _obj_cat_values[_obj_cat_id] = _obj_cat_value
-                for _obj in objs:
+                for _obj in obj_list:
                     self.add_object_assignment(_obj_cat_id, _obj, _obj_cat_value)
 
-            self.add_rule(_sub_cat_values, _obj_cat_values, act)
+        _rule = self.add_rule(_sub_cat_values, _obj_cat_values)
+        return {"subject_category_value_dict": _sub_cat_values, "object_category_value_dict": _obj_cat_values, "rule": _rule}
+
+    def destory_requested_collaboration(self, vent_uuid, sub_cat_value_dict, obj_list, obj_cat_value_dict):
+        self.del_subject(vent_uuid)
+
+        for _sub_cat_id in self.get_subject_categories():
+            self.del_subject_category_value(_sub_cat_id, sub_cat_value_dict[_sub_cat_id])
+            self.del_subject_assignment(_sub_cat_id, vent_uuid, sub_cat_value_dict[_sub_cat_id])
+
+        for _obj_cat_id in self.get_object_categories():
+            if _obj_cat_id == "action":
+                pass  # TODO: reconsidering the action as object attribute
+            else:
+                self.del_object_category_value(_obj_cat_id, obj_cat_value_dict[_obj_cat_id])
+
+                for _obj in obj_list:
+                    self.del_object_assignment(_obj_cat_id, _obj, obj_cat_value_dict[_obj_cat_id])
+
+        self.del_rule(sub_cat_value_dict, obj_cat_value_dict)
