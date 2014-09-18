@@ -186,37 +186,47 @@ class PIP:
     def del_group(self, uuid):
         return self.kclient.groups.delete(uuid)
 
-    def get_users_roles_assignment(self, tenant_uuid, users=None):
-        if not users:
-            users = self.get_subjects(tenant_uuid)
-        for user in users:
-            assignment = {}
-            _uuid = str(uuid4()).replace("-", "")
-            assignment["uuid"] = _uuid
-            assignment["category"] = "role"
-            assignment["subject"] = user["uuid"]
-            assignment["description"] = "Role assignment for {}".format(user["name"])
-            assignment["attributes"] = []
-            roles = map(lambda x: x.id, self.kclient.roles.list(user=user["uuid"], project=tenant_uuid))
-            if len(roles) > 0:
-                assignment["attributes"].extend(roles)
-            yield assignment
+    def get_users_roles_assignment(self, tenant_name="admin", users=None):
+        try:
+            tenant = self.get_tenants(name=tenant_name).next()
+        except StopIteration:
+            pass
+        else:
+            if not users:
+                users = self.get_subjects(tenant["uuid"])
+            for user in users:
+                assignment = {}
+                _uuid = str(uuid4()).replace("-", "")
+                assignment["uuid"] = _uuid
+                assignment["category"] = "role"
+                assignment["subject"] = user["uuid"]
+                assignment["description"] = "Role assignment for {}".format(user["name"])
+                assignment["attributes"] = []
+                roles = map(lambda x: x.id, self.kclient.roles.list(user=user["uuid"], project=tenant["uuid"]))
+                if len(roles) > 0:
+                    assignment["attributes"].extend(roles)
+                yield assignment
 
-    def get_users_groups_assignment(self, tenant_uuid, users=None):
-        if not users:
-            users = self.get_subjects(tenant_uuid)
-        for user in users:
-            assignments = {}
-            _uuid = str(uuid4()).replace("-", "")
-            assignments["uuid"] = _uuid
-            assignments["category"] = "group"
-            assignments["object"] = user["uuid"]
-            assignments["description"] = "Group assignment for {}".format(user["name"])
-            assignments["attributes"] = []
-            groups = map(lambda x: x.id, self.kclient.groups.list(user=user["uuid"], project=tenant_uuid))
-            if len(groups) > 0:
-                assignments["attributes"].extend(groups)
-            yield assignments
+    def get_users_groups_assignment(self, tenant_name, users=None):
+        try:
+            tenant = self.get_tenants(name=tenant_name).next()
+        except StopIteration:
+            pass
+        else:
+            if not users:
+                users = self.get_subjects(tenant["uuid"])
+            for user in users:
+                assignments = {}
+                _uuid = str(uuid4()).replace("-", "")
+                assignments["uuid"] = _uuid
+                assignments["category"] = "group"
+                assignments["object"] = user["uuid"]
+                assignments["description"] = "Group assignment for {}".format(user["name"])
+                assignments["attributes"] = []
+                groups = map(lambda x: x.id, self.kclient.groups.list(user=user["uuid"], project=tenant["uuid"]))
+                if len(groups) > 0:
+                    assignments["attributes"].extend(groups)
+                yield assignments
 
     def get_tenants(self, name=None, uuid=None, pap=None):
         for tenant in self.kclient.projects.list():
