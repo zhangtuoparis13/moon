@@ -18,6 +18,20 @@ logger = logging.getLogger("moon.django")
 LOGS = get_log_manager()
 
 
+def send_json(data):
+    try:
+        # print(pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id']))
+        return HttpResponse(json.dumps(data))
+    except:
+        import traceback
+        print(traceback.print_exc())
+        return HttpResponse(json.dumps({}))
+
+##########################################################
+# Functions for getting information about intra-extensions
+##########################################################
+
+
 @login_required(login_url='/auth/login/')
 @save_auth
 def intra_extensions(request, uuid=None):
@@ -30,26 +44,7 @@ def intra_extensions(request, uuid=None):
 def intra_extension(request, uuid=None):
     pap = get_pap()
     extension = pap.get_intra_extensions()[uuid]
-    try:
-        return HttpResponse(json.dumps(extension.get_data()))
-    except:
-        import traceback
-        print(traceback.print_exc())
-        return HttpResponse(json.dumps({}))
-
-########################################################
-# Functions for getting information from Keystone server
-########################################################
-
-
-@login_required(login_url='/auth/login/')
-@save_auth
-def get_tenants(request, uuid=None):
-    """
-    Retrieve information about tenants from Keystone server
-    """
-    pap = get_pap()
-    return HttpResponse(json.dumps(list(pap.get_tenants(uuid=uuid))))
+    return send_json(extension.get_data())
 
 
 ###############################################################
@@ -64,15 +59,9 @@ def get_subjects(request, uuid=None):
     Retrieve information about subjects from Moon server
     """
     pap = get_pap()
-    try:
-        # print(pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id']))
-        return HttpResponse(json.dumps({"subjects": list(
-            pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id'])
-        )}))
-    except:
-        # import traceback
-        # print(traceback.print_exc())
-        return HttpResponse(json.dumps({}))
+    return send_json({"subjects": list(
+        pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id'])
+    )})
 
 
 @login_required(login_url='/auth/login/')
@@ -82,14 +71,7 @@ def get_objects(request, uuid=None):
     Retrieve information about objects from Moon server
     """
     pap = get_pap()
-    try:
-        # print(pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id']))
-        return HttpResponse(json.dumps({'objects': list(
-            pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id'])
-        )}))
-    except:
-        # import traceback
-        # print(traceback.print_exc())
-        return HttpResponse(json.dumps({}))
-
+    return send_json({'objects': list(
+        pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id'])
+    )})
 
