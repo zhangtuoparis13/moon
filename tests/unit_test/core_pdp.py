@@ -97,7 +97,7 @@ INTRAREQUESTS = {
     ]
 }
 
-"""
+
 class TestCorePDPExtension(unittest.TestCase):
 
     def setUp(self):
@@ -435,8 +435,8 @@ class TestCorePDPExtension(unittest.TestCase):
 
         print("[test_create_requested_collaboration] get_rules ----------------: ", self.extension.get_rules())
 
-"""
-"""
+
+
 class TestCorePDPIntraExtension(unittest.TestCase):
 
     def setUp(self):
@@ -608,7 +608,7 @@ class TestCorePDPIntraExtension(unittest.TestCase):
             print("[test_create_requested_collaboration] get_object_assignments ----------------: ",
                   _extension.get_object_assignments(_oc))
         print("[test_create_requested_collaboration] get_rules ----------------: ", _extension.get_rules())
-"""
+
 
 class TestCorePDPInterExtension(unittest.TestCase):
 
@@ -641,7 +641,7 @@ class TestCorePDPInterExtension(unittest.TestCase):
         print("[test_destory_collaboration] vents ----------------: ", self.inter_extension.get_vents())
 
 
-"""
+
 class TestCorePDPSyncdb(unittest.TestCase):
 
     def setUp(self):
@@ -720,7 +720,7 @@ class TestCorePDPCore(unittest.TestCase):
         self.intra_extensions.install_intra_extensions_from_db()
         print("[test_install_intra_extensions_from_db]----------------: ",
               self.intra_extensions.get_installed_intra_extensions())
-"""
+
 
 if __name__ == "__main__":
     unittest.main()
