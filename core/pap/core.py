@@ -200,7 +200,7 @@ class PAP:
 
     def get_installed_inter_extensions(self, user_uuid, uuid=None):
         if self.inter_extensions.admin(user_uuid, "inter_extension", "read") == "OK":
-            for inter_ext in self.inter_extensions.get_installed_inter_extensions():
+            for inter_ext in self.inter_extensions.get_installed_inter_extensions().values():
                 if uuid and uuid == inter_ext.get_uuid():
                     yield inter_ext
                 elif not uuid:
