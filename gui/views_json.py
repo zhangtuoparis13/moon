@@ -54,7 +54,7 @@ def intra_extension(request, uuid=None):
 
 @login_required(login_url='/auth/login/')
 @save_auth
-def get_subjects(request, uuid=None):
+def subjects(request, uuid=None):
     """
     Retrieve information about subjects from Moon server
     """
@@ -66,7 +66,7 @@ def get_subjects(request, uuid=None):
 
 @login_required(login_url='/auth/login/')
 @save_auth
-def get_objects(request, uuid=None):
+def objects(request, uuid=None):
     """
     Retrieve information about objects from Moon server
     """
