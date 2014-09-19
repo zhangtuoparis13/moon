@@ -406,8 +406,8 @@ class TestCorePAPInterExtensions(unittest.TestCase):
                 'requested_object_category_value_dict'):
             self.assertIn(key, vent_data_dict.keys())
 
-        self.assertEqual(inter_extension.authz('user1', 'vm2', 'read'), True)
-        self.assertEqual(inter_extension.authz('user3', 'vm2', 'read'), False)
+        self.assertEqual(inter_extension.authz('user1', 'vm2', 'read'), "OK")
+        self.assertEqual(inter_extension.authz('user3', 'vm2', 'read'), "KO")
 
         vents = inter_extension.get_vents()
         self.assertIsInstance(vents, dict)
