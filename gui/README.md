@@ -62,6 +62,7 @@ URL that return JSON data
 |GET        |/json/inter-extension/{uuid}/vents                                 |                                                   |get all virtual entities for an inter-extension    |
 |-----------|-------------------------------------------------------------------|---------------------------------------------------|---------------------------------------------------|
 |GET        |/pip/tenants/                                                      |                                                   |get all tenants                                    |
+|GET        |/pip/tenant/{tenant_uuid}                                          |                                                   |get one tenant                                     |
 |GET        |/pip/subjects/{tenant_uuid}                                        |                                                   |get all subjects                                   |
 |GET        |/pip/objects/{tenant_uuid}                                         |                                                   |get all objects (ie. all virtual machines)         |
 |GET        |/pip/roles/{tenant_uuid}/{user_uuid}                               |                                                   |get all roles                                      |
