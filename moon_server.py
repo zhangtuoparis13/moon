@@ -9,8 +9,12 @@ sys_logger = get_sys_logger()
 
 def start_django(args):
     from django.core.management import execute_from_command_line
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "moon.gui.settings")
-    execute_from_command_line(args)
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "moon.settings")
+    try:
+        execute_from_command_line(args)
+    except:
+        import traceback
+        print(traceback.print_exc())
 
 
 def init_django():

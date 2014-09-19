@@ -1,21 +1,13 @@
 import logging
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.template.defaultfilters import register
-from keystoneclient.v3 import client
-from moon.gui import settings
-from django.utils.safestring import mark_safe
-from keystoneclient import exceptions
 import json
 from django.http import HttpResponse
-from moon.log_repository import get_log_manager
-from moon.core.pip import get_pip
 from moon.core.pap import get_pap
 from moon.gui.views import save_auth
 
 
 logger = logging.getLogger("moon.django")
-LOGS = get_log_manager()
+# LOGS = get_log_manager()
 
 
 def send_json(data):
@@ -36,7 +28,7 @@ def send_json(data):
 @save_auth
 def intra_extensions(request, uuid=None):
     pap = get_pap()
-    return HttpResponse(json.dumps(pap.get_intra_extensions().keys()))
+    return send_json(pap.get_intra_extensions().keys())
 
 
 @login_required(login_url='/auth/login/')
@@ -75,3 +67,86 @@ def objects(request, uuid=None):
         pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id'])
     )})
 
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def subject_categories(request, uuid=None):
+    return send_json({})
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def object_categories(request, uuid=None):
+    return send_json({})
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def subject_category(request, name=None):
+    return send_json({})
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def object_category(request, name=None):
+    return send_json({})
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def subject_category_values(request, uuid=None):
+    return send_json({})
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def object_category_values(request, uuid=None):
+    return send_json({})
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def subject_category_value(request, cat=None, value=None):
+    return send_json({})
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def object_category_value(request, cat=None, value=None):
+    return send_json({})
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def subject_assignments(request, uuid=None):
+    return send_json({})
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def object_assignments(request, uuid=None):
+    return send_json({})
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def subject_assignment(request, assign_uuid=None):
+    return send_json({})
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def object_assignment(request, assign_uuid=None):
+    return send_json({})
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def rules(request, uuid=None):
+    return send_json({})
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def rule(request, rule_uuid=None):
+    return send_json({})
