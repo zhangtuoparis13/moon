@@ -127,9 +127,12 @@ class PIP:
         #Do we really need this function ?
         raise NotImplemented
 
-    def get_roles(self, tenant_name="admin", uuid=None, name=None):
+    def get_roles(self, tenant_name="admin", tenant_uuid=None, uuid=None, name=None):
         try:
-            tenant = self.get_tenants(name=tenant_name).next()
+            if tenant_uuid:
+                tenant = self.get_tenants(uuid=tenant_uuid).next()
+            else:
+                tenant = self.get_tenants(name=tenant_name).next()
         except StopIteration:
             pass
         else:
@@ -159,9 +162,12 @@ class PIP:
     def del_role(self, uuid):
         return self.kclient.roles.delete(uuid)
 
-    def get_groups(self, tenant_name="admin"):
+    def get_groups(self, tenant_name="admin", tenant_uuid=None, uuid=None, name=None):
         try:
-            tenant = self.get_tenants(name=tenant_name).next()
+            if tenant_uuid:
+                tenant = self.get_tenants(uuid=tenant_uuid).next()
+            else:
+                tenant = self.get_tenants(name=tenant_name).next()
         except StopIteration:
             pass
         else:
@@ -178,6 +184,10 @@ class PIP:
                     g["enabled"] = True
                 g["category"] = "group"
                 g["uuid"] = group.id
+                if name and g["name"] != name:
+                    continue
+                if uuid and g["uuid"] != uuid:
+                    continue
                 yield g
 
     def add_group(self, name, description=""):
@@ -186,9 +196,12 @@ class PIP:
     def del_group(self, uuid):
         return self.kclient.groups.delete(uuid)
 
-    def get_users_roles_assignment(self, tenant_name="admin", users=None):
+    def get_users_roles_assignment(self, tenant_name="admin", tenant_uuid=None, users=None):
         try:
-            tenant = self.get_tenants(name=tenant_name).next()
+            if tenant_uuid:
+                tenant = self.get_tenants(uuid=tenant_uuid).next()
+            else:
+                tenant = self.get_tenants(name=tenant_name).next()
         except StopIteration:
             pass
         else:
