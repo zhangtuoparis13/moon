@@ -63,7 +63,7 @@ class TestAdminInterface(unittest.TestCase):
         data = get_url("json/intra-extensions/")
         self.assertIsInstance(data, list)
         for ext in data:
-            _data = get_url("json/intra-extensions/"+ext+"/")
+            _data = get_url("json/intra-extension/"+ext+"/")
             self.assertIsInstance(_data, dict)
             for k in [u'admin', u'authz', u'_id']:
                 self.assertIn(k, _data.keys())
