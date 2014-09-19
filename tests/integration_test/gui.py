@@ -93,5 +93,22 @@ class TestAdminInterface(unittest.TestCase):
             self.assertIsInstance(_data["objects"], list)
 
 
+class TestPIPInterface(unittest.TestCase):
+
+    def setUp(self):
+        # self.pip = get_pip()
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test_tenants(self):
+        data = get_url("pip/tenants/")
+        self.assertIsInstance(data, list)
+        self.assertIs(len(data) > 0, True)
+        tenant_names = list()
+        for tenant in data:
+            self.assertIsInstance(tenant, dict)
+
 if __name__ == '__main__':
     unittest.main()
