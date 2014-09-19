@@ -65,6 +65,7 @@ URL that return JSON data
 |GET        |/pip/subjects/{tenant_uuid}                                        |                                                   |get all subjects                                   |
 |GET        |/pip/objects/{tenant_uuid}                                         |                                                   |get all objects (ie. all virtual machines)         |
 |GET        |/pip/roles/{tenant_uuid}/{user_uuid}                               |                                                   |get all roles                                      |
+|GET        |/pip/groups/{tenant_uuid}/{user_uuid}                              |                                                   |get all groups                                     |
 |GET        |/pip/assignments/roles/{tenant_uuid}/{user_uuid}                   |                                                   |get all role assignments for user                  |
 |GET        |/pip/assignments/groups/{tenant_uuid}/{user_uuid}                  |                                                   |get all group assignments for user                 |
 
