@@ -3,21 +3,18 @@ TODO
 
 Global things to do
 -------------------
-
-- [ ] Add a testing framework
+- [x] Add a testing framework
 - [x] Add a logging system
 
 
 Specific modifications for moon
 -------------------------------
-
 Legend:
 - ~10% work initiated
 - ~90% work almost finished
 
 
 ###Core/PDP
-
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
 | extension           | WuKong      |                   | 16/09         | 100%               |
@@ -28,61 +25,56 @@ Legend:
 
 
 ###Core/PAP
-
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
 | core                | Tom         |                   | 16/09         | 80%                |
 
 
+###Core/PIP
+| Title               | Actor       | Description       | Deadline      | Percentage of work |
+| ------------------- | ----------- | ----------------- | ------------- | ------------------ |
+| core                | Tom, WuKong |                   | 19/09         | 90%                |
+
 
 ###Testing framework
-
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
 | Core/PDP            | WuKong      | unit test         | 19/09         | 90%                |
-| Core/PAP            | Tom         | unit test         | 19/09         | 0%                 |
-| GUI + PAP + PDP     | Tom         | integration test  | 26/09         | 0%                 |
-
+| Core/PAP            | Tom         | unit test         | 19/09         | 90%                |
+| GUI + PAP + PDP     | Tom         | integration test  | 26/09         | 20%                |
 
 
 # ****************************************************************************
-
-
-###Core/PIP
-
-| Title               | Actor       | Description       | Percentage of work |
-| ------------------- | ----------- | ----------------- | ------------------ |
-| core                | Tom, WuKong |                   | 50%                |
-
-
-###GUI
-
-| Title               | Actor       | Description       | Percentage of work |
-| ------------------- | ----------- | ----------------- | ------------------ |
-| core                | Tom         |                   | 50%                |
+###Implementation and Evaluation on Moon
+| Title               | Actor       | Description       | Deadline      | Percentage of work |
+| ------------------- | ----------- | ----------------- | ------------- | ------------------ |
+| Implement infra     | Tom, WuKong |                   | 03/10         |  0%                |
+| Define Scenario     | Tom, WuKong |                   | 03/10         |  0%                |
+| Realize Scenario    | Tom, WuKong |                   | 03/10         |  0%                |
 
 
 ###Logging
-| Title               | Actor       | Description       | Percentage of work |
-| ------------------- | ----------- | ----------------- | ------------------ |
-| log                 | Tom, WuKong |                   | 70%                |
-
+| Title               | Actor       | Description       | Deadline      | Percentage of work |
+| ------------------- | ----------- | ----------------- | ------------- | ------------------ |
+| log                 | Tom, WuKong |                   | 10/10         | 70%                |
 
 
 ###Integrate Policy engine with Prolog
+| Title               | Actor       | Description       | Deadline      | Percentage of work |
+| ------------------- | ----------- | ----------------- | ------------- | ------------------ |
+| Design Policy Engine| WuKong      | Understand Prolog | 17/10         | 0%                 | 
+| Implenet Engine     | WuKong      | in Moon           | 17/10         | 0%                 |
+| Mutiple Sub-rule    | WuKong      | in Moon           | 17/10         | 0%                 |
 
-| Title                   | Description                               | Percentage of work |
-| ----------------------- | ----------------------------------------- | ------------------ |
-| Understand Tun code     |                                           | 0%                 |
-| Include code in Moon    |                                           | 0%                 |
-| Mutiple Sub-rule Integration|                                       | 0%                 |
+
+###GUI
+| Title               | Actor       | Description       | Deadline      | Percentage of work |
+| ------------------- | ----------- | ----------------- | ------------- | ------------------ |
+| interface           | Tom         |                   |               | 50%                |
 
 
-###Evaluation and tests on Moon
-
-|Title        | Description                              | Percentage of work |
-|------------ | ---------------------------------------- | ------------------ |
-|Create tests |                                          |  0%                |
-|Pass tests   |                                          |  0%                |
-
+###Package
+| Title               | Actor       | Description       | Deadline      | Percentage of work |
+| ------------------- | ----------- | ----------------- | ------------- | ------------------ |
+| setup.py            | Tom         |                   |               | 50%                |
 
