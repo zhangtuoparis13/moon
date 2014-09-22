@@ -70,6 +70,30 @@ def objects(request, uuid=None):
 
 @login_required(login_url='/auth/login/')
 @save_auth
+def subject(request, uuid=None):
+    """
+    Retrieve information about subjects from Moon server
+    """
+    pap = get_pap()
+    return send_json({"subjects": list(
+        pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id'])
+    )})
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def object(request, uuid=None):
+    """
+    Retrieve information about objects from Moon server
+    """
+    pap = get_pap()
+    return send_json({'objects': list(
+        pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id'])
+    )})
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
 def subject_categories(request, uuid=None):
     return send_json({})
 
