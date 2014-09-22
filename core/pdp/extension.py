@@ -459,7 +459,7 @@ class Extension:
         _rule = self.add_rule(_sub_cat_values, _obj_cat_values)
         return {"subject_category_value_dict": _sub_cat_values, "object_category_value_dict": _obj_cat_values, "rule": _rule}
 
-    def destory_requesting_collaboration(self, vent_uuid, sub_list, sub_cat_value_dict, obj_cat_value_dict):
+    def destroy_requesting_collaboration(self, vent_uuid, sub_list, sub_cat_value_dict, obj_cat_value_dict):
         for _sub_cat_id in self.get_subject_categories():
             self.del_subject_category_value(_sub_cat_id, sub_cat_value_dict[_sub_cat_id])
 
@@ -502,7 +502,7 @@ class Extension:
         _rule = self.add_rule(_sub_cat_values, _obj_cat_values)
         return {"subject_category_value_dict": _sub_cat_values, "object_category_value_dict": _obj_cat_values, "rule": _rule}
 
-    def destory_requested_collaboration(self, vent_uuid, sub_cat_value_dict, obj_list, obj_cat_value_dict):
+    def destroy_requested_collaboration(self, vent_uuid, sub_cat_value_dict, obj_list, obj_cat_value_dict):
         self.del_subject(vent_uuid)
 
         for _sub_cat_id in self.get_subject_categories():

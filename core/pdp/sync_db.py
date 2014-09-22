@@ -2,7 +2,7 @@ from moon import settings
 import importlib
 
 
-DATABASES = getattr(settings, "DATABASES")
+DATABASES = getattr(settings, "MOON_DATABASES")
 if not 'intra-extensions' in DATABASES or not 'ENGINE' in DATABASES['intra-extensions']:
     raise(Exception("Unknown database engine {engine}".format(engine=DATABASES['intra-extensions']['ENGINE'])))
 

@@ -83,6 +83,24 @@ class PIP:
             s["uuid"] = user.id
             yield s
 
+    def add_subject(self, user):
+        for key in ('domain', 'enabled', 'name', 'project', 'password', 'description'):
+            if key not in user.keys():
+                return None
+        tenants = self.kclient.projects.list()
+        my_tenant = [x for x in tenants if x.name == user["project"]][0]
+        my_user = self.kclient.users.create(
+            name=user["name"],
+            password=user["password"],
+            tenant_id=my_tenant.id,
+            description=user["description"],
+            enabled=user["enabled"],
+            domain=user["domain"])
+        return my_user.id
+
+    def del_subject(self, user_uuid):
+        self.kclient.users.delete(user_uuid)
+
     def get_objects(self, tenant=None):
         s = dict()
         for server in self.nclient.servers.list():
@@ -101,75 +119,129 @@ class PIP:
             o["tenant"] = tenant
             yield o
 
-    def get_roles(self, tenant=None, uuid=None, name=None):
-        for role in self.kclient.roles.list(project_id=tenant["uuid"]):
-            o = dict()
-            o["value"] = role.name
-            try:
-                o["description"] = role.description
-            except AttributeError:
-                o["description"] = ""
-            try:
-                o["enabled"] = role.enabled
-            except AttributeError:
-                o["enabled"] = True
-            o["category"] = "role"
-            o["uuid"] = role.id
-            if name and o["name"] != name:
-                continue
-            if uuid and o["uuid"] != uuid:
-                continue
-            yield o
+    def add_object(self):
+        #Do we really need this function ?
+        raise NotImplemented
 
-    def get_groups(self, tenant=None):
-        for group in self.kclient.groups.list(project_id=tenant["uuid"]):
-            g = dict()
-            g["value"] = group.name
-            try:
-                g["description"] = group.description
-            except AttributeError:
-                g["description"] = ""
-            try:
-                g["enabled"] = group.enabled
-            except AttributeError:
-                g["enabled"] = True
-            g["category"] = "group"
-            g["uuid"] = group.id
-            yield g
+    def del_object(self):
+        #Do we really need this function ?
+        raise NotImplemented
 
-    def get_users_roles_assignment(self, tenant_uuid, users=None):
-        if not users:
-            users = self.get_subjects(tenant_uuid)
-        for user in users:
-            assignment = {}
-            _uuid = str(uuid4()).replace("-", "")
-            assignment["uuid"] = _uuid
-            assignment["category"] = "role"
-            assignment["subject"] = user["uuid"]
-            assignment["description"] = "Role assignment for {}".format(user["name"])
-            assignment["attributes"] = []
-            roles = map(lambda x: x.id, self.kclient.roles.list(user=user["uuid"], project=tenant_uuid))
-            if len(roles) > 0:
-                assignment["attributes"].extend(roles)
-            yield assignment
+    def get_roles(self, tenant_name="admin", tenant_uuid=None, uuid=None, name=None):
+        try:
+            if tenant_uuid:
+                tenant = self.get_tenants(uuid=tenant_uuid).next()
+            else:
+                tenant = self.get_tenants(name=tenant_name).next()
+        except StopIteration:
+            pass
+        else:
+            for role in self.kclient.roles.list(project_id=tenant["uuid"]):
+                o = dict()
+                o["value"] = role.name
+                try:
+                    o["description"] = role.description
+                except AttributeError:
+                    o["description"] = ""
+                try:
+                    o["enabled"] = role.enabled
+                except AttributeError:
+                    o["enabled"] = True
+                o["category"] = "role"
+                o["uuid"] = role.id
+                if name and o["name"] != name:
+                    continue
+                if uuid and o["uuid"] != uuid:
+                    continue
+                yield o
 
-    def get_users_groups_assignment(self, tenant_uuid, users=None):
-        if not users:
-            users = self.get_subjects(tenant_uuid)
-        for user in users:
-            assignments = {}
-            _uuid = str(uuid4()).replace("-", "")
-            assignments["uuid"] = _uuid
-            assignments["category"] = "group"
-            assignments["object"] = user["uuid"]
-            assignments["description"] = "Group assignment for {}".format(user["name"])
-            assignments["attributes"] = []
-            groups = map(lambda x: x.id, self.kclient.groups.list(user=user["uuid"], project=tenant_uuid))
-            if len(groups) > 0:
-                assignments["attributes"].extend(groups)
-            yield assignments
+    def add_role(self, name, description=""):
+        role = self.kclient.roles.create(name=name, description=description)
+        return role.id
 
-    def get_tenants(self, name, uuid=None, pap=None):
+    def del_role(self, uuid):
+        return self.kclient.roles.delete(uuid)
+
+    def get_groups(self, tenant_name="admin", tenant_uuid=None, uuid=None, name=None):
+        try:
+            if tenant_uuid:
+                tenant = self.get_tenants(uuid=tenant_uuid).next()
+            else:
+                tenant = self.get_tenants(name=tenant_name).next()
+        except StopIteration:
+            pass
+        else:
+            for group in self.kclient.groups.list(project_id=tenant["uuid"]):
+                g = dict()
+                g["value"] = group.name
+                try:
+                    g["description"] = group.description
+                except AttributeError:
+                    g["description"] = ""
+                try:
+                    g["enabled"] = group.enabled
+                except AttributeError:
+                    g["enabled"] = True
+                g["category"] = "group"
+                g["uuid"] = group.id
+                if name and g["name"] != name:
+                    continue
+                if uuid and g["uuid"] != uuid:
+                    continue
+                yield g
+
+    def add_group(self, name, description=""):
+        return self.kclient.groups.create(name=name, description=description)
+
+    def del_group(self, uuid):
+        return self.kclient.groups.delete(uuid)
+
+    def get_users_roles_assignment(self, tenant_name="admin", tenant_uuid=None, users=None):
+        try:
+            if tenant_uuid:
+                tenant = self.get_tenants(uuid=tenant_uuid).next()
+            else:
+                tenant = self.get_tenants(name=tenant_name).next()
+        except StopIteration:
+            pass
+        else:
+            if not users:
+                users = self.get_subjects(tenant["uuid"])
+            for user in users:
+                assignment = {}
+                _uuid = str(uuid4()).replace("-", "")
+                assignment["uuid"] = _uuid
+                assignment["category"] = "role"
+                assignment["subject"] = user["uuid"]
+                assignment["description"] = "Role assignment for {}".format(user["name"])
+                assignment["attributes"] = []
+                roles = map(lambda x: x.id, self.kclient.roles.list(user=user["uuid"], project=tenant["uuid"]))
+                if len(roles) > 0:
+                    assignment["attributes"].extend(roles)
+                yield assignment
+
+    def get_users_groups_assignment(self, tenant_name="admin", users=None):
+        try:
+            tenant = self.get_tenants(name=tenant_name).next()
+        except StopIteration:
+            pass
+        else:
+            if not users:
+                users = self.get_subjects(tenant["uuid"])
+            for user in users:
+                assignments = {}
+                _uuid = str(uuid4()).replace("-", "")
+                assignments["uuid"] = _uuid
+                assignments["category"] = "group"
+                assignments["subject"] = user["uuid"]
+                assignments["description"] = "Group assignment for {}".format(user["name"])
+                assignments["attributes"] = []
+                groups = map(lambda x: x.id, self.kclient.groups.list(user=user["uuid"], project=tenant["uuid"]))
+                if len(groups) > 0:
+                    assignments["attributes"].extend(groups)
+                yield assignments
+
+    def get_tenants(self, name=None, uuid=None, pap=None):
         for tenant in self.kclient.projects.list():
             t = dict()
             t["name"] = tenant.name
@@ -193,11 +265,20 @@ class PIP:
                 continue
             yield t
 
-    def create_roles(self, name, description=""):
-        return self.kclient.roles.create(name=name, description=description)
+    def add_tenant(self, tenant):
+        for key in ("name", "description", "enabled", "domain"):
+            if key not in tenant.keys():
+                return None
+        tenant = self.kclient.projects.create(
+            name=tenant["name"],
+            domain=tenant["domain"],
+            description=tenant["description"],
+            enabled=tenant["enabled"]
+        )
+        return tenant.id
 
-    def delete_roles(self, uuid):
-        return self.kclient.roles.delete(uuid)
+    def del_tenant(self, tenant_uuid):
+        self.kclient.projects.delete(tenant_uuid)
 
 
 pip = None

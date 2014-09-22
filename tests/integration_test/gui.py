@@ -63,7 +63,7 @@ class TestAdminInterface(unittest.TestCase):
         data = get_url("json/intra-extensions/")
         self.assertIsInstance(data, list)
         for ext in data:
-            _data = get_url("json/intra-extensions/"+ext+"/")
+            _data = get_url("json/intra-extension/"+ext+"/")
             self.assertIsInstance(_data, dict)
             for k in [u'admin', u'authz', u'_id']:
                 self.assertIn(k, _data.keys())
@@ -92,6 +92,23 @@ class TestAdminInterface(unittest.TestCase):
             self.assertIn("objects", _data)
             self.assertIsInstance(_data["objects"], list)
 
+
+class TestPIPInterface(unittest.TestCase):
+
+    def setUp(self):
+        # self.pip = get_pip()
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test_tenants(self):
+        data = get_url("pip/tenants/")
+        self.assertIsInstance(data, list)
+        self.assertIs(len(data) > 0, True)
+        tenant_names = list()
+        for tenant in data:
+            self.assertIsInstance(tenant, dict)
 
 if __name__ == '__main__':
     unittest.main()

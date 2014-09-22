@@ -3,14 +3,14 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 import json
 from django.http import HttpResponse
 from moon.core.pdp import get_intra_extensions
-from moon.log_repository import get_log_manager
+# from moon.log_repository import get_log_manager
 import hashlib
 from moon import settings
 import logging
 
 
 logger = logging.getLogger(__name__)
-LOGS = get_log_manager()
+# LOGS = get_log_manager()
 
 # TODO: this must be authenticated/secured!!!
 # TODO: this must be CSRF protected!!!
@@ -53,20 +53,20 @@ def tenants(request):
                       "for ({subject} - {action} - {objecttype}/{object}) \n{message}"
                 print(log.format(color="\033[33m", endcolor="\033[m", **args))
                 # LOGS.write(line=log.format(color="", endcolor="", **args))
-                LOGS.write(authz)
+                # LOGS.write(authz)
             elif not authz["auth"]:
                 log = "{color}Unauthorized{endcolor} in tenant {tname} " \
                       "for ({subject} - {action} - {objecttype}/{object}) \n{message}"
                 print(log.format(color="\033[41m", endcolor="\033[m", **args))
                 # LOGS.write(line=log.format(color="", endcolor="", **args))
-                LOGS.write(authz)
+                # LOGS.write(authz)
             else:
                 # print("\t\033[41m" + tenant_name + "/" + str(authz) + " for (" + "\033[m")
                 log = "{color}Out of Scope{endcolor} in tenant {tname} " \
                       "for ({subject} - {action} - {objecttype}/{object}) \n{message}"
                 print(log.format(color="\033[42m", endcolor="\033[m", **args))
                 # LOGS.write(line=log.format(color="", endcolor="", **args))
-                LOGS.write(authz)
+                # LOGS.write(authz)
 
             response_data["auth"] = authz
     except:

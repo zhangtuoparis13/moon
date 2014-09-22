@@ -99,37 +99,20 @@ class PAP:
             if self.intra_extensions[extension_uuid].admin(user_uuid, "object_categories", "write") == "OK":
                 self.intra_extensions[extension_uuid].intra_extension_authz.del_object_category(category_id)
 
-    def get_meta_rules(self, extension_uuid, user_uuid):
-        if extension_uuid in self.intra_extensions.keys():
-            if self.intra_extensions[extension_uuid].admin(user_uuid, "meta_rules", "read") == "OK":
-                return self.intra_extensions[extension_uuid].intra_extension_authz.get_meta_rules()
-
-    def add_meta_rules(self, extension_uuid, user_uuid, rule):
-        if extension_uuid in self.intra_extensions.keys():
-            #TODO to be defined
-            if self.intra_extensions[extension_uuid].admin(user_uuid, "meta_rules", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.add_meta_rules(rule)
-
-    def del_meta_rules(self, extension_uuid, user_uuid, rule_id):
-        if extension_uuid in self.intra_extensions.keys():
-            #TODO to be defined
-            if self.intra_extensions[extension_uuid].admin(user_uuid, "meta_rules", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.del_meta_rules(rule_id)
-
     def get_subject_category_values(self, extension_uuid, user_uuid, category_id):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_category_values", "read") == "OK":
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_subject_category_values(category_id)
 
-    def add_subject_category_values(self, extension_uuid, user_uuid, category_id, category_value):
+    def add_subject_category_value(self, extension_uuid, user_uuid, category_id, category_value):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_category_values", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.add_subject_category_values(category_id, category_value)
+                self.intra_extensions[extension_uuid].intra_extension_authz.add_subject_category_value(category_id, category_value)
 
-    def del_subject_category_values(self, extension_uuid, user_uuid, category_id, category_value):
+    def del_subject_category_value(self, extension_uuid, user_uuid, category_id, category_value):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_category_values", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.del_subject_category_values(category_id, category_value)
+                self.intra_extensions[extension_uuid].intra_extension_authz.del_subject_category_value(category_id, category_value)
                 #TODO need to check if the value is not in other tables like assignment
 
     def get_object_category_values(self, extension_uuid, user_uuid, category_id):
@@ -137,15 +120,15 @@ class PAP:
             if self.intra_extensions[extension_uuid].admin(user_uuid, "object_category_values", "read") == "OK":
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_object_category_values(category_id)
 
-    def add_object_category_values(self, extension_uuid, user_uuid, category_id, category_value):
+    def add_object_category_value(self, extension_uuid, user_uuid, category_id, category_value):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "object_category_values", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.add_object_category_values(category_id, category_value)
+                self.intra_extensions[extension_uuid].intra_extension_authz.add_object_category_value(category_id, category_value)
 
-    def del_object_category_values(self, extension_uuid, user_uuid, category_id, category_value):
+    def del_object_category_value(self, extension_uuid, user_uuid, category_id, category_value):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "object_category_values", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.del_object_category_values(category_id, category_value)
+                self.intra_extensions[extension_uuid].intra_extension_authz.del_object_category_value(category_id, category_value)
                 #TODO need to check if the value is not in other tables like assignment
 
     def get_subject_assignments(self, extension_uuid, user_uuid, category_id):
@@ -191,22 +174,22 @@ class PAP:
             if self.intra_extensions[extension_uuid].admin(user_uuid, "rules", "read") == "OK":
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_rules()
 
-    def add_rule(self, extension_uuid, user_uuid, name, subject_attrs, object_attrs, description=""):
+    def add_rule(self, extension_uuid, user_uuid, sub_cat_value, obj_cat_value):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "rules", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.add_rules(name, subject_attrs, object_attrs, description)
+                self.intra_extensions[extension_uuid].intra_extension_authz.add_rule(sub_cat_value, obj_cat_value)
 
-    def del_rule(self, extension_uuid, user_uuid, rule_id):
-        if extension_uuid in self.intra_extensions.keys():
-            if self.intra_extensions[extension_uuid].admin(user_uuid, "rules", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.add_rules(rule_id)
+    # def del_rule(self, extension_uuid, user_uuid, rule_id):
+    #     if extension_uuid in self.intra_extensions.keys():
+    #         if self.intra_extensions[extension_uuid].admin(user_uuid, "rules", "write") == "OK":
+    #             self.intra_extensions[extension_uuid].intra_extension_authz.add_rules(rule_id)
 
     ########################################
     # Specific functions for Intra-Extension
     ########################################
 
     def add_from_json(self, json_directory):
-        get_intra_extensions().install_intra_extension_from_json(json_directory)
+        return get_intra_extensions().install_intra_extension_from_json(json_directory)
 
     def add_from_db(self):
         get_intra_extensions().install_intra_extension_from_db()
@@ -215,60 +198,36 @@ class PAP:
     # Specific functions for Inter Extensions
     #########################################
 
-    def get_inter_extensions(self, uuid=None):
-        return self.inter_pdps.get(uuid=uuid)
+    def get_installed_inter_extensions(self, user_uuid, uuid=None):
+        if self.inter_extensions.admin(user_uuid, "inter_extension", "read") == "OK":
+            for inter_ext in self.inter_extensions.get_installed_inter_extensions().values():
+                if uuid and uuid == inter_ext.get_uuid():
+                    yield inter_ext
+                elif not uuid:
+                    yield inter_ext
 
-    def add_inter_extension(self,
-                            requesting=None,
-                            requested=None,
-                            connexion_type=None,
-                            requesting_subjects=None,
-                            requested_objects=None):
-        """Add a new Inter Tenant Extension
+    def create_collaboration(
+            self,
+            user_uuid,
+            requesting_intra_extension_uuid,
+            requested_intra_extension_uuid,
+            type,
+            sub_list,
+            obj_list,
+            act):
+        if self.inter_extensions.admin(user_uuid, "inter_extension", "write") == "OK":
+            return self.inter_extensions.create_collaboration(
+                requesting_intra_extension_uuid,
+                requested_intra_extension_uuid,
+                type,
+                sub_list,
+                obj_list,
+                act
+            )
 
-        :param requesting: UUID of the requesting tenant
-        :param requested: UUID of the requested tenant
-        :param connexion_type: connexion_type of the connection ("trust", "coordinate", ...)
-        :param requesting_subjects: list of subjects for rule creation
-        :param requested_objects: list of objects for rule creation
-        :return: new extension
-
-        Methodology:
-        - Add tenant assignment
-        - Add virtual entity object vent1 in requesting tenant
-        - Add relation (in o_attrs_assignment) from vent1 to o_attrs.virtual_entity in requesting tenant
-        - Add virtual entity subject vent2 in requested tenant
-        - Add relation (in o_attrs_assignment) from vent2 to o_attrs.virtual_entity in requested tenant
-        - Add rule from one or more subjects to vent1 in requesting tenant
-        - Add rule from one or more objects to vent2 in requested tenant
-        """
-        #Add tenant assignment
-        assignment = self.inter_pdps.add_tenant_assignment(
-            requested=requested,
-            requesting=requesting,
-            type=connexion_type,
-        )
-        requesting_extension = self.get_intra_extensions(tenant_uuid=requesting)
-        requested_extension = self.get_intra_extensions(tenant_uuid=requested)
-        #Get the Virtual entity created during the creation of "assignment"
-        vent = self.get_virtual_entity(uuid=assignment.category)[0]
-        requesting_extension.requesting_vent_create(vent, requesting_subjects)
-        requested_extension.requested_vent_create(vent, requested_objects)
-        return assignment
-
-    def get_virtual_entity(self, uuid=None, name=None):
-        return self.inter_pdps.get_virtual_entity(uuid=uuid, name=name)
-
-    def delete_inter_extension(self, uuid):
-        ext = self.inter_pdps.get(uuid=uuid)[0]
-        vent_uuid = ext.get_vent()
-        self.intra_pdps.delete_rules(s_attrs=vent_uuid, o_attrs=vent_uuid)
-        try:
-            self.intra_pdps.delete_attributes_from_vent(uuid=vent_uuid)
-        except:
-            import sys
-            print(sys.exc_info())
-        self.inter_pdps.delete(uuid=uuid)
+    def destroy_collaboration(self, user_uuid, inter_extension_uuid, vent_uuid):
+        if self.inter_extensions.admin(user_uuid, "inter_extension", "write") == "OK":
+            self.inter_extensions.destroy_collaboration(inter_extension_uuid, vent_uuid)
 
     ###########################################
     # Misc functions for Intra/Inter-Extensions

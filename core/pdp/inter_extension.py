@@ -124,11 +124,11 @@ class InterExtension:
 
     def destroy_collaboration(self, vent_uuid):
         _vent = self.__vents[vent_uuid]
-        self.requesting_intra_extension.destory_requesting_collaboration(_vent.get_type(), vent_uuid,
+        self.requesting_intra_extension.destroy_requesting_collaboration(_vent.get_type(), vent_uuid,
                                                                          _vent.get_requesting_subject_list(),
                                                                          _vent.get_requesting_subject_category_value_dict(),
                                                                          _vent.get_requesting_object_category_value_dict())
-        self.requested_intra_extension.destory_requested_collaboration(_vent.get_type(), vent_uuid,
+        self.requested_intra_extension.destroy_requested_collaboration(_vent.get_type(), vent_uuid,
                                                                          _vent.get_requested_subject_category_value_dict(),
                                                                          _vent.get_requested_object_list(),
                                                                          _vent.get_requested_object_category_value_dict())

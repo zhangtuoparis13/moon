@@ -31,6 +31,7 @@ class IntraExtensions:
         _intra_extension = IntraExtension()
         _intra_extension.load_from_json(extension_setting_abs_dir)
         self.__installed_intra_extensions[_intra_extension.get_uuid()] = _intra_extension
+        return _intra_extension.get_uuid()
 
     def install_intra_extension_from_db(self):
         intra_extension = IntraExtension()
@@ -83,6 +84,10 @@ class InterExtensions:  # TODO: to test
                     return 'OK'
         return "KO"
 
+    def admin(self, sub, obj, act):
+        #TODO later
+        return "OK"
+
     def create_collaboration(self, requesting_intra_extension_uuid, requested_intra_extension_uuid,
                              type, sub_list, obj_list, act):
         for _installed_inter_extension in self.__installed_inter_extensions.values():
@@ -98,7 +103,7 @@ class InterExtensions:  # TODO: to test
         _vent_uuid = _new_inter_extension.create_collaboration(type, sub_list, obj_list, act)
         return _inter_extension_uuid, _vent_uuid
 
-    def destory_collaboration(self, inter_extension_uuid, vent_uuid):
+    def destroy_collaboration(self, inter_extension_uuid, vent_uuid):
         self.__installed_inter_extensions[inter_extension_uuid].destroy_collaboration(vent_uuid)
         self.__installed_inter_extensions.pop(inter_extension_uuid)
 

@@ -3,18 +3,18 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.template.defaultfilters import register
 from keystoneclient.v3 import client
-from moon.gui import settings
+from moon import settings
 from django.utils.safestring import mark_safe
 from keystoneclient import exceptions
 import json
 from django.http import HttpResponse
-from moon.log_repository import get_log_manager
+# from moon.log_repository import get_log_manager
 from moon.core.pip import get_pip
 from moon.core.pap import get_pap
 
 
 logger = logging.getLogger("moon.django")
-LOGS = get_log_manager()
+# LOGS = get_log_manager()
 
 
 def save_auth(function):
@@ -325,57 +325,58 @@ def logs_repository(request):
     """
     Log viewer interface
     """
-    logs = LOGS.read(limit=30)
-    logs.reverse()
-    pap = get_pap()
-    for log in logs:
-        if type(log.value) is dict:
-            if log.value["object_tenant"] != "None":
-                extension = pap.get_intra_extensions(tenant_uuid=log.value["object_tenant"])
-                if extension:
-                    log.value["subject"] = extension.get_subject(uuid=log.value["subject"])["name"]
-                try:
-                    log.value["object_tenant"] = pap.get_tenant(
-                        tenant_uuid=log.value["object_tenant"]
-                    )[0].name
-                except IndexError:
-                    pass
-            if log.value["subject_tenant"] != "None":
-                extension = pap.get_intra_extensions(tenant_uuid=log.value["subject_tenant"])
-                if extension:
-                    try:
-                        log.value["subject"] = extension.get_subject(uuid=log.value["subject"])["name"]
-                    except TypeError:
-                        pass
-                    except IndexError:
-                        pass
-                try:
-                    log.value["subject_tenant"] = pap.get_tenant(
-                        tenant_uuid=log.value["subject_tenant"]
-                    )[0].name
-                except AttributeError:
-                    pass
-                except IndexError:
-                    # Tenant does not exist anymore
-                    pass
-            if log.value["auth"] is True:
-                log.value["auth"] = "<span class=\"authorized\">Authorized</span>"
-            elif log.value["auth"] is False:
-                log.value["auth"] = "<span class=\"notauthorized\">Not Authorized</span>"
-            else:
-                log.value["auth"] = "<span class=\"outofscope\">{}</span>".format(log.value["auth"])
-            html = """<b>{auth}/{rule_name}</b>
-            <ul>
-                <li><b>action:</b> {action}</li>
-                <li><b>subject:</b> {subject_tenant}/{subject}</li>
-                <li><b>object:</b> {object_tenant}/[{object_type}]{object_name}</li>
-                <li><b>message:</b> {message}</li>
-            </ul>
-            """.format(**log.value)
-            log.value = mark_safe(html)
-    return render(request, "moon/logs.html", {
-        "logs": logs,
-    })
+    return render(request   )
+    # logs = LOGS.read(limit=30)
+    # logs.reverse()
+    # pap = get_pap()
+    # for log in logs:
+    #     if type(log.value) is dict:
+    #         if log.value["object_tenant"] != "None":
+    #             extension = pap.get_intra_extensions(tenant_uuid=log.value["object_tenant"])
+    #             if extension:
+    #                 log.value["subject"] = extension.get_subject(uuid=log.value["subject"])["name"]
+    #             try:
+    #                 log.value["object_tenant"] = pap.get_tenant(
+    #                     tenant_uuid=log.value["object_tenant"]
+    #                 )[0].name
+    #             except IndexError:
+    #                 pass
+    #         if log.value["subject_tenant"] != "None":
+    #             extension = pap.get_intra_extensions(tenant_uuid=log.value["subject_tenant"])
+    #             if extension:
+    #                 try:
+    #                     log.value["subject"] = extension.get_subject(uuid=log.value["subject"])["name"]
+    #                 except TypeError:
+    #                     pass
+    #                 except IndexError:
+    #                     pass
+    #             try:
+    #                 log.value["subject_tenant"] = pap.get_tenant(
+    #                     tenant_uuid=log.value["subject_tenant"]
+    #                 )[0].name
+    #             except AttributeError:
+    #                 pass
+    #             except IndexError:
+    #                 # Tenant does not exist anymore
+    #                 pass
+    #         if log.value["auth"] is True:
+    #             log.value["auth"] = "<span class=\"authorized\">Authorized</span>"
+    #         elif log.value["auth"] is False:
+    #             log.value["auth"] = "<span class=\"notauthorized\">Not Authorized</span>"
+    #         else:
+    #             log.value["auth"] = "<span class=\"outofscope\">{}</span>".format(log.value["auth"])
+    #         html = """<b>{auth}/{rule_name}</b>
+    #         <ul>
+    #             <li><b>action:</b> {action}</li>
+    #             <li><b>subject:</b> {subject_tenant}/{subject}</li>
+    #             <li><b>object:</b> {object_tenant}/[{object_type}]{object_name}</li>
+    #             <li><b>message:</b> {message}</li>
+    #         </ul>
+    #         """.format(**log.value)
+    #         log.value = mark_safe(html)
+    # return render(request, "moon/logs.html", {
+    #     "logs": logs,
+    # })
 
 
 # @login_required(login_url='/auth/login/')
