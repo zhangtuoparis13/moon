@@ -10,6 +10,8 @@
         "action": {
             "subjects": [],
             "objects": [],
+            "subject_categories": [],
+            "object_categories": [],
             "subject_category_values": [],
             "object_category_values": [],
             "rules": [],
@@ -19,6 +21,8 @@
         "object_id": {
             "subjects": ["subjects"],
             "objects": ["objects"],
+            "subject_categories": ["subject_categories"],
+            "object_categories": ["object_categories"],
             "subject_category_values": ["subject_category_values"],
             "object_category_values": ["object_category_values"],
             "rules": ["rules"],
