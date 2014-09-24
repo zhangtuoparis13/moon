@@ -162,9 +162,8 @@ class TestCorePDPExtension(unittest.TestCase):
             for _obj_cat_id in self.extension.get_meta_rule()["sub_meta_rules"][_relation]["object_categories"]:
                 obj_cat_value[_relation][_obj_cat_id] = self.extension.get_rules()[_relation][0][i]
                 i += 1
-
-        self.assertEqual(self.extension.add_rule(sub_cat_value, obj_cat_value), False)
-        print("[test_add_rule] add an existing  rule ---------------- OK ")
+        self.assertEqual(self.extension.add_rule(sub_cat_value, obj_cat_value), "[Error] Added Rule Exists")
+        print("[test_add_rule] add an existing  rule [Error] Added Rule Exists ---------------- OK ")
 
         for _relation in self.extension.get_meta_rule()["sub_meta_rules"]:
             sub_cat_value[_relation] = dict()
@@ -174,6 +173,30 @@ class TestCorePDPExtension(unittest.TestCase):
 
             for _obj_cat_id in self.extension.get_meta_rule()["sub_meta_rules"][_relation]["object_categories"]:
                 obj_cat_value[_relation][_obj_cat_id] = self._results["added_rule"][_relation][_obj_cat_id]
+        self.assertEqual(self.extension.add_rule(sub_cat_value, obj_cat_value),
+                         "[Error] Added Subject Category Value Unknown")
+        print("[test_add_rule] add a no existing rule [Error] Added Subject Category Value Unknown ---------------- OK ")
+
+        for _relation in self.extension.get_meta_rule()["sub_meta_rules"]:
+            sub_cat_value[_relation] = dict()
+            obj_cat_value[_relation] = dict()
+            for _sub_cat_id in self.extension.get_meta_rule()["sub_meta_rules"][_relation]["subject_categories"]:
+                sub_cat_value[_relation][_sub_cat_id] = self._results["added_rule2"][_relation][_sub_cat_id]
+
+            for _obj_cat_id in self.extension.get_meta_rule()["sub_meta_rules"][_relation]["object_categories"]:
+                obj_cat_value[_relation][_obj_cat_id] = self._results["added_rule2"][_relation][_obj_cat_id]
+        self.assertEqual(self.extension.add_rule(sub_cat_value, obj_cat_value),
+                         "[Error] Added Object Category Value Unknown")
+        print("[test_add_rule] add a no existing rule [Error] Added Object Category Value Unknown ---------------- OK ")
+
+        for _relation in self.extension.get_meta_rule()["sub_meta_rules"]:
+            sub_cat_value[_relation] = dict()
+            obj_cat_value[_relation] = dict()
+            for _sub_cat_id in self.extension.get_meta_rule()["sub_meta_rules"][_relation]["subject_categories"]:
+                sub_cat_value[_relation][_sub_cat_id] = self._results["added_rule3"][_relation][_sub_cat_id]
+
+            for _obj_cat_id in self.extension.get_meta_rule()["sub_meta_rules"][_relation]["object_categories"]:
+                obj_cat_value[_relation][_obj_cat_id] = self._results["added_rule3"][_relation][_obj_cat_id]
 
         self.assertEqual(self.extension.add_rule(sub_cat_value, obj_cat_value), self._results["new_rules"])
         print("[test_add_rule] add a no existing  rule ---------------- OK ")
@@ -188,134 +211,220 @@ class TestCorePDPExtension(unittest.TestCase):
             for _obj_cat_id in self.extension.get_meta_rule()["sub_meta_rules"][_relation]["object_categories"]:
                 obj_cat_value[_relation][_obj_cat_id] = "xxooxxoo"
 
-        self.assertEqual(self.extension.del_rule(sub_cat_value, obj_cat_value), False)
-        print("[test_del_rule] del a no existing  rule ---------------- OK ")
+        self.assertEqual(self.extension.del_rule(sub_cat_value, obj_cat_value), "[Error] Deleted Rule No Exists")
+        print("[test_del_rule] del a no existing  rule [Error] Deleted Rule No Exists ---------------- OK ")
 
         for _relation in self.extension.get_meta_rule()["sub_meta_rules"]:
             sub_cat_value[_relation] = dict()
             obj_cat_value[_relation] = dict()
             for _sub_cat_id in self.extension.get_meta_rule()["sub_meta_rules"][_relation]["subject_categories"]:
-                sub_cat_value[_relation][_sub_cat_id] = self._results["added_rule"][_relation][_sub_cat_id]
+                sub_cat_value[_relation][_sub_cat_id] = self._results["added_rule3"][_relation][_sub_cat_id]
 
             for _obj_cat_id in self.extension.get_meta_rule()["sub_meta_rules"][_relation]["object_categories"]:
-                obj_cat_value[_relation][_obj_cat_id] = self._results["added_rule"][_relation][_obj_cat_id]
+                obj_cat_value[_relation][_obj_cat_id] = self._results["added_rule3"][_relation][_obj_cat_id]
 
         self.assertEqual(self.extension.del_rule(sub_cat_value, obj_cat_value), self._results['rules'])
         print("[test_add_rule] del an existing  rule ---------------- OK ")
 
-"""
     def test_get_subjects(self):
-        print("[test_get_subjects]----------------: ", self.extension.get_subjects())
-        self.assertIsInstance(self.extension.get_subjects(), list)
+        self.assertEqual(self.extension.get_subjects(), self._results["subjects"])
+        print("[test_get_subjects]---------------- OK ")
 
-    def test_add_subject(self):
-        print("[test_add_subject]----------------: ", self.extension.get_subjects())
-        self.extension.add_subject("aaaa")
-        print("[test_add_subject]----------------: ", self.extension.get_subjects())
-        self.extension.del_subject("aaaa")
+    def test_add_del_subject(self):
+        self.assertEqual(self.extension.add_subject(self.extension.get_subjects()[0]), "[ERROR] Added Subject Exists")
+        print("[test_add_subject] add an existing subject [ERROR] Added Subject Exists ---------------- OK ")
 
-    def test_del_subject(self):
-        self.extension.add_subject("aaaa")
-        print("[test_del_subject]----------------: ", self.extension.get_subjects())
-        self.extension.del_subject("aaaa")
-        print("[test_del_subject]----------------: ", self.extension.get_subjects())
+        self.assertEqual(self.extension.add_subject(self._results["added_subject"]), self._results["new_subjects"])
+        print("[test_add_subject] add an existing subject ---------------- OK ")
+
+        self.assertEqual(self.extension.del_subject("xxooxxoo"), "[ERROR] Deleted Subject No Exists")
+        print("[test_del_subject] [ERROR] Deleted Subject No Exists OK ---------------- ")
+
+        self.assertEqual(self.extension.del_subject(self._results["added_subject"]), self._results["subjects"])
+        print("[test_del_subject]---------------- OK ")
 
     def test_get_objects(self):
-        print("[test_get_objects]----------------: ", self.extension.get_objects())
-        self.assertIsInstance(self.extension.get_objects(), list)
+        self.assertEqual(self.extension.get_objects(), self._results["objects"])
+        print("[test_get_objects]---------------- OK ")
 
-    def test_add_object(self):
-        print("[test_add_object]----------------: ", self.extension.get_objects())
-        self.extension.add_object("bbbb")
-        print("[test_add_object]----------------: ", self.extension.get_objects())
-        self.extension.del_object("bbbb")
+    def test_add_del_object(self):
+        self.assertEqual(self.extension.add_object(self.extension.get_objects()[0]), "[ERROR] Added Object Exists")
+        print("[test_add_object] add an existing object [ERROR] Added Object Exists ---------------- OK ")
 
-    def test_del_object(self):
-        self.extension.add_object("bbbb")
-        print("[test_del_object]----------------: ", self.extension.get_objects())
-        self.extension.del_object("bbbb")
-        print("[test_del_object]----------------: ", self.extension.get_objects())
+        self.assertEqual(self.extension.add_object(self._results["added_object"]), self._results["new_objects"])
+        print("[test_add_object] add an existing object ---------------- OK ")
+
+        self.assertEqual(self.extension.del_object("xxooxxoo"), "[ERROR] Deleted Object No Exists")
+        print("[test_del_object] [ERROR] Deleted Object No Exists ---------------- OK ")
+
+        self.assertEqual(self.extension.del_object(self._results["added_object"]), self._results["objects"])
+        print("[test_del_object]---------------- OK ")
 
     def test_get_subject_assignments(self):
-        _sub_cat_id = self.extension.get_subject_categories()[0]
-        print("[test_get_subject_assignments] for ", _sub_cat_id, "----------------: ",
-              self.extension.get_subject_assignments(_sub_cat_id))
-        self.assertIsInstance(self.extension.get_subject_assignments(_sub_cat_id), dict)
+        self.assertEqual(self.extension.get_subject_assignments("xxooxxoo"),
+                         "[ERROR] Get Subject Assignment: Unknown Subject Category")
+        print("[test_get_subject_assignments] [ERROR] Get Subject Assignment: Unknown Subject Category ---------------- OK ")
 
-    def test_add_subject_assignment(self):
-        _sub_cat_id = self.extension.get_subject_categories()[0]
-        print("[test_add_subject_assignment] for ", _sub_cat_id, "----------------: ",
-              self.extension.get_subject_assignments(_sub_cat_id))
-        self.extension.add_subject_assignment(_sub_cat_id, "userx", "aaaa")
-        self.extension.add_subject_assignment(_sub_cat_id, "userx", "aaaa2")
-        self.extension.add_subject_assignment(_sub_cat_id, "user2", "aaaa3")
-        print("[test_add_subject_assignment] for ", _sub_cat_id, "----------------: ",
-              self.extension.get_subject_assignments(_sub_cat_id))
-        self.extension.del_subject_assignment(_sub_cat_id, "userx", "aaaa")
-        self.extension.del_subject_assignment(_sub_cat_id, "userx", "aaaa2")
-        self.extension.del_subject_assignment(_sub_cat_id, "user2", "aaaa3")
+        for _sub_cat_id in self.extension.get_subject_categories():
+            self.assertEqual(self.extension.get_subject_assignments(_sub_cat_id),
+                             self._results["subject_category_assignments"][_sub_cat_id])
+        print("[test_get_subject_assignments] ---------------- OK ")
 
-    def test_del_subject_assignment(self):
-        _sub_cat_id = self.extension.get_subject_categories()[0]
-        self.extension.add_subject_assignment(_sub_cat_id, "userx", "aaaa")
-        self.extension.add_subject_assignment(_sub_cat_id, "userx", "aaaa2")
-        self.extension.add_subject_assignment(_sub_cat_id, "user2", "aaaa3")
-        print("[test_del_subject_assignment] for ", _sub_cat_id, "----------------: ",
-              self.extension.get_subject_assignments(_sub_cat_id))
-        self.extension.del_subject_assignment(_sub_cat_id, "userx", "aaaa")
-        self.extension.del_subject_assignment(_sub_cat_id, "userx", "aaaa2")
-        self.extension.del_subject_assignment(_sub_cat_id, "user2", "aaaa3")
-        print("[test_del_subject_assignment] for ", _sub_cat_id, "----------------: ",
-              self.extension.get_subject_assignments(_sub_cat_id))
+    def test_add_del_subject_assignment(self):
+        for _sub_cat_id in self._results["added_subject_category_assignment1"]:
+            for _sub_id in self._results["added_subject_category_assignment1"][_sub_cat_id]:
+                self.assertEqual(self.extension.add_subject_assignment(
+                    _sub_cat_id, _sub_id, self._results["added_subject_category_assignment1"][_sub_cat_id][_sub_id]),
+                                 "[ERROR] Add Subject Assignment: Unknown Subject Category")
+        print("[test_add_subject_assignment] [ERROR] Add Subject Assignment: Unknown Subject Category ---------------- OK ")
 
-    def test_get_subject_category_attr(self):
-        _sub_cat_id = self.extension.get_subject_categories()[0]
-        _subject_id = self.extension.get_subjects()[0]
-        print("[test_get_subject_category_attr] for ", _sub_cat_id, _subject_id, "----------------: ",
-              self.extension.get_subject_category_attr(_sub_cat_id, _subject_id))
-        self.assertIsInstance(self.extension.get_subject_category_attr(_sub_cat_id, _subject_id), list)
+        for _sub_cat_id in self._results["added_subject_category_assignment2"]:
+            for _sub_id in self._results["added_subject_category_assignment2"][_sub_cat_id]:
+                self.assertEqual(self.extension.add_subject_assignment(
+                    _sub_cat_id, _sub_id, self._results["added_subject_category_assignment2"][_sub_cat_id][_sub_id]),
+                                 "[ERROR] Add Subject Assignment: Unknown Subject")
+        print("[test_add_subject_assignment] [ERROR] Add Subject Assignment: Unknown Subject ---------------- OK ")
+
+        for _sub_cat_id in self._results["added_subject_category_assignment3"]:
+            for _sub_id in self._results["added_subject_category_assignment3"][_sub_cat_id]:
+                self.assertEqual(self.extension.add_subject_assignment(
+                    _sub_cat_id, _sub_id, self._results["added_subject_category_assignment3"][_sub_cat_id][_sub_id]),
+                                 "[ERROR] Add Subject Assignment: Unknown Subject Category Value")
+        print("[test_add_subject_assignment] [ERROR] Add Subject Assignment: Unknown Subject Category Value ---------------- OK ")
+
+        for _sub_cat_id in self._results["added_subject_category_assignment4"]:
+            for _sub_id in self._results["added_subject_category_assignment4"][_sub_cat_id]:
+                self.assertEqual(self.extension.add_subject_assignment(
+                    _sub_cat_id, _sub_id, self._results["added_subject_category_assignment4"][_sub_cat_id][_sub_id]),
+                                 "[ERROR] Add Subject Assignment: Subject Assignment Exists")
+        print("[test_add_subject_assignment] [ERROR] Add Subject Assignment: Subject Assignment Exists ---------------- OK ")
+
+        for _sub_cat_id in self._results["added_subject_category_assignment5"]:
+            for _sub_id in self._results["added_subject_category_assignment5"][_sub_cat_id]:
+
+                self.assertEqual(self.extension.add_subject_assignment(
+                    _sub_cat_id, _sub_id, self._results["added_subject_category_assignment5"][_sub_cat_id][_sub_id]),
+                                 self._results["new_subject_category_assignments"])
+        print("[test_add_subject_assignment] ---------------- OK ")
+
+        # del xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx del
+
+        for _sub_cat_id in self._results["added_subject_category_assignment1"]:
+            for _sub_id in self._results["added_subject_category_assignment1"][_sub_cat_id]:
+                self.assertEqual(self.extension.del_subject_assignment(
+                    _sub_cat_id, _sub_id, self._results["added_subject_category_assignment1"][_sub_cat_id][_sub_id]),
+                                 "[ERROR] Del Subject Assignment: Unknown Subject Category")
+        print("[test_del_subject_assignment] [ERROR] Del Subject Assignment: Unknown Subject Category ---------------- OK ")
+
+        for _sub_cat_id in self._results["added_subject_category_assignment2"]:
+            for _sub_id in self._results["added_subject_category_assignment2"][_sub_cat_id]:
+                self.assertEqual(self.extension.del_subject_assignment(
+                    _sub_cat_id, _sub_id, self._results["added_subject_category_assignment2"][_sub_cat_id][_sub_id]),
+                                 "[ERROR] Del Subject Assignment: Unknown Subject")
+        print("[test_del_subject_assignment] [ERROR] Del Subject Assignment: Unknown Subject ---------------- OK ")
+
+        for _sub_cat_id in self._results["added_subject_category_assignment3"]:
+            for _sub_id in self._results["added_subject_category_assignment3"][_sub_cat_id]:
+                self.assertEqual(self.extension.del_subject_assignment(
+                    _sub_cat_id, _sub_id, self._results["added_subject_category_assignment3"][_sub_cat_id][_sub_id]),
+                                 "[ERROR] Del Subject Assignment: Assignment No Exists")
+        print("[test_del_subject_assignment] [ERROR] Del Subject Assignment: Assignment No Exists ---------------- OK ")
+
+        for _sub_cat_id in self._results["added_subject_category_assignment5"]:
+            for _sub_id in self._results["added_subject_category_assignment5"][_sub_cat_id]:
+                self.assertEqual(self.extension.del_subject_assignment(
+                    _sub_cat_id, _sub_id, self._results["added_subject_category_assignment5"][_sub_cat_id][_sub_id]),
+                                 self._results["subject_category_assignments"])
+        print("[test_del_subject_assignment] ---------------- OK ")
 
     def test_get_object_assignments(self):
-        _obj_cat_id = self.extension.get_object_categories()[0]
-        print("[test_get_object_assignments] for ", _obj_cat_id, "----------------: ",
-              self.extension.get_object_assignments(_obj_cat_id))
-        self.assertIsInstance(self.extension.get_object_assignments(_obj_cat_id), dict)
+        self.assertEqual(self.extension.get_object_assignments("xxooxxoo"),
+                         "[ERROR] Get Object Assignment: Unknown Object Category")
+        print("[test_get_object_assignments] [ERROR] Get Object Assignment: Unknown Object Category ---------------- OK ")
 
-    def test_add_object_assignment(self):
-        _obj_cat_id = self.extension.get_object_categories()[0]
-        print("[test_add_object_assignment] for ", _obj_cat_id, "----------------: ",
-              self.extension.get_object_assignments(_obj_cat_id))
-        self.extension.add_object_assignment(_obj_cat_id, "vmx", "bbbb")
-        self.extension.add_object_assignment(_obj_cat_id, "vmx", "bbbb2")
-        self.extension.add_object_assignment(_obj_cat_id, "vm3", "bbbb3")
-        print("[test_add_object_assignment] for ", _obj_cat_id, "----------------: ",
-              self.extension.get_object_assignments(_obj_cat_id))
-        self.extension.del_object_assignment(_obj_cat_id, "vmx", "bbbb")
-        self.extension.del_object_assignment(_obj_cat_id, "vmx", "bbbb2")
-        self.extension.del_object_assignment(_obj_cat_id, "vm3", "bbbb3")
+        for _obj_cat_id in self.extension.get_object_categories():
+            self.assertEqual(self.extension.get_object_assignments(_obj_cat_id),
+                             self._results["object_category_assignments"][_obj_cat_id])
+        print("[test_get_object_assignments] ---------------- OK ")
 
-    def test_del_object_assignment(self):
-        _obj_cat_id = self.extension.get_object_categories()[0]
-        self.extension.add_object_assignment(_obj_cat_id, "vmx", "bbbb")
-        self.extension.add_object_assignment(_obj_cat_id, "vm3", "bbbb3")
-        print("[test_del_object_assignment] for ", _obj_cat_id, "----------------: ",
-              self.extension.get_object_assignments(_obj_cat_id))
-        self.extension.del_object_assignment(_obj_cat_id, "vmx", "bbbb")
-        self.extension.del_object_assignment(_obj_cat_id, "vm3", "bbbb3")
-        print("[test_del_object_assignment] for ", _obj_cat_id, "----------------: ",
-              self.extension.get_object_assignments(_obj_cat_id))
+    def test_add_del_object_assignment(self):
+        for _obj_cat_id in self._results["added_object_category_assignment1"]:
+            for _obj_id in self._results["added_object_category_assignment1"][_obj_cat_id]:
+                self.assertEqual(self.extension.add_object_assignment(
+                    _obj_cat_id, _obj_id, self._results["added_object_category_assignment1"][_obj_cat_id][_obj_id]),
+                                 "[ERROR] Add Object Assignment: Unknown Object Category")
+        print("[test_add_object_assignment] [ERROR] Add Object Assignment: Unknown Object Category ---------------- OK ")
 
-    def test_get_object_category_attr(self):
-        _obj_cat_id = self.extension.get_object_categories()[0]
-        _object_id = self.extension.get_objects()[0]
-        print("[test_get_object_category_attr] for ", _obj_cat_id, _object_id, "----------------: ",
-              self.extension.get_object_category_attr(_obj_cat_id, _object_id))
-        self.assertIsInstance(self.extension.get_object_category_attr(_obj_cat_id, _object_id), list)
+        for _obj_cat_id in self._results["added_object_category_assignment2"]:
+            for _obj_id in self._results["added_object_category_assignment2"][_obj_cat_id]:
+                self.assertEqual(self.extension.add_object_assignment(
+                    _obj_cat_id, _obj_id, self._results["added_object_category_assignment2"][_obj_cat_id][_obj_id]),
+                                 "[ERROR] Add Object Assignment: Unknown Object")
+        print("[test_add_object_assignment] [ERROR] Add Object Assignment: Unknown Object ---------------- OK ")
 
-    def test_get_data(self):
+        for _obj_cat_id in self._results["added_object_category_assignment3"]:
+            for _obj_id in self._results["added_object_category_assignment3"][_obj_cat_id]:
+                self.assertEqual(self.extension.add_object_assignment(
+                    _obj_cat_id, _obj_id, self._results["added_object_category_assignment3"][_obj_cat_id][_obj_id]),
+                                 "[ERROR] Add Object Assignment: Unknown Object Category Value")
+        print("[test_add_object_assignment] [ERROR] Add Object Assignment: Unknown Object Category Value ---------------- OK ")
+
+        for _obj_cat_id in self._results["added_object_category_assignment4"]:
+            for _obj_id in self._results["added_object_category_assignment4"][_obj_cat_id]:
+                if _obj_cat_id == "action":
+                    pass
+                else:
+                    self.assertEqual(self.extension.add_object_assignment(
+                        _obj_cat_id, _obj_id, self._results["added_object_category_assignment4"][_obj_cat_id][_obj_id]),
+                                     "[ERROR] Add Object Assignment: Object Assignment Exists")
+        print("[test_add_object_assignment] [ERROR] Add Object Assignment: Object Assignment Exists ---------------- OK ")
+
+        for _obj_cat_id in self._results["added_object_category_assignment5"]:
+            for _obj_id in self._results["added_object_category_assignment5"][_obj_cat_id]:
+                if _obj_cat_id == "action":
+                    pass
+                else:
+                    self.assertEqual(self.extension.add_object_assignment(
+                        _obj_cat_id, _obj_id, self._results["added_object_category_assignment5"][_obj_cat_id][_obj_id]),
+                                     self._results["new_object_category_assignments"])
+        print("[test_add_object_assignment] ---------------- OK ")
+
+        # del xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx del
+
+        for _obj_cat_id in self._results["added_object_category_assignment1"]:
+            for _obj_id in self._results["added_object_category_assignment1"][_obj_cat_id]:
+                self.assertEqual(self.extension.del_object_assignment(
+                    _obj_cat_id, _obj_id, self._results["added_object_category_assignment1"][_obj_cat_id][_obj_id]),
+                                 "[ERROR] Del Object Assignment: Unknown Object Category")
+        print("[test_del_object_assignment] [ERROR] Del Object Assignment: Unknown Object Category ---------------- OK ")
+
+        for _obj_cat_id in self._results["added_object_category_assignment2"]:
+            for _obj_id in self._results["added_object_category_assignment2"][_obj_cat_id]:
+                self.assertEqual(self.extension.del_object_assignment(
+                    _obj_cat_id, _obj_id, self._results["added_object_category_assignment2"][_obj_cat_id][_obj_id]),
+                                 "[ERROR] Del Object Assignment: Unknown Object")
+        print("[test_del_object_assignment] [ERROR] Del Object Assignment: Unknown Object ---------------- OK ")
+
+        for _obj_cat_id in self._results["added_object_category_assignment3"]:
+            for _obj_id in self._results["added_object_category_assignment3"][_obj_cat_id]:
+                self.assertEqual(self.extension.del_object_assignment(
+                    _obj_cat_id, _obj_id, self._results["added_object_category_assignment3"][_obj_cat_id][_obj_id]),
+                                 "[ERROR] Del Object Assignment: Assignment No Exists")
+        print("[test_del_object_assignment] [ERROR] Del Object Assignment: Assignment No Exists ---------------- OK ")
+
+        for _obj_cat_id in self._results["added_object_category_assignment5"]:
+            for _obj_id in self._results["added_object_category_assignment5"][_obj_cat_id]:
+                if _obj_cat_id == "action":
+                    pass
+                else:
+                    self.assertEqual(self.extension.del_object_assignment(
+                        _obj_cat_id, _obj_id, self._results["added_object_category_assignment5"][_obj_cat_id][_obj_id]),
+                                     self._results["object_category_assignments"])
+        print("[test_del_object_assignment] ---------------- OK ")
+"""
+    def test_get_set_data(self):
         print("[test_get_data]----------------: ", self.extension.get_data().keys())
 
-    def test_set_data(self):
         _extension = Extension()
         if self.extension.get_type() == "authz":
             _extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'samples/mls001/admin')
