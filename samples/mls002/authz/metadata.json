@@ -1,7 +1,7 @@
 {
     "name": "MLS_metadata",
     "model": "MLS",
-    "type": "authz",
+    "genre": "authz",
     "description": "",
 
     "subject_categories": [
@@ -14,13 +14,13 @@
     ],
 
     "meta_rule": {
-        "sub_meta_rules":[
-            {
+        "sub_meta_rules": {
+            "relation_super": {
                 "subject_categories": ["subject_security_level"],
                 "object_categories": ["object_security_level", "action"],
                 "relation": "relation_super"
             }
-        ],
+        },
         "aggregation": "and_true_aggregation"
     }
 }

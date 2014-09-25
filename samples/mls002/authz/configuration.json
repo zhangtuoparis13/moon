@@ -5,18 +5,14 @@
 
     "object_category_values": {
         "object_security_level": ["high", "medium", "low"],
-        "action": ["start", "stop", "info"]
+        "action": ["read", "write","execute"]
     },
 
-    "rules":[
-        ["high", "medium", "start"],
-        ["high", "low", "start"],
-        ["medium", "low", "start"],
-        ["high", "medium", "stop"],
-        ["high", "low", "stop"],
-        ["medium", "low", "stop"],
-        ["high", "medium", "info"],
-        ["high", "low", "info"],
-        ["medium", "low", "info"]
-    ]
+    "rules": {
+        "relation_super":[
+            ["high", "medium", "read"],
+            ["high", "low", "read"],
+            ["medium", "low", "read"]
+        ]
+    }
 }
