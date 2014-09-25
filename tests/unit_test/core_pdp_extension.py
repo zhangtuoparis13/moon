@@ -5,8 +5,8 @@ unit test for moon/core/pdp/extension.py
 import os.path
 import unittest
 import pkg_resources
+import copy
 from moon.core.pdp.extension import Extension
-from moon.core.pdp.inter_extension import VirtualEntity
 from moon.tests.unit_test.samples.mls001.extension import results, requests
 
 
@@ -430,20 +430,20 @@ class TestCorePDPExtension(unittest.TestCase):
         print("[Del Object Assignment] ---------------- OK ")
 
     def test_create_requesting_collaboration(self):
-        _vent = VirtualEntity(self._results["collaboration"]["requesting"]["genre"])
+        _vent_uuid = self._results["collaboration"]["requesting"]["vent_uuid"]
         _subs = self._results["collaboration"]["requesting"]["subject_list"]
-        _data = self.extension.get_data()
-        _dict = self.extension.create_requesting_collaboration(_subs, _vent.get_uuid(), "read")
-        self.extension.destroy_requesting_collaboration(_subs, _vent.get_uuid(), _dict["subject_category_value_dict"],
+        _data = copy.deepcopy(self.extension.get_data())
+        _dict = self.extension.create_requesting_collaboration(_subs, _vent_uuid, "read")
+        self.extension.destroy_requesting_collaboration(_subs, _vent_uuid, _dict["subject_category_value_dict"],
                                                         _dict["object_category_value_dict"])
         self.assertEqual(self.extension.get_data(), _data)
 
     def test_create_requested_collaboration(self):
-        _vent = VirtualEntity(self._results["collaboration"]["requested"]["genre"])
+        _vent_uuid = self._results["collaboration"]["requested"]["vent_uuid"]
         _objs = self._results["collaboration"]["requested"]["object_list"]
-        _data = self.extension.get_data()
-        _dict = self.extension.create_requested_collaboration(_vent.get_uuid(), _objs, "read")
-        self.extension.destroy_requested_collaboration(_vent.get_uuid(), _objs, _dict["subject_category_value_dict"],
+        _data = copy.deepcopy(self.extension.get_data())
+        _dict = self.extension.create_requested_collaboration(_vent_uuid, _objs, "read")
+        self.extension.destroy_requested_collaboration(_vent_uuid, _objs, _dict["subject_category_value_dict"],
                                                        _dict["object_category_value_dict"])
         self.assertEqual(self.extension.get_data(), _data)
 """

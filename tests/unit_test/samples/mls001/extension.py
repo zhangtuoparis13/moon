@@ -110,11 +110,11 @@ results = {
         },
         "collaboration": {
             "requesting": {
-                "genre": "trust",
+                "vent_uuid": "xxooxxoo",
                 "subject_list": ["user1", "user2"]
             },
             "requested": {
-                "genre": "trust",
+                "vent_uuid": "xxooxxoo",
                 "object_list": ["vm1", "vm2"]
             }
         }
@@ -308,11 +308,11 @@ results = {
         },
         "collaboration": {
             "requesting": {
-                "genre": "trust",
+                "vent_uuid": "xxooxxoo",
                 "subject_list": ["user1", "user2"]
             },
             "requested": {
-                "genre": "trust",
+                "vent_uuid": "xxooxxoo",
                 "object_list": ["object_category_assignments"]
             }
         }
