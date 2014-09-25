@@ -8,9 +8,11 @@
         "action": ["read", "write","execute"]
     },
 
-    "rules":[
-        ["high", "medium", "read"],
-        ["high", "low", "read"],
-        ["medium", "low", "read"]
-    ]
+    "rules": {
+        "relation_super":[
+            ["high", "medium", "read"],
+            ["high", "low", "read"],
+            ["medium", "low", "read"]
+        ]
+    }
 }

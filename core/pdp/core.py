@@ -24,6 +24,12 @@ class IntraExtensions:
                 return 'OK'
         return 'KO'
 
+    def admin(self, sub, obj, act):
+        for _intra_extension in self.__installed_intra_extensions.values():
+            if _intra_extension.admin(sub, obj, act) == 'OK':
+                return 'OK'
+        return 'KO'
+
     def install_intra_extension_from_json(self, extension_setting_dir):
         extension_setting_abs_dir = extension_setting_dir
         if not os.path.isdir(extension_setting_dir):
@@ -80,27 +86,31 @@ class InterExtensions:  # TODO: to test
     def authz(self, requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act):
         for _installed_inter_extension in self.__installed_inter_extensions.values():
             if _installed_inter_extension.check_requesters(requesting_intra_extension_uuid, requested_intra_extension_uuid):
-                if _installed_inter_extension.authhz(sub, obj, act) == 'OK':
+                if _installed_inter_extension.authz(sub, obj, act) == 'OK':
                     return 'OK'
         return "KO"
 
-    def admin(self, sub, obj, act):
-        #TODO later
-        return "OK"
-
-    def create_collaboration(self, requesting_intra_extension_uuid, requested_intra_extension_uuid,
-                             type, sub_list, obj_list, act):
+    def admin(self, requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act):
         for _installed_inter_extension in self.__installed_inter_extensions.values():
             if _installed_inter_extension.check_requesters(requesting_intra_extension_uuid, requested_intra_extension_uuid):
+                if _installed_inter_extension.admin(sub, obj, act) == 'OK':
+                    return 'OK'
+        return "KO"
+
+    def create_collaboration(self, requesting_intra_extension_uuid, requested_intra_extension_uuid,
+                             genre, sub_list, obj_list, act):
+        for _installed_inter_extension in self.__installed_inter_extensions.values():
+            if _installed_inter_extension.check_requesters(requesting_intra_extension_uuid,
+                                                           requested_intra_extension_uuid):
                 _inter_extension_uuid = _installed_inter_extension.get_uuid()
-                _vent_uuid = _installed_inter_extension.create_collaboration(type, sub_list, obj_list, act)
+                _vent_uuid = _installed_inter_extension.create_collaboration(genre, sub_list, obj_list, act)
                 return _inter_extension_uuid, _vent_uuid
 
         _new_inter_extension = InterExtension(self.__installed_intra_extensions[requesting_intra_extension_uuid],
                                               self.__installed_intra_extensions[requested_intra_extension_uuid])
         _inter_extension_uuid = _new_inter_extension.get_uuid()
         self.__installed_inter_extensions[_inter_extension_uuid] = _new_inter_extension
-        _vent_uuid = _new_inter_extension.create_collaboration(type, sub_list, obj_list, act)
+        _vent_uuid = _new_inter_extension.create_collaboration(genre, sub_list, obj_list, act)
         return _inter_extension_uuid, _vent_uuid
 
     def destroy_collaboration(self, inter_extension_uuid, vent_uuid):
@@ -128,3 +138,10 @@ def authz(requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, 
         return intra_extensions.authz(sub, obj, act)
     else:
         inter_extensions.authz(requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act)
+
+
+def admin(requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act):
+    if requesting_intra_extension_uuid == requested_intra_extension_uuid:
+        return intra_extensions.admin(sub, obj, act)
+    else:
+        inter_extensions.admin(requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act)

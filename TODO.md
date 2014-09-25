@@ -49,6 +49,7 @@ Legend:
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
 | Implement infra     | Tom, WuKong |                   | 03/10         |  0%                |
+| Tenant-extension map| Tom, WuKong |                   | 03/10         |  0%                |
 | Define Scenario     | Tom, WuKong |                   | 03/10         |  0%                |
 | Realize Scenario    | Tom, WuKong |                   | 03/10         |  0%                |
 
@@ -76,5 +77,6 @@ Legend:
 ###Package
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
+| exception for authz | Tom         |                   |               | 0%                 |
 | setup.py            | Tom         |                   |               | 50%                |
 
