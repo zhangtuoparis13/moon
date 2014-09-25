@@ -384,10 +384,29 @@ def object_assignment(request, uuid=None, category_id=None, object_id=None, valu
 @login_required(login_url='/auth/login/')
 @save_auth
 def rules(request, uuid=None):
-    return send_json({})
+    pap = get_pap()
+    return send_json({"rules": list(
+        pap.get_rules(extension_uuid=uuid, user_uuid=request.session['user_id'])
+    )})
 
 
 @login_required(login_url='/auth/login/')
 @save_auth
-def rule(request, rule_uuid=None):
-    return send_json({})
+def rule(request, uuid=None, sub_cat_value=None, obj_cat_value=None):
+    pap = get_pap()
+    if request.META['REQUEST_METHOD'] == "POST":
+        if "sub_cat_value" in request.POST and "obj_cat_value" in request.POST:
+            pap.add_rule(
+                extension_uuid=uuid,
+                user_uuid=request.session['user_id'],
+                sub_cat_value=filter_input(request.POST["sub_cat_value"]),
+                obj_cat_value=filter_input(request.POST["obj_cat_value"]))
+    elif request.META['REQUEST_METHOD'] == "DELETE":
+        pap.del_rule(
+            extension_uuid=uuid,
+            user_uuid=request.session['user_id'],
+            sub_cat_value=filter_input(sub_cat_value),
+            obj_cat_value=filter_input(obj_cat_value))
+    return send_json(
+        {"rules": pap.get_rules(extension_uuid=uuid, user_uuid=request.session['user_id'])}
+    )
