@@ -58,6 +58,6 @@ urlpatterns = patterns(
         'rules'),
     url(r'^intra-extension/(?P<uuid>[\w-]{32,36})/rule/?$',
         'rule'),
-    url(r'^intra-extension/(?P<uuid>[\w-]{32,36})/rule/(?P<rule_id>[\w\_\-]{3,36})/?$',
-        'rule'),
+    # url(r'^intra-extension/(?P<uuid>[\w-]{32,36})/rule/(?P<rule_id>[\w\_\-]{3,36})/?$',
+    #     'rule'),
 )
