@@ -13,8 +13,10 @@ logger = logging.getLogger("moon.django")
 
 
 def filter_input(data):
-    _data = re.findall("[\w\s\-_]", data)
-    return "".join(_data).strip()
+    if type(data) in (str, unicode):
+        _data = re.findall("[\w\s\-_]", data)
+        return "".join(_data).strip()
+    return data
 
 
 def send_json(data):
@@ -72,11 +74,12 @@ def subject(request, uuid=None, subject_id=None):
     """
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
-        if "subject_uuid" in request.POST:
+        data = json.loads(request.read())
+        if "subject_uuid" in data:
             pap.add_subject(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
-                subject_id=filter_input(request.POST["subject_uuid"]))
+                subject_id=filter_input(data["subject_uuid"]))
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_subject(
             extension_uuid=uuid,
@@ -113,11 +116,12 @@ def object(request, uuid=None, object_id=None):
     """
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
-        if "object_uuid" in request.POST:
+        data = json.loads(request.read())
+        if "object_uuid" in data:
             pap.add_object(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
-                object_id=filter_input(request.POST["object_uuid"]))
+                object_id=filter_input(data["object_uuid"]))
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_object(
             extension_uuid=uuid,
@@ -148,11 +152,12 @@ def subject_categories(request, uuid=None):
 def subject_category(request, uuid=None, category_id=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
-        if "category_id" in request.POST:
+        data = json.loads(request.read())
+        if "category_id" in data:
             pap.add_subject_category(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
-                category_id=filter_input(request.POST["category_id"]))
+                category_id=filter_input(data["category_id"]))
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_subject_category(
             extension_uuid=uuid,
@@ -182,11 +187,12 @@ def object_categories(request, uuid=None):
 def object_category(request, uuid=None, category_id=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
-        if "category_id" in request.POST:
+        data = json.loads(request.read())
+        if "category_id" in data:
             pap.add_object_category(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
-                category_id=filter_input(request.POST["category_id"]))
+                category_id=filter_input(data["category_id"]))
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_object_category(
             extension_uuid=uuid,
@@ -222,13 +228,14 @@ def subject_category_values(request, uuid=None):
 def subject_category_value(request, uuid=None, category_id=None, value=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
-        if "category_id" in request.POST and "value" in request.POST:
+        data = json.loads(request.read())
+        if "category_id" in data and "value" in data:
             pap.add_subject_category_value(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
-                category_id=filter_input(request.POST["category_id"]),
-                category_value=filter_input(request.POST["value"]))
-            category_id = filter_input(request.POST["category_id"])
+                category_id=filter_input(data["category_id"]),
+                category_value=filter_input(data["value"]))
+            category_id = filter_input(data["category_id"])
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_subject_category_value(
             extension_uuid=uuid,
@@ -270,13 +277,14 @@ def object_category_values(request, uuid=None):
 def object_category_value(request, uuid=None, category_id=None, value=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
-        if "category_id" in request.POST and "value" in request.POST:
+        data = json.loads(request.read())
+        if "category_id" in data and "value" in data:
             pap.add_object_category_value(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
-                category_id=filter_input(request.POST["category_id"]),
-                category_value=filter_input(request.POST["value"]))
-            category_id = filter_input(request.POST["value"])
+                category_id=filter_input(data["category_id"]),
+                category_value=filter_input(data["value"]))
+            category_id = filter_input(data["value"])
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_object_category_value(
             extension_uuid=uuid,
@@ -327,13 +335,14 @@ def object_assignments(request, uuid=None):
 def subject_assignment(request, uuid=None, category_id=None, subject_id=None, value=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
-        if "category_id" in request.POST and "subject_id" in request.POST and "value" in request.POST:
+        data = json.loads(request.read())
+        if "category_id" in data and "subject_id" in data and "value" in data:
             pap.add_subject_assignment(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
-                category_id=filter_input(request.POST["category_id"]),
-                subject_id=filter_input(request.POST["subject_id"]),
-                category_value=filter_input(request.POST["value"]))
+                category_id=filter_input(data["category_id"]),
+                subject_id=filter_input(data["subject_id"]),
+                category_value=filter_input(data["value"]))
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_subject_assignment(
             extension_uuid=uuid,
@@ -357,13 +366,14 @@ def subject_assignment(request, uuid=None, category_id=None, subject_id=None, va
 def object_assignment(request, uuid=None, category_id=None, object_id=None, value=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
-        if "category_id" in request.POST and "object_id" in request.POST and "value" in request.POST:
+        data = json.loads(request.read())
+        if "category_id" in data and "object_id" in data and "value" in data:
             pap.add_object_assignment(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
-                category_id=filter_input(request.POST["category_id"]),
-                object_id=filter_input(request.POST["object_id"]),
-                category_value=filter_input(request.POST["value"]))
+                category_id=filter_input(data["category_id"]),
+                object_id=filter_input(data["object_id"]),
+                category_value=filter_input(data["value"]))
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_object_assignment(
             extension_uuid=uuid,
@@ -390,17 +400,19 @@ def rules(request, uuid=None):
     )})
 
 
+@csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
 def rule(request, uuid=None, sub_cat_value=None, obj_cat_value=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
-        if "sub_cat_value" in request.POST and "obj_cat_value" in request.POST:
+        data = json.loads(request.read())
+        if "sub_cat_value" in data and "obj_cat_value" in data:
             pap.add_rule(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
-                sub_cat_value=filter_input(request.POST["sub_cat_value"]),
-                obj_cat_value=filter_input(request.POST["obj_cat_value"]))
+                sub_cat_value=filter_input(data["sub_cat_value"]),
+                obj_cat_value=filter_input(data["obj_cat_value"]))
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_rule(
             extension_uuid=uuid,
