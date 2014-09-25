@@ -220,10 +220,12 @@ class Extension:
 
             for subject_category in self.metadata.get_subject_categories():
                 authz_data.subject_attrs[subject_category] = copy.copy(
-                    self.assignment.get_subject_category_attr(subject_category, sub)
+                    # self.assignment.get_subject_category_attr(subject_category, sub)
+                    self.assignment.get_subject_category_assignments()[subject_category][sub]
                 )
                 authz_logger.warning('extension/authz subject attribute: [subject attr: {}]'.format(
-                    self.assignment.get_subject_category_attr(subject_category, sub))
+                    #self.assignment.get_subject_category_attr(subject_category, sub))
+                    self.assignment.get_subject_category_assignments()[subject_category][sub])
                 )
 
             for object_category in self.metadata.get_object_categories():
@@ -232,10 +234,10 @@ class Extension:
                     authz_logger.warning('extension/authz object attribute: [object attr: {}]'.format([act]))
                 else:
                     authz_data.object_attrs[object_category] = copy.copy(
-                        self.assignment.get_object_category_attr(object_category, obj)
+                        self.assignment.get_object_category_assignments()[object_category][obj]
                     )
                     authz_logger.warning('extension/authz object attribute: [object attr: {}]'.format(
-                        self.assignment.get_object_category_attr(object_category, obj))
+                        self.assignment.get_object_category_assignments()[object_category][obj])
                     )
 
             _aggregation_data = dict()
@@ -297,7 +299,7 @@ class Extension:
 
     def add_subject_category(self, category_id):
         if category_id in self.get_subject_categories():
-            return False
+            return "[ERROR] Add Subject Category: Subject Category Exists"
         else:
             self.get_subject_categories().append(category_id)
             return self.get_subject_categories()
@@ -307,14 +309,14 @@ class Extension:
             self.get_subject_categories().remove(category_id)
             return self.get_subject_categories()
         else:
-            return False
+            return "[ERROR] Del Subject Category: Subject Category Unknown"
 
     def get_object_categories(self):
         return self.metadata.get_object_categories()
 
     def add_object_category(self, category_id):
         if category_id in self.get_object_categories():
-            return False
+            return "[ERROR] Add Object Category: Object Category Exists"
         else:
             self.get_object_categories().append(category_id)
             return self.get_object_categories()
@@ -324,7 +326,7 @@ class Extension:
             self.get_object_categories().remove(category_id)
             return self.get_object_categories()
         else:
-            return False
+            return "[ERROR] Del Object Category: Object Category Unknown"
 
     def get_meta_rule(self):
         return self.metadata.get_meta_rule()
@@ -336,7 +338,7 @@ class Extension:
 
     def add_subject_category_value(self, category_id, category_value):
         if category_value in self.configuration.get_subject_category_values()[category_id]:
-            return False
+            return "[ERROR] Add Subject Category Value: Subject Category Value Exists"
         else:
             self.configuration.get_subject_category_values()[category_id].append(category_value)
             return self.configuration.get_subject_category_values()[category_id]
@@ -346,14 +348,14 @@ class Extension:
             self.configuration.get_subject_category_values()[category_id].remove(category_value)
             return self.configuration.get_subject_category_values()[category_id]
         else:
-            return False
+            return "[ERROR] Del Subject Category Value: Subject Category Value Unknown"
 
     def get_object_category_values(self, category_id):
         return self.configuration.get_object_category_values()[category_id]
 
     def add_object_category_value(self, category_id, category_value):
         if category_value in self.configuration.get_object_category_values()[category_id]:
-            return False
+            return "[ERROR] Add Object Category Value: Object Category Value Exists"
         else:
             self.configuration.get_object_category_values()[category_id].append(category_value)
             return self.configuration.get_object_category_values()[category_id]
@@ -363,7 +365,7 @@ class Extension:
             self.configuration.get_object_category_values()[category_id].remove(category_value)
             return self.configuration.get_object_category_values()[category_id]
         else:
-            return False
+            return "[ERROR] Del Object Category Value: Object Category Value Unknown"
 
     def get_rules(self):
         return self.configuration.get_rules()
@@ -376,17 +378,17 @@ class Extension:
                         in self.configuration.get_subject_category_values()[sub_subject_category]:
                     _sub_rule.append(sub_cat_value_dict[_relation][sub_subject_category])
                 else:
-                    return "[Error] Added Subject Category Value Unknown"
+                    return "[Error] Add Rule: Subject Category Value Unknown"
 
             for sub_object_category in self.metadata.get_meta_rule()["sub_meta_rules"][_relation]["object_categories"]:
                 if obj_cat_value_dict[_relation][sub_object_category] \
                         in self.configuration.get_object_category_values()[sub_object_category]:
                     _sub_rule.append(obj_cat_value_dict[_relation][sub_object_category])
                 else:
-                    return "[Error] Added Object Category Value Unknown"
+                    return "[Error] Add Rule: Object Category Value Unknown"
 
             if _sub_rule in self.configuration.get_rules()[_relation]:
-                return "[Error] Added Rule Exists"
+                return "[Error] Add Rule: Rule Exists"
             else:
                 self.configuration.get_rules()[_relation].append(_sub_rule)
         return self.configuration.get_rules()
@@ -403,7 +405,7 @@ class Extension:
             if _sub_rule in self.configuration.get_rules()[_relation]:
                 self.configuration.get_rules()[_relation].remove(_sub_rule)
             else:
-                return "[Error] Deleted Rule No Exists"
+                return "[Error] Del Rule: Rule Unknown"
         return self.configuration.get_rules()
 
     # ---------------- perimeter api ----------------
@@ -411,9 +413,12 @@ class Extension:
     def get_subjects(self):
         return self.perimeter.get_subjects()
 
+    def get_objects(self):
+        return self.perimeter.get_objects()
+
     def add_subject(self, subject_id):
         if subject_id in self.perimeter.get_subjects():
-            return "[ERROR] Added Subject Exists"
+            return "[ERROR] Add Subject: Subject Exists"
         else:
             self.perimeter.get_subjects().append(subject_id)
             return self.perimeter.get_subjects()
@@ -423,14 +428,11 @@ class Extension:
             self.perimeter.get_subjects().remove(subject_id)
             return self.perimeter.get_subjects()
         else:
-            return "[ERROR] Deleted Subject No Exists"
-
-    def get_objects(self):
-        return self.perimeter.get_objects()
+            return "[ERROR] Del Subject: Subject Unknown"
 
     def add_object(self, object_id):
         if object_id in self.perimeter.get_objects():
-            return "[ERROR] Added Object Exists"
+            return "[ERROR] Add Object: Object Exists"
         else:
             self.perimeter.get_objects().append(object_id)
             return self.perimeter.get_objects()
@@ -440,7 +442,7 @@ class Extension:
             self.perimeter.get_objects().remove(object_id)
             return self.perimeter.get_objects()
         else:
-            return "[ERROR] Deleted Object No Exists"
+            return "[ERROR] Del Object: Object Unknown"
 
     # ---------------- assignment api ----------------
 
@@ -448,7 +450,7 @@ class Extension:
         if category_id in self.metadata.get_subject_categories():
             return self.assignment.get_subject_category_assignments()[category_id]
         else:
-            return "[ERROR] Get Subject Assignment: Unknown Subject Category"
+            return "[ERROR] Get Subject Assignment: Subject Category Unknown"
 
     def add_subject_assignment(self, category_id, subject_id, category_value):
         if category_id in self.metadata.get_subject_categories():
@@ -463,11 +465,11 @@ class Extension:
                             self.assignment.get_subject_category_assignments()[category_id][subject_id] = [category_value]
                         return self.assignment.get_subject_category_assignments()
                 else:
-                    return "[ERROR] Add Subject Assignment: Unknown Subject Category Value"
+                    return "[ERROR] Add Subject Assignment: Subject Category Value Unknown"
             else:
-                return "[ERROR] Add Subject Assignment: Unknown Subject"
+                return "[ERROR] Add Subject Assignment: Subject Unknown"
         else:
-            return "[ERROR] Add Subject Assignment: Unknown Subject Category"
+            return "[ERROR] Add Subject Assignment: Subject Category Unknown"
 
     def del_subject_assignment(self, category_id, subject_id, category_value):
         if category_id in self.metadata.get_subject_categories():
@@ -479,17 +481,17 @@ class Extension:
                         self.assignment.get_subject_category_assignments()[category_id].pop(subject_id)
                     return self.assignment.get_subject_category_assignments()
                 else:
-                    return "[ERROR] Del Subject Assignment: Assignment No Exists"
+                    return "[ERROR] Del Subject Assignment: Assignment Unknown"
             else:
-                return "[ERROR] Del Subject Assignment: Unknown Subject"
+                return "[ERROR] Del Subject Assignment: Subject Unknown"
         else:
-            return "[ERROR] Del Subject Assignment: Unknown Subject Category"
+            return "[ERROR] Del Subject Assignment: Subject Category Unknown"
 
     def get_object_assignments(self, category_id):
         if category_id in self.metadata.get_object_categories():
             return self.assignment.get_object_category_assignments()[category_id]
         else:
-            return "[ERROR] Get Object Assignment: Unknown Object Category"
+            return "[ERROR] Get Object Assignment: Object Category Unknown"
 
     def add_object_assignment(self, category_id, object_id, category_value):
         if category_id in self.metadata.get_object_categories():
@@ -504,11 +506,11 @@ class Extension:
                             self.assignment.get_object_category_assignments()[category_id][object_id] = [category_value]
                         return self.assignment.get_object_category_assignments()
                 else:
-                    return "[ERROR] Add Object Assignment: Unknown Object Category Value"
+                    return "[ERROR] Add Object Assignment: Object Category Value Unknown"
             else:
-                return "[ERROR] Add Object Assignment: Unknown Object"
+                return "[ERROR] Add Object Assignment: Object Unknown"
         else:
-            return "[ERROR] Add Object Assignment: Unknown Object Category"
+            return "[ERROR] Add Object Assignment: Object Category Unknown"
 
     def del_object_assignment(self, category_id, object_id, category_value):
         if category_id in self.metadata.get_object_categories():
@@ -520,13 +522,15 @@ class Extension:
                         self.assignment.get_object_category_assignments()[category_id].pop(object_id)
                     return self.assignment.get_object_category_assignments()
                 else:
-                    return "[ERROR] Del Object Assignment: Assignment No Exists"
+                    return "[ERROR] Del Object Assignment: Assignment Unknown"
             else:
-                return "[ERROR] Del Object Assignment: Unknown Object"
+                return "[ERROR] Del Object Assignment: Object Unknown"
         else:
-            return "[ERROR] Del Object Assignment: Unknown Object Category"
+            return "[ERROR] Del Object Assignment: Object Category Unknown"
 
 # ---------------- SyncDB API ----------------
+
+    # ---------------- sync_db api ----------------
 
     def get_data(self):
         data = dict()
@@ -542,7 +546,7 @@ class Extension:
         self.perimeter.set_data(extension_data["perimeter"])
         self.assignment.set_data(extension_data["assignment"])
 
-# ---------------- inter-extension API ----------------
+    # ---------------- inter-extension API ----------------
 
     def create_requesting_collaboration(self, sub_list, vent_uuid, act):
         _sub_cat_values = dict()
