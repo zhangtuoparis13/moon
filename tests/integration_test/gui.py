@@ -407,15 +407,17 @@ class TestAdminInterface(unittest.TestCase):
             self.assertIsInstance(_data, dict)
             self.assertIn("rules", _data)
             self.assertIsInstance(_data["rules"], list)
-            _data = get_url("/json/intra-extension/"+ext+"/rule/sub_cat_value",
+            _data = get_url("/json/intra-extension/"+ext+"/rule/",
                             post_data={
-                                "sub_cat_value": {"subject_security_level": "high"},
-                                "obj_cat_value": {"object_security_level": "low", "action": "write"}
+                                "relation_super": {
+                                    "sub_cat_value": {"subject_security_level": "high"},
+                                    "obj_cat_value": {"object_security_level": "low", "action": "write"}
+                                }
                             }
             )
             self.assertIsInstance(_data, dict)
             self.assertIn("rules", _data)
-            self.assertIsInstance(_data["rules"], list)
+            self.assertIsInstance(_data["rules"], dict)
             self.assertNotIn(_data["rules"], ["high", "write", "low"])
             # _data = get_url("/json/intra-extension/"+ext+"/rule/",
             #                 post_data={
