@@ -179,10 +179,10 @@ class PAP:
             if self.intra_extensions[extension_uuid].admin(user_uuid, "rules", "write") == "OK":
                 self.intra_extensions[extension_uuid].intra_extension_authz.add_rule(sub_cat_value, obj_cat_value)
 
-    # def del_rule(self, extension_uuid, user_uuid, rule_id):
-    #     if extension_uuid in self.intra_extensions.keys():
-    #         if self.intra_extensions[extension_uuid].admin(user_uuid, "rules", "write") == "OK":
-    #             self.intra_extensions[extension_uuid].intra_extension_authz.add_rules(rule_id)
+    def del_rule(self, extension_uuid, user_uuid, sub_cat_value, obj_cat_value):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "rules", "write") == "OK":
+                self.intra_extensions[extension_uuid].intra_extension_authz.del_rules(sub_cat_value, obj_cat_value)
 
     ########################################
     # Specific functions for Intra-Extension
