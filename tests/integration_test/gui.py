@@ -31,12 +31,9 @@ def get_url(url, post_data=None, crsftoken=None, method="GET"):
         'Cookie': 'sessionid={}'.format(CREDENTIALS["Cookie"]),
     }
     if post_data:
-        headers['POST'] = urllib.urlencode(post_data)
-        conn.request(method, url, urllib.urlencode(post_data), headers=headers)
+        conn.request(method, url, json.dumps(post_data), headers=headers)
     else:
         conn.request(method, url, headers=headers)
-    # if post_data:
-    #     conn.send(json.dumps(post_data))
     resp = conn.getresponse()
     content = resp.read()
     conn.close()
@@ -392,6 +389,44 @@ class TestAdminInterface(unittest.TestCase):
             self.assertIn(user, _data["object_assignments"]["object_security_level"])
             self.assertIsInstance(_data["object_assignments"]["object_security_level"][user], list)
             self.assertNotIn("ultra-low2", _data["object_assignments"]["object_security_level"][user])
+
+    def test_rules(self):
+        data = get_url("/json/intra-extensions/")
+        self.assertIsInstance(data, list)
+        for ext in data:
+            _data = get_url("/json/intra-extension/"+ext+"/rules/")
+            self.assertIsInstance(_data, dict)
+            self.assertIn("rules", _data)
+            self.assertIsInstance(_data["rules"], list)
+
+    def test_rule(self):
+        data = get_url("/json/intra-extensions/")
+        self.assertIsInstance(data, list)
+        for ext in data:
+            _data = get_url("/json/intra-extension/"+ext+"/rules/")
+            self.assertIsInstance(_data, dict)
+            self.assertIn("rules", _data)
+            self.assertIsInstance(_data["rules"], list)
+            _data = get_url("/json/intra-extension/"+ext+"/rule/sub_cat_value",
+                            post_data={
+                                "sub_cat_value": {"subject_security_level": "high"},
+                                "obj_cat_value": {"object_security_level": "low", "action": "write"}
+                            }
+            )
+            self.assertIsInstance(_data, dict)
+            self.assertIn("rules", _data)
+            self.assertIsInstance(_data["rules"], list)
+            self.assertNotIn(_data["rules"], ["high", "write", "low"])
+            # _data = get_url("/json/intra-extension/"+ext+"/rule/",
+            #                 post_data={
+            #                     "sub_cat_value": {"subject_security_level": "high"},
+            #                     "obj_cat_value": {"object_security_level": "low", "action": "write"}
+            #                 }
+            # )
+            # self.assertIsInstance(_data, dict)
+            # self.assertIn("rules", _data)
+            # self.assertIsInstance(_data["rules"], list)
+            # self.assertNotIn(_data["rules"], ["high", "write", "low"])
 
 
 # class TestPIPInterface(unittest.TestCase):
