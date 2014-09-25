@@ -107,6 +107,16 @@ results = {
                 ["medium", "low", "read"],
                 ["low", "low", "write"]
             ]
+        },
+        "collaboration": {
+            "requesting": {
+                "genre": "trust",
+                "subject_list": ["user1", "user2"]
+            },
+            "requested": {
+                "genre": "trust",
+                "object_list": ["vm1", "vm2"]
+            }
         }
     },
     'admin': {
@@ -295,6 +305,16 @@ results = {
                 ["dev", "object_category_assignments", "read"],
                 ["dev", "object_category_assignments", "write"]
             ]
+        },
+        "collaboration": {
+            "requesting": {
+                "genre": "trust",
+                "subject_list": ["user1", "user2"]
+            },
+            "requested": {
+                "genre": "trust",
+                "object_list": ["object_category_assignments"]
+            }
         }
     }
 }

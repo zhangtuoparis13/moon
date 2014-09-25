@@ -456,14 +456,17 @@ class Extension:
         if category_id in self.metadata.get_subject_categories():
             if subject_id in self.perimeter.get_subjects():
                 if category_value in self.configuration.get_subject_category_values()[category_id]:
-                    if category_value in self.assignment.get_subject_category_assignments()[category_id][subject_id]:
-                        return "[ERROR] Add Subject Assignment: Subject Assignment Exists"
-                    else:
-                        if subject_id in self.assignment.get_subject_category_assignments()[category_id]:
-                            self.assignment.get_subject_category_assignments()[category_id][subject_id].extend([category_value])
+                    if category_id in self.assignment.get_subject_category_assignments().keys():
+                        if subject_id in self.assignment.get_subject_category_assignments()[category_id].keys():
+                            if category_value in self.assignment.get_subject_category_assignments()[category_id][subject_id]:
+                                return "[ERROR] Add Subject Assignment: Subject Assignment Exists"
+                            else:
+                                self.assignment.get_subject_category_assignments()[category_id][subject_id].extend([category_value])
                         else:
                             self.assignment.get_subject_category_assignments()[category_id][subject_id] = [category_value]
-                        return self.assignment.get_subject_category_assignments()
+                    else:
+                        self.assignment.get_subject_category_assignments()[category_id] = {subject_id: [category_value]}
+                    return self.assignment.get_subject_category_assignments()
                 else:
                     return "[ERROR] Add Subject Assignment: Subject Category Value Unknown"
             else:
@@ -497,14 +500,17 @@ class Extension:
         if category_id in self.metadata.get_object_categories():
             if object_id in self.perimeter.get_objects():
                 if category_value in self.configuration.get_object_category_values()[category_id]:
-                    if category_value in self.assignment.get_object_category_assignments()[category_id][object_id]:
-                        return "[ERROR] Add Object Assignment: Object Assignment Exists"
-                    else:
-                        if object_id in self.assignment.get_object_category_assignments()[category_id]:
-                            self.assignment.get_object_category_assignments()[category_id][object_id].extend([category_value])
+                    if category_id in self.assignment.get_object_category_assignments().keys():
+                        if object_id in self.assignment.get_object_category_assignments()[category_id].keys():
+                            if category_value in self.assignment.get_object_category_assignments()[category_id][object_id]:
+                                return "[ERROR] Add Object Assignment: Object Assignment Exists"
+                            else:
+                                self.assignment.get_object_category_assignments()[category_id][object_id].extend([category_value])
                         else:
                             self.assignment.get_object_category_assignments()[category_id][object_id] = [category_value]
-                        return self.assignment.get_object_category_assignments()
+                    else:
+                        self.assignment.get_object_category_assignments()[category_id] = {object_id: [category_value]}
+                    return self.assignment.get_object_category_assignments()
                 else:
                     return "[ERROR] Add Object Assignment: Object Category Value Unknown"
             else:
@@ -528,7 +534,94 @@ class Extension:
         else:
             return "[ERROR] Del Object Assignment: Object Category Unknown"
 
-# ---------------- SyncDB API ----------------
+    # ---------------- inter-extension API ----------------
+
+    def create_requesting_collaboration(self, sub_list, vent_uuid, act):
+        _sub_cat_values = dict()
+        _obj_cat_values = dict()
+
+        self.add_object(vent_uuid)
+        for _relation in self.get_meta_rule()["sub_meta_rules"]:
+            for _sub_cat_id in self.get_meta_rule()["sub_meta_rules"][_relation]["subject_categories"]:
+                _sub_cat_value = str(uuid4())
+                self.add_subject_category_value(_sub_cat_id, _sub_cat_value)
+                _sub_cat_values[_relation] = {_sub_cat_id: _sub_cat_value}
+                for _sub in sub_list:
+                    self.add_subject_assignment(_sub_cat_id, _sub, _sub_cat_value)
+
+            for _obj_cat_id in self.get_meta_rule()["sub_meta_rules"][_relation]["object_categories"]:
+                if _obj_cat_id == 'action':
+                    _obj_cat_values[_relation][_obj_cat_id] = act
+                else:
+                    _obj_cat_value = str(uuid4())
+                    self.add_object_category_value(_obj_cat_id, _obj_cat_value)
+                    self.add_object_assignment(_obj_cat_id, vent_uuid, _obj_cat_value)
+                    _obj_cat_values[_relation] = {_obj_cat_id: _obj_cat_value}
+
+        _rule = self.add_rule(_sub_cat_values, _obj_cat_values)
+        return {"subject_category_value_dict": _sub_cat_values, "object_category_value_dict": _obj_cat_values,
+                "rule": _rule}
+
+    def destroy_requesting_collaboration(self, sub_list, vent_uuid, sub_cat_value_dict, obj_cat_value_dict):
+        for _relation in self.get_meta_rule()["sub_meta_rules"]:
+            for _sub_cat_id in self.get_meta_rule()["sub_meta_rules"][_relation]["subject_categories"]:
+                for _sub in sub_list:
+                    self.del_subject_assignment(_sub_cat_id, _sub, sub_cat_value_dict[_relation][_sub_cat_id])
+                self.del_subject_category_value(_sub_cat_id, sub_cat_value_dict[_relation][_sub_cat_id])
+
+            for _obj_cat_id in self.get_meta_rule()["sub_meta_rules"][_relation]["object_categories"]:
+                if _obj_cat_id == "action":
+                    pass  # TODO: reconsidering the action as object attribute
+                else:
+                    self.del_object_assignment(_obj_cat_id, vent_uuid, obj_cat_value_dict[_relation][_obj_cat_id])
+                    self.del_object_category_value(_obj_cat_id, obj_cat_value_dict[_relation][_obj_cat_id])
+
+        self.del_rule(sub_cat_value_dict, obj_cat_value_dict)
+        self.del_object(vent_uuid)
+
+    def create_requested_collaboration(self, vent_uuid, obj_list, act):
+        _sub_cat_values = dict()
+        _obj_cat_values = dict()
+
+        self.add_subject(vent_uuid)
+
+        for _relation in self.get_meta_rule()["sub_meta_rules"]:
+            for _sub_cat_id in self.get_meta_rule()["sub_meta_rules"][_relation]["subject_categories"]:
+                _sub_cat_value = str(uuid4())
+                self.add_subject_category_value(_sub_cat_id, _sub_cat_value)
+                _sub_cat_values[_relation] = {_sub_cat_id: _sub_cat_value}
+                self.add_subject_assignment(_sub_cat_id, vent_uuid, _sub_cat_value)
+
+            for _obj_cat_id in self.get_meta_rule()["sub_meta_rules"][_relation]["object_categories"]:
+                if _obj_cat_id == 'action':
+                    _obj_cat_values[_relation][_obj_cat_id] = act
+                else:
+                    _obj_cat_value = str(uuid4())
+                    self.add_object_category_value(_obj_cat_id, _obj_cat_value)
+                    _obj_cat_values[_relation] = {_obj_cat_id: _obj_cat_value}
+                    for _obj in obj_list:
+                        self.add_object_assignment(_obj_cat_id, _obj, _obj_cat_value)
+
+        _rule = self.add_rule(_sub_cat_values, _obj_cat_values)
+        return {"subject_category_value_dict": _sub_cat_values, "object_category_value_dict": _obj_cat_values,
+                "rule": _rule}
+
+    def destroy_requested_collaboration(self, vent_uuid, obj_list, sub_cat_value_dict, obj_cat_value_dict):
+        for _relation in self.get_meta_rule()["sub_meta_rules"]:
+            for _sub_cat_id in self.get_meta_rule()["sub_meta_rules"][_relation]["subject_categories"]:
+                self.del_subject_assignment(_sub_cat_id, vent_uuid, sub_cat_value_dict[_relation][_sub_cat_id])
+                self.del_subject_category_value(_sub_cat_id, sub_cat_value_dict[_relation][_sub_cat_id])
+
+            for _obj_cat_id in self.get_meta_rule()["sub_meta_rules"][_relation]["object_categories"]:
+                if _obj_cat_id == "action":
+                    pass  # TODO: reconsidering the action as object attribute
+                else:
+                    for _obj in obj_list:
+                        self.del_object_assignment(_obj_cat_id, _obj, obj_cat_value_dict[_relation][_obj_cat_id])
+                    self.del_object_category_value(_obj_cat_id, obj_cat_value_dict[_relation][_obj_cat_id])
+
+        self.del_rule(sub_cat_value_dict, obj_cat_value_dict)
+        self.del_subject(vent_uuid)
 
     # ---------------- sync_db api ----------------
 
@@ -545,92 +638,3 @@ class Extension:
         self.configuration.set_data(extension_data["configuration"])
         self.perimeter.set_data(extension_data["perimeter"])
         self.assignment.set_data(extension_data["assignment"])
-
-    # ---------------- inter-extension API ----------------
-
-    def create_requesting_collaboration(self, sub_list, vent_uuid, act):
-        _sub_cat_values = dict()
-        _obj_cat_values = dict()
-
-        for _sub_cat_id in self.get_subject_categories():
-            _sub_cat_value = str(uuid4())
-            self.add_subject_category_value(_sub_cat_id, _sub_cat_value)
-            _sub_cat_values[_sub_cat_id] = _sub_cat_value
-
-            for _sub in sub_list:
-                self.add_subject_assignment(_sub_cat_id, _sub, _sub_cat_value)
-
-        self.add_object(vent_uuid)
-
-        for _obj_cat_id in self.get_object_categories():
-            if _obj_cat_id == 'action':
-                _obj_cat_values[_obj_cat_id] = act
-            else:
-                _obj_cat_value = str(uuid4())
-                self.add_object_category_value(_obj_cat_id, _obj_cat_value)
-                _obj_cat_values[_obj_cat_id] = _obj_cat_value
-                self.add_object_assignment(_obj_cat_id, vent_uuid, _obj_cat_value)
-
-        _rule = self.add_rule(_sub_cat_values, _obj_cat_values)
-        return {"subject_category_value_dict": _sub_cat_values, "object_category_value_dict": _obj_cat_values, "rule": _rule}
-
-    def destroy_requesting_collaboration(self, vent_uuid, sub_list, sub_cat_value_dict, obj_cat_value_dict):
-        for _sub_cat_id in self.get_subject_categories():
-            self.del_subject_category_value(_sub_cat_id, sub_cat_value_dict[_sub_cat_id])
-
-            for _sub in sub_list:
-                self.del_subject_assignment(_sub_cat_id, _sub, sub_cat_value_dict[_sub_cat_id])
-
-        self.del_object(vent_uuid)
-
-        for _obj_cat_id in self.get_object_categories():
-            if _obj_cat_id == "action":
-                pass  # TODO: reconsidering the action as object attribute
-            else:
-                self.del_object_category_value(_obj_cat_id, obj_cat_value_dict[_obj_cat_id])
-                self.del_object_assignment(_obj_cat_id, vent_uuid, obj_cat_value_dict[_obj_cat_id])
-
-        self.del_rule(sub_cat_value_dict, obj_cat_value_dict)
-
-    def create_requested_collaboration(self, vent_uuid, obj_list, act):
-        _sub_cat_values = dict()
-        _obj_cat_values = dict()
-
-        self.add_subject(vent_uuid)
-
-        for _sub_cat_id in self.get_subject_categories():
-            _sub_cat_value = str(uuid4())
-            self.add_subject_category_value(_sub_cat_id, _sub_cat_value)
-            _sub_cat_values[_sub_cat_id] = _sub_cat_value
-            self.add_subject_assignment(_sub_cat_id, vent_uuid, _sub_cat_value)
-
-        for _obj_cat_id in self.get_object_categories():
-            if _obj_cat_id == 'action':
-                _obj_cat_values[_obj_cat_id] = act
-            else:
-                _obj_cat_value = str(uuid4())
-                self.add_object_category_value(_obj_cat_id, _obj_cat_value)
-                _obj_cat_values[_obj_cat_id] = _obj_cat_value
-                for _obj in obj_list:
-                    self.add_object_assignment(_obj_cat_id, _obj, _obj_cat_value)
-
-        _rule = self.add_rule(_sub_cat_values, _obj_cat_values)
-        return {"subject_category_value_dict": _sub_cat_values, "object_category_value_dict": _obj_cat_values, "rule": _rule}
-
-    def destroy_requested_collaboration(self, vent_uuid, sub_cat_value_dict, obj_list, obj_cat_value_dict):
-        self.del_subject(vent_uuid)
-
-        for _sub_cat_id in self.get_subject_categories():
-            self.del_subject_category_value(_sub_cat_id, sub_cat_value_dict[_sub_cat_id])
-            self.del_subject_assignment(_sub_cat_id, vent_uuid, sub_cat_value_dict[_sub_cat_id])
-
-        for _obj_cat_id in self.get_object_categories():
-            if _obj_cat_id == "action":
-                pass  # TODO: reconsidering the action as object attribute
-            else:
-                self.del_object_category_value(_obj_cat_id, obj_cat_value_dict[_obj_cat_id])
-
-                for _obj in obj_list:
-                    self.del_object_assignment(_obj_cat_id, _obj, obj_cat_value_dict[_obj_cat_id])
-
-        self.del_rule(sub_cat_value_dict, obj_cat_value_dict)
