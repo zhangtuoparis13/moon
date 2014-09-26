@@ -57,7 +57,7 @@ class PIP:
         from novaclient import client as nova_client
         self.nclient = nova_client.Client("3", auth_token=token.id, auth_url=auth_url)
 
-    def get_subjects(self, tenant=None):
+    def get_subjects(self, tenant=None, user_uuid=None):
         if type(tenant) is dict:
             tenant = tenant["uuid"]
         for user in self.kclient.users.list(project_id=tenant):
@@ -74,14 +74,17 @@ class PIP:
             try:
                 s["project"] = user.default_project_id
             except AttributeError:
-                pass
+                s["project"] = ""
             s["enabled"] = user.enabled
             try:
                 s["domain"] = user.domain_id
             except AttributeError:
                 pass
             s["uuid"] = user.id
-            yield s
+            if user_uuid and user_uuid == user.id:
+                yield s
+            elif not user_uuid:
+                yield s
 
     def add_subject(self, user):
         for key in ('domain', 'enabled', 'name', 'project', 'password', 'description'):
@@ -101,7 +104,7 @@ class PIP:
     def del_subject(self, user_uuid):
         self.kclient.users.delete(user_uuid)
 
-    def get_objects(self, tenant=None):
+    def get_objects(self, tenant=None, object_uuid=None):
         s = dict()
         for server in self.nclient.servers.list():
             o = dict()
@@ -117,7 +120,10 @@ class PIP:
                 o["enabled"] = True
             o["category"] = "object"
             o["tenant"] = tenant
-            yield o
+            if object_uuid and object_uuid == o["uuid"]:
+                yield o
+            elif not object_uuid:
+                yield o
 
     def add_object(self):
         #Do we really need this function ?
@@ -127,16 +133,16 @@ class PIP:
         #Do we really need this function ?
         raise NotImplemented
 
-    def get_roles(self, tenant_name="admin", tenant_uuid=None, uuid=None, name=None):
+    def get_roles(self, tenant_name="admin", project_uuid=None, user_uuid=None):
         try:
-            if tenant_uuid:
-                tenant = self.get_tenants(uuid=tenant_uuid).next()
+            if project_uuid:
+                tenant = self.get_tenants(uuid=project_uuid).next()
             else:
                 tenant = self.get_tenants(name=tenant_name).next()
         except StopIteration:
             pass
         else:
-            for role in self.kclient.roles.list(project_id=tenant["uuid"]):
+            for role in self.kclient.roles.list(project_id=tenant["uuid"], user=user_uuid):
                 o = dict()
                 o["value"] = role.name
                 try:
@@ -149,10 +155,10 @@ class PIP:
                     o["enabled"] = True
                 o["category"] = "role"
                 o["uuid"] = role.id
-                if name and o["name"] != name:
-                    continue
-                if uuid and o["uuid"] != uuid:
-                    continue
+                # if name and o["name"] != name:
+                #     continue
+                # if uuid and o["uuid"] != uuid:
+                #     continue
                 yield o
 
     def add_role(self, name, description=""):
@@ -162,16 +168,16 @@ class PIP:
     def del_role(self, uuid):
         return self.kclient.roles.delete(uuid)
 
-    def get_groups(self, tenant_name="admin", tenant_uuid=None, uuid=None, name=None):
+    def get_groups(self, tenant_name="admin", project_uuid=None, user_uuid=None):
         try:
-            if tenant_uuid:
-                tenant = self.get_tenants(uuid=tenant_uuid).next()
+            if project_uuid:
+                tenant = self.get_tenants(uuid=project_uuid).next()
             else:
                 tenant = self.get_tenants(name=tenant_name).next()
         except StopIteration:
             pass
         else:
-            for group in self.kclient.groups.list(project_id=tenant["uuid"]):
+            for group in self.kclient.groups.list(project_id=tenant["uuid"], user=user_uuid):
                 g = dict()
                 g["value"] = group.name
                 try:
@@ -184,10 +190,10 @@ class PIP:
                     g["enabled"] = True
                 g["category"] = "group"
                 g["uuid"] = group.id
-                if name and g["name"] != name:
-                    continue
-                if uuid and g["uuid"] != uuid:
-                    continue
+                # if name and g["name"] != name:
+                #     continue
+                # if uuid and g["uuid"] != uuid:
+                #     continue
                 yield g
 
     def add_group(self, name, description=""):
@@ -196,10 +202,10 @@ class PIP:
     def del_group(self, uuid):
         return self.kclient.groups.delete(uuid)
 
-    def get_users_roles_assignment(self, tenant_name="admin", tenant_uuid=None, users=None):
+    def get_users_roles_assignment(self, tenant_name="admin", project_uuid=None, users=None, user_uuid=None):
         try:
-            if tenant_uuid:
-                tenant = self.get_tenants(uuid=tenant_uuid).next()
+            if project_uuid:
+                tenant = self.get_tenants(uuid=project_uuid).next()
             else:
                 tenant = self.get_tenants(name=tenant_name).next()
         except StopIteration:
@@ -211,6 +217,8 @@ class PIP:
                 assignment = {}
                 _uuid = str(uuid4()).replace("-", "")
                 assignment["uuid"] = _uuid
+                if user_uuid and user_uuid != _uuid:
+                    continue
                 assignment["category"] = "role"
                 assignment["subject"] = user["uuid"]
                 assignment["description"] = "Role assignment for {}".format(user["name"])
@@ -220,7 +228,7 @@ class PIP:
                     assignment["attributes"].extend(roles)
                 yield assignment
 
-    def get_users_groups_assignment(self, tenant_name="admin", users=None):
+    def get_users_groups_assignment(self, tenant_name="admin", users=None, user_uuid=None):
         try:
             tenant = self.get_tenants(name=tenant_name).next()
         except StopIteration:
@@ -232,6 +240,8 @@ class PIP:
                 assignments = {}
                 _uuid = str(uuid4()).replace("-", "")
                 assignments["uuid"] = _uuid
+                if user_uuid and user_uuid != _uuid:
+                    continue
                 assignments["category"] = "group"
                 assignments["subject"] = user["uuid"]
                 assignments["description"] = "Group assignment for {}".format(user["name"])

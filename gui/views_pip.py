@@ -11,52 +11,52 @@ logger = logging.getLogger("moon.django")
 
 @login_required(login_url='/auth/login/')
 @save_auth
-def tenants(request, tenant_uuid=None):
+def projects(request, project_uuid=None):
     pip = get_pip()
-    return HttpResponse(json.dumps({"tenants": list(pip.get_tenants(uuid=tenant_uuid))}))
+    return HttpResponse(json.dumps({"projects": list(pip.get_tenants(uuid=project_uuid))}))
 
 
 @login_required(login_url='/auth/login/')
 @save_auth
-def subjects(request, tenant_uuid=None):
+def users(request, project_uuid=None, user_uuid=None):
     pip = get_pip()
-    return HttpResponse(json.dumps({"subjects": list(pip.get_subjects(tenant=tenant_uuid))}))
+    return HttpResponse(json.dumps({"users": list(pip.get_subjects(tenant=project_uuid, user_uuid=user_uuid))}))
 
 
 @login_required(login_url='/auth/login/')
 @save_auth
-def objects(request, tenant_uuid=None):
+def objects(request, project_uuid=None, object_uuid=None):
     pip = get_pip()
-    return HttpResponse(json.dumps({"objects": list(pip.get_objects(tenant=tenant_uuid))}))
+    return HttpResponse(json.dumps({"objects": list(pip.get_objects(tenant=project_uuid, object_uuid=object_uuid))}))
 
 
 @login_required(login_url='/auth/login/')
 @save_auth
-def roles(request, tenant_uuid=None, user_uuid=None):
+def roles(request, project_uuid=None, user_uuid=None):
     pip = get_pip()
-    return HttpResponse(json.dumps({"roles": list(pip.get_roles(tenant_uuid=tenant_uuid, uuid=user_uuid))}))
+    return HttpResponse(json.dumps({"roles": list(pip.get_roles(project_uuid=project_uuid, user_uuid=user_uuid))}))
 
 
 @login_required(login_url='/auth/login/')
 @save_auth
-def groups(request, tenant_uuid=None, user_uuid=None):
+def groups(request, project_uuid=None, user_uuid=None):
     pip = get_pip()
-    return HttpResponse(json.dumps({"groups": list(pip.get_groups(tenant_uuid=tenant_uuid, uuid=user_uuid))}))
+    return HttpResponse(json.dumps({"groups": list(pip.get_groups(project_uuid=project_uuid, user_uuid=user_uuid))}))
 
 
 @login_required(login_url='/auth/login/')
 @save_auth
-def role_assignments(request, tenant_uuid=None, user_uuid=None):
+def role_assignments(request, project_uuid=None, user_uuid=None):
     pip = get_pip()
     return HttpResponse(json.dumps(
-        {"role_assignments": list(pip.get_users_roles_assignment(tenant_uuid=tenant_uuid, users=(user_uuid,)))}
+        {"role_assignments": list(pip.get_users_roles_assignment(project_uuid=project_uuid, user_uuid=user_uuid))}
     ))
 
 
 @login_required(login_url='/auth/login/')
 @save_auth
-def group_assignments(request, tenant_uuid=None, user_uuid=None):
+def group_assignments(request, project_uuid=None, user_uuid=None):
     pip = get_pip()
     return HttpResponse(json.dumps(
-        {"group_assignments": list(pip.get_users_groups_assignment(tenant_uuid=tenant_uuid, users=(user_uuid,)))}
+        {"group_assignments": list(pip.get_users_groups_assignment(tenant_uuid=project_uuid, user_uuid=user_uuid))}
     ))
