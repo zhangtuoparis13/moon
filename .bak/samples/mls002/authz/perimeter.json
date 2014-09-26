@@ -1,0 +1,14 @@
+{
+    "subjects": [
+        "dbc8d8e2c967477faa656174e21cd738",
+        "it_user1",
+        "it_user2",
+        "rh_user1",
+        "rh_user2"
+    ],
+    "objects": [
+        "vm1",
+        "vm2",
+        "vm3"
+    ]
+}

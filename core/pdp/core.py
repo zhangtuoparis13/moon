@@ -39,7 +39,7 @@ class IntraExtensions:
         self.__installed_intra_extensions[_intra_extension.get_uuid()] = _intra_extension
         return _intra_extension.get_uuid()
 
-    def install_intra_extension_from_db(self):
+    def install_intra_extension_from_db(self):  # TODO test
         intra_extension = IntraExtension()
         intra_extension.get_from_db()
         self.__installed_intra_extensions[intra_extension.get_uuid()] = intra_extension
@@ -47,14 +47,14 @@ class IntraExtensions:
     def get_installed_intra_extensions(self):
         return self.__installed_intra_extensions
 
-    def get_intra_extensions_from_db(self):
+    def get_intra_extensions_from_db(self):  # TODO test
         return self.__syncer.get_intra_extensions_from_db()
 
-    def backup_intra_extensions_to_db(self):
+    def backup_intra_extensions_to_db(self):  # TODO test
         for _intra_extension in self.__installed_intra_extensions:
             self.__installed_intra_extensions[_intra_extension].backup_intra_extension_to_db()
 
-    def install_intra_extensions_from_db(self):
+    def install_intra_extensions_from_db(self):  # TODO test
         _intra_extension_dict = self.__syncer.get_intra_extensions_from_db()
         for _intra_extension_uuid in _intra_extension_dict:
             if _intra_extension_uuid not in self.__installed_intra_extensions:
@@ -78,7 +78,7 @@ class IntraExtensions:
         return set(self.__installed_intra_extensions.keys())
 
 
-class InterExtensions:  # TODO: to test
+class InterExtensions:
     def __init__(self, installed_intra_extensions):
         self.__installed_intra_extensions = installed_intra_extensions
         self.__installed_inter_extensions = dict()
@@ -102,9 +102,11 @@ class InterExtensions:  # TODO: to test
         for _installed_inter_extension in self.__installed_inter_extensions.values():
             if _installed_inter_extension.check_requesters(requesting_intra_extension_uuid,
                                                            requested_intra_extension_uuid):
-                _inter_extension_uuid = _installed_inter_extension.get_uuid()
-                _vent_uuid = _installed_inter_extension.create_collaboration(genre, sub_list, obj_list, act)
-                return _inter_extension_uuid, _vent_uuid
+                _inter_extension_uuid = _installed_inter_extension.create_collaboration(genre, sub_list, obj_list, act)
+                if _inter_extension_uuid is "[InterExtension Error] Create Collaboration: vEnt Exists":
+                    return "[InterExtension] Create Collaboration: vEnt Exists"
+                else:
+                    return _inter_extension_uuid, _vent_uuid
 
         _new_inter_extension = InterExtension(self.__installed_intra_extensions[requesting_intra_extension_uuid],
                                               self.__installed_intra_extensions[requested_intra_extension_uuid])
@@ -113,9 +115,13 @@ class InterExtensions:  # TODO: to test
         _vent_uuid = _new_inter_extension.create_collaboration(genre, sub_list, obj_list, act)
         return _inter_extension_uuid, _vent_uuid
 
-    def destroy_collaboration(self, inter_extension_uuid, vent_uuid):
-        self.__installed_inter_extensions[inter_extension_uuid].destroy_collaboration(vent_uuid)
-        self.__installed_inter_extensions.pop(inter_extension_uuid)
+    def destroy_collaboration(self, genre, inter_extension_uuid, vent_uuid):
+        if self.__installed_inter_extensions[inter_extension_uuid].destroy_collaboration(genre, vent_uuid) \
+                == "[InterExtension] Destroy Collaboration: OK":
+            self.__installed_inter_extensions.pop(inter_extension_uuid)
+            return "[InterExtensions] Destroy Collaboration: OK"
+        else:
+            return "[InterExtensions Error] Destroy Collaboration: No Success"
 
     def get_installed_inter_extensions(self):
         return self.__installed_inter_extensions

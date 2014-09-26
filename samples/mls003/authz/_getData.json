@@ -1,0 +1,59 @@
+{
+    "perimeter": {
+        "subjects": ["user1", "user2"],
+        "objects": ["vm1", "vm2", "vm3"]
+    },
+    "assignment": {
+        "subject_category_assignments": {
+            "subject_security_level": {
+                "user2": ["medium"],
+                "user1": ["high"]
+            }
+        },
+        "object_category_assignments": {
+            "action": {
+                "vm2": [],
+                "vm3": [],
+                "vm1": []
+            },
+            "object_security_level": {
+                "vm2": ["medium"],
+                "vm3": ["low"],
+                "vm1": ["high"]
+            }
+        }
+    },
+    "configuration": {
+        "rules": [
+            ["high", "medium", "read"],
+            ["high", "low", "read"],
+            ["medium", "low", "read"]
+        ],
+        "object_category_values": {
+            "action": ["read", "write", "execute"],
+            "object_security_level": ["high", "medium", "low"]
+        },
+        "subject_category_values": {
+            "subject_security_level": ["high", "medium", "low"]
+        }
+    },
+    "metadata": {
+        "meta_rule": {
+            "sub_meta_rules": [
+                {
+                    "relation": "relation_super",
+                    "subject_categories": ["subject_security_level"],
+                    "object_categories": ["object_security_level", "action"]
+                }
+            ],
+            "aggregation": "and_true_aggregation"
+        },
+        "name": "MLS_metadata",
+        "subject_categories": ["subject_security_level"],
+        "model": "MLS",
+        "type": "authz",
+        "object_categories": ["object_security_level", "action"],
+        "description": ""
+    }
+}
+

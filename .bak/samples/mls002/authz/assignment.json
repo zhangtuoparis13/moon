@@ -1,8 +1,11 @@
 {
     "subject_category_assignments": {
         "subject_security_level":{
-            "user1": ["high"],
-            "user2": ["medium"]
+            "dbc8d8e2c967477faa656174e21cd738": ["high"],
+            "it_user1": ["medium"],
+            "it_user2": ["low"],
+            "rh_user1": ["medium"],
+            "rh_user2": ["low"]
         }
     },
     "object_category_assignments": {

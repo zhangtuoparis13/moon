@@ -14,13 +14,13 @@
     ],
 
     "meta_rule": {
-        "sub_meta_rules": {
-            "relation_super": {
+        "sub_meta_rules":[
+            {
                 "subject_categories": ["subject_security_level"],
                 "object_categories": ["object_security_level", "action"],
                 "relation": "relation_super"
             }
-        },
+        ],
         "aggregation": "and_true_aggregation"
     }
 }

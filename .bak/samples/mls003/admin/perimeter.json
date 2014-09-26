@@ -1,13 +1,12 @@
 {
     "subjects": [
+        "dbc8d8e2c967477faa656174e21cd738",
         "user1",
         "user2"
     ],
     "objects": [
         "subjects",
         "objects",
-        "subject_categories",
-        "object_categories",
         "subject_category_values",
         "object_category_values",
         "rules",

@@ -108,7 +108,7 @@ class InterExtension:
     def create_collaboration(self, genre, sub_list, obj_list, act):
         for _ve in self.__vents[genre]:
             if _ve.get_subjects() is sub_list and _ve.get_objects is obj_list and _ve.get_action() is act:
-                return "[Create Collaboration] No Success"
+                return "[InterExtension Error] Create Collaboration: vEnt Exists"
 
         _vent = VirtualEntity()
         _vent.set_subjects_objects_action(sub_list, obj_list, act)
@@ -128,7 +128,7 @@ class InterExtension:
                 _vent = _tmp_vent
                 break
         if _vent is None:
-            return "[ERROR] Destroy Collaboration: No Success"
+            return "[InterExtension ERROR] Destroy Collaboration: No Success"
 
         self.requesting_intra_extension.destroy_requesting_collaboration(
             genre,
@@ -147,7 +147,7 @@ class InterExtension:
         )
 
         self.__vents[genre].remove(_vent)
-        return "[Destroy Requesting Collaboration] OK"
+        return "[InterExtension] Destroy Collaboration: OK"
 
     def get_uuid(self):
         return self.__uuid
