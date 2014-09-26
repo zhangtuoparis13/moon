@@ -327,36 +327,39 @@ class TestCorePAPIntraExtensions(unittest.TestCase):
 
     def test_rules(self):
         rules = self.pap.get_rules(self.ext_uuid, "user1")
-        self.assertIsInstance(rules, list)
+        self.assertIsInstance(rules, dict)
         for rule in rules:
-            self.assertIsInstance(rule, list)
-            self.assertEqual(len(rule), 3)
-        sub_cat_value = {"subject_security_level": "medium"}
-        obj_cat_value = {"object_security_level": "medium", "action": "read"}
+            self.assertIsInstance(rule, unicode)
+            self.assertEqual(len(rules[rule]), 3)
+        sub_cat_value = {"relation_super": {"subject_security_level": "medium"}}
+        obj_cat_value = {"relation_super": {"object_security_level": "medium", "action": "read"}}
         self.pap.add_rule(self.ext_uuid, "user1", sub_cat_value, obj_cat_value)
         rules = self.pap.get_rules(self.ext_uuid, "user1")
-        self.assertIsInstance(rules, list)
+        self.assertIsInstance(rules, dict)
         for rule in rules:
-            self.assertIsInstance(rule, list)
-            self.assertEqual(len(rule), 3)
-        self.assertIn([u'medium', u'medium', u'read'], rules)
+            self.assertIsInstance(rule, unicode)
+            for _rule in rules[rule]:
+                self.assertEqual(len(_rule), 3)
+        self.assertIn([u'medium', u'medium', u'read'], rules['relation_super'])
 
     def test_rules_user_error(self):
         rules = self.pap.get_rules(self.ext_uuid, "user3")
         self.assertIsNone(rules)
         rules = self.pap.get_rules(self.ext_uuid, "user1")
         for rule in rules:
-            self.assertIsInstance(rule, list)
-            self.assertEqual(len(rule), 3)
+            self.assertIsInstance(rule, unicode)
+            for _rule in rules[rule]:
+                self.assertEqual(len(_rule), 3)
         sub_cat_value = {"subject_security_level": "low"}
         obj_cat_value = {"object_security_level": "medium", "action": "read"}
         self.pap.add_rule(self.ext_uuid, "user2", sub_cat_value, obj_cat_value)
         rules = self.pap.get_rules(self.ext_uuid, "user1")
-        self.assertIsInstance(rules, list)
+        self.assertIsInstance(rules, dict)
         for rule in rules:
-            self.assertIsInstance(rule, list)
-            self.assertEqual(len(rule), 3)
-        self.assertNotIn([u'low', u'medium', u'read'], rules)
+            self.assertIsInstance(rule, unicode)
+            for _rule in rules[rule]:
+                self.assertEqual(len(_rule), 3)
+        self.assertNotIn([u'low', u'medium', u'read'], rules['relation_super'])
 
 
 class TestCorePAPInterExtensions(unittest.TestCase):
@@ -381,7 +384,7 @@ class TestCorePAPInterExtensions(unittest.TestCase):
             user_uuid="user1",
             requesting_intra_extension_uuid=self.requesting_intra_extension_uuid,
             requested_intra_extension_uuid=self.requested_intra_extension_uuid,
-            type="trust",
+            genre="trust",
             sub_list=_sub_list,
             obj_list=_obj_list,
             act=_act
