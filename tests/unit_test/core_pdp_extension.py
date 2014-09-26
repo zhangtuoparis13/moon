@@ -434,8 +434,11 @@ class TestCorePDPExtension(unittest.TestCase):
         _subs = self._results["collaboration"]["requesting"]["subject_list"]
         _data = copy.deepcopy(self.extension.get_data())
         _dict = self.extension.create_requesting_collaboration(_subs, _vent_uuid, "read")
-        self.extension.destroy_requesting_collaboration(_subs, _vent_uuid, _dict["subject_category_value_dict"],
-                                                        _dict["object_category_value_dict"])
+        self.assertIsInstance(_dict, dict)
+        self.assertEqual(self.extension.destroy_requesting_collaboration(_subs, _vent_uuid,
+                                                                         _dict["subject_category_value_dict"],
+                                                                         _dict["object_category_value_dict"]),
+                         "[Destroy Requesting Collaboration] OK")
         self.assertEqual(self.extension.get_data(), _data)
 
     def test_create_requested_collaboration(self):
@@ -443,8 +446,11 @@ class TestCorePDPExtension(unittest.TestCase):
         _objs = self._results["collaboration"]["requested"]["object_list"]
         _data = copy.deepcopy(self.extension.get_data())
         _dict = self.extension.create_requested_collaboration(_vent_uuid, _objs, "read")
-        self.extension.destroy_requested_collaboration(_vent_uuid, _objs, _dict["subject_category_value_dict"],
-                                                       _dict["object_category_value_dict"])
+        self.assertIsInstance(_dict, dict)
+        self.assertEqual(self.extension.destroy_requested_collaboration(_vent_uuid, _objs,
+                                                                        _dict["subject_category_value_dict"],
+                                                                        _dict["object_category_value_dict"]),
+                         "[Destroy Requested Collaboration] OK")
         self.assertEqual(self.extension.get_data(), _data)
 """
     def test_get_set_data(self):

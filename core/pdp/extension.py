@@ -540,88 +540,118 @@ class Extension:
         _sub_cat_values = dict()
         _obj_cat_values = dict()
 
-        self.add_object(vent_uuid)
+        if type(self.add_object(vent_uuid)) is not list:
+            return "[Error] Create Requesting Collaboration: No Success"
         for _relation in self.get_meta_rule()["sub_meta_rules"]:
             for _sub_cat_id in self.get_meta_rule()["sub_meta_rules"][_relation]["subject_categories"]:
                 _sub_cat_value = str(uuid4())
-                self.add_subject_category_value(_sub_cat_id, _sub_cat_value)
+                if type(self.add_subject_category_value(_sub_cat_id, _sub_cat_value)) is not list:
+                    return "[Error] Create Requesting Collaboration: No Success"
                 _sub_cat_values[_relation] = {_sub_cat_id: _sub_cat_value}
                 for _sub in sub_list:
-                    self.add_subject_assignment(_sub_cat_id, _sub, _sub_cat_value)
+                    if type(self.add_subject_assignment(_sub_cat_id, _sub, _sub_cat_value)) is not dict:
+                        return "[Error] Create Requesting Collaboration: No Success"
 
             for _obj_cat_id in self.get_meta_rule()["sub_meta_rules"][_relation]["object_categories"]:
                 if _obj_cat_id == 'action':
                     _obj_cat_values[_relation][_obj_cat_id] = act
                 else:
                     _obj_cat_value = str(uuid4())
-                    self.add_object_category_value(_obj_cat_id, _obj_cat_value)
-                    self.add_object_assignment(_obj_cat_id, vent_uuid, _obj_cat_value)
+                    if type(self.add_object_category_value(_obj_cat_id, _obj_cat_value)) is not list:
+                        return "[Error] Create Requesting Collaboration: No Success"
+                    if type(self.add_object_assignment(_obj_cat_id, vent_uuid, _obj_cat_value)) is not dict:
+                        return "[Error] Create Requesting Collaboration: No Success"
                     _obj_cat_values[_relation] = {_obj_cat_id: _obj_cat_value}
 
         _rule = self.add_rule(_sub_cat_values, _obj_cat_values)
+        if type(_rule) is not dict:
+            return "[Error] Create Requesting Collaboration: No Success"
         return {"subject_category_value_dict": _sub_cat_values, "object_category_value_dict": _obj_cat_values,
-                "rule": _rule}
+                    "rule": _rule}
 
     def destroy_requesting_collaboration(self, sub_list, vent_uuid, sub_cat_value_dict, obj_cat_value_dict):
         for _relation in self.get_meta_rule()["sub_meta_rules"]:
             for _sub_cat_id in self.get_meta_rule()["sub_meta_rules"][_relation]["subject_categories"]:
                 for _sub in sub_list:
-                    self.del_subject_assignment(_sub_cat_id, _sub, sub_cat_value_dict[_relation][_sub_cat_id])
-                self.del_subject_category_value(_sub_cat_id, sub_cat_value_dict[_relation][_sub_cat_id])
+                    if type(self.del_subject_assignment(_sub_cat_id, _sub, sub_cat_value_dict[_relation][_sub_cat_id]))\
+                            is not dict:
+                        return "[Error] Destroy Requesting Collaboration: No Success"
+                if type(self.del_subject_category_value(_sub_cat_id, sub_cat_value_dict[_relation][_sub_cat_id])) \
+                        is not list:
+                    return "[Error] Destroy Requesting Collaboration: No Success"
 
             for _obj_cat_id in self.get_meta_rule()["sub_meta_rules"][_relation]["object_categories"]:
                 if _obj_cat_id == "action":
                     pass  # TODO: reconsidering the action as object attribute
                 else:
-                    self.del_object_assignment(_obj_cat_id, vent_uuid, obj_cat_value_dict[_relation][_obj_cat_id])
-                    self.del_object_category_value(_obj_cat_id, obj_cat_value_dict[_relation][_obj_cat_id])
+                    if type(self.del_object_assignment(_obj_cat_id, vent_uuid, obj_cat_value_dict[_relation][_obj_cat_id])) is not dict:
+                        return "[Error] Destroy Requesting Collaboration: No Success"
+                    if type(self.del_object_category_value(_obj_cat_id, obj_cat_value_dict[_relation][_obj_cat_id])) is not list:
+                        return "[Error] Destroy Requesting Collaboration: No Success"
 
-        self.del_rule(sub_cat_value_dict, obj_cat_value_dict)
-        self.del_object(vent_uuid)
+        if type(self.del_rule(sub_cat_value_dict, obj_cat_value_dict)) is not dict:
+            return "[Error] Destroy Requesting Collaboration: No Success"
+        if type(self.del_object(vent_uuid)) is not list:
+            return "[Error] Destroy Requesting Collaboration: No Success"
+        return "[Destroy Requesting Collaboration] OK"
 
     def create_requested_collaboration(self, vent_uuid, obj_list, act):
         _sub_cat_values = dict()
         _obj_cat_values = dict()
 
-        self.add_subject(vent_uuid)
+        if type(self.add_subject(vent_uuid)) is not list:
+            return "[Error] Create Requested Collaboration: No Success"
 
         for _relation in self.get_meta_rule()["sub_meta_rules"]:
             for _sub_cat_id in self.get_meta_rule()["sub_meta_rules"][_relation]["subject_categories"]:
                 _sub_cat_value = str(uuid4())
-                self.add_subject_category_value(_sub_cat_id, _sub_cat_value)
+                if type(self.add_subject_category_value(_sub_cat_id, _sub_cat_value)) is not list:
+                    return "[Error] Create Requested Collaboration: No Success"
                 _sub_cat_values[_relation] = {_sub_cat_id: _sub_cat_value}
-                self.add_subject_assignment(_sub_cat_id, vent_uuid, _sub_cat_value)
+                if type(self.add_subject_assignment(_sub_cat_id, vent_uuid, _sub_cat_value)) is not dict:
+                    return "[Error] Create Requested Collaboration: No Success"
 
             for _obj_cat_id in self.get_meta_rule()["sub_meta_rules"][_relation]["object_categories"]:
                 if _obj_cat_id == 'action':
                     _obj_cat_values[_relation][_obj_cat_id] = act
                 else:
                     _obj_cat_value = str(uuid4())
-                    self.add_object_category_value(_obj_cat_id, _obj_cat_value)
+                    if type(self.add_object_category_value(_obj_cat_id, _obj_cat_value)) is not list:
+                        return "[Error] Create Requested Collaboration: No Success"
                     _obj_cat_values[_relation] = {_obj_cat_id: _obj_cat_value}
                     for _obj in obj_list:
-                        self.add_object_assignment(_obj_cat_id, _obj, _obj_cat_value)
+                        if type(self.add_object_assignment(_obj_cat_id, _obj, _obj_cat_value)) is not dict:
+                            return "[Error] Create Requested Collaboration: No Success"
 
         _rule = self.add_rule(_sub_cat_values, _obj_cat_values)
+        if type(_rule) is not dict:
+            return "[Error] Create Requested Collaboration: No Success"
         return {"subject_category_value_dict": _sub_cat_values, "object_category_value_dict": _obj_cat_values,
                 "rule": _rule}
 
     def destroy_requested_collaboration(self, vent_uuid, obj_list, sub_cat_value_dict, obj_cat_value_dict):
         for _relation in self.get_meta_rule()["sub_meta_rules"]:
             for _sub_cat_id in self.get_meta_rule()["sub_meta_rules"][_relation]["subject_categories"]:
-                self.del_subject_assignment(_sub_cat_id, vent_uuid, sub_cat_value_dict[_relation][_sub_cat_id])
-                self.del_subject_category_value(_sub_cat_id, sub_cat_value_dict[_relation][_sub_cat_id])
+                if type(self.del_subject_assignment(_sub_cat_id, vent_uuid, sub_cat_value_dict[_relation][_sub_cat_id])) is not dict:
+                    return "[Error] Destroy Requested Collaboration: No Success"
+                if type(self.del_subject_category_value(_sub_cat_id, sub_cat_value_dict[_relation][_sub_cat_id])) is not list:
+                    return "[Error] Destroy Requested Collaboration: No Success"
 
             for _obj_cat_id in self.get_meta_rule()["sub_meta_rules"][_relation]["object_categories"]:
                 if _obj_cat_id == "action":
                     pass  # TODO: reconsidering the action as object attribute
                 else:
                     for _obj in obj_list:
-                        self.del_object_assignment(_obj_cat_id, _obj, obj_cat_value_dict[_relation][_obj_cat_id])
-                    self.del_object_category_value(_obj_cat_id, obj_cat_value_dict[_relation][_obj_cat_id])
+                        if type(self.del_object_assignment(_obj_cat_id, _obj, obj_cat_value_dict[_relation][_obj_cat_id])) is not dict:
+                            return "[Error] Destroy Requested Collaboration: No Success"
+                    if type(self.del_object_category_value(_obj_cat_id, obj_cat_value_dict[_relation][_obj_cat_id])) is not list:
+                        return "[Error] Destroy Requested Collaboration: No Success"
 
-        self.del_rule(sub_cat_value_dict, obj_cat_value_dict)
-        self.del_subject(vent_uuid)
+        if type(self.del_rule(sub_cat_value_dict, obj_cat_value_dict)) is not dict:
+            return "[Error] Destroy Requested Collaboration: No Success"
+        if type(self.del_subject(vent_uuid)) is not list:
+            return "[Error] Destroy Requested Collaboration: No Success"
+        return "[Destroy Requested Collaboration] OK"
 
     # ---------------- sync_db api ----------------
 

@@ -37,11 +37,11 @@ class IntraExtension:
 
     def destroy_requesting_collaboration(self, genre, sub_list, vent_uuid, sub_cat_value, obj_cat_value):
         if genre == 'trust':
-            self.intra_extension_authz.destroy_requesting_collaboration(sub_list, vent_uuid,
-                                                                        sub_cat_value, obj_cat_value)
+            return self.intra_extension_authz.destroy_requesting_collaboration(sub_list, vent_uuid,
+                                                                               sub_cat_value, obj_cat_value)
         elif genre == 'coordinate':
-            self.intra_extension_admin.destroy_requesting_collaboration(sub_list, vent_uuid,
-                                                                        sub_cat_value, obj_cat_value)
+            return self.intra_extension_admin.destroy_requesting_collaboration(sub_list, vent_uuid,
+                                                                               sub_cat_value, obj_cat_value)
 
     def create_requested_collaboration(self, genre, vent_uuid, obj_list, act):
         if genre == 'trust':
@@ -51,11 +51,11 @@ class IntraExtension:
 
     def destroy_requested_collaboration(self, genre, vent_uuid, obj_list, sub_cat_value_dict, obj_cat_value_dict):
         if genre == 'trust':
-            self.intra_extension_authz.destroy_requested_collaboration(vent_uuid, obj_list,
-                                                                       sub_cat_value_dict, obj_cat_value_dict)
+            return self.intra_extension_authz.destroy_requested_collaboration(vent_uuid, obj_list,
+                                                                              sub_cat_value_dict, obj_cat_value_dict)
         elif genre == 'coordinate':
-            self.intra_extension_admin.destroy_requested_collaboration(vent_uuid, obj_list,
-                                                                       sub_cat_value_dict, obj_cat_value_dict)
+            return self.intra_extension_admin.destroy_requested_collaboration(vent_uuid, obj_list,
+                                                                              sub_cat_value_dict, obj_cat_value_dict)
 
     def __str__(self):
         return """IntraExtension {}

@@ -61,10 +61,11 @@ class TestCorePDPIntraExtension(unittest.TestCase):
             _subs = self._results[_type]["collaboration"]["requesting"]["subject_list"]
             _data = copy.deepcopy(self.intra_extension.get_data())
             _dict = self.intra_extension.create_requesting_collaboration(_genre, _subs, _vent_uuid, "read")
-
-            self.intra_extension.destroy_requesting_collaboration(_genre, _subs, _vent_uuid,
-                                                                  _dict["subject_category_value_dict"],
-                                                                  _dict["object_category_value_dict"])
+            self.assertIsInstance(_dict, dict)
+            self.assertEqual(self.intra_extension.destroy_requesting_collaboration(_genre, _subs, _vent_uuid,
+                                                                                   _dict["subject_category_value_dict"],
+                                                                                   _dict["object_category_value_dict"]),
+                             "[Destroy Requesting Collaboration] OK")
             self.assertEqual(self.intra_extension.get_data(), _data)
 
     def test_create_destory_requested_collaboration(self):
@@ -74,10 +75,11 @@ class TestCorePDPIntraExtension(unittest.TestCase):
             _objs = self._results[_type]["collaboration"]["requested"]["object_list"]
             _data = copy.deepcopy(self.intra_extension.get_data())
             _dict = self.intra_extension.create_requested_collaboration(_genre, _vent_uuid, _objs, "read")
-
-            self.intra_extension.destroy_requested_collaboration(_genre, _vent_uuid, _objs,
-                                                                  _dict["subject_category_value_dict"],
-                                                                  _dict["object_category_value_dict"])
+            self.assertIsInstance(_dict, dict)
+            self.assertEqual(self.intra_extension.destroy_requested_collaboration(_genre, _vent_uuid, _objs,
+                                                                                  _dict["subject_category_value_dict"],
+                                                                                  _dict["object_category_value_dict"]),
+                             "[Destroy Requested Collaboration] OK")
             self.assertEqual(self.intra_extension.get_data(), _data)
 
 
