@@ -72,7 +72,7 @@ class IntraExtension:
         data["_id"] = self.__uuid
         data["tenant_uuid"] = self.__tenant_uuid
         data["authz"] = self.intra_extension_authz.get_data()
-        #data["admin"] = self.intra_extension_admin.get_data()
+        data["admin"] = self.intra_extension_admin.get_data()
         return data
 
     def set_data(self, data):
