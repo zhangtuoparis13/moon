@@ -3,9 +3,8 @@ from moon.core.pdp.sync_db import InterExtensionSyncer
 
 
 class VirtualEntity:
-    def __init__(self, genre):
+    def __init__(self):
         self.__uuid = str(uuid4())
-        self.__genre = genre
         self.__requesting_subject_list = list()
         self.__requesting_subject_category_value_dict = dict()  # {cat_id, created_value}
         self.__requesting_object_category_value_dict = dict()  # {cat_id, created_value}
@@ -31,9 +30,6 @@ class VirtualEntity:
 
     def get_uuid(self):
         return self.__uuid
-
-    def get_genre(self):
-        return self.__genre
 
     def get_requesting_subject_list(self):
         return self.__requesting_subject_list
@@ -84,35 +80,37 @@ class InterExtension:
         self.requested_intra_extension = requested_intra_extension
         self.__uuid = str(uuid4())
         self.__vents = dict()
+        self.__vents["trust"] = list()
+        self.__vents["coordinate"] = list()
         self.__syncer = InterExtensionSyncer()
 
     def authz(self, sub, obj, act):
-        for _vent in self.__vents.values():
+        for _vent in self.__vents["trust"]:
             if self.requesting_intra_extension.authz(sub, _vent.get_uuid(), act) == "OK" and \
                     self.requested_intra_extension.authz(_vent.get_uuid(), obj, act) == "OK":
                 return "OK"
         return "KO"
 
     def admin(self, sub, obj, act):
-        for _vent in self.__vents.values():
+        for _vent in self.__vents["coordinate"]:
             if self.requesting_intra_extension.admin(sub, _vent.get_uuid(), act) == "OK" and \
                     self.requested_intra_extension.admin(_vent.get_uuid(), obj, act) == "OK":
                 return "OK"
         return "KO"
 
     def check_requesters(self, requesting_intra_extension_uuid, requested_intra_extension_uuid):
-        if requesting_intra_extension_uuid == self.requesting_intra_extension.get_uuid() \
-                and requested_intra_extension_uuid == self.requested_intra_extension.get_uuid():
+        if requesting_intra_extension_uuid is self.requesting_intra_extension.get_uuid() \
+                and requested_intra_extension_uuid is self.requested_intra_extension.get_uuid():
             return True
         else:
             return False
 
     def create_collaboration(self, genre, sub_list, obj_list, act):
         for _ve in self.__vents[genre]:
-            if _ve.get_subjects() == sub_list and _ve.get_objects == obj_list and _ve.get_action() == act:
-                return False
+            if _ve.get_subjects() is sub_list and _ve.get_objects is obj_list and _ve.get_action() is act:
+                return "[InterExtension Error] Create Collaboration: vEnt Exists"
 
-        _vent = VirtualEntity(genre)
+        _vent = VirtualEntity()
         _vent.set_subjects_objects_action(sub_list, obj_list, act)
 
         _requesting_cat_value_dict = self.requesting_intra_extension.create_requesting_collaboration(
@@ -121,35 +119,35 @@ class InterExtension:
             genre, _vent.get_uuid(), _vent.get_requested_object_list(), _vent.get_action())
 
         _vent.set_category_values_and_rule(_requesting_cat_value_dict, _requested_cat_value_dict)
-        self.__vents[genre] = {_vent.get_uuid(): _vent}
+        self.__vents[genre].append(_vent)
         return _vent.get_uuid()
 
-    def destroy_collaboration(self, vent_uuid):
-        if self.__vents["trust"][vent_uuid]:
-            _vent = self.__vents["trust"][vent_uuid]
-        elif self.__vents["coordinate"][vent_uuid]:
-            _vent = self.__vents["coordinate"][vent_uuid]
-        else:
-            return False
+    def destroy_collaboration(self, genre, vent_uuid):
+        for _tmp_vent in self.__vents[genre]:
+            if _tmp_vent.get_uuid() is vent_uuid:
+                _vent = _tmp_vent
+                break
+        if _vent is None:
+            return "[InterExtension ERROR] Destroy Collaboration: No Success"
 
         self.requesting_intra_extension.destroy_requesting_collaboration(
-            _vent.get_genre(),
-            _vent.get_uuid(),
+            genre,
             _vent.get_requesting_subject_list(),
+            _vent.get_uuid(),
             _vent.get_requesting_subject_category_value_dict(),
             _vent.get_requesting_object_category_value_dict()
         )
 
         self.requested_intra_extension.destroy_requested_collaboration(
-            _vent.get_genre(),
+            genre,
             _vent.get_uuid(),
-            _vent.get_requested_subject_category_value_dict(),
             _vent.get_requested_object_list(),
+            _vent.get_requested_subject_category_value_dict(),
             _vent.get_requested_object_category_value_dict()
         )
 
-        self.__vents[_vent.get_genre()].pop(vent_uuid)
-        return True
+        self.__vents[genre].remove(_vent)
+        return "[InterExtension] Destroy Collaboration: OK"
 
     def get_uuid(self):
         return self.__uuid

@@ -14,7 +14,7 @@
     ],
 
     "meta_rule": {
-        "sub_meta_rules":{
+        "sub_meta_rules": {
             "permission": {
                     "subject_categories": ["role"],
                     "object_categories": ["object_id", "action"],

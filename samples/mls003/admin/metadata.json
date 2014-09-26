@@ -1,7 +1,7 @@
 {
     "name": "RBAC_metadata",
     "model": "RBAC",
-    "type": "admin",
+    "genre": "admin",
     "description": "",
 
     "subject_categories": [
@@ -9,18 +9,18 @@
     ],
 
     "object_categories": [
-        "action",
-        "object_id"
+        "object_id",
+        "action"
     ],
 
     "meta_rule": {
-        "sub_meta_rules":[
-            {
-                "subject_categories": ["role"],
-                "object_categories": ["action", "object_id"],
-                "relation": "permission"
-            }
-        ],
+        "sub_meta_rules": {
+            "permission": {
+                    "subject_categories": ["role"],
+                    "object_categories": ["object_id", "action"],
+                    "relation": "permission"
+                }
+            },
         "aggregation": "and_true_aggregation"
     }
 }
