@@ -301,6 +301,11 @@ def object_category_value(request, uuid=None, category_id=None, value=None):
     return send_json({"object_category_values": results})
 
 
+######################################################################
+# Functions for getting information about assignments
+######################################################################
+
+
 @login_required(login_url='/auth/login/')
 @save_auth
 def subject_assignments(request, uuid=None):
@@ -389,6 +394,11 @@ def object_assignment(request, uuid=None, category_id=None, object_id=None, valu
             category_id=cat
         )
     return send_json({"object_assignments": results})
+
+
+######################################################################
+# Functions for getting information about rules
+######################################################################
 
 
 @login_required(login_url='/auth/login/')
