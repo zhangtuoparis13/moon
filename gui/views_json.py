@@ -37,7 +37,7 @@ def send_json(data):
 @save_auth
 def intra_extensions(request, uuid=None):
     pap = get_pap()
-    return send_json(pap.get_intra_extensions().keys())
+    return send_json({"intra_extensions": pap.get_intra_extensions().keys()})
 
 
 @login_required(login_url='/auth/login/')
@@ -45,7 +45,7 @@ def intra_extensions(request, uuid=None):
 def intra_extension(request, uuid=None):
     pap = get_pap()
     extension = pap.get_intra_extensions()[uuid]
-    return send_json(extension.get_data())
+    return send_json({"intra_extension": extension.get_data()})
 
 
 #####################################################
@@ -422,3 +422,61 @@ def rule(request, uuid=None, sub_cat_value=None, obj_cat_value=None):
     return send_json(
         {"rules": pap.get_rules(extension_uuid=uuid, user_uuid=request.session['user_id'])}
     )
+
+
+######################################################################
+# Functions for getting information about Inter-Extensions
+######################################################################
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def inter_extensions(request, uuid=None):
+    pap = get_pap()
+    return send_json({"inter_extensions": list(
+        pap.get_installed_inter_extensions(extension_uuid=uuid, user_uuid=request.session['user_id'])
+    )})
+
+
+@csrf_exempt
+@login_required(login_url='/auth/login/')
+@save_auth
+def inter_extension(request, uuid=None):
+    pap = get_pap()
+    if request.META['REQUEST_METHOD'] == "POST":
+        data = json.loads(request.read())
+        for key in [
+            u'requested_intra_extension_uuid',
+            u'requesting_intra_extension_uuid',
+            u'obj_list',
+            u'act',
+            u'genre',
+            u'sub_list']:
+            if key not in data:
+                return send_json({"inter_extensions": list(
+                    pap.get_installed_inter_extensions(extension_uuid=uuid, user_uuid=request.session['user_id'])
+                )})
+        print pap.create_collaboration(
+            user_uuid=request.session['user_id'],
+            requesting_intra_extension_uuid=data["requesting_intra_extension_uuid"],
+            requested_intra_extension_uuid=data["requested_intra_extension_uuid"],
+            genre=data["genre"],
+            sub_list=data["sub_list"],
+            obj_list=data["obj_list"],
+            act=data["act"]
+        )
+        # if "sub_cat_value" in data and "obj_cat_value" in data:
+        #     pap.add_rule(
+        #         extension_uuid=uuid,
+        #         user_uuid=request.session['user_id'],
+        #         sub_cat_value=filter_input(data["sub_cat_value"]),
+        #         obj_cat_value=filter_input(data["obj_cat_value"]))
+    # elif request.META['REQUEST_METHOD'] == "DELETE":
+    #     pap.del_rule(
+    #         extension_uuid=uuid,
+    #         user_uuid=request.session['user_id'],
+    #         sub_cat_value=filter_input(sub_cat_value),
+    #         obj_cat_value=filter_input(obj_cat_value))
+    return send_json({"inter_extensions": list(
+        pap.get_installed_inter_extensions(extension_uuid=uuid, user_uuid=request.session['user_id'])
+    )})
