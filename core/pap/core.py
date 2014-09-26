@@ -198,36 +198,45 @@ class PAP:
     # Specific functions for Inter Extensions
     #########################################
 
-    def get_installed_inter_extensions(self, user_uuid, uuid=None):
-        if self.inter_extensions.admin(user_uuid, "inter_extension", "read") == "OK":
-            for inter_ext in self.inter_extensions.get_installed_inter_extensions().values():
-                if uuid and uuid == inter_ext.get_uuid():
-                    yield inter_ext
-                elif not uuid:
-                    yield inter_ext
+    def get_installed_inter_extensions(self, extension_uuid, user_uuid):
+        if extension_uuid in self.inter_extensions.get_installed_inter_extensions():
+            if self.inter_extensions[extension_uuid].admin(user_uuid, "inter_extension", "read") == "OK":
+                for inter_ext in self.inter_extensions.get_installed_inter_extensions().values():
+                    if extension_uuid and extension_uuid == inter_ext.get_uuid():
+                        yield inter_ext
+                    elif not extension_uuid:
+                        yield inter_ext
 
     def create_collaboration(
             self,
             user_uuid,
             requesting_intra_extension_uuid,
             requested_intra_extension_uuid,
-            type,
+            genre,
             sub_list,
             obj_list,
             act):
-        if self.inter_extensions.admin(user_uuid, "inter_extension", "write") == "OK":
+        if self.inter_extensions.admin(
+                requesting_intra_extension_uuid=requesting_intra_extension_uuid,
+                requested_intra_extension_uuid=requested_intra_extension_uuid,
+                sub=user_uuid,
+                obj="inter_extension",
+                act="write") == "OK":
             return self.inter_extensions.create_collaboration(
-                requesting_intra_extension_uuid,
-                requested_intra_extension_uuid,
-                type,
-                sub_list,
-                obj_list,
-                act
+                requesting_intra_extension_uuid=requesting_intra_extension_uuid,
+                requested_intra_extension_uuid=requested_intra_extension_uuid,
+                genre=genre,
+                sub_list=sub_list,
+                obj_list=obj_list,
+                act=act
             )
+        return None, None
 
     def destroy_collaboration(self, user_uuid, inter_extension_uuid, vent_uuid):
         if self.inter_extensions.admin(user_uuid, "inter_extension", "write") == "OK":
-            self.inter_extensions.destroy_collaboration(inter_extension_uuid, vent_uuid)
+            self.inter_extensions.destroy_collaboration(
+                inter_extension_uuid=inter_extension_uuid,
+                vent_uuid=vent_uuid)
 
     ###########################################
     # Misc functions for Intra/Inter-Extensions
