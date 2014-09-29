@@ -539,7 +539,7 @@ class TestPIPInterface(unittest.TestCase):
             self.assertIn("users", users)
             self.assertIs(len(users["users"]) > 0, True)
             for user in users["users"]:
-                roles = get_url("/pip/roles/{}/{}/".format(tenant["uuid"], user["uuid"]))
+                roles = get_url("/pip/projects/{}/roles/{}/".format(tenant["uuid"], user["uuid"]))
                 self.assertIsInstance(roles, dict)
                 self.assertIn("roles", roles)
                 self.assertIs(len(roles["roles"]) > 0, True)
@@ -557,7 +557,7 @@ class TestPIPInterface(unittest.TestCase):
             self.assertIn("users", users)
             self.assertIs(len(users["users"]) > 0, True)
             for user in users["users"]:
-                groups = get_url("/pip/groups/{}/{}/".format(tenant["uuid"], user["uuid"]))
+                groups = get_url("/pip/projects/{}/groups/{}/".format(tenant["uuid"], user["uuid"]))
                 self.assertIsInstance(groups, dict)
                 self.assertIn("groups", groups)
                 self.assertIs(len(groups["groups"]) > 0, True)
@@ -575,7 +575,7 @@ class TestPIPInterface(unittest.TestCase):
             self.assertIn("users", users)
             self.assertIs(len(users["users"]) > 0, True)
             for user in users["users"]:
-                assignments = get_url("/pip/assignments/roles/{}/{}/".format(tenant["uuid"], user["uuid"]))
+                assignments = get_url("/pip/projects/{}/assignments/roles/{}/".format(tenant["uuid"], user["uuid"]))
                 self.assertIsInstance(assignments, dict)
                 self.assertIn("role_assignments", assignments)
                 self.assertIs(len(assignments["role_assignments"]) > 0, True)
@@ -593,7 +593,7 @@ class TestPIPInterface(unittest.TestCase):
             self.assertIn("users", users)
             self.assertIs(len(users["users"]) > 0, True)
             for user in users["users"]:
-                assignments = get_url("/pip/assignments/groups/{}/{}/".format(tenant["uuid"], user["uuid"]))
+                assignments = get_url("/pip/projects/{}/assignments/groups/{}/".format(tenant["uuid"], user["uuid"]))
                 self.assertIsInstance(assignments, dict)
                 self.assertIn("group_assignments", assignments)
                 self.assertIs(len(assignments["group_assignments"]) > 0, True)
