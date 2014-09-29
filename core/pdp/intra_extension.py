@@ -1,7 +1,7 @@
 import os.path
 from uuid import uuid4
 from moon.core.pdp.extension import Extension
-from moon.core.pdp.sync_db import IntraExtensionSyncer
+from moon.tools.sync_db import IntraExtensionSyncer
 
 
 class IntraExtension:

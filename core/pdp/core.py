@@ -6,11 +6,9 @@ import logging
 import os
 from moon.core.pdp.inter_extension import InterExtension
 logger = logging.getLogger(__name__)
-
-
 import pkg_resources
 from moon.core.pdp.intra_extension import IntraExtension
-from moon.core.pdp.sync_db import IntraExtensionsSyncer
+from moon.tools.sync_db import IntraExtensionsSyncer
 
 
 class IntraExtensions:
