@@ -25,7 +25,7 @@ URL that return JSON data
 |-----------|-------------------------------------------------------------------|---------------------------------------------------|---------------------------------------------------|
 |GET        |/json/intra-extensions/                                            |                                                   |get all Intra-Extension uuids                      |
 |GET        |/json/intra-extension/{uuid}                                       |                                                   |get one intra-extension                            |
-|POST       |/json/intra-extension/                                             | tenant_uuid, ???                                  |add an intra-extension                             |
+|POST       |/json/intra-extension/                                             | tenant_uuid, policy model                         |add an intra-extension                             |
 |DELETE     |/json/intra-extension/{uuid}                                       |                                                   |delete an intra-extension                          |
 |GET        |/json/intra-extension/{uuid}/subjects                              |                                                   |get all subjects for an intra-extension            |
 |GET        |/json/intra-extension/{uuid}/objects                               |                                                   |get all objects for an intra-extension             |
@@ -69,4 +69,6 @@ URL that return JSON data
 |GET        |/pip/groups/{tenant_uuid}/{user_uuid}                              |                                                   |get all groups                                     |
 |GET        |/pip/assignments/roles/{tenant_uuid}/{user_uuid}                   |                                                   |get all role assignments for user                  |
 |GET        |/pip/assignments/groups/{tenant_uuid}/{user_uuid}                  |                                                   |get all group assignments for user                 |
+|-----------|-------------------------------------------------------------------|---------------------------------------------------|---------------------------------------------------|
+|GET        |/logs                                                              |                                                   |get logs                                           |
 
