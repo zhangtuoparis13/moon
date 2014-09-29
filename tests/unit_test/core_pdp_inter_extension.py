@@ -41,7 +41,7 @@ class TestCorePDPInterExtension(unittest.TestCase):
                                                             _request["action"]),
                                  _request["result"])
             self.assertEqual(self.inter_extension.destroy_collaboration(_genre, _vent_uuid),
-                             "[Destroy Requesting Collaboration] OK")
+                             "[InterExtension] Destroy Collaboration: OK")
 
         for _genre in ["coordinate"]:
             _sub_list = self._results[_genre]["subject_list"]
@@ -56,7 +56,7 @@ class TestCorePDPInterExtension(unittest.TestCase):
                                                             _request["action"]),
                                  _request["result"])
             self.assertEqual(self.inter_extension.destroy_collaboration(_genre, _vent_uuid),
-                             "[Destroy Requesting Collaboration] OK")
+                             "[InterExtension] Destroy Collaboration: OK")
 
 if __name__ == "__main__":
     unittest.main()

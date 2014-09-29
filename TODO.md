@@ -5,6 +5,8 @@ Global things to do
 -------------------
 - [x] Add a testing framework
 - [x] Add a logging system
+- [ ] Add a synd_db system
+- [ ] Add a GUI interface
 
 
 Specific modifications for moon
@@ -19,9 +21,8 @@ Legend:
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
 | extension           | WuKong      |                   | 16/09         | 100%               |
 | intra_extension     | WuKong      |                   | 16/09         | 100%               |
-| inter_extension     | WuKong      |                   | 18/09         | 90%                |
-| core                | WuKong      |                   | 16/09         | 80%                |
-| sync_db             | WuKong      |                   | 16/09         | 80%                |
+| inter_extension     | WuKong      |                   | 18/09         | 100%               |
+| core                | WuKong      |                   | 16/09         | 100%               |
 
 
 ###Core/PAP
@@ -39,7 +40,7 @@ Legend:
 ###Testing framework
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
-| Core/PDP            | WuKong      | unit test         | 19/09         | 90%                |
+| Core/PDP            | WuKong      | unit test         | 19/09         | 100%               |
 | Core/PAP            | Tom         | unit test         | 19/09         | 90%                |
 | GUI + PAP + PDP     | Tom         | integration test  | 26/09         | 20%                |
 
@@ -54,10 +55,24 @@ Legend:
 | Realize Scenario    | Tom, WuKong |                   | 03/10         |  0%                |
 
 
+###GUI
+| Title               | Actor       | Description       | Deadline      | Percentage of work |
+| ------------------- | ----------- | ----------------- | ------------- | ------------------ |
+| API                 | Tom, WuKong |                   | 03/10         | 0%                 |
+| core                | ???         |                   | 03/10         | 0%                 |
+
+
 ###Logging
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
 | log                 | Tom, WuKong |                   | 10/10         | 70%                |
+
+
+###Sync_db
+| Title               | Actor       | Description       | Deadline      | Percentage of work |
+| ------------------- | ----------- | ----------------- | ------------- | ------------------ |
+| sync_db             | Tom, WuKong |                   | 10/10         | 80%                |
+| test                | Tom, WuKong |                   | 10/10         | 70%                |
 
 
 ###Integrate Policy engine with Prolog
