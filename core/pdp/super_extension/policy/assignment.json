@@ -1,0 +1,16 @@
+{
+    "subject_category_assignments": {
+        "role":{
+            "user1": ["inter_tenant_admin"],
+            "user2": ["inter_tenant_user"]
+        }
+    },
+    "object_category_assignments": {
+        "action": {
+            "collaboration": []
+        },
+        "object_id": {
+            "collaboration": ["collaboration"]
+        }
+    }
+}

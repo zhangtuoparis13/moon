@@ -5,8 +5,9 @@ Global things to do
 -------------------
 - [x] Add a testing framework
 - [x] Add a logging system
-- [ ] Add a synd_db system
 - [ ] Add a GUI interface
+- [ ] Add a sync_db system
+
 
 
 Specific modifications for moon
@@ -23,12 +24,13 @@ Legend:
 | intra_extension     | WuKong      |                   | 16/09         | 100%               |
 | inter_extension     | WuKong      |                   | 18/09         | 100%               |
 | core                | WuKong      |                   | 16/09         | 100%               |
+| super_extension     | WuKong      |                   | 30/09         | 10%                |
 
 
 ###Core/PAP
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
-| core                | Tom         |                   | 16/09         | 80%                |
+| core                | Tom         |                   | 16/09         | 90%                |
 
 
 ###Core/PIP
@@ -40,28 +42,28 @@ Legend:
 ###Testing framework
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
-| Core/PDP            | WuKong      | unit test         | 19/09         | 100%               |
+| Core/PDP            | WuKong      | unit test         | 30/09         | 90%                |
 | Core/PAP            | Tom         | unit test         | 19/09         | 90%                |
-| GUI + PAP + PDP     | Tom         | integration test  | 26/09         | 20%                |
+| GUI + PAP + PDP     | Tom         | integration test  | 26/09         | 80%                |
 
 
-# ****************************************************************************
 ###Implementation and Evaluation on Moon
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
-| Implement infra     | Tom, WuKong |                   | 03/10         |  0%                |
-| Tenant-extension map| Tom, WuKong |                   | 03/10         |  0%                |
-| Define Scenario     | Tom, WuKong |                   | 03/10         |  0%                |
-| Realize Scenario    | Tom, WuKong |                   | 03/10         |  0%                |
+| Tenant-extension map| Tom, WuKong |                   | 30/09         |  50%               |
+| Define Scenario     | Tom, WuKong |                   | 30/09         |  50%               |
+| Implement infra     | Tom, WuKong |                   | 10/10         |  0%                |
+| Realize Scenario    | Tom, WuKong |                   | 17/10         |  0%                |
 
 
 ###GUI
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
-| API                 | Tom, WuKong |                   | 03/10         | 0%                 |
-| core                | ???         |                   | 03/10         | 0%                 |
+| API                 | Tom, WuKong |                   | 03/10         | 90%                |
+| core                | Arnaud      |                   | 30/10         | 0%                 |
 
 
+# ****************************************************************************
 ###Logging
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
@@ -81,12 +83,6 @@ Legend:
 | Design Policy Engine| WuKong      | Understand Prolog | 17/10         | 0%                 | 
 | Implenet Engine     | WuKong      | in Moon           | 17/10         | 0%                 |
 | Mutiple Sub-rule    | WuKong      | in Moon           | 17/10         | 0%                 |
-
-
-###GUI
-| Title               | Actor       | Description       | Deadline      | Percentage of work |
-| ------------------- | ----------- | ----------------- | ------------- | ------------------ |
-| interface           | Tom         |                   |               | 50%                |
 
 
 ###Package

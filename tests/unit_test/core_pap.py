@@ -389,6 +389,7 @@ class TestCorePAPInterExtensions(unittest.TestCase):
             obj_list=_obj_list,
             act=_act
         )
+        print("xxxxxxxxxxxxxxxxxxxx", _inter_extension_uuid, _vent_uuid)
 
         self.assertIsInstance(_inter_extension_uuid, str)
         self.assertIsInstance(_vent_uuid, str)

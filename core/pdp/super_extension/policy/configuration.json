@@ -1,0 +1,27 @@
+{
+    "subject_category_values": {
+        "role": ["inter_tenant_admin", "inter_tenant_user"]
+    },
+
+    "object_category_values": {
+        "action": [
+            "create",
+            "destroy",
+            "list",
+            "manage"
+        ],
+        "object_id": [
+            "collaboration"
+        ]
+    },
+
+    "rules":{
+        "permission": [
+            ["inter_tenant_admin", "collaboration", "list"],
+            ["inter_tenant_admin", "collaboration", "create"],
+            ["inter_tenant_admin", "collaboration", "destroy"],
+            ["inter_tenant_admin", "collaboration", "manage"],
+            ["inter_tenant_user", "collaboration", "list"]
+        ]
+    }
+}
