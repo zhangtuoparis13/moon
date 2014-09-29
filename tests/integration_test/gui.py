@@ -523,10 +523,83 @@ class TestPIPInterface(unittest.TestCase):
             self.assertIsInstance(data, dict)
             self.assertIn("objects", data)
             print(data)
-            for object in data["objects"]:
-                self.assertIsInstance(object, dict)
+            for server in data["objects"]:
+                self.assertIsInstance(server, dict)
                 for key in [u'domain', u'name', u'enabled', u'project', u'uuid']:
-                    self.assertIn(key, object)
+                    self.assertIn(key, server)
+
+    def test_roles(self):
+        data = get_url("/pip/projects/")
+        self.assertIsInstance(data, dict)
+        self.assertIn("projects", data)
+        self.assertIs(len(data["projects"]) > 0, True)
+        for tenant in data["projects"]:
+            users = get_url("/pip/projects/{}/users/".format(tenant["uuid"]))
+            self.assertIsInstance(users, dict)
+            self.assertIn("users", users)
+            self.assertIs(len(users["users"]) > 0, True)
+            for user in users["users"]:
+                roles = get_url("/pip/roles/{}/{}/".format(tenant["uuid"], user["uuid"]))
+                self.assertIsInstance(roles, dict)
+                self.assertIn("roles", roles)
+                self.assertIs(len(roles["roles"]) > 0, True)
+                for key in [u'value', u'description', u'enabled', u'category', u'uuid']:
+                    self.assertIn(key, roles)
+
+    def test_groups(self):
+        data = get_url("/pip/projects/")
+        self.assertIsInstance(data, dict)
+        self.assertIn("projects", data)
+        self.assertIs(len(data["projects"]) > 0, True)
+        for tenant in data["projects"]:
+            users = get_url("/pip/projects/{}/users/".format(tenant["uuid"]))
+            self.assertIsInstance(users, dict)
+            self.assertIn("users", users)
+            self.assertIs(len(users["users"]) > 0, True)
+            for user in users["users"]:
+                groups = get_url("/pip/groups/{}/{}/".format(tenant["uuid"], user["uuid"]))
+                self.assertIsInstance(groups, dict)
+                self.assertIn("groups", groups)
+                self.assertIs(len(groups["groups"]) > 0, True)
+                for key in [u'value', u'description', u'enabled', u'category', u'uuid']:
+                    self.assertIn(key, groups)
+
+    def test_role_assignments(self):
+        data = get_url("/pip/projects/")
+        self.assertIsInstance(data, dict)
+        self.assertIn("projects", data)
+        self.assertIs(len(data["projects"]) > 0, True)
+        for tenant in data["projects"]:
+            users = get_url("/pip/projects/{}/users/".format(tenant["uuid"]))
+            self.assertIsInstance(users, dict)
+            self.assertIn("users", users)
+            self.assertIs(len(users["users"]) > 0, True)
+            for user in users["users"]:
+                assignments = get_url("/pip/assignments/roles/{}/{}/".format(tenant["uuid"], user["uuid"]))
+                self.assertIsInstance(assignments, dict)
+                self.assertIn("role_assignments", assignments)
+                self.assertIs(len(assignments["role_assignments"]) > 0, True)
+                for key in [u'subject', u'attributes', u'enabled', u'category', u'description', u'uuid']:
+                    self.assertIn(key, assignments)
+
+    def test_group_assignments(self):
+        data = get_url("/pip/projects/")
+        self.assertIsInstance(data, dict)
+        self.assertIn("projects", data)
+        self.assertIs(len(data["projects"]) > 0, True)
+        for tenant in data["projects"]:
+            users = get_url("/pip/projects/{}/users/".format(tenant["uuid"]))
+            self.assertIsInstance(users, dict)
+            self.assertIn("users", users)
+            self.assertIs(len(users["users"]) > 0, True)
+            for user in users["users"]:
+                assignments = get_url("/pip/assignments/groups/{}/{}/".format(tenant["uuid"], user["uuid"]))
+                self.assertIsInstance(assignments, dict)
+                self.assertIn("group_assignments", assignments)
+                self.assertIs(len(assignments["group_assignments"]) > 0, True)
+                for key in [u'object', u'attributes', u'enabled', u'category', u'description', u'uuid']:
+                    self.assertIn(key, assignments)
+
 
 if __name__ == '__main__':
     unittest.main()
