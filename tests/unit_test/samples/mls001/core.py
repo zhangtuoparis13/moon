@@ -1,4 +1,44 @@
 results = {
+    "list_mappings": [
+        {
+            "tenant_uuid": "admin",
+            "intra_extension_uuids": ["super_extension"]
+        }
+    ],
+    "create_mapping": [
+        {
+            "tenant_uuid": "tenant1",
+            "intra_extension_uuid": "intra_extension1",
+            "_result": "[SuperExtension] Create Mapping for No Existing Mapping: OK"
+        },
+        {
+            "tenant_uuid": "tenant1",
+            "intra_extension_uuid": "intra_extension2",
+            "_result": "[SuperExtension] Create Mapping for Existing Tenant: OK"
+        },
+        {
+            "tenant_uuid": "tenant1",
+            "intra_extension_uuid": "intra_extension1",
+            "_result": "[SuperExtension Error] Create Mapping for Existing Mapping"
+        }
+    ],
+    "destroy_mapping": [
+        {
+            "tenant_uuid": "tenant1",
+            "intra_extension_uuid": "intra_extension1",
+            "_result": "[SuperExtension] Destroy Mapping: OK"
+        },
+        {
+            "tenant_uuid": "tenant1",
+            "intra_extension_uuid": "intra_extension2",
+            "_result": "[SuperExtension] Destroy Mapping: OK"
+        },
+        {
+            "tenant_uuid": "tenant1",
+            "intra_extension_uuid": "intra_extension1",
+            "_result": "[SuperExtension Error] Destroy Unknown Mapping"
+        }
+    ],
     "intra_extensions": {
         "authz": [
             {

@@ -5,10 +5,9 @@ unit test for moon/core/pdp
 import unittest
 import os.path
 import pkg_resources
-from moon.core.pdp.intra_extension import IntraExtension
-from moon.core.pdp.inter_extension import VirtualEntity, InterExtension
-from moon.core.pdp.core import IntraExtensions, InterExtensions
+from moon.core.pdp.core import IntraExtensions, InterExtensions, TenantIntraExtensionMapping
 from moon.tests.unit_test.samples.mls001.core import results
+
 
 class TestCorePDPCore(unittest.TestCase):
 
@@ -20,6 +19,7 @@ class TestCorePDPCore(unittest.TestCase):
         self._intra_extension1_uuid = self.intra_extensions.install_intra_extension_from_json(intra_extension_setting_abs_dir)
         self._intra_extension2_uuid = self.intra_extensions.install_intra_extension_from_json(intra_extension_setting_abs_dir)
         self._inter_extensions = InterExtensions(self.intra_extensions.get_installed_intra_extensions())
+        self.__tenant_intra_extesnion_mapping = TenantIntraExtensionMapping()
         self._results = results
 
     def tearDown(self):
@@ -94,6 +94,26 @@ class TestCorePDPCore(unittest.TestCase):
             self.assertEqual(self._inter_extensions.destroy_collaboration(_genre, _inter_extension_uuid, _vent_uuid),
                              "[InterExtensions] Destroy Collaboration: OK")
             print("[InterExtensions] Destroy Collaboration ---------------- OK ")
+
+    def test_create_destroy_mapping(self):
+        self.assertEqual(self.__tenant_intra_extesnion_mapping.list_mappings(), self._results["list_mappings"])
+        print("[TenantIntraExtensionMapping] list_mappings ---------------- OK")
+
+        for i in range(len(results["create_mapping"])):
+            _tenant_uuid = results["create_mapping"][i]['tenant_uuid']
+            _intra_extension_uuid = results["create_mapping"][i]['intra_extension_uuid']
+            _result = results["create_mapping"][i]['_result']
+            self.assertEqual(self.__tenant_intra_extesnion_mapping.create_mapping(_tenant_uuid, _intra_extension_uuid), _result)
+            print("[TenantIntraExtensionMapping] Create Mapping  ---------------- OK")
+
+        for i in range(len(results["destroy_mapping"])):
+            _tenant_uuid = results["destroy_mapping"][i]['tenant_uuid']
+            _intra_extension_uuid = results["destroy_mapping"][i]['intra_extension_uuid']
+            _result = results["destroy_mapping"][i]['_result']
+            self.assertEqual(self.__tenant_intra_extesnion_mapping.destroy_mapping(_tenant_uuid, _intra_extension_uuid), _result)
+            print("[TenantIntraExtensionMapping] Destroy Mapping  ---------------- OK")
+
+
 
 """
     def test_intra_extensions_install_intra_extension_from_json(self):
