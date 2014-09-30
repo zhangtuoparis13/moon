@@ -61,14 +61,14 @@ URL that return JSON data
 |DELETE     |/json/inter-extension/{uuid}                                       |                                                   |delete an inter-extension                          |
 |GET        |/json/inter-extension/{uuid}/vents                                 |                                                   |get all virtual entities for an inter-extension    |
 |-----------|-------------------------------------------------------------------|---------------------------------------------------|---------------------------------------------------|
-|GET        |/pip/tenants/                                                      |                                                   |get all tenants                                    |
-|GET        |/pip/tenant/{tenant_uuid}                                          |                                                   |get one tenant                                     |
-|GET        |/pip/subjects/{tenant_uuid}                                        |                                                   |get all subjects                                   |
-|GET        |/pip/objects/{tenant_uuid}                                         |                                                   |get all objects (ie. all virtual machines)         |
-|GET        |/pip/roles/{tenant_uuid}/{user_uuid}                               |                                                   |get all roles                                      |
-|GET        |/pip/groups/{tenant_uuid}/{user_uuid}                              |                                                   |get all groups                                     |
-|GET        |/pip/assignments/roles/{tenant_uuid}/{user_uuid}                   |                                                   |get all role assignments for user                  |
-|GET        |/pip/assignments/groups/{tenant_uuid}/{user_uuid}                  |                                                   |get all group assignments for user                 |
+|GET        |/pip/projects/                                                     |                                                   |get all tenants                                    |
+|GET        |/pip/projects/{project_uuid}                                       |                                                   |get one tenant                                     |
+|GET        |/pip/projects/{project_uuid}/subjects/{tenant_uuid}                |                                                   |get all subjects                                   |
+|GET        |/pip/projects/{project_uuid}/objects/{tenant_uuid}                 |                                                   |get all objects (ie. all virtual machines)         |
+|GET        |/pip/projects/{project_uuid}/roles/{user_uuid}                     |                                                   |get all roles                                      |
+|GET        |/pip/projects/{project_uuid}/groups/{user_uuid}                    |                                                   |get all groups                                     |
+|GET        |/pip/projects/{project_uuid}/assignments/roles/{user_uuid}         |                                                   |get all role assignments for user                  |
+|GET        |/pip/projects/{project_uuid}/assignments/groups/{user_uuid}        |                                                   |get all group assignments for user                 |
 |-----------|-------------------------------------------------------------------|---------------------------------------------------|---------------------------------------------------|
 |GET        |/logs                                                              |                                                   |get logs                                           |
 
