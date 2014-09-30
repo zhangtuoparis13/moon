@@ -6,7 +6,7 @@ import unittest
 import pkg_resources
 from moon.core.pdp.core import IntraExtension
 from moon.core.pap import get_pap
-
+from moon.tests.unit_test.samples.super_extension import results, requests
 
 class TestCorePAPIntraExtensions(unittest.TestCase):
 
@@ -362,71 +362,106 @@ class TestCorePAPIntraExtensions(unittest.TestCase):
         self.assertNotIn([u'low', u'medium', u'read'], rules['relation_super'])
 
 
-class TestCorePAPInterExtensions(unittest.TestCase):
+class TestSuperExtension(unittest.TestCase):
 
     def setUp(self):
-        extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'samples/mls001')
         self.pap = get_pap()
-        self.requesting_intra_extension_uuid = self.pap.add_from_json(extension_setting_abs_dir)
-        self.requested_intra_extension_uuid = self.pap.add_from_json(extension_setting_abs_dir)
-
-        # self.inter_extension = InterExtension(self.requesting_intra_extension, self.requested_intra_extension)
 
     def tearDown(self):
         pass
 
-    def test_create_destroy_collaboration(self):
-        _sub_list = ['user1', 'user2']
-        _obj_list = ['vm2', 'vm3']
-        _act = "read"
+    def test_mapping(self):
+        mappings = self.pap.list_mappings("admin")
+        self.assertIsInstance(mappings, list)
+        for mapping in mappings:
+            self.assertIsInstance(mapping, dict)
+            for key in ('intra_extension_uuids', 'tenant_uuid'):
+                self.assertIn(key, mapping)
 
-        _inter_extension_uuid, _vent_uuid = self.pap.create_collaboration(
-            user_uuid="user1",
-            requesting_intra_extension_uuid=self.requesting_intra_extension_uuid,
-            requested_intra_extension_uuid=self.requested_intra_extension_uuid,
-            genre="trust",
-            sub_list=_sub_list,
-            obj_list=_obj_list,
-            act=_act
-        )
-        print("xxxxxxxxxxxxxxxxxxxx", _inter_extension_uuid, _vent_uuid)
+    def test_create_mapping(self):
+        for i in range(len(results["create_mapping"])):
+            _tenant_uuid = results["create_mapping"][i]['tenant_uuid']
+            _intra_extension_uuid = results["create_mapping"][i]['intra_extension_uuid']
+            _result = results["create_mapping"][i]['_result']
+            self.assertEqual(self.pap.create_mapping("admin", _tenant_uuid, _intra_extension_uuid), _result)
+        for i in range(len(results["destroy_mapping"])):
+            _tenant_uuid = results["destroy_mapping"][i]['tenant_uuid']
+            _intra_extension_uuid = results["destroy_mapping"][i]['intra_extension_uuid']
+            _result = results["destroy_mapping"][i]['_result']
+            self.assertEqual(self.pap.destroy_mapping("admin", _tenant_uuid, _intra_extension_uuid), _result)
 
-        self.assertIsInstance(_inter_extension_uuid, str)
-        self.assertIsInstance(_vent_uuid, str)
-        inter_extension = self.pap.get_installed_inter_extensions('user1', _inter_extension_uuid).next()
-        self.assertEqual(inter_extension.get_uuid(), _inter_extension_uuid)
+    def test_delegate_mapping(self):
+        for i in range(len(results["delegate_privilege"])):
+            _delegator_id = results["delegate_privilege"][i]['delegator_id']
+            _privilege = results["delegate_privilege"][i]['privilege']
+            _result = results["delegate_privilege"][i]['_result']
+            self.assertEqual(self.pap.delegate_privilege("admin", _delegator_id, _privilege), _result)
 
-        vent_data_dict = inter_extension.get_vent_data_dict(_vent_uuid)
-        self.assertIsInstance(vent_data_dict, dict)
-        for key in (
-                'uuid',
-                'type',
-                'requested_subject_category_value_dict',
-                'requested_object_list',
-                'requesting_rule_alist',
-                'requesting_object_category_value_dict',
-                'requesting_subject_category_value_dict',
-                'requesting_subject_list',
-                'requested_object_category_value_dict'):
-            self.assertIn(key, vent_data_dict.keys())
-
-        self.assertEqual(inter_extension.authz('user1', 'vm2', 'read'), "OK")
-        self.assertEqual(inter_extension.authz('user3', 'vm2', 'read'), "KO")
-
-        vents = inter_extension.get_vents()
-        self.assertIsInstance(vents, dict)
-        from moon.core.pdp.inter_extension import VirtualEntity
-        for vent in vents.values():
-            self.assertIsInstance(vent, VirtualEntity)
-        self.assertIn(_vent_uuid, vents)
-
-        self.pap.destroy_collaboration('user1', _inter_extension_uuid, _vent_uuid)
-
-        vents = inter_extension.get_vents()
-        self.assertIsInstance(vents, dict)
-        for vent in vents.values():
-            self.assertIsInstance(vent, VirtualEntity)
-        self.assertNotIn(_vent_uuid, vents)
+# class TestCorePAPInterExtensions(unittest.TestCase):
+#
+#     def setUp(self):
+#         extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'samples/mls001')
+#         self.pap = get_pap()
+#         self.requesting_intra_extension_uuid = self.pap.add_from_json(extension_setting_abs_dir)
+#         self.requested_intra_extension_uuid = self.pap.add_from_json(extension_setting_abs_dir)
+#
+#         # self.inter_extension = InterExtension(self.requesting_intra_extension, self.requested_intra_extension)
+#
+#     def tearDown(self):
+#         pass
+#
+#     def test_create_destroy_collaboration(self):
+#         _sub_list = ['user1', 'user2']
+#         _obj_list = ['vm2', 'vm3']
+#         _act = "read"
+#
+#         _inter_extension_uuid, _vent_uuid = self.pap.create_collaboration(
+#             user_uuid="user1",
+#             requesting_intra_extension_uuid=self.requesting_intra_extension_uuid,
+#             requested_intra_extension_uuid=self.requested_intra_extension_uuid,
+#             genre="trust",
+#             sub_list=_sub_list,
+#             obj_list=_obj_list,
+#             act=_act
+#         )
+#         print("xxxxxxxxxxxxxxxxxxxx", _inter_extension_uuid, _vent_uuid)
+#
+#         self.assertIsInstance(_inter_extension_uuid, str)
+#         self.assertIsInstance(_vent_uuid, str)
+#         inter_extension = self.pap.get_installed_inter_extensions('user1', _inter_extension_uuid).next()
+#         self.assertEqual(inter_extension.get_uuid(), _inter_extension_uuid)
+#
+#         vent_data_dict = inter_extension.get_vent_data_dict(_vent_uuid)
+#         self.assertIsInstance(vent_data_dict, dict)
+#         for key in (
+#                 'uuid',
+#                 'type',
+#                 'requested_subject_category_value_dict',
+#                 'requested_object_list',
+#                 'requesting_rule_alist',
+#                 'requesting_object_category_value_dict',
+#                 'requesting_subject_category_value_dict',
+#                 'requesting_subject_list',
+#                 'requested_object_category_value_dict'):
+#             self.assertIn(key, vent_data_dict.keys())
+#
+#         self.assertEqual(inter_extension.authz('user1', 'vm2', 'read'), "OK")
+#         self.assertEqual(inter_extension.authz('user3', 'vm2', 'read'), "KO")
+#
+#         vents = inter_extension.get_vents()
+#         self.assertIsInstance(vents, dict)
+#         from moon.core.pdp.inter_extension import VirtualEntity
+#         for vent in vents.values():
+#             self.assertIsInstance(vent, VirtualEntity)
+#         self.assertIn(_vent_uuid, vents)
+#
+#         self.pap.destroy_collaboration('user1', _inter_extension_uuid, _vent_uuid)
+#
+#         vents = inter_extension.get_vents()
+#         self.assertIsInstance(vents, dict)
+#         for vent in vents.values():
+#             self.assertIsInstance(vent, VirtualEntity)
+#         self.assertNotIn(_vent_uuid, vents)
 
 if __name__ == "__main__":
     unittest.main()
