@@ -3,7 +3,10 @@
         "role": [
             "super_user",
             "super_admin",
-            "super_root"
+            "super_root",
+            "inter_extension_user",
+            "inter_extension_admin",
+            "inter_extension_root"
         ]
     },
 
@@ -15,16 +18,21 @@
             "delegate"
         ],
         "object_id": [
+            "mapping",
             "collaboration"
         ]
     },
 
     "rules":{
         "permission": [
-            ["super_user", "collaboration", "list"],
-            ["super_admin", "collaboration", "create"],
-            ["super_admin", "collaboration", "destroy"],
-            ["super_root", "collaboration", "delegate"]
+            ["super_user", "mapping", "list"],
+            ["super_admin", "mapping", "create"],
+            ["super_admin", "mapping", "destroy"],
+            ["super_root", "mapping", "delegate"],
+            ["inter_extension_user", "collaboration", "list"],
+            ["inter_extension_admin", "collaboration", "create"],
+            ["inter_extension_admin", "collaboration", "destroy"],
+            ["inter_extension_root", "collaboration", "delegate"]
         ]
     }
 }

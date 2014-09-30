@@ -6,6 +6,7 @@ from moon import settings
 from moon.core.pdp import get_intra_extensions
 from moon.core.pdp import get_inter_extensions
 from moon.core.pdp import get_super_extension
+from moon.core.pdp import get_tenant_intra_extension_mapping
 from moon.core.pip import get_pip
 from moon.tools.log import get_sys_logger
 
@@ -20,6 +21,7 @@ class PAP:
         self.inter_extensions = get_inter_extensions()
         # self.tenants = get_inter_extensions().tenants
         self.super_extension = get_super_extension()
+        self.tenant_intra_extension_mapping = get_tenant_intra_extension_mapping()
 
     ###########################################
     # Misc functions for Super-Extensions
@@ -36,20 +38,21 @@ class PAP:
             return self.intra_extensions[uuid]
 
     def list_mappings(self, user_id):
-        if self.super_extension.admin(user_id, "collaboration", "list") == "OK":
-            return self.super_extension.list_mappings()
+        if self.super_extension.admin(user_id, "mapping", "list") == "OK":
+            return self.tenant_intra_extension_mapping.list_mappings()
 
     def create_mapping(self, user_id, tenant_uuid, intra_extension_uuid):
-        if self.super_extension.admin(user_id, "collaboration", "create") == "OK":
-            return self.super_extension.create_mapping(tenant_uuid, intra_extension_uuid)
+        if self.super_extension.admin(user_id, "mapping", "create") == "OK":
+            return self.tenant_intra_extension_mapping.create_mapping(tenant_uuid, intra_extension_uuid)
 
     def destroy_mapping(self, user_id, tenant_uuid, intra_extension_uuid):
-        if self.super_extension.admin(user_id, "collaboration", "destroy") == "OK":
-            return self.super_extension.destroy_mapping(tenant_uuid, intra_extension_uuid)
+        if self.super_extension.admin(user_id, "mapping", "destroy") == "OK":
+            return self.tenant_intra_extension_mapping.destroy_mapping(tenant_uuid, intra_extension_uuid)
 
-    def delegate_privilege(self, user_id, delegator_id, privilege):
-        if self.super_extension.admin(user_id, "collaboration", "delegate") == "OK":
-            return self.super_extension.delegate(delegator_id, privilege)
+    def delegate_privilege(self, user_id, delegator_id, genre, privilege):
+        if self.super_extension.admin(user_id, genre, "delegate") == "OK":
+            return self.super_extension.delegate(delegator_id, genre, privilege)
+
 
     ##########################################
     # Specific functions for Keystone and Nova
@@ -242,12 +245,13 @@ class PAP:
             sub_list,
             obj_list,
             act):
-        if self.inter_extensions.admin(
-                requesting_intra_extension_uuid=requesting_intra_extension_uuid,
-                requested_intra_extension_uuid=requested_intra_extension_uuid,
-                sub=user_uuid,
-                obj="inter_extension",
-                act="write") == "OK":
+        if self.super_extension.admin(user_uuid, "collaboration", "create") == "OK":
+        # if self.inter_extensions.admin(
+        #         requesting_intra_extension_uuid=requesting_intra_extension_uuid,
+        #         requested_intra_extension_uuid=requested_intra_extension_uuid,
+        #         sub=user_uuid,
+        #         obj="inter_extension",
+        #         act="write") == "OK":
             return self.inter_extensions.create_collaboration(
                 requesting_intra_extension_uuid=requesting_intra_extension_uuid,
                 requested_intra_extension_uuid=requested_intra_extension_uuid,
@@ -259,7 +263,8 @@ class PAP:
         return None, None
 
     def destroy_collaboration(self, user_uuid, inter_extension_uuid, vent_uuid):
-        if self.inter_extensions.admin(user_uuid, "inter_extension", "write") == "OK":
+        if self.super_extension.admin(user_uuid, "collaboration", "destroy") == "OK":
+        # if self.inter_extensions.admin(user_uuid, "inter_extension", "write") == "OK":
             self.inter_extensions.destroy_collaboration(
                 inter_extension_uuid=inter_extension_uuid,
                 vent_uuid=vent_uuid)

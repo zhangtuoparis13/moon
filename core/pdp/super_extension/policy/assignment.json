@@ -4,7 +4,10 @@
             "admin": [
                 "super_user",
                 "super_admin",
-                "super_root"
+                "super_root",
+                "inter_extension_user",
+                "inter_extension_admin",
+                "inter_extension_root"
             ]
         }
     },
@@ -13,6 +16,7 @@
             "collaboration": []
         },
         "object_id": {
+            "mapping": ["mapping"],
             "collaboration": ["collaboration"]
         }
     }
