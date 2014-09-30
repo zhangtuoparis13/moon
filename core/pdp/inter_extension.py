@@ -1,5 +1,5 @@
 from uuid import uuid4
-from moon.core.pdp.sync_db import InterExtensionSyncer
+from moon.tools.sync_db import InterExtensionSyncer
 
 
 class VirtualEntity:

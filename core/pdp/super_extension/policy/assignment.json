@@ -1,0 +1,19 @@
+{
+    "subject_category_assignments": {
+        "role":{
+            "admin": [
+                "super_user",
+                "super_admin",
+                "super_root"
+            ]
+        }
+    },
+    "object_category_assignments": {
+        "action": {
+            "collaboration": []
+        },
+        "object_id": {
+            "collaboration": ["collaboration"]
+        }
+    }
+}
