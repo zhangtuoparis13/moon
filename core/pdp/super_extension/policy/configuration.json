@@ -1,14 +1,18 @@
 {
     "subject_category_values": {
-        "role": ["inter_tenant_admin", "inter_tenant_user"]
+        "role": [
+            "super_user",
+            "super_admin",
+            "super_root"
+        ]
     },
 
     "object_category_values": {
         "action": [
+            "list",
             "create",
             "destroy",
-            "list",
-            "manage"
+            "delegate"
         ],
         "object_id": [
             "collaboration"
@@ -17,11 +21,10 @@
 
     "rules":{
         "permission": [
-            ["inter_tenant_admin", "collaboration", "list"],
-            ["inter_tenant_admin", "collaboration", "create"],
-            ["inter_tenant_admin", "collaboration", "destroy"],
-            ["inter_tenant_admin", "collaboration", "manage"],
-            ["inter_tenant_user", "collaboration", "list"]
+            ["super_user", "collaboration", "list"],
+            ["super_admin", "collaboration", "create"],
+            ["super_admin", "collaboration", "destroy"],
+            ["super_root", "collaboration", "delegate"]
         ]
     }
 }

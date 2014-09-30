@@ -5,6 +5,7 @@ import json
 from moon import settings
 from moon.core.pdp import get_intra_extensions
 from moon.core.pdp import get_inter_extensions
+from moon.core.pdp import get_super_extension
 from moon.core.pip import get_pip
 from moon.tools.log import get_sys_logger
 
@@ -18,12 +19,37 @@ class PAP:
         self.intra_extensions = get_intra_extensions()
         self.inter_extensions = get_inter_extensions()
         # self.tenants = get_inter_extensions().tenants
+        self.super_extension = get_super_extension()
+
+    ###########################################
+    # Misc functions for Super-Extensions
+    ###########################################
+
+    def get_tenants(self):
+        pip = get_pip()
+        return pip.get_tenants()
 
     def get_intra_extensions(self, uuid=None):
         if not uuid:
             return self.intra_extensions.values()
         elif uuid and uuid in self.intra_extensions.keys():
             return self.intra_extensions[uuid]
+
+    def list_mappings(self, user_id):
+        if self.super_extension.admin(user_id, "collaboration", "list") == "OK":
+            return self.super_extension.list_mappings()
+
+    def create_mapping(self, user_id, tenant_uuid, intra_extension_uuid):
+        if self.super_extension.admin(user_id, "collaboration", "create") == "OK":
+            return self.super_extension.create_mapping(tenant_uuid, intra_extension_uuid)
+
+    def destroy_mapping(self, user_id, tenant_uuid, intra_extension_uuid):
+        if self.super_extension.admin(user_id, "collaboration", "destroy") == "OK":
+            return self.super_extension.destroy_mapping(tenant_uuid, intra_extension_uuid)
+
+    def delegate_privilege(self, user_id, delegator_id, privilege):
+        if self.super_extension.admin(user_id, "collaboration", "delegate") == "OK":
+            return self.super_extension.delegate(delegator_id, privilege)
 
     ##########################################
     # Specific functions for Keystone and Nova
@@ -297,7 +323,6 @@ class PAP:
     def delete_tables(self):
         self.intra_extensions.delete_tables()
         self.inter_extensions.delete_tables()
-
 
 pap = PAP()
 

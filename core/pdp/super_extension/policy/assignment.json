@@ -1,8 +1,11 @@
 {
     "subject_category_assignments": {
         "role":{
-            "user1": ["inter_tenant_admin"],
-            "user2": ["inter_tenant_user"]
+            "admin": [
+                "super_user",
+                "super_admin",
+                "super_root"
+            ]
         }
     },
     "object_category_assignments": {
