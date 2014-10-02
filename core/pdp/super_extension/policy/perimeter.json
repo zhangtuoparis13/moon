@@ -3,6 +3,7 @@
         "admin"
     ],
     "objects": [
+        "mapping",
         "collaboration"
     ]
 }

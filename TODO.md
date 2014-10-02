@@ -24,7 +24,7 @@ Legend:
 | intra_extension     | WuKong      |                   | 16/09         | 100%               |
 | inter_extension     | WuKong      |                   | 18/09         | 100%               |
 | core                | WuKong      |                   | 16/09         | 100%               |
-| super_extension     | WuKong      |                   | 30/09         | 10%                |
+| super_extension     | WuKong      |                   | 30/09         | 100%               |
 
 
 ###Core/PAP
@@ -42,7 +42,7 @@ Legend:
 ###Testing framework
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
-| Core/PDP            | WuKong      | unit test         | 30/09         | 90%                |
+| Core/PDP            | WuKong      | unit test         | 30/09         | 100%               |
 | Core/PAP            | Tom         | unit test         | 19/09         | 90%                |
 | GUI + PAP + PDP     | Tom         | integration test  | 26/09         | 80%                |
 
@@ -50,7 +50,7 @@ Legend:
 ###Implementation and Evaluation on Moon
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
-| Tenant-extension map| Tom, WuKong |                   | 30/09         |  50%               |
+| Tenant-extension map| Tom, WuKong |                   | 30/09         |  90%               |
 | Define Scenario     | Tom, WuKong |                   | 30/09         |  50%               |
 | Implement infra     | Tom, WuKong |                   | 10/10         |  0%                |
 | Realize Scenario    | Tom, WuKong |                   | 17/10         |  0%                |

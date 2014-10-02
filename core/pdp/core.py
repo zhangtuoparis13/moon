@@ -11,6 +11,44 @@ from moon.core.pdp.intra_extension import IntraExtension
 from moon.tools.sync_db import IntraExtensionsSyncer
 
 
+class TenantIntraExtensionMapping:
+    def __init__(self):
+        self.tenant_intra_extension_mapping = [
+            {
+                "tenant_uuid": "admin",
+                "intra_extension_uuids": ["super_extension"]
+            }
+        ]
+
+    def list_mappings(self):
+        return self.tenant_intra_extension_mapping
+
+    def create_mapping(self, tenant_uuid, intra_extension_uuid):
+        for _mapping in self.tenant_intra_extension_mapping:
+            if tenant_uuid == _mapping["tenant_uuid"]:
+                if intra_extension_uuid in _mapping["intra_extension_uuids"]:
+                    return "[SuperExtension Error] Create Mapping for Existing Mapping"
+                else:
+                    _mapping["intra_extension_uuids"].append(intra_extension_uuid)
+                    return "[SuperExtension] Create Mapping for Existing Tenant: OK"
+
+        _mapping = dict()
+        _mapping["tenant_uuid"] = tenant_uuid
+        _mapping["intra_extension_uuids"] = [intra_extension_uuid]
+        self.tenant_intra_extension_mapping.append(_mapping)
+        return "[SuperExtension] Create Mapping for No Existing Mapping: OK"
+
+    def destroy_mapping(self, tenant_uuid, intra_extension_uuid):
+        for _mapping in self.tenant_intra_extension_mapping:
+            if tenant_uuid == _mapping["tenant_uuid"] and intra_extension_uuid in _mapping["intra_extension_uuids"]:
+                if len(_mapping["intra_extension_uuids"]) >= 2:
+                    _mapping["intra_extension_uuids"].remove(intra_extension_uuid)
+                else:
+                    self.tenant_intra_extension_mapping.remove(_mapping)
+                return "[SuperExtension] Destroy Mapping: OK"
+        return "[SuperExtension Error] Destroy Unknown Mapping"
+
+
 class IntraExtensions:
     def __init__(self):
         self.__installed_intra_extensions = dict()
@@ -127,6 +165,7 @@ class InterExtensions:
 
 intra_extensions = IntraExtensions()
 inter_extensions = InterExtensions(intra_extensions)
+tenant_intra_extension_mapping = TenantIntraExtensionMapping()
 
 
 def get_intra_extensions():
@@ -135,6 +174,10 @@ def get_intra_extensions():
 
 def get_inter_extensions():
     return inter_extensions
+
+
+def get_tenant_intra_extension_mapping():
+    return tenant_intra_extension_mapping
 
 
 def authz(requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act):
