@@ -424,11 +424,13 @@ def rule(request, uuid=None, sub_cat_value=None, obj_cat_value=None):
                 sub_cat_value=filter_input(data["sub_cat_value"]),
                 obj_cat_value=filter_input(data["obj_cat_value"]))
     elif request.META['REQUEST_METHOD'] == "DELETE":
-        pap.del_rule(
-            extension_uuid=uuid,
-            user_uuid=request.session['user_id'],
-            sub_cat_value=filter_input(sub_cat_value),
-            obj_cat_value=filter_input(obj_cat_value))
+        data = json.loads(request.read())
+        if "sub_cat_value" in data and "obj_cat_value" in data:
+            pap.del_rule(
+                extension_uuid=uuid,
+                user_uuid=request.session['user_id'],
+                sub_cat_value=filter_input(data["sub_cat_value"]),
+                obj_cat_value=filter_input(data["obj_cat_value"]))
     return send_json(
         {"rules": pap.get_rules(extension_uuid=uuid, user_uuid=request.session['user_id'])}
     )
