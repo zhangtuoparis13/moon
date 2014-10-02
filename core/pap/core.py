@@ -24,7 +24,7 @@ class PAP:
         self.tenant_intra_extension_mapping = get_tenant_intra_extension_mapping()
 
     ###########################################
-    # Misc functions for Super-Extensions
+    # Misc functions for Super-Extension
     ###########################################
 
     def get_tenants(self):
