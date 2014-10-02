@@ -58,5 +58,5 @@ def role_assignments(request, project_uuid=None, user_uuid=None):
 def group_assignments(request, project_uuid=None, user_uuid=None):
     pip = get_pip()
     return HttpResponse(json.dumps(
-        {"group_assignments": list(pip.get_users_groups_assignment(tenant_uuid=project_uuid, user_uuid=user_uuid))}
+        {"group_assignments": list(pip.get_users_groups_assignment(project_uuid=project_uuid, user_uuid=user_uuid))}
     ))
