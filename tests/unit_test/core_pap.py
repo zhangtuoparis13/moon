@@ -6,7 +6,8 @@ import unittest
 import pkg_resources
 from moon.core.pdp.core import IntraExtension
 from moon.core.pap import get_pap
-from moon.tests.unit_test.samples.super_extension import results, requests
+from moon.tests.unit_test.samples.super_extension import results as super_extension_results
+from moon.tests.unit_test.samples.mls001.core import results as mls001_results
 
 class TestCorePAPIntraExtensions(unittest.TestCase):
 
@@ -379,23 +380,30 @@ class TestSuperExtension(unittest.TestCase):
                 self.assertIn(key, mapping)
 
     def test_create_mapping(self):
-        for i in range(len(results["create_mapping"])):
-            _tenant_uuid = results["create_mapping"][i]['tenant_uuid']
-            _intra_extension_uuid = results["create_mapping"][i]['intra_extension_uuid']
-            _result = results["create_mapping"][i]['_result']
+        for i in range(len(mls001_results["create_mapping"])):
+            _tenant_uuid = mls001_results["create_mapping"][i]['tenant_uuid']
+            _intra_extension_uuid = mls001_results["create_mapping"][i]['intra_extension_uuid']
+            _result = mls001_results["create_mapping"][i]['_result']
             self.assertEqual(self.pap.create_mapping("admin", _tenant_uuid, _intra_extension_uuid), _result)
-        for i in range(len(results["destroy_mapping"])):
-            _tenant_uuid = results["destroy_mapping"][i]['tenant_uuid']
-            _intra_extension_uuid = results["destroy_mapping"][i]['intra_extension_uuid']
-            _result = results["destroy_mapping"][i]['_result']
+        for i in range(len(mls001_results["destroy_mapping"])):
+            _tenant_uuid = mls001_results["destroy_mapping"][i]['tenant_uuid']
+            _intra_extension_uuid = mls001_results["destroy_mapping"][i]['intra_extension_uuid']
+            _result = mls001_results["destroy_mapping"][i]['_result']
             self.assertEqual(self.pap.destroy_mapping("admin", _tenant_uuid, _intra_extension_uuid), _result)
 
     def test_delegate_mapping(self):
-        for i in range(len(results["delegate_privilege"])):
-            _delegator_id = results["delegate_privilege"][i]['delegator_id']
-            _privilege = results["delegate_privilege"][i]['privilege']
-            _result = results["delegate_privilege"][i]['_result']
-            self.assertEqual(self.pap.delegate_privilege("admin", _delegator_id, _privilege), _result)
+        for i in range(len(super_extension_results["delegate_mapping_privilege"])):
+            _delegator_id = super_extension_results["delegate_mapping_privilege"][i]['delegator_id']
+            _privilege = super_extension_results["delegate_mapping_privilege"][i]['privilege']
+            _result = super_extension_results["delegate_mapping_privilege"][i]['_result']
+            self.assertEqual(self.pap.delegate_privilege("admin", _delegator_id, "mapping", _privilege), _result)
+
+    def test_delegate_collaboration(self):
+        for i in range(len(super_extension_results["delegate_collaboration_privilege"])):
+            _delegator_id = super_extension_results["delegate_collaboration_privilege"][i]['delegator_id']
+            _privilege = super_extension_results["delegate_collaboration_privilege"][i]['privilege']
+            _result = super_extension_results["delegate_collaboration_privilege"][i]['_result']
+            self.assertEqual(self.pap.delegate_privilege("admin", _delegator_id, "collaboration", _privilege), _result)
 
 # class TestCorePAPInterExtensions(unittest.TestCase):
 #
