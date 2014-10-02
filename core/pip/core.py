@@ -29,16 +29,17 @@ class PIP:
             ncreds = get_nova_creds()
             self.nclient = nova_client.Client("1.1", **ncreds)
 
-    def set_creds_for_tenant(self, tenant_name="admin"):
+    def set_creds_for_tenant(self, tenant_name="admin", tenant_uuid=None):
+        tenant = self.get_tenants(name=tenant_name, uuid=tenant_uuid).next()
         from keystoneclient.v3 import client as keystone_client
         kcreds = get_keystone_creds()
         #WORKAROUND: if in version 2.0, Keystone connection doesn't work
         kcreds["auth_url"] = kcreds["auth_url"].replace("2.0", "3")
-        kcreds["tenant_name"] = tenant_name
+        kcreds["tenant_name"] = tenant["name"]
         self.kclient = keystone_client.Client(**kcreds)
         from novaclient import client as nova_client
         ncreds = get_nova_creds()
-        ncreds["project_id"] = tenant_name
+        ncreds["project_id"] = tenant["name"]
         self.nclient = nova_client.Client("1.1", **ncreds)
 
     def unset_creds(self):
@@ -106,6 +107,9 @@ class PIP:
 
     def get_objects(self, tenant=None, object_uuid=None):
         s = dict()
+        #FIXME: need to re-authenticate because the nclient is not correct
+        #FIXME: need to send the token in parameter of all functions in PIP
+        self.set_creds_for_tenant(tenant_uuid=tenant)
         for server in self.nclient.servers.list():
             o = dict()
             o["name"] = server.name
@@ -142,7 +146,7 @@ class PIP:
         except StopIteration:
             pass
         else:
-            for role in self.kclient.roles.list(project_id=tenant["uuid"], user=user_uuid):
+            for role in self.kclient.roles.list(project=tenant["uuid"], user=user_uuid):
                 o = dict()
                 o["value"] = role.name
                 try:
@@ -250,7 +254,7 @@ class PIP:
             self.kclient.roles.grant(role_uuid, user=user_uuid, project=tenant["uuid"])
 
     def del_users_roles_assignment(self, tenant_name="admin", project_uuid=None, user_uuid=None, role_uuid=None):
-        #TODO
+        #TODO: don't work, need additional authorization ?
         try:
             if project_uuid:
                 tenant = self.get_tenants(uuid=project_uuid).next()
@@ -263,9 +267,12 @@ class PIP:
             # role = self.get_roles(project_uuid=tenant["uuid"], user_uuid=user_uuid)
             self.kclient.roles.revoke(role_uuid, user=user_uuid, project=tenant["uuid"])
 
-    def get_users_groups_assignment(self, tenant_name="admin", users=None, user_uuid=None):
+    def get_users_groups_assignment(self, tenant_name="admin", project_uuid=None, users=None, user_uuid=None):
         try:
-            tenant = self.get_tenants(name=tenant_name).next()
+            if project_uuid:
+                tenant = self.get_tenants(uuid=project_uuid).next()
+            else:
+                tenant = self.get_tenants(name=tenant_name).next()
         except StopIteration:
             pass
         else:
