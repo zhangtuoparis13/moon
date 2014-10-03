@@ -159,6 +159,9 @@ class InterExtensions:
         else:
             return "[InterExtensions Error] Destroy Collaboration: No Success"
 
+    def delegate_privileges(self, inter_extension_uuid, delegator_uuid, privilege):
+        return self.__installed_inter_extensions[inter_extension_uuid].delegate(delegator_uuid, privilege)
+
     def get_installed_inter_extensions(self):
         return self.__installed_inter_extensions
 

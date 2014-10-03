@@ -149,6 +149,53 @@ class InterExtension:
         self.__vents[genre].remove(_vent)
         return "[InterExtension] Destroy Collaboration: OK"
 
+    def delegate(self, delegator_uuid, privilege):
+        self.requesting_intra_extension.intra_extension_admin.add_subject(delegator_uuid)
+        self.requested_intra_extension.intra_extension_admin.add_subject(delegator_uuid)
+        if privilege == "list":
+            _requesting_add = self.requesting_intra_extension.intra_extension_admin.add_subject_assignment(
+                "role",
+                delegator_uuid,
+                "inter_extension_user")
+            _requested_add = self.requested_intra_extension.intra_extension_admin.add_subject_assignment(
+                "role",
+                delegator_uuid,
+                "inter_extension_user")
+            if "ERROR" in _requesting_add or "ERROR" in _requested_add:
+                return "[InterExtension ERROR]" + _requesting_add + " " + _requested_add
+            else:
+                return "[InterExtension] Delegate: Add Inter_Extension_User Privilege"
+        elif privilege == "create" or privilege == "destroy":
+            _requesting_add = self.requesting_intra_extension.intra_extension_admin.add_subject_assignment(
+                "role",
+                delegator_uuid,
+                "inter_extension_admin")
+            _requested_add = self.requested_intra_extension.intra_extension_admin.add_subject_assignment(
+                "role",
+                delegator_uuid,
+                "inter_extension_admin")
+            if "ERROR" in _requesting_add or "ERROR" in _requested_add:
+                return "[InterExtension ERROR] " + \
+                       _requesting_add + " " + \
+                       _requested_add
+            else:
+                return "[InterExtension] Delegate: Add Inter_Extension_Admin Privilege"
+        elif privilege == "delegate":
+            _requesting_add = self.requesting_intra_extension.intra_extension_admin.add_subject_assignment(
+                "role",
+                delegator_uuid,
+                "inter_extension_admin")
+            _requested_add = self.requested_intra_extension.intra_extension_admin.add_subject_assignment(
+                "role",
+                delegator_uuid,
+                "inter_extension_admin")
+            if "ERROR" in _requesting_add or "ERROR" in _requested_add:
+                return "[InterExtension ERROR] " + _requesting_add + " " + _requested_add
+            else:
+                return "[InterExtension] Delegate: Add Inter_Extension_Root Privilege"
+        else:
+            return "[InterExtension Error] Collaboration Delegate Unknown Privilege"
+
     def get_uuid(self):
         return self.__uuid
 

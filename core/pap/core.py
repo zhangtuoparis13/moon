@@ -245,7 +245,7 @@ class PAP:
             sub_list,
             obj_list,
             act):
-        if self.super_extension.admin(user_uuid, "collaboration", "create") == "OK":
+        if self.inter_extensions.admin(user_uuid, "collaboration", "create") == "OK":
         # if self.inter_extensions.admin(
         #         requesting_intra_extension_uuid=requesting_intra_extension_uuid,
         #         requested_intra_extension_uuid=requested_intra_extension_uuid,
@@ -263,7 +263,7 @@ class PAP:
         return None, None
 
     def destroy_collaboration(self, user_uuid, inter_extension_uuid, vent_uuid):
-        if self.super_extension.admin(user_uuid, "collaboration", "destroy") == "OK":
+        if self.inter_extensions.admin(user_uuid, "collaboration", "destroy") == "OK":
         # if self.inter_extensions.admin(user_uuid, "inter_extension", "write") == "OK":
             self.inter_extensions.destroy_collaboration(
                 inter_extension_uuid=inter_extension_uuid,
