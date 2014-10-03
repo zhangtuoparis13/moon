@@ -84,5 +84,5 @@ class IntraExtension:
     def backup_intra_extension_to_db(self):
         self.__syncer.backup_intra_extension_to_db(self.get_data())
 
-    def get_intra_extension_from_db(self, uuid):
+    def load_from_db(self, uuid):
         self.set_data(self.__syncer.get_intra_extension_from_db(uuid))

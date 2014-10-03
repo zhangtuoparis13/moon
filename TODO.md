@@ -30,29 +30,37 @@ Legend:
 ###Core/PAP
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
-| core                | Tom         |                   | 16/09         | 90%                |
+| core                | Tom         |                   | 16/09         | 100%               |
 
 
 ###Core/PIP
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
-| core                | Tom, WuKong |                   | 19/09         | 90%                |
+| core                | Tom, WuKong |                   | 19/09         | 100%               |
+
+
+###MRM
+| Title               | Actor       | Description       | Deadline      | Percentage of work |
+| ------------------- | ----------- | ----------------- | ------------- | ------------------ |
+| mrm                 | Tom, WuKong |                   | 08/10         | 50%                |
 
 
 ###Testing framework
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
 | Core/PDP            | WuKong      | unit test         | 30/09         | 100%               |
-| Core/PAP            | Tom         | unit test         | 19/09         | 90%                |
-| GUI + PAP + PDP     | Tom         | integration test  | 26/09         | 80%                |
+| Core/PAP            | Tom         | unit test         | 01/10         | 100%               |
+| Core/PIP            | Tom         | unit test         | 30/09         | 100%               |
+| GUI+PAP+PDP+PIP     | Tom         | integration test  | 03/10         | 80%                |
+| MRM                 | WuKong      | unit test         | 08/10         | 80%                |
 
 
 ###Implementation and Evaluation on Moon
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
-| Tenant-extension map| Tom, WuKong |                   | 30/09         |  90%               |
-| Define Scenario     | Tom, WuKong |                   | 30/09         |  50%               |
-| Implement infra     | Tom, WuKong |                   | 10/10         |  0%                |
+| Tenant-extension map| Tom, WuKong |                   | 30/09         |  100%              |
+| Define Scenario     | Tom, WuKong |                   | 30/09         |  70%               |
+| Implement infra     | Tom, WuKong |                   | 10/10         |  40%               |
 | Realize Scenario    | Tom, WuKong |                   | 17/10         |  0%                |
 
 

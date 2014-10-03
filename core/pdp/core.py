@@ -66,6 +66,9 @@ class IntraExtensions:
                 return 'OK'
         return 'KO'
 
+    def get_installed_intra_extensions(self):
+        return self.__installed_intra_extensions
+
     def install_intra_extension_from_json(self, extension_setting_dir):
         extension_setting_abs_dir = extension_setting_dir
         if not os.path.isdir(extension_setting_dir):
@@ -77,11 +80,11 @@ class IntraExtensions:
 
     def install_intra_extension_from_db(self):  # TODO test
         intra_extension = IntraExtension()
-        intra_extension.get_from_db()
+        intra_extension.load_from_db()
         self.__installed_intra_extensions[intra_extension.get_uuid()] = intra_extension
 
-    def get_installed_intra_extensions(self):
-        return self.__installed_intra_extensions
+    def delete_intra_extension(self, intra_extensin_uuid):
+        del self.__installed_intra_extensions[intra_extensin_uuid]
 
     def get_intra_extensions_from_db(self):  # TODO test
         return self.__syncer.get_intra_extensions_from_db()
@@ -134,15 +137,15 @@ class InterExtensions:
         return "KO"
 
     def create_collaboration(self, requesting_intra_extension_uuid, requested_intra_extension_uuid,
-                             genre, sub_list, obj_list, act):
-        for _installed_inter_extension in self.__installed_inter_extensions.values():
+                             genre, sub_list, obj_list, act):  # TODO test
+        for _installed_inter_extension_uuid, _installed_inter_extension in self.__installed_inter_extensions:
             if _installed_inter_extension.check_requesters(requesting_intra_extension_uuid,
                                                            requested_intra_extension_uuid):
-                _inter_extension_uuid = _installed_inter_extension.create_collaboration(genre, sub_list, obj_list, act)
-                if _inter_extension_uuid is "[InterExtension Error] Create Collaboration: vEnt Exists":
+                _vent_uuid = _installed_inter_extension.create_collaboration(genre, sub_list, obj_list, act)
+                if _vent_uuid is "[InterExtension Error] Create Collaboration: vEnt Exists":
                     return "[InterExtension] Create Collaboration: vEnt Exists"
                 else:
-                    return _inter_extension_uuid, _vent_uuid
+                    return _installed_inter_extension_uuid, _vent_uuid
 
         _new_inter_extension = InterExtension(self.__installed_intra_extensions[requesting_intra_extension_uuid],
                                               self.__installed_intra_extensions[requested_intra_extension_uuid])
