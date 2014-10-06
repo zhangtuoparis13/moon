@@ -57,64 +57,64 @@ results = {
             "_result": "[SuperExtension ERROR] Mapping Delegate: Privilege Exists"
         }
     ],
-    "delegate_collaboration_admin": {
-        "before": {
-            'subject': 'user1',
-            'object': 'collaboration',
-            'action': 'destroy',
-            '_result': 'Out of Scope',
-            '_description': 'user1 no delegated ---------------- Out of Scope'
-        },
-        "after": {
-            'subject': 'user1',
-            'object': 'collaboration',
-            'action': 'destroy',
-            '_result': 'OK',
-            '_description': 'user1 delegated ---------------- OK'
-        }
-    },
-    "delegate_collaboration_privilege": [
-        {
-            "delegator_id": "user1",
-            "privilege": "list",
-            "_result": "[SuperExtension] Delegate: Add Inter_Extension_User Privilege"
-        },
-        {
-            "delegator_id": "user1",
-            "privilege": "list",
-            "_result": "[SuperExtension ERROR] Collaboration Delegate: Privilege Exists"
-        },
-        {
-            "delegator_id": "user1",
-            "privilege": "create",
-            "_result": "[SuperExtension] Delegate: Add Inter_Extension_Admin Privilege"
-        },
-        {
-            "delegator_id": "user1",
-            "privilege": "create",
-            "_result": "[SuperExtension ERROR] Collaboration Delegate: Privilege Exists"
-        },
-        {
-            "delegator_id": "user1",
-            "privilege": "destroy",
-            "_result": "[SuperExtension ERROR] Collaboration Delegate: Privilege Exists"
-        },
-        {
-            "delegator_id": "user1",
-            "privilege": "destroy",
-            "_result": "[SuperExtension ERROR] Collaboration Delegate: Privilege Exists"
-        },
-        {
-            "delegator_id": "user1",
-            "privilege": "delegate",
-            "_result": "[SuperExtension] Delegate: Add Inter_Extension_Root Privilege"
-        },
-        {
-            "delegator_id": "user1",
-            "privilege": "delegate",
-            "_result": "[SuperExtension ERROR] Collaboration Delegate: Privilege Exists"
-        }
-    ]
+    # "delegate_collaboration_admin": {
+    #     "before": {
+    #         'subject': 'user1',
+    #         'object': 'collaboration',
+    #         'action': 'destroy',
+    #         '_result': 'Out of Scope',
+    #         '_description': 'user1 no delegated ---------------- Out of Scope'
+    #     },
+    #     "after": {
+    #         'subject': 'user1',
+    #         'object': 'collaboration',
+    #         'action': 'destroy',
+    #         '_result': 'OK',
+    #         '_description': 'user1 delegated ---------------- OK'
+    #     }
+    # },
+    # "delegate_collaboration_privilege": [
+    #     {
+    #         "delegator_id": "user1",
+    #         "privilege": "list",
+    #         "_result": "[InterExtension] Delegate: Add Inter_Extension_User Privilege"
+    #     },
+    #     {
+    #         "delegator_id": "user1",
+    #         "privilege": "list",
+    #         "_result": "[InterExtension ERROR] Collaboration Delegate: Privilege Exists"
+    #     },
+    #     {
+    #         "delegator_id": "user1",
+    #         "privilege": "create",
+    #         "_result": "[InterExtension] Delegate: Add Inter_Extension_Admin Privilege"
+    #     },
+    #     {
+    #         "delegator_id": "user1",
+    #         "privilege": "create",
+    #         "_result": "[InterExtension ERROR] Collaboration Delegate: Privilege Exists"
+    #     },
+    #     {
+    #         "delegator_id": "user1",
+    #         "privilege": "destroy",
+    #         "_result": "[InterExtension ERROR] Collaboration Delegate: Privilege Exists"
+    #     },
+    #     {
+    #         "delegator_id": "user1",
+    #         "privilege": "destroy",
+    #         "_result": "[InterExtension ERROR] Collaboration Delegate: Privilege Exists"
+    #     },
+    #     {
+    #         "delegator_id": "user1",
+    #         "privilege": "delegate",
+    #         "_result": "[InterExtension] Delegate: Add Inter_Extension_Root Privilege"
+    #     },
+    #     {
+    #         "delegator_id": "user1",
+    #         "privilege": "delegate",
+    #         "_result": "[InterExtension ERROR] Collaboration Delegate: Privilege Exists"
+    #     }
+    # ]
 }
 
 requests = [

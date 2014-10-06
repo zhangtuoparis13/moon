@@ -27,52 +27,52 @@ class SuperExtension:
     def admin(self, sub, obj, act):
         return self.__super_extension.authz(sub, obj, act)
 
-    def delegate(self, delegator_uuid, genre, privilege):
+    def delegate(self, delegator_uuid, privilege):
         self.__super_extension.add_subject(delegator_uuid)
-        if genre == "mapping":
-            if privilege == "list":
-                if self.__super_extension.add_subject_assignment("role", delegator_uuid, "super_user") \
-                        == "[ERROR] Add Subject Assignment: Subject Assignment Exists":
-                    return "[SuperExtension ERROR] Mapping Delegate: Privilege Exists"
-                else:
-                    return "[SuperExtension] Delegate: Add Super_User Privilege"
-            elif privilege == "create" or privilege == "destroy":
-                if self.__super_extension.add_subject_assignment("role", delegator_uuid, "super_admin") \
-                        == "[ERROR] Add Subject Assignment: Subject Assignment Exists":
-                    return "[SuperExtension ERROR] Mapping Delegate: Privilege Exists"
-                else:
-                    return "[SuperExtension] Delegate: Add Super_Admin Privilege"
-            elif privilege == "delegate":
-                if self.__super_extension.add_subject_assignment("role", delegator_uuid, "super_root") \
-                        == "[ERROR] Add Subject Assignment: Subject Assignment Exists":
-                    return "[SuperExtension ERROR] Mapping Delegate: Privilege Exists"
-                else:
-                    return "[SuperExtension] Delegate: Add Super_Root Privilege"
+        # if genre == "mapping":
+        if privilege == "list":
+            if self.__super_extension.add_subject_assignment("role", delegator_uuid, "super_user") \
+                    == "[ERROR] Add Subject Assignment: Subject Assignment Exists":
+                return "[SuperExtension ERROR] Mapping Delegate: Privilege Exists"
             else:
-                return "[SuperExtension Error] Mapping Delegate Unknown Privilege"
-        elif genre == "collaboration":
-            if privilege == "list":
-                if self.__super_extension.add_subject_assignment("role", delegator_uuid, "inter_extension_user") \
-                        == "[ERROR] Add Subject Assignment: Subject Assignment Exists":
-                    return "[SuperExtension ERROR] Collaboration Delegate: Privilege Exists"
-                else:
-                    return "[SuperExtension] Delegate: Add Inter_Extension_User Privilege"
-            elif privilege == "create" or privilege == "destroy":
-                if self.__super_extension.add_subject_assignment("role", delegator_uuid, "inter_extension_admin") \
-                        == "[ERROR] Add Subject Assignment: Subject Assignment Exists":
-                    return "[SuperExtension ERROR] Collaboration Delegate: Privilege Exists"
-                else:
-                    return "[SuperExtension] Delegate: Add Inter_Extension_Admin Privilege"
-            elif privilege == "delegate":
-                if self.__super_extension.add_subject_assignment("role", delegator_uuid, "inter_extension_root") \
-                        == "[ERROR] Add Subject Assignment: Subject Assignment Exists":
-                    return "[SuperExtension ERROR] Collaboration Delegate: Privilege Exists"
-                else:
-                    return "[SuperExtension] Delegate: Add Inter_Extension_Root Privilege"
+                return "[SuperExtension] Delegate: Add Super_User Privilege"
+        elif privilege == "create" or privilege == "destroy":
+            if self.__super_extension.add_subject_assignment("role", delegator_uuid, "super_admin") \
+                    == "[ERROR] Add Subject Assignment: Subject Assignment Exists":
+                return "[SuperExtension ERROR] Mapping Delegate: Privilege Exists"
             else:
-                return "[SuperExtension Error] Collaboration Delegate Unknown Privilege"
+                return "[SuperExtension] Delegate: Add Super_Admin Privilege"
+        elif privilege == "delegate":
+            if self.__super_extension.add_subject_assignment("role", delegator_uuid, "super_root") \
+                    == "[ERROR] Add Subject Assignment: Subject Assignment Exists":
+                return "[SuperExtension ERROR] Mapping Delegate: Privilege Exists"
+            else:
+                return "[SuperExtension] Delegate: Add Super_Root Privilege"
         else:
-            return "[SuperExtension Error] Collaboration Delegate Unknown Genre"
+            return "[SuperExtension Error] Mapping Delegate Unknown Privilege"
+        # elif genre == "collaboration":
+        #     if privilege == "list":
+        #         if self.__super_extension.add_subject_assignment("role", delegator_uuid, "inter_extension_user") \
+        #                 == "[ERROR] Add Subject Assignment: Subject Assignment Exists":
+        #             return "[SuperExtension ERROR] Collaboration Delegate: Privilege Exists"
+        #         else:
+        #             return "[SuperExtension] Delegate: Add Inter_Extension_User Privilege"
+        #     elif privilege == "create" or privilege == "destroy":
+        #         if self.__super_extension.add_subject_assignment("role", delegator_uuid, "inter_extension_admin") \
+        #                 == "[ERROR] Add Subject Assignment: Subject Assignment Exists":
+        #             return "[SuperExtension ERROR] Collaboration Delegate: Privilege Exists"
+        #         else:
+        #             return "[SuperExtension] Delegate: Add Inter_Extension_Admin Privilege"
+        #     elif privilege == "delegate":
+        #         if self.__super_extension.add_subject_assignment("role", delegator_uuid, "inter_extension_root") \
+        #                 == "[ERROR] Add Subject Assignment: Subject Assignment Exists":
+        #             return "[SuperExtension ERROR] Collaboration Delegate: Privilege Exists"
+        #         else:
+        #             return "[SuperExtension] Delegate: Add Inter_Extension_Root Privilege"
+        #     else:
+        #         return "[SuperExtension Error] Collaboration Delegate Unknown Privilege"
+        # else:
+        #     return "[SuperExtension Error] Collaboration Delegate Unknown Genre"
 
 super_extension = SuperExtension()
 

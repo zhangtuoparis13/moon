@@ -168,8 +168,22 @@ class TestCorePIP(unittest.TestCase):
         self.assertNotIn("TestCorePIP", group_names)
 
     def test_roles_assignment(self):
+        #Get the admin user
         admin = filter(lambda x: x["name"] == "admin", self.pip.get_subjects(tenant="admin"))[0]
         admin_uuid = admin["uuid"]
+        #Add a new role for the test
+        role_uuid = self.pip.add_role(name="TestCorePIP")
+        roles = self.pip.get_roles()
+        self.assertIsInstance(roles, types.GeneratorType)
+        roles = list(roles)
+        role_names = list()
+        for role in roles:
+            for key in ("value", "uuid", "description", "enabled"):
+                self.assertIn(key, role.keys())
+            role_names.append(role["value"])
+        self.assertIn("TestCorePIP", role_names)
+        role = filter(lambda x: x["value"], roles)[0]
+        #Do the tests on assignments
         assignments = self.pip.get_users_roles_assignment()
         user_uuids = list()
         for assign in assignments:
@@ -179,6 +193,41 @@ class TestCorePIP(unittest.TestCase):
             if assign["subject"] == admin_uuid:
                 self.assertGreater(len(assign["attributes"]), 0)
         self.assertIn(admin_uuid, user_uuids)
+        #Add a new assignment
+        self.pip.add_users_roles_assignment(tenant_name="admin", user_uuid=admin_uuid, role_uuid=role["uuid"])
+        assignments = self.pip.get_users_roles_assignment()
+        user_uuids = dict()
+        for assign in assignments:
+            for key in ("subject", "uuid", "description", "attributes"):
+                self.assertIn(key, assign.keys())
+            user_uuids[assign["subject"]] = assign["attributes"]
+            if assign["subject"] == admin_uuid:
+                self.assertGreater(len(assign["attributes"]), 0)
+        self.assertIn(admin_uuid, user_uuids.keys())
+        self.assertIn(role["uuid"], user_uuids[admin_uuid])
+        # self.pip.set_creds_for_tenant()
+        #Delete the added assignment
+        # self.pip.del_users_roles_assignment(tenant_name="admin", user_uuid=admin_uuid, role_uuid=role["uuid"])
+        # assignments = self.pip.get_users_roles_assignment()
+        # user_uuids = dict()
+        # for assign in assignments:
+        #     for key in ("subject", "uuid", "description", "attributes"):
+        #         self.assertIn(key, assign.keys())
+        #     user_uuids[assign["subject"]] = assign["attributes"]
+        #     if assign["subject"] == admin_uuid:
+        #         self.assertGreater(len(assign["attributes"]), 0)
+        # self.assertIn(admin_uuid, user_uuids.keys())
+        # self.assertNotIn(role_uuid, user_uuids[admin_uuid])
+        # #Delete the added role
+        # self.pip.del_role(uuid=role_uuid)
+        # roles = self.pip.get_roles()
+        # self.assertIsInstance(roles, types.GeneratorType)
+        # role_names = list()
+        # for role in roles:
+        #     for key in ("value", "uuid", "description", "enabled"):
+        #         self.assertIn(key, role.keys())
+        #     role_names.append(role["value"])
+        # self.assertNotIn("TestCorePIP", role_names)
 
     def test_groups_assignment(self):
         admin = filter(lambda x: x["name"] == "admin", self.pip.get_subjects(tenant="admin"))[0]

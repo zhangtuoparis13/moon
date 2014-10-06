@@ -14,5 +14,7 @@ urlpatterns = patterns(
     url(r'projects/(?P<project_uuid>[\w-]{32,36})/users/(?P<user_uuid>[\w-]{32,36})/groups/?$', 'groups'),
     url(r'projects/(?P<project_uuid>[\w-]{32,36})/assignments/roles/?$', 'role_assignments'),
     url(r'projects/(?P<project_uuid>[\w-]{32,36})/assignments/groups/?$', 'group_assignments'),
+    url(r'projects/(?P<project_uuid>[\w-]{32,36})/assignments/roles/(?P<user_uuid>[\w-]{32,36})/?$', 'role_assignments'),
+    url(r'projects/(?P<project_uuid>[\w-]{32,36})/assignments/groups/(?P<user_uuid>[\w-]{32,36})/?$', 'group_assignments'),
 )
 

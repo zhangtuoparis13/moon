@@ -50,7 +50,7 @@ class TestCorePDPExtension(unittest.TestCase):
             _delegator_id = results["delegate_mapping_privilege"][i]['delegator_id']
             _privilege = results["delegate_mapping_privilege"][i]['privilege']
             _result = results["delegate_mapping_privilege"][i]['_result']
-            self.assertEqual(self.super_extension.delegate(_delegator_id, "mapping", _privilege), _result)
+            self.assertEqual(self.super_extension.delegate(_delegator_id, _privilege), _result)
             print("[SuperExtension] Delegate Mapping Privilege ---------------- OK")
 
         _sub = results["delegate_mapping_admin"]["after"]['subject']
@@ -61,29 +61,29 @@ class TestCorePDPExtension(unittest.TestCase):
         self.assertEqual(self.super_extension.admin(_sub, _obj, _act), _result)
         print("[SuperExtension] Mapping Delegate Privilege after: ", _description)
 
-    def test_delegate_collaboration(self):
-        _sub = results["delegate_collaboration_admin"]["before"]['subject']
-        _obj = results["delegate_collaboration_admin"]["before"]['object']
-        _act = results["delegate_collaboration_admin"]["before"]['action']
-        _result = results["delegate_collaboration_admin"]["before"]['_result']
-        _description = results["delegate_collaboration_admin"]["before"]['_description']
-        self.assertEqual(self.super_extension.admin(_sub, _obj, _act), _result)
-        print("[SuperExtension] Delegate Collaboration Privilege Before: ", _description)
-
-        for i in range(len(results["delegate_collaboration_privilege"])):
-            _delegator_id = results["delegate_collaboration_privilege"][i]['delegator_id']
-            _privilege = results["delegate_collaboration_privilege"][i]['privilege']
-            _result = results["delegate_collaboration_privilege"][i]['_result']
-            self.assertEqual(self.super_extension.delegate(_delegator_id, "collaboration", _privilege), _result)
-            print("[SuperExtension] Delegate Collaboration Privilege ---------------- OK")
-
-        _sub = results["delegate_collaboration_admin"]["after"]['subject']
-        _obj = results["delegate_collaboration_admin"]["after"]['object']
-        _act = results["delegate_collaboration_admin"]["after"]['action']
-        _result = results["delegate_collaboration_admin"]["after"]['_result']
-        _description = results["delegate_collaboration_admin"]["after"]['_description']
-        self.assertEqual(self.super_extension.admin(_sub, _obj, _act), _result)
-        print("[SuperExtension] Delegate Collaboration Privilege after: ", _description)
+    # def test_delegate_collaboration(self):
+    #     _sub = results["delegate_collaboration_admin"]["before"]['subject']
+    #     _obj = results["delegate_collaboration_admin"]["before"]['object']
+    #     _act = results["delegate_collaboration_admin"]["before"]['action']
+    #     _result = results["delegate_collaboration_admin"]["before"]['_result']
+    #     _description = results["delegate_collaboration_admin"]["before"]['_description']
+    #     self.assertEqual(self.super_extension.admin(_sub, _obj, _act), _result)
+    #     print("[InterExtension] Delegate Collaboration Privilege Before: ", _description)
+    #
+    #     for i in range(len(results["delegate_collaboration_privilege"])):
+    #         _delegator_id = results["delegate_collaboration_privilege"][i]['delegator_id']
+    #         _privilege = results["delegate_collaboration_privilege"][i]['privilege']
+    #         _result = results["delegate_collaboration_privilege"][i]['_result']
+    #         self.assertEqual(self.super_extension.delegate(_delegator_id, _privilege), _result)
+    #         print("[InterExtension] Delegate Collaboration Privilege ---------------- OK")
+    #
+    #     _sub = results["delegate_collaboration_admin"]["after"]['subject']
+    #     _obj = results["delegate_collaboration_admin"]["after"]['object']
+    #     _act = results["delegate_collaboration_admin"]["after"]['action']
+    #     _result = results["delegate_collaboration_admin"]["after"]['_result']
+    #     _description = results["delegate_collaboration_admin"]["after"]['_description']
+    #     self.assertEqual(self.super_extension.admin(_sub, _obj, _act), _result)
+    #     print("[InterExtension] Delegate Collaboration Privilege after: ", _description)
 
 if __name__ == "__main__":
     unittest.main()
