@@ -72,6 +72,43 @@ class TestCorePIP(unittest.TestCase):
             for key in ("name", "uuid", "description", "tenant", "enabled"):
                 self.assertIn(key, obj.keys())
             self.assertEqual("admin", obj["tenant"])
+        from uuid import uuid4
+        vm_name = "PIPTest-" + str(uuid4())
+        self.pip.add_object(name=vm_name)
+        max_cpt = 0
+        vm_names = list()
+        while max_cpt < 12:
+            objects = self.pip.get_objects("admin")
+            self.assertIsInstance(objects, types.GeneratorType)
+            vm_names = list()
+            for obj in objects:
+                for key in ("name", "uuid", "description", "tenant", "enabled"):
+                    self.assertIn(key, obj.keys())
+                self.assertEqual("admin", obj["tenant"])
+                vm_names.append(obj["name"])
+            if vm_name in vm_names:
+                break
+            max_cpt += 1
+        else:
+            self.assertIn(vm_name, vm_names)
+        self.pip.del_object(name=vm_name)
+        objects = self.pip.get_objects("admin")
+        self.assertIsInstance(objects, types.GeneratorType)
+        max_cpt = 0
+        vm_names = list()
+        while max_cpt < 12:
+            objects = self.pip.get_objects("admin")
+            self.assertIsInstance(objects, types.GeneratorType)
+            vm_names = list()
+            for obj in objects:
+                for key in ("name", "uuid", "description", "tenant", "enabled"):
+                    self.assertIn(key, obj.keys())
+                self.assertEqual("admin", obj["tenant"])
+                vm_names.append(obj["name"])
+            if vm_name not in vm_names:
+                break
+            max_cpt += 1
+        self.assertNotIn(vm_name, vm_names)
 
     def test_tenants(self):
         tenants = self.pip.get_tenants()
