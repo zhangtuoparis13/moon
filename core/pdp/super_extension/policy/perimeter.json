@@ -3,7 +3,8 @@
         "admin"
     ],
     "objects": [
+        "intra_extension",
         "mapping",
-        "collaboration"
+        "inter_extension"
     ]
 }

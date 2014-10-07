@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 import pkg_resources
 from moon.core.pdp.intra_extension import IntraExtension
 from moon.tools.sync_db import IntraExtensionsSyncer
+from moon.core.pip import get_pip
 
 
 class TenantIntraExtensionMapping:
@@ -19,6 +20,12 @@ class TenantIntraExtensionMapping:
                 "intra_extension_uuids": ["super_extension"]
             }
         ]
+        self.__tenants = dict()
+
+    def get_tenants(self):
+        # TODO check by super_extension
+        self.__tenants = get_pip().get_tenants()
+        return self.__tenants
 
     def list_mappings(self):
         return self.tenant_intra_extension_mapping
