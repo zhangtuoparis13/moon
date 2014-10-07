@@ -107,9 +107,7 @@ class PIP:
 
     def get_objects(self, tenant=None, object_uuid=None):
         s = dict()
-        #FIXME: need to re-authenticate because the nclient is not correct
-        #FIXME: need to send the token in parameter of all functions in PIP
-        self.set_creds_for_tenant(tenant_uuid=tenant)
+        #TODO: need to send the token in parameter of all functions in PIP
         for server in self.nclient.servers.list():
             o = dict()
             o["name"] = server.name
@@ -129,13 +127,25 @@ class PIP:
             elif not object_uuid:
                 yield o
 
-    def add_object(self):
-        #Do we really need this function ?
-        raise NotImplemented
+    def add_object(self, name, image_name="Cirros3.2", flavor_name="m1.tiny"):
+        import time
+        image = self.nclient.images.find(name=image_name)
+        flavor = self.nclient.flavors.find(name=flavor_name)
+        instance = self.nclient.servers.create(name=name, image=image, flavor=flavor)
+        status = instance.status
+        max_cpt = 0
+        while status == "BUILD":
+            time.sleep(5)
+            instance = self.nclient.servers.get(instance.id)
+            status = instance.status
+            max_cpt += 1
+            if max_cpt > 12:
+                return
+        return instance
 
-    def del_object(self):
-        #Do we really need this function ?
-        raise NotImplemented
+    def del_object(self, name):
+        instance = self.nclient.servers.find(name=name)
+        instance.delete()
 
     def get_roles(self, tenant_name="admin", project_uuid=None, user_uuid=None):
         try:
