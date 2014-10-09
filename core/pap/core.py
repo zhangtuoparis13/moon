@@ -78,6 +78,23 @@ class PAP:
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_subjects()
 
     def add_subject(self, extension_uuid, user_uuid, subject):
+        """Add a new subject (ie user)
+
+        :param extension_uuid: intra_extension UUID
+        :param user_uuid: user who request the action
+        :param subject: subject to be added
+        :return: subject UUID
+
+        the subject must a dictionary:
+        {
+            "name": "username",
+            'domain': "Default",
+            'enabled': True,
+            'project': "admin",
+            'password': "password",
+            'description': "user description"
+        }
+        """
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "write") == "OK":
                 subject_id = get_pip().add_subject(subject)
