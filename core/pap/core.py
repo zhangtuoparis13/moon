@@ -96,18 +96,46 @@ class PAP:
         #TODO: sync with PIP
         if extension_uuid in self.intra_extensions.values():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "read") == "OK":
+                servers = get_pip().get_objects(tenant=self.intra_extensions[extension_uuid].get_tenant_uuid())
+                for server in servers:
+                    if server["uuid"] not in self.intra_extensions[extension_uuid].intra_extension_authz.get_objects():
+                        #Can abort because the user (user_uuid) may not have the rights to do that
+                        if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "write") == "OK":
+                            self.intra_extensions[extension_uuid].intra_extension_authz.add_object(server["uuid"])
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_objects()
 
-    def add_object(self, extension_uuid, user_uuid, object_id):
+    def add_object(self, extension_uuid, user_uuid, object):
+        """Add a new virtual machine
+
+        :param extension_uuid: intra_extension UUID
+        :param user_uuid: user who request the action
+        :param object: VM to be added
+        :return: the VM UUID
+
+        object must be a dictionary:
+        {
+            "name": "what ever you want",
+            "image_name": "Cirros3.2",
+            "flavor_name": "m1.tiny"
+        }
+        """
         #TODO: add VM in Nova with PIP and sync afterwards
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.add_object(object_id)
+                object_id = get_pip().add_object(
+                    name=object["name"],
+                    image_name=object["image_name"],
+                    flavor_name=object["flavor_name"]
+                )
+                if object_id:
+                    self.intra_extensions[extension_uuid].intra_extension_authz.add_object(object_id)
+                    return object_id
 
     def del_object(self, extension_uuid, user_uuid, object_id):
         #TODO: del VM in Nova with PIP and sync afterwards
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "write") == "OK":
+                get_pip().del_object(object_id)
                 self.intra_extensions[extension_uuid].intra_extension_authz.del_object(object_id)
                 #TODO need to check if the subject is not in other tables like assignment
 

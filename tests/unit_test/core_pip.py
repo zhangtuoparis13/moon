@@ -91,7 +91,7 @@ class TestCorePIP(unittest.TestCase):
             max_cpt += 1
         else:
             self.assertIn(vm_name, vm_names)
-        self.pip.del_object(name=vm_name)
+        self.pip.del_object(uuid=vm_name)
         objects = self.pip.get_objects("admin")
         self.assertIsInstance(objects, types.GeneratorType)
         max_cpt = 0

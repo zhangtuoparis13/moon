@@ -72,26 +72,37 @@ class TestCorePAPIntraExtensions(unittest.TestCase):
         self.assertIsInstance(objects, list)
         self.assertIn("vm1", objects)
         #Test adding a new object
-        self.pap.add_object(self.ext_uuid, "user1", object_id="vm4")
+        server = {
+            "name": "TestVMForMoon",
+            "image_name": "Cirros3.2",
+            "flavor_name": "m1.nano"
+        }
+        object_uuid = self.pap.add_object(self.ext_uuid, "user1", object=server)
         objects = self.pap.get_objects(self.ext_uuid, "user1")
         self.assertIsInstance(objects, list)
-        self.assertIn("vm4", objects)
-        self.pap.del_object(self.ext_uuid, "user1", object_id="vm4")
+        self.assertIn(object_uuid, objects)
+        self.pap.del_object(self.ext_uuid, "user1", object_id=object_uuid)
         objects = self.pap.get_objects(self.ext_uuid, "user1")
         self.assertIsInstance(objects, list)
-        self.assertNotIn("vm4", objects)
+        self.assertNotIn(object_uuid, objects)
 
     def test_objects_user_error(self):
         objects = self.pap.get_objects(self.ext_uuid, "user3")
         self.assertEqual(objects, None)
-        self.pap.add_object(self.ext_uuid, "user2", object_id="vm4")
+        server = {
+            "name": "TestVMForMoon",
+            "image_name": "Cirros3.2",
+            "flavor_name": "m1.nano"
+        }
+        object_uuid = self.pap.add_object(self.ext_uuid, "user2", object=server)
+        objects = list(self.pap.get_objects(self.ext_uuid, "user1"))
+        object_uuid_to_delete = objects[0]
+        self.assertIsInstance(objects, list)
+        self.assertNotIn(object_uuid, objects)
+        self.pap.del_object(self.ext_uuid, "user2", object_id=object_uuid_to_delete)
         objects = self.pap.get_objects(self.ext_uuid, "user1")
         self.assertIsInstance(objects, list)
-        self.assertNotIn("vm4", objects)
-        self.pap.del_object(self.ext_uuid, "user2", object_id="vm1")
-        objects = self.pap.get_objects(self.ext_uuid, "user1")
-        self.assertIsInstance(objects, list)
-        self.assertIn("vm1", objects)
+        self.assertIn(object_uuid_to_delete, objects)
 
     def test_subject_categories(self):
         subject_categories = self.pap.get_subject_categories(self.ext_uuid, "user1")

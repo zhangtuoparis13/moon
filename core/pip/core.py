@@ -133,7 +133,7 @@ class PIP:
             elif not object_uuid:
                 yield o
 
-    def add_object(self, name, image_name="Cirros3.2", flavor_name="m1.tiny"):
+    def add_object(self, name, image_name="Cirros3.2", flavor_name="m1.nano"):
         import time
         image = self.nclient.images.find(name=image_name)
         flavor = self.nclient.flavors.find(name=flavor_name)
@@ -147,10 +147,10 @@ class PIP:
             max_cpt += 1
             if max_cpt > 12:
                 return
-        return instance
+        return instance.id
 
-    def del_object(self, name):
-        instance = self.nclient.servers.find(name=name)
+    def del_object(self, uuid):
+        instance = self.nclient.servers.find(id=uuid)
         instance.delete()
 
     def get_roles(self, tenant_name="admin", project_uuid=None, user_uuid=None):
