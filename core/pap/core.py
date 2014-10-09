@@ -67,32 +67,45 @@ class PAP:
     ##################################################
 
     def get_subjects(self, extension_uuid, user_uuid):
+        #TODO: sync with PIP
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "read") == "OK":
+                k_subjects = get_pip().get_subjects()
+                for sbj in k_subjects:
+                    if sbj["uuid"] not in self.intra_extensions[extension_uuid].intra_extension_authz.get_subjects():
+                        #Can abort because the user (user_uuid) may not have the rights to do that
+                        if self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "write") == "OK":
+                            self.intra_extensions[extension_uuid].intra_extension_authz.add_subject(sbj["uuid"])
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_subjects()
 
-    def add_subject(self, extension_uuid, user_uuid, subject_id):
+    def add_subject(self, extension_uuid, user_uuid, subject):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "write") == "OK":
+                subject_id = get_pip().add_subject(subject)
                 self.intra_extensions[extension_uuid].intra_extension_authz.add_subject(subject_id)
+                return subject_id
 
     def del_subject(self, extension_uuid, user_uuid, subject_id):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "write") == "OK":
+                get_pip().del_subject(subject_id)
                 self.intra_extensions[extension_uuid].intra_extension_authz.del_subject(subject_id)
                 #TODO need to check if the subject is not in other tables like assignment
 
     def get_objects(self, extension_uuid, user_uuid):
+        #TODO: sync with PIP
         if extension_uuid in self.intra_extensions.values():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "read") == "OK":
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_objects()
 
     def add_object(self, extension_uuid, user_uuid, object_id):
+        #TODO: add VM in Nova with PIP and sync afterwards
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "write") == "OK":
                 self.intra_extensions[extension_uuid].intra_extension_authz.add_object(object_id)
 
     def del_object(self, extension_uuid, user_uuid, object_id):
+        #TODO: del VM in Nova with PIP and sync afterwards
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "write") == "OK":
                 self.intra_extensions[extension_uuid].intra_extension_authz.del_object(object_id)
