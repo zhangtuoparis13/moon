@@ -67,7 +67,6 @@ class PAP:
     ##################################################
 
     def get_subjects(self, extension_uuid, user_uuid):
-        #TODO: sync with PIP
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "read") == "OK":
                 k_subjects = get_pip().get_subjects()
@@ -93,7 +92,6 @@ class PAP:
                 #TODO need to check if the subject is not in other tables like assignment
 
     def get_objects(self, extension_uuid, user_uuid):
-        #TODO: sync with PIP
         if extension_uuid in self.intra_extensions.values():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "read") == "OK":
                 servers = get_pip().get_objects(tenant=self.intra_extensions[extension_uuid].get_tenant_uuid())
@@ -119,7 +117,6 @@ class PAP:
             "flavor_name": "m1.tiny"
         }
         """
-        #TODO: add VM in Nova with PIP and sync afterwards
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "write") == "OK":
                 object_id = get_pip().add_object(
@@ -132,7 +129,6 @@ class PAP:
                     return object_id
 
     def del_object(self, extension_uuid, user_uuid, object_id):
-        #TODO: del VM in Nova with PIP and sync afterwards
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "write") == "OK":
                 get_pip().del_object(object_id)
