@@ -77,6 +77,7 @@ class TestCorePIP(unittest.TestCase):
         self.pip.add_object(name=vm_name)
         max_cpt = 0
         vm_names = list()
+        vm_uuid = None
         while max_cpt < 12:
             objects = self.pip.get_objects("admin")
             self.assertIsInstance(objects, types.GeneratorType)
@@ -86,12 +87,15 @@ class TestCorePIP(unittest.TestCase):
                     self.assertIn(key, obj.keys())
                 self.assertEqual("admin", obj["tenant"])
                 vm_names.append(obj["name"])
+                if vm_name == obj["name"]:
+                    vm_uuid = obj["uuid"]
             if vm_name in vm_names:
                 break
             max_cpt += 1
         else:
             self.assertIn(vm_name, vm_names)
-        self.pip.del_object(uuid=vm_name)
+        self.assertIsNotNone(vm_uuid)
+        self.pip.del_object(uuid=vm_uuid)
         objects = self.pip.get_objects("admin")
         self.assertIsInstance(objects, types.GeneratorType)
         max_cpt = 0
