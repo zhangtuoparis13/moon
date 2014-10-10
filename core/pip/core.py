@@ -117,7 +117,7 @@ class PIP:
         for server in self.nclient.servers.list():
             o = dict()
             o["name"] = server.name
-            o["uuid"] = server.id.replace("-", "")
+            o["uuid"] = server.id
             try:
                 o["description"] = server.description
             except AttributeError:
