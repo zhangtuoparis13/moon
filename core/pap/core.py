@@ -38,15 +38,18 @@ class PAP:
             return self.intra_extensions[uuid]
 
     def list_mappings(self, user_id):
-        if self.super_extension.admin(user_id, "mapping", "list") == "OK":
+        user = get_pip().get_subjects("admin", user_id).next()
+        if self.super_extension.admin(user["name"], "mapping", "list") == "OK":
             return self.tenant_intra_extension_mapping.list_mappings()
 
     def create_mapping(self, user_id, tenant_uuid, intra_extension_uuid):
-        if self.super_extension.admin(user_id, "mapping", "create") == "OK":
+        user = get_pip().get_subjects("admin", user_id).next()
+        if self.super_extension.admin(user["name"], "mapping", "create") == "OK":
             return self.tenant_intra_extension_mapping.create_mapping(tenant_uuid, intra_extension_uuid)
 
     def destroy_mapping(self, user_id, tenant_uuid, intra_extension_uuid):
-        if self.super_extension.admin(user_id, "mapping", "destroy") == "OK":
+        user = get_pip().get_subjects("admin", user_id).next()
+        if self.super_extension.admin(user["name"], "mapping", "destroy") == "OK":
             return self.tenant_intra_extension_mapping.destroy_mapping(tenant_uuid, intra_extension_uuid)
 
     def delegate_privilege(self, user_id, delegator_id, genre, privilege):
