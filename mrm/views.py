@@ -45,9 +45,9 @@ def mrm_authz(request):
                     _authz_result = _inter_manager.authz(
                         requesting_tenant=request.POST["requesting_tenant"],
                         requested_tenant=request.POST["requested_tenant"],
-                        subject=request.POST["Subject"],
-                        object=request.POST["Object"],
-                        action=request.POST["Action"]
+                        subject=request.POST["subject"],
+                        object=request.POST["object"],
+                        action=request.POST["qction"]
                     )
                 response_data["authz"] = _authz_result
             else:
