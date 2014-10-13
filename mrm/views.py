@@ -10,6 +10,18 @@ from moon import settings
 
 
 def mrm_authz(request):
+    """
+    post_data = [
+        ('requesting_tenant', requesting_tenant_uuid),
+        ('requested_tenant', requested_tenant_uuid),
+        ('object', object_uuid),
+        ('subject', subject_uuid),
+        ('action', action),
+        ('RAW_PATH_INFO', self._server_path),
+        ('key', key)
+    ]
+    """
+
     response_data = {"authz": "KO"}
     try:
         if request.method == 'POST':
@@ -19,24 +31,28 @@ def mrm_authz(request):
                 crypt_key.update(getattr(settings, "CNX_PASSWORD"))
                 response_data["key"] = crypt_key.hexdigest()
 
-            if request.POST["Requesting_Tenant"] == request.POST["Requested_Tenant"]:  # TODO to update in keystone_hook.py
-                intra_manager = get_intra_extensions()
-                authz = intra_manager.authz(
-                    subject=request.POST["Subject"],
-                    object=request.POST["Object"],
-                    action=request.POST["Action"]
-                )
+            if request.POST["requesting_tenant"] and request.POST["requested_tenant"]:
+                #  requesting_tenant and requested_tenant can not be None
+                if request.POST["requesting_tenant"] == request.POST["requested_tenant"]:
+                    _intra_manager = get_intra_extensions()
+                    _authz_result = _intra_manager.authz(
+                        subject=request.POST["subject"],
+                        object=request.POST["object"],
+                        action=request.POST["action"]
+                    )
+                else:
+                    _inter_manager = get_inter_extensions()
+                    _authz_result = _inter_manager.authz(
+                        requesting_tenant=request.POST["requesting_tenant"],
+                        requested_tenant=request.POST["requested_tenant"],
+                        subject=request.POST["Subject"],
+                        object=request.POST["Object"],
+                        action=request.POST["Action"]
+                    )
+                response_data["authz"] = _authz_result
             else:
-                inter_manager = get_inter_extensions()
-                authz = inter_manager.authz(
-                    requesting_tenant=request.POST["Requesting_Tenant"],
-                    requested_tenant=request.POST["Requested_Tenant"],
-                    subject=request.POST["Subject"],
-                    object=request.POST["Object"],
-                    action=request.POST["Action"]
-                )
-
-            response_data["authz"] = authz
+                # raise Error Unknown Tenant
+                pass
     except:
         import sys
         import traceback
