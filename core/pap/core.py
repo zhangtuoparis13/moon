@@ -22,6 +22,46 @@ class PAP:
         # self.tenants = get_inter_extensions().tenants
         self.super_extension = get_super_extension()
         self.tenant_intra_extension_mapping = get_tenant_intra_extension_mapping()
+        self.policies = dict()
+
+    def set_policies(self, dirname):
+        import glob
+        for node in glob.glob(os.path.join(dirname, "*")):
+            if os.path.isdir(os.path.join(node, "admin")) and \
+               os.path.isdir(os.path.join(node, "admin")):
+                append = False
+                for json_file in ("assignment.json", "metadata.json", "configuration.json", "perimeter.json"):
+                    if os.path.join(node, "admin", json_file) in glob.glob(os.path.join(node, "admin", "*")) and \
+                       os.path.join(node, "authz", json_file) in glob.glob(os.path.join(node, "authz", "*")):
+                        append = True
+                    else:
+                        append = False
+                        break
+                if append:
+                    policy_name = os.path.basename(node.strip("/"))
+                    self.policies[policy_name] = dict()
+                    self.policies[policy_name]["dir"] = node
+                    self.policies[policy_name]["admin"] = dict()
+                    self.policies[policy_name]["authz"] = dict()
+                    self.policies[policy_name]["admin"]["assignment"] = json.loads(
+                        file(os.path.join(node, "admin", "assignment.json")).read())
+                    self.policies[policy_name]["admin"]["metadata"] = json.loads(
+                        file(os.path.join(node, "admin", "metadata.json")).read())
+                    self.policies[policy_name]["admin"]["configuration"] = json.loads(
+                        file(os.path.join(node, "admin", "configuration.json")).read())
+                    self.policies[policy_name]["admin"]["perimeter"] = json.loads(
+                        file(os.path.join(node, "admin", "perimeter.json")).read())
+                    self.policies[policy_name]["authz"]["assignment"] = json.loads(
+                        file(os.path.join(node, "admin", "assignment.json")).read())
+                    self.policies[policy_name]["authz"]["metadata"] = json.loads(
+                        file(os.path.join(node, "admin", "metadata.json")).read())
+                    self.policies[policy_name]["authz"]["configuration"] = json.loads(
+                        file(os.path.join(node, "admin", "configuration.json")).read())
+                    self.policies[policy_name]["authz"]["perimeter"] = json.loads(
+                        file(os.path.join(node, "admin", "perimeter.json")).read())
+
+    def get_policies(self):
+        return self.policies
 
     ###########################################
     # Misc functions for Super-Extension
@@ -37,16 +77,23 @@ class PAP:
         elif uuid and uuid in self.intra_extensions.keys():
             return self.intra_extensions[uuid]
 
+    def install_intra_extension_from_json(self, extension_setting_name):
+        extension_setting_dir = self.policies[extension_setting_name]["dir"]
+        self.intra_extensions.install_intra_extension_from_json(extension_setting_dir)
+
     def list_mappings(self, user_id):
-        if self.super_extension.admin(user_id, "mapping", "list") == "OK":
+        user = get_pip().get_subjects("admin", user_id).next()
+        if self.super_extension.admin(user["name"], "mapping", "list") == "OK":
             return self.tenant_intra_extension_mapping.list_mappings()
 
     def create_mapping(self, user_id, tenant_uuid, intra_extension_uuid):
-        if self.super_extension.admin(user_id, "mapping", "create") == "OK":
+        user = get_pip().get_subjects("admin", user_id).next()
+        if self.super_extension.admin(user["name"], "mapping", "create") == "OK":
             return self.tenant_intra_extension_mapping.create_mapping(tenant_uuid, intra_extension_uuid)
 
     def destroy_mapping(self, user_id, tenant_uuid, intra_extension_uuid):
-        if self.super_extension.admin(user_id, "mapping", "destroy") == "OK":
+        user = get_pip().get_subjects("admin", user_id).next()
+        if self.super_extension.admin(user["name"], "mapping", "destroy") == "OK":
             return self.tenant_intra_extension_mapping.destroy_mapping(tenant_uuid, intra_extension_uuid)
 
     def delegate_privilege(self, user_id, delegator_id, genre, privilege):

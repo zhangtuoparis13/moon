@@ -60,3 +60,19 @@ def group_assignments(request, project_uuid=None, user_uuid=None):
     return HttpResponse(json.dumps(
         {"group_assignments": list(pip.get_users_groups_assignment(project_uuid=project_uuid, user_uuid=user_uuid))}
     ))
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def images(request):
+    pip = get_pip()
+    return HttpResponse(json.dumps({"projects": list(pip.get_images())}))
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def flavors(request):
+    pip = get_pip()
+    return HttpResponse(json.dumps({"projects": list(pip.get_flavors())}))
+
+

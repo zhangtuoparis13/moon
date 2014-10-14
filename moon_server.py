@@ -36,20 +36,21 @@ if __name__ == "__main__":
     parser.add_argument("djangoargs", nargs='*', help="Set Django specific arguments")
     parser.add_argument("--dbdrop", action='store_true', help="Delete local DBs")
     parser.add_argument("--sync", help="Synchronize local DBs with 'json' or 'database'")
+    parser.add_argument("--policies", help="Set a directory containing policies")
     parser.add_argument("--init", help="Initialize the django database")
     parser.add_argument("--run", action='store_true', help="Run the server")
 
     args = parser.parse_args()
+    from moon.core.pap import get_pap
+    pap = get_pap()
 
     if args.init:
         init_django()
+    if args.policies:
+        pap.set_policies(args.policies)
     if args.dbdrop:
-        from moon.core.pap import get_pap
-        pap = get_pap()
         pap.delete_tables()
     elif args.sync:
-        from moon.core.pap import get_pap
-        pap = get_pap()
         if args.sync == "db":
             pap.add_from_db()
         else:
@@ -60,7 +61,6 @@ if __name__ == "__main__":
         d_args.extend(args.djangoargs)
         start_django(d_args)
     elif args.run:
-        from moon.core.pap import get_pap
         sys_logger.info("Starting application")
         d_args = [sys.argv[0]]
         d_args.extend(args.djangoargs)

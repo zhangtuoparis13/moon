@@ -52,11 +52,12 @@ class PIP:
         :param token:
         :return:
         """
-        from keystoneclient.v3 import client as keystone_client
-        auth_url = getattr(settings, "OPENSTACK_KEYSTONE_URL")
-        self.kclient = keystone_client.Client(token=token.id, auth_url=auth_url)
-        from novaclient import client as nova_client
-        self.nclient = nova_client.Client("3", auth_token=token.id, auth_url=auth_url)
+        # from keystoneclient.v3 import client as keystone_client
+        # auth_url = getattr(settings, "OPENSTACK_KEYSTONE_URL")
+        # self.kclient = keystone_client.Client(token=token.id, auth_url=auth_url)
+        # from novaclient import client as nova_client
+        # self.nclient = nova_client.Client("3", auth_token=token.id, auth_url=auth_url)
+        self.set_creds_for_tenant()
 
     def get_subjects(self, tenant=None, user_uuid=None):
         if type(tenant) is dict:
@@ -348,6 +349,25 @@ class PIP:
     def del_tenant(self, tenant_uuid):
         self.kclient.projects.delete(tenant_uuid)
 
+    def get_images(self):
+        images = list()
+        for _img in self.nclient.images.list():
+            i = dict()
+            i["uuid"] = _img.id
+            i["name"] = _img.name
+            # print(_img.to_dict())
+            images.append(i)
+        return images
+
+    def get_flavors(self):
+        flavors = list()
+        for _flavour in self.nclient.flavors.list():
+            f = dict()
+            f["uuid"] = _flavour.id
+            f["name"] = _flavour.name
+            # print(_flavour.to_dict())
+            flavors.append(f)
+        return flavors
 
 pip = None
 
