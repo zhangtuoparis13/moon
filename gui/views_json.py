@@ -40,10 +40,16 @@ def intra_extensions(request, uuid=None):
     return send_json({"intra_extensions": pap.get_intra_extensions().keys()})
 
 
+@csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
 def intra_extension(request, uuid=None):
     pap = get_pap()
+    if request.META['REQUEST_METHOD'] == "POST":
+        data = json.loads(request.read())
+        if "policymodel" in data:
+            pap.install_intra_extension_from_json(extension_setting_name=data["policymodel"])
+            return send_json({"intra_extensions": pap.get_intra_extensions().keys()})
     extension = pap.get_intra_extensions()[uuid]
     return send_json({"intra_extension": extension.get_data()})
 

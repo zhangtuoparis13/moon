@@ -40,6 +40,7 @@ class PAP:
                 if append:
                     policy_name = os.path.basename(node.strip("/"))
                     self.policies[policy_name] = dict()
+                    self.policies[policy_name]["dir"] = node
                     self.policies[policy_name]["admin"] = dict()
                     self.policies[policy_name]["authz"] = dict()
                     self.policies[policy_name]["admin"]["assignment"] = json.loads(
@@ -75,6 +76,10 @@ class PAP:
             return self.intra_extensions.values()
         elif uuid and uuid in self.intra_extensions.keys():
             return self.intra_extensions[uuid]
+
+    def install_intra_extension_from_json(self, extension_setting_name):
+        extension_setting_dir = self.policies[extension_setting_name]["dir"]
+        self.intra_extensions.install_intra_extension_from_json(extension_setting_dir)
 
     def list_mappings(self, user_id):
         user = get_pip().get_subjects("admin", user_id).next()
