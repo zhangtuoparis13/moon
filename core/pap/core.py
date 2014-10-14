@@ -22,6 +22,45 @@ class PAP:
         # self.tenants = get_inter_extensions().tenants
         self.super_extension = get_super_extension()
         self.tenant_intra_extension_mapping = get_tenant_intra_extension_mapping()
+        self.policies = dict()
+
+    def set_policies(self, dirname):
+        import glob
+        for node in glob.glob(os.path.join(dirname, "*")):
+            if os.path.isdir(os.path.join(node, "admin")) and \
+               os.path.isdir(os.path.join(node, "admin")):
+                append = False
+                for json_file in ("assignment.json", "metadata.json", "configuration.json", "perimeter.json"):
+                    if os.path.join(node, "admin", json_file) in glob.glob(os.path.join(node, "admin", "*")) and \
+                       os.path.join(node, "authz", json_file) in glob.glob(os.path.join(node, "authz", "*")):
+                        append = True
+                    else:
+                        append = False
+                        break
+                if append:
+                    policy_name = os.path.basename(node.strip("/"))
+                    self.policies[policy_name] = dict()
+                    self.policies[policy_name]["admin"] = dict()
+                    self.policies[policy_name]["authz"] = dict()
+                    self.policies[policy_name]["admin"]["assignment"] = json.loads(
+                        file(os.path.join(node, "admin", "assignment.json")).read())
+                    self.policies[policy_name]["admin"]["metadata"] = json.loads(
+                        file(os.path.join(node, "admin", "metadata.json")).read())
+                    self.policies[policy_name]["admin"]["configuration"] = json.loads(
+                        file(os.path.join(node, "admin", "configuration.json")).read())
+                    self.policies[policy_name]["admin"]["perimeter"] = json.loads(
+                        file(os.path.join(node, "admin", "perimeter.json")).read())
+                    self.policies[policy_name]["authz"]["assignment"] = json.loads(
+                        file(os.path.join(node, "admin", "assignment.json")).read())
+                    self.policies[policy_name]["authz"]["metadata"] = json.loads(
+                        file(os.path.join(node, "admin", "metadata.json")).read())
+                    self.policies[policy_name]["authz"]["configuration"] = json.loads(
+                        file(os.path.join(node, "admin", "configuration.json")).read())
+                    self.policies[policy_name]["authz"]["perimeter"] = json.loads(
+                        file(os.path.join(node, "admin", "perimeter.json")).read())
+
+    def get_policies(self):
+        return self.policies
 
     ###########################################
     # Misc functions for Super-Extension
