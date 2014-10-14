@@ -28,16 +28,16 @@ def save_auth(function):
         except exceptions.Unauthorized:
             # Token is not valid, user must re-authenticate
             pass
-        try:
-            username = args[0].session['user_id']
-            globals()["username"] = username
-        except AttributeError:
-            username = globals().get("username")
-        except IndexError:
-            username = globals().get("username")
-        except KeyError:
-            #When authenticating, username is not set
-            username = ""
+        # try:
+        #     username = args[0].session['user_id']
+        #     globals()["username"] = username
+        # except AttributeError:
+        #     username = globals().get("username")
+        # except IndexError:
+        #     username = globals().get("username")
+        # except KeyError:
+        #     #When authenticating, username is not set
+        #     username = ""
         # print("\033[32mCalling {}({})\033[m".format(function.__name__, username))
         result = None
         # try:
@@ -48,7 +48,8 @@ def save_auth(function):
         #     print(traceback.print_exc())
         #     print("\033[m")
         function.__globals__["username"] = None
-        get_pip().unset_creds()
+        #FIXME must unset creds but it brokes JSON interface
+        # get_pip().unset_creds()
         return result
     return wrapped
 
