@@ -4,6 +4,8 @@ urlpatterns = patterns(
     'gui.views_json',
     url(r'intra-extensions/$',
         'intra_extensions'),
+    url(r'intra-extension/?$',
+        'intra_extension'),
     url(r'intra-extension/(?P<uuid>[\w-]{32,36})/?$',
         'intra_extension'),
     url(r'intra-extension/(?P<uuid>[\w-]{32,36})/tenant/?$',
