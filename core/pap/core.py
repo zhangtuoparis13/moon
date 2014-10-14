@@ -69,32 +69,86 @@ class PAP:
     def get_subjects(self, extension_uuid, user_uuid):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "read") == "OK":
+                k_subjects = get_pip().get_subjects()
+                for sbj in k_subjects:
+                    if sbj["uuid"] not in self.intra_extensions[extension_uuid].intra_extension_authz.get_subjects():
+                        #Can abort because the user (user_uuid) may not have the rights to do that
+                        if self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "write") == "OK":
+                            self.intra_extensions[extension_uuid].intra_extension_authz.add_subject(sbj["uuid"])
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_subjects()
 
-    def add_subject(self, extension_uuid, user_uuid, subject_id):
+    def add_subject(self, extension_uuid, user_uuid, subject):
+        """Add a new subject (ie user)
+
+        :param extension_uuid: intra_extension UUID
+        :param user_uuid: user who request the action
+        :param subject: subject to be added
+        :return: subject UUID
+
+        the subject must a dictionary:
+        {
+            "name": "username",
+            'domain': "Default",
+            'enabled': True,
+            'project': "admin",
+            'password': "password",
+            'description': "user description"
+        }
+        """
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "write") == "OK":
+                subject_id = get_pip().add_subject(subject)
                 self.intra_extensions[extension_uuid].intra_extension_authz.add_subject(subject_id)
+                return subject_id
 
     def del_subject(self, extension_uuid, user_uuid, subject_id):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "write") == "OK":
+                get_pip().del_subject(subject_id)
                 self.intra_extensions[extension_uuid].intra_extension_authz.del_subject(subject_id)
                 #TODO need to check if the subject is not in other tables like assignment
 
     def get_objects(self, extension_uuid, user_uuid):
         if extension_uuid in self.intra_extensions.values():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "read") == "OK":
+                servers = get_pip().get_objects(tenant=self.intra_extensions[extension_uuid].get_tenant_uuid())
+                for server in servers:
+                    if server["uuid"] not in self.intra_extensions[extension_uuid].intra_extension_authz.get_objects():
+                        #Can abort because the user (user_uuid) may not have the rights to do that
+                        if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "write") == "OK":
+                            self.intra_extensions[extension_uuid].intra_extension_authz.add_object(server["uuid"])
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_objects()
 
-    def add_object(self, extension_uuid, user_uuid, object_id):
+    def add_object(self, extension_uuid, user_uuid, object):
+        """Add a new virtual machine
+
+        :param extension_uuid: intra_extension UUID
+        :param user_uuid: user who request the action
+        :param object: VM to be added
+        :return: the VM UUID
+
+        object must be a dictionary:
+        {
+            "name": "what ever you want",
+            "image_name": "Cirros3.2",
+            "flavor_name": "m1.tiny"
+        }
+        """
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.add_object(object_id)
+                object_id = get_pip().add_object(
+                    name=object["name"],
+                    image_name=object["image_name"],
+                    flavor_name=object["flavor_name"]
+                )
+                if object_id:
+                    self.intra_extensions[extension_uuid].intra_extension_authz.add_object(object_id)
+                    return object_id
 
     def del_object(self, extension_uuid, user_uuid, object_id):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "write") == "OK":
+                get_pip().del_object(object_id)
                 self.intra_extensions[extension_uuid].intra_extension_authz.del_object(object_id)
                 #TODO need to check if the subject is not in other tables like assignment
 
