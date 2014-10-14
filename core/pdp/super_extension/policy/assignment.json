@@ -13,11 +13,14 @@
     },
     "object_category_assignments": {
         "action": {
-            "collaboration": []
+            "intra_extension": [],
+            "mapping": [],
+            "inter_extension": []
         },
         "object_id": {
+            "intra_extension": ["intra_extension"],
             "mapping": ["mapping"],
-            "collaboration": ["collaboration"]
+            "inter_extension": ["inter_extension"]
         }
     }
 }
