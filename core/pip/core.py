@@ -52,11 +52,12 @@ class PIP:
         :param token:
         :return:
         """
-        from keystoneclient.v3 import client as keystone_client
-        auth_url = getattr(settings, "OPENSTACK_KEYSTONE_URL")
-        self.kclient = keystone_client.Client(token=token.id, auth_url=auth_url)
-        from novaclient import client as nova_client
-        self.nclient = nova_client.Client("3", auth_token=token.id, auth_url=auth_url)
+        # from keystoneclient.v3 import client as keystone_client
+        # auth_url = getattr(settings, "OPENSTACK_KEYSTONE_URL")
+        # self.kclient = keystone_client.Client(token=token.id, auth_url=auth_url)
+        # from novaclient import client as nova_client
+        # self.nclient = nova_client.Client("3", auth_token=token.id, auth_url=auth_url)
+        self.set_creds_for_tenant()
 
     def get_subjects(self, tenant=None, user_uuid=None):
         if type(tenant) is dict:
