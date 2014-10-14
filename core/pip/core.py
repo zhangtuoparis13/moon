@@ -349,6 +349,25 @@ class PIP:
     def del_tenant(self, tenant_uuid):
         self.kclient.projects.delete(tenant_uuid)
 
+    def get_images(self):
+        images = list()
+        for _img in self.nclient.images.list():
+            i = dict()
+            i["uuid"] = _img.id
+            i["name"] = _img.name
+            # print(_img.to_dict())
+            images.append(i)
+        return images
+
+    def get_flavors(self):
+        flavors = list()
+        for _flavour in self.nclient.flavors.list():
+            f = dict()
+            f["uuid"] = _flavour.id
+            f["name"] = _flavour.name
+            # print(_flavour.to_dict())
+            flavors.append(f)
+        return flavors
 
 pip = None
 
