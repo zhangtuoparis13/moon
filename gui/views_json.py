@@ -48,6 +48,21 @@ def intra_extension(request, uuid=None):
     return send_json({"intra_extension": extension.get_data()})
 
 
+@login_required(login_url='/auth/login/')
+@save_auth
+def tenant(request, uuid=None):
+    pap = get_pap()
+    extension = pap.get_intra_extensions()[uuid]
+    return send_json({"tenant": extension.get_tenant_uuid()})
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def policies(request):
+    pap = get_pap()
+    return send_json({"policies": pap.get_policies()})
+
+
 #####################################################
 # Functions for getting information about subjects
 #####################################################
@@ -75,11 +90,11 @@ def subject(request, uuid=None, subject_id=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
-        if "subject_uuid" in data:
+        if "name" in data and "password" in data:
             pap.add_subject(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
-                subject_id=filter_input(data["subject_uuid"]))
+                subject=data)
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_subject(
             extension_uuid=uuid,
@@ -117,11 +132,11 @@ def object(request, uuid=None, object_id=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
-        if "object_uuid" in data:
+        if "object" in data:
             pap.add_object(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
-                object_id=filter_input(data["object_uuid"]))
+                object=data["object"])
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_object(
             extension_uuid=uuid,
@@ -491,4 +506,39 @@ def inter_extension(request, uuid=None):
     #         obj_cat_value=filter_input(obj_cat_value))
     return send_json({"inter_extensions": list(
         pap.get_installed_inter_extensions(extension_uuid=uuid, user_uuid=request.session['user_id'])
+    )})
+
+
+######################################################################
+# Functions for getting information about Inter-Extensions
+######################################################################
+
+
+@login_required(login_url='/auth/login/')
+@save_auth
+def super_extensions(request, uuid=None):
+    pap = get_pap()
+    return send_json({"super_extensions": list(
+        pap.list_mappings(user_id=request.session['user_id'])
+    )})
+
+
+@csrf_exempt
+@login_required(login_url='/auth/login/')
+@save_auth
+def super_extension(request, tenant_uuid=None, intra_extension_uuid=None):
+    pap = get_pap()
+    if request.META['REQUEST_METHOD'] == "POST":
+        # data = json.loads(request.read())
+        pap.create_mapping(
+            user_id=request.session['user_id'],
+            tenant_uuid=filter_input(tenant_uuid),
+            intra_extension_uuid=filter_input(intra_extension_uuid))
+    elif request.META['REQUEST_METHOD'] == "DELETE":
+        pap.destroy_mapping(
+            user_id=request.session['user_id'],
+            tenant_uuid=filter_input(tenant_uuid),
+            intra_extension_uuid=filter_input(intra_extension_uuid))
+    return send_json({"super_extensions": list(
+        pap.list_mappings(user_id=request.session['user_id'])
     )})
