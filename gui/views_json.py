@@ -37,7 +37,7 @@ def send_json(data):
 @save_auth
 def intra_extensions(request, uuid=None):
     pap = get_pap()
-    return send_json({"intra_extensions": pap.get_intra_extensions().keys()})
+    return send_json({"intra_extensions": pap.get_intra_extensions(user_id=request.session['user_id']).keys()})
 
 
 @csrf_exempt
@@ -48,9 +48,11 @@ def intra_extension(request, uuid=None):
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
         if "policymodel" in data:
-            pap.install_intra_extension_from_json(extension_setting_name=data["policymodel"])
-            return send_json({"intra_extensions": pap.get_intra_extensions().keys()})
-    extension = pap.get_intra_extensions()[uuid]
+            pap.install_intra_extension_from_json(
+                user_id=request.session['user_id'],
+                extension_setting_name=data["policymodel"])
+            return send_json({"intra_extensions": pap.get_intra_extensions(user_id=request.session['user_id']).keys()})
+    extension = pap.get_intra_extensions(user_id=request.session['user_id'])[uuid]
     return send_json({"intra_extension": extension.get_data()})
 
 
