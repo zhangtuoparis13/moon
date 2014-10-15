@@ -5,8 +5,7 @@
   "authors": [
     "arnaud.marhin <arnaud.marhin@orange.com>"
   ],
-  "description": "moon project",
-  "license": "Orange",
+  "description": "Authorization module for OpenStack",
   "private": true,
   "dependencies": {
     "angular": "1.3.0",
