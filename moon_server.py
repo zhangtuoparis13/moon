@@ -31,6 +31,22 @@ def init_django():
     call_command(" ".join(d_args[1:]), interactive=False)
 
 
+def find_admin_uuid():
+    pap = get_pap()
+    from moon.core.pip import get_pip
+    pip = get_pip()
+    kusers = pip.get_subjects()
+    admin_user = None
+    for user in kusers:
+        if user["name"] == "admin":
+            admin_user = user
+            break
+    if not admin_user:
+        sys_logger.warning("Cannot find admin user in Keystone.")
+        return
+    pap.set_admin_uuid(admin_user["uuid"])
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("djangoargs", nargs='*', help="Set Django specific arguments")
@@ -43,6 +59,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     from moon.core.pap import get_pap
     pap = get_pap()
+
+    find_admin_uuid()
 
     if args.init:
         init_django()
