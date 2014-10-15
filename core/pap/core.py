@@ -153,6 +153,7 @@ class PAP:
                         if self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "write") == "OK":
                             self.intra_extensions[extension_uuid].intra_extension_authz.add_subject(sbj["uuid"])
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_subjects()
+        return list()
 
     def add_subject(self, extension_uuid, user_uuid, subject):
         """Add a new subject (ie user)
@@ -195,6 +196,7 @@ class PAP:
                         if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "write") == "OK":
                             self.intra_extensions[extension_uuid].intra_extension_authz.add_object(server["uuid"])
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_objects()
+        return list()
 
     def add_object(self, extension_uuid, user_uuid, object):
         """Add a new virtual machine
