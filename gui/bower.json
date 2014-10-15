@@ -1,0 +1,25 @@
+{
+  "name": "moon",
+  "version": "1.0.0",
+  "homepage": "https://github.com/waitwaitwait/moon",
+  "authors": [
+    "arnaud.marhin <arnaud.marhin@orange.com>"
+  ],
+  "description": "moon project",
+  "license": "Orange",
+  "private": true,
+  "dependencies": {
+    "angular": "1.3.0",
+    "angular-motion": "0.3.4",
+    "angular-strap": "2.1.1",
+    "angular-translate": "2.4.1",
+    "angular-ui-bootstrap": "0.11.2",
+    "angular-ui-router": "0.2.11",
+    "angular-ui-select2": "0.0.5",
+    "bootstrap": "3.2.0",
+    "jquery": "2.1.1",
+    "ng-table": "0.3.3",
+    "select2": "3.4.8",
+    "underscore": "1.7.0"
+  }
+}
