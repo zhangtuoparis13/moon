@@ -14,6 +14,26 @@ from moon.tools.log import get_sys_logger
 sys_logger = get_sys_logger()
 
 
+def translate_uuid(function):
+    def wrapped(*args, **kwargs):
+        print(args, kwargs)
+        if "user_id" in kwargs:
+            try:
+                user = get_pip().get_subjects("admin", kwargs["user_id"]).next()
+                kwargs["user_id"] = user["name"]
+            except StopIteration:
+                pass
+        else:
+            try:
+                user = get_pip().get_subjects("admin", args[1]).next()
+                args[1] = user["name"]
+            except StopIteration:
+                pass
+        result = function(*args, **kwargs)
+        return result
+    return wrapped
+
+
 class PAP:
 
     def __init__(self):
@@ -23,6 +43,7 @@ class PAP:
         self.super_extension = get_super_extension()
         self.tenant_intra_extension_mapping = get_tenant_intra_extension_mapping()
         self.policies = dict()
+        self.__admin_uuid = None
 
     def set_policies(self, dirname):
         import glob
@@ -63,6 +84,9 @@ class PAP:
     def get_policies(self):
         return self.policies
 
+    def set_admin_uuid(self, uuid):
+        self.__admin_uuid = uuid
+
     ###########################################
     # Misc functions for Super-Extension
     ###########################################
@@ -71,31 +95,37 @@ class PAP:
         pip = get_pip()
         return pip.get_tenants()
 
-    def get_intra_extensions(self, uuid=None):
-        if not uuid:
-            return self.intra_extensions.values()
-        elif uuid and uuid in self.intra_extensions.keys():
-            return self.intra_extensions[uuid]
+    @translate_uuid
+    def get_intra_extensions(self, user_id, uuid=None):
+        if self.super_extension.admin(user_id, "intra_extension", "list") == "OK":
+            if not uuid:
+                return self.intra_extensions.values()
+            elif uuid and uuid in self.intra_extensions.keys():
+                return self.intra_extensions[uuid]
 
-    def install_intra_extension_from_json(self, extension_setting_name):
-        extension_setting_dir = self.policies[extension_setting_name]["dir"]
-        self.intra_extensions.install_intra_extension_from_json(extension_setting_dir)
+    @translate_uuid
+    def install_intra_extension_from_json(self, user_id, extension_setting_name=None, extension_setting_dir=None):
+        if self.super_extension.admin(user_id, "intra_extension", "create") == "OK":
+            if extension_setting_name:
+                extension_setting_dir = self.policies[extension_setting_name]["dir"]
+            self.intra_extensions.install_intra_extension_from_json(extension_setting_dir)
 
+    @translate_uuid
     def list_mappings(self, user_id):
-        user = get_pip().get_subjects("admin", user_id).next()
-        if self.super_extension.admin(user["name"], "mapping", "list") == "OK":
+        if self.super_extension.admin(user_id, "mapping", "list") == "OK":
             return self.tenant_intra_extension_mapping.list_mappings()
 
+    @translate_uuid
     def create_mapping(self, user_id, tenant_uuid, intra_extension_uuid):
-        user = get_pip().get_subjects("admin", user_id).next()
-        if self.super_extension.admin(user["name"], "mapping", "create") == "OK":
+        if self.super_extension.admin(user_id, "mapping", "create") == "OK":
             return self.tenant_intra_extension_mapping.create_mapping(tenant_uuid, intra_extension_uuid)
 
+    @translate_uuid
     def destroy_mapping(self, user_id, tenant_uuid, intra_extension_uuid):
-        user = get_pip().get_subjects("admin", user_id).next()
-        if self.super_extension.admin(user["name"], "mapping", "destroy") == "OK":
+        if self.super_extension.admin(user_id, "mapping", "destroy") == "OK":
             return self.tenant_intra_extension_mapping.destroy_mapping(tenant_uuid, intra_extension_uuid)
 
+    @translate_uuid
     def delegate_privilege(self, user_id, delegator_id, genre, privilege):
         if self.super_extension.admin(user_id, genre, "delegate") == "OK":
             return self.super_extension.delegate(delegator_id, genre, privilege)
