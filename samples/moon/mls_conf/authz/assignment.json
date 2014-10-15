@@ -1,0 +1,12 @@
+{
+    "subject_category_assignments": {
+        "subject_security_level":{
+        }
+    },
+    "object_category_assignments": {
+        "object_security_level": {
+        },
+        "action": {
+        }
+    }
+}

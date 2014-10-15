@@ -1,0 +1,15 @@
+{
+    "subject_category_values": {
+        "role": ["admin"]
+    },
+
+    "object_category_values": {
+        "object_security_level": [],
+        "action": ["read", "write","execute"]
+    },
+
+    "rules": {
+        "relation_super":[
+        ]
+    }
+}
