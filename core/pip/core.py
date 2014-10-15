@@ -5,8 +5,7 @@ Information gathering from the infrastructure
 from moon.tools.openstack_credentials import get_keystone_creds, get_nova_creds
 import logging
 from uuid import uuid4
-from keystoneclient.openstack.common.apiclient.exceptions import Unauthorized, Forbidden, Conflict
-from moon import settings
+from keystoneclient.openstack.common.apiclient.exceptions import Unauthorized, Forbidden, Conflict, NotFound
 
 logger = logging.getLogger("moon.pip")
 
@@ -153,6 +152,17 @@ class PIP:
     def del_object(self, uuid):
         instance = self.nclient.servers.find(id=uuid)
         instance.delete()
+        cpt = 0
+        import time
+        while True:
+            try:
+                self.nclient.servers.find(id=uuid)
+                time.sleep(1)
+                cpt += 1
+                if cpt > 10:
+                    return
+            except:
+                return
 
     def get_roles(self, tenant_name="admin", project_uuid=None, user_uuid=None):
         try:
