@@ -1,6 +1,6 @@
 import json
 from django.http import HttpResponse
-from moon.core.pdp import get_intra_extensions, get_inter_extensions
+from moon.core.pdp import pdp_authz
 import hashlib
 from moon import settings
 
@@ -35,26 +35,19 @@ def mrm_authz(post_request):
                 authz_response["key"] = crypt_key.hexdigest()
 
             if post_request.POST["requesting_tenant"] and post_request.POST["requested_tenant"]:
-                #  requesting_tenant and requested_tenant can not be None
-                if post_request.POST["requesting_tenant"] == post_request.POST["requested_tenant"]:
-                    _intra_manager = get_intra_extensions()
-                    authz_response["authz"] = _intra_manager.authz(
-                        subject=post_request.POST["subject"],
-                        object=post_request.POST["object"],
-                        action=post_request.POST["action"]
-                    )
-                else:
-                    _inter_manager = get_inter_extensions()
-                    authz_response["authz"] = _inter_manager.authz(
-                        requesting_tenant=post_request.POST["requesting_tenant"],
-                        requested_tenant=post_request.POST["requested_tenant"],
-                        subject=post_request.POST["subject"],
-                        object=post_request.POST["object"],
-                        action=post_request.POST["action"]
-                    )
+                authz_response["authz"] = pdp_authz(
+                    post_request.POST["subject"],
+                    post_request.POST["object"],
+                    post_request.POST["action"],
+                    post_request.POST["requesting_tenant"],
+                    post_request.POST["requested_tenant"]
+                )
             else:
-                # raise Error Unknown Tenant
-                pass
+                authz_response["authz"] = pdp_authz(
+                    post_request.POST["subject"],
+                    post_request.POST["object"],
+                    post_request.POST["action"]
+                )
     except:
         import sys
         import traceback

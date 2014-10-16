@@ -193,14 +193,28 @@ def get_tenant_intra_extension_mapping():
     return tenant_intra_extension_mapping
 
 
-def authz(requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act):
-    if requesting_intra_extension_uuid == requested_intra_extension_uuid:
-        return intra_extensions.authz(sub, obj, act)
+def pdp_authz(sub, obj, act, requesting_tenant_uuid=None, requested_tenant_uuid=None):
+    if requesting_tenant_uuid and requested_tenant_uuid:
+        if requesting_tenant_uuid == requested_tenant_uuid:
+            return intra_extensions.authz(sub, obj, act)
+        else:
+            mapping_list = tenant_intra_extension_mapping.list_mappings()
+            for mapping in mapping_list:
+                if mapping["tenant_uuid"] == requesting_tenant_uuid:
+                    requesting_intra_extension_uuid = mapping["intra_extension_uuids"][0]
+                if mapping["tenant_uuid"] == requested_tenant_uuid:
+                    requested_intra_extension_uuid = mapping["intra_extension_uuids"][0]
+                # TODO multiple intra_extensions for each tenant
+            if requesting_intra_extension_uuid and requested_intra_extension_uuid:
+                inter_extensions.authz(requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act)
+            else:
+                # raise Error unknow tenant uuid
+                pass
     else:
-        inter_extensions.authz(requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act)
+        return intra_extensions.authz(sub, obj, act)
 
 
-def admin(requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act):
+def pdp_admin(requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act):
     if requesting_intra_extension_uuid == requested_intra_extension_uuid:
         return intra_extensions.admin(sub, obj, act)
     else:
