@@ -102,16 +102,4 @@ ruan.note
 .project
 
 ## Bower dependencies
-angular
-angular-animate
-angular-motion
-angular-strap
-angular-translate
-angular-ui-bootstrap
-angular-ui-router
-angular-ui-select2
-bootstrap
-jquery
-ng-table
-select2
-underscore
+vendor
