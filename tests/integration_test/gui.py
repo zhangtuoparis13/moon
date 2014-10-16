@@ -537,136 +537,157 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
 #         #     print(json.dumps(_data, indent=4))
 #
 #
-# class TestPIPInterface(unittest.TestCase):
-#
-#     def setUp(self):
-#         pass
-#
-#     def tearDown(self):
-#         pass
-#
-#     def test_tenants(self):
-#         data = get_url("/pip/projects/")
-#         self.assertIsInstance(data, dict)
-#         self.assertIn("projects", data)
-#         self.assertIs(len(data["projects"]) > 0, True)
-#         for tenant in data["projects"]:
-#             self.assertIsInstance(tenant, dict)
-#             for key in [u'domain', u'managed', u'uuid', u'description', u'enabled', u'name']:
-#                 self.assertIn(key, tenant)
-#             _data = get_url("/pip/projects/{}".format(tenant["uuid"]))
-#             self.assertIsInstance(_data, dict)
-#             self.assertIn("projects", _data)
-#             self.assertIs(len(_data["projects"]) == 1, True)
-#             for key in [u'domain', u'managed', u'uuid', u'description', u'enabled', u'name']:
-#                 self.assertIn(key, _data["projects"][0])
-#             self.assertEqual(tenant["uuid"], _data["projects"][0]["uuid"])
-#
-#     def test_users(self):
-#         data = get_url("/pip/projects/")
-#         self.assertIsInstance(data, dict)
-#         self.assertIn("projects", data)
-#         self.assertIs(len(data["projects"]) > 0, True)
-#         for tenant in data["projects"]:
-#             data = get_url("/pip/projects/{}/users/".format(tenant["uuid"]))
-#             self.assertIsInstance(data, dict)
-#             self.assertIn("users", data)
-#             self.assertIs(len(data["users"]) > 0, True)
-#             for user in data["users"]:
-#                 self.assertIsInstance(user, dict)
-#                 for key in [u'domain', u'name', u'enabled', u'project', u'uuid']:
-#                     self.assertIn(key, user)
-#
-#     def test_objects(self):
-#         data = get_url("/pip/projects/")
-#         self.assertIsInstance(data, dict)
-#         self.assertIn("projects", data)
-#         self.assertIs(len(data["projects"]) > 0, True)
-#         for tenant in data["projects"]:
-#             data = get_url("/pip/projects/{}/objects/".format(tenant["uuid"]))
-#             self.assertIsInstance(data, dict)
-#             self.assertIn("objects", data)
-#             for server in data["objects"]:
-#                 self.assertIsInstance(server, dict)
-#                 for key in [u'name', u'enabled', u'tenant', u'uuid']:
-#                     self.assertIn(key, server)
-#
-#     def test_roles(self):
-#         data = get_url("/pip/projects/")
-#         self.assertIsInstance(data, dict)
-#         self.assertIn("projects", data)
-#         self.assertIs(len(data["projects"]) > 0, True)
-#         for tenant in data["projects"]:
-#             users = get_url("/pip/projects/{}/users/".format(tenant["uuid"]))
-#             self.assertIsInstance(users, dict)
-#             self.assertIn("users", users)
-#             self.assertIs(len(users["users"]) > 0, True)
-#             for user in users["users"]:
-#                 roles = get_url("/pip/projects/{}/users/{}/roles/".format(tenant["uuid"], user["uuid"]))
-#                 self.assertIsInstance(roles, dict)
-#                 self.assertIn("roles", roles)
-#                 if len(roles["roles"]) > 0:
-#                     # self.assertIs(len(roles["roles"]) > 0, True)
-#                     for role in roles["roles"]:
-#                         for key in [u'value', u'description', u'enabled', u'category', u'uuid']:
-#                             self.assertIn(key, role)
-#
-#     # def test_groups(self):
-#     #     data = get_url("/pip/projects/")
-#     #     self.assertIsInstance(data, dict)
-#     #     self.assertIn("projects", data)
-#     #     self.assertIs(len(data["projects"]) > 0, True)
-#     #     for tenant in data["projects"]:
-#     #         users = get_url("/pip/projects/{}/users/".format(tenant["uuid"]))
-#     #         self.assertIsInstance(users, dict)
-#     #         self.assertIn("users", users)
-#     #         self.assertIs(len(users["users"]) > 0, True)
-#     #         for user in users["users"]:
-#     #             groups = get_url("/pip/projects/{}/groups/{}/".format(tenant["uuid"], user["uuid"]))
-#     #             self.assertIsInstance(groups, dict)
-#     #             self.assertIn("groups", groups)
-#     #             self.assertIs(len(groups["groups"]) > 0, True)
-#     #             for key in [u'value', u'description', u'enabled', u'category', u'uuid']:
-#     #                 self.assertIn(key, groups)
-#
-#     def test_role_assignments(self):
-#         data = get_url("/pip/projects/")
-#         self.assertIsInstance(data, dict)
-#         self.assertIn("projects", data)
-#         self.assertIs(len(data["projects"]) > 0, True)
-#         for tenant in data["projects"]:
-#             users = get_url("/pip/projects/{}/users/".format(tenant["uuid"]))
-#             self.assertIsInstance(users, dict)
-#             self.assertIn("users", users)
-#             self.assertIs(len(users["users"]) > 0, True)
-#             for user in users["users"]:
-#                 assignments = get_url("/pip/projects/{}/assignments/roles/{}/".format(tenant["uuid"], user["uuid"]))
-#                 self.assertIsInstance(assignments, dict)
-#                 self.assertIn("role_assignments", assignments)
-#                 if len(assignments["role_assignments"]) > 0:
-#                     for assignment in assignments:
-#                         for key in [u'subject', u'attributes', u'enabled', u'category', u'description', u'uuid']:
-#                             self.assertIn(key, assignment)
-#
-#     # def test_group_assignments(self):
-#     #     data = get_url("/pip/projects/")
-#     #     self.assertIsInstance(data, dict)
-#     #     self.assertIn("projects", data)
-#     #     self.assertIs(len(data["projects"]) > 0, True)
-#     #     for tenant in data["projects"]:
-#     #         users = get_url("/pip/projects/{}/users/".format(tenant["uuid"]))
-#     #         self.assertIsInstance(users, dict)
-#     #         self.assertIn("users", users)
-#     #         self.assertIs(len(users["users"]) > 0, True)
-#     #         for user in users["users"]:
-#     #             assignments = get_url("/pip/projects/{}/assignments/groups/{}/".format(tenant["uuid"], user["uuid"]))
-#     #             print(assignments)
-#     #             self.assertIsInstance(assignments, dict)
-#     #             self.assertIn("group_assignments", assignments)
-#     #             self.assertIs(len(assignments["group_assignments"]) > 0, True)
-#     #             for key in [u'object', u'attributes', u'enabled', u'category', u'description', u'uuid']:
-#     #                 self.assertIn(key, assignments)
-#
+class TestPIPInterface(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test_tenants(self):
+        data = get_url("/pip/projects/")
+        self.assertIsInstance(data, dict)
+        self.assertIn("projects", data)
+        self.assertIs(len(data["projects"]) > 0, True)
+        for tenant in data["projects"]:
+            self.assertIsInstance(tenant, dict)
+            for key in [u'domain', u'managed', u'uuid', u'description', u'enabled', u'name']:
+                self.assertIn(key, tenant)
+            _data = get_url("/pip/projects/{}".format(tenant["uuid"]))
+            self.assertIsInstance(_data, dict)
+            self.assertIn("projects", _data)
+            self.assertIs(len(_data["projects"]) == 1, True)
+            for key in [u'domain', u'managed', u'uuid', u'description', u'enabled', u'name']:
+                self.assertIn(key, _data["projects"][0])
+            self.assertEqual(tenant["uuid"], _data["projects"][0]["uuid"])
+
+    def test_users(self):
+        data = get_url("/pip/projects/")
+        self.assertIsInstance(data, dict)
+        self.assertIn("projects", data)
+        self.assertIs(len(data["projects"]) > 0, True)
+        for tenant in data["projects"]:
+            data = get_url("/pip/projects/{}/users/".format(tenant["uuid"]))
+            self.assertIsInstance(data, dict)
+            self.assertIn("users", data)
+            self.assertIs(len(data["users"]) > 0, True)
+            for user in data["users"]:
+                self.assertIsInstance(user, dict)
+                for key in [u'domain', u'name', u'enabled', u'project', u'uuid']:
+                    self.assertIn(key, user)
+
+    def test_objects(self):
+        data = get_url("/pip/projects/")
+        self.assertIsInstance(data, dict)
+        self.assertIn("projects", data)
+        self.assertIs(len(data["projects"]) > 0, True)
+        for tenant in data["projects"]:
+            data = get_url("/pip/projects/{}/objects/".format(tenant["uuid"]))
+            self.assertIsInstance(data, dict)
+            self.assertIn("objects", data)
+            for server in data["objects"]:
+                self.assertIsInstance(server, dict)
+                for key in [u'name', u'enabled', u'tenant', u'uuid']:
+                    self.assertIn(key, server)
+
+    def test_roles(self):
+        data = get_url("/pip/projects/")
+        self.assertIsInstance(data, dict)
+        self.assertIn("projects", data)
+        self.assertIs(len(data["projects"]) > 0, True)
+        for tenant in data["projects"]:
+            users = get_url("/pip/projects/{}/users/".format(tenant["uuid"]))
+            self.assertIsInstance(users, dict)
+            self.assertIn("users", users)
+            self.assertIs(len(users["users"]) > 0, True)
+            for user in users["users"]:
+                roles = get_url("/pip/projects/{}/users/{}/roles/".format(tenant["uuid"], user["uuid"]))
+                self.assertIsInstance(roles, dict)
+                self.assertIn("roles", roles)
+                if len(roles["roles"]) > 0:
+                    # self.assertIs(len(roles["roles"]) > 0, True)
+                    for role in roles["roles"]:
+                        for key in [u'value', u'description', u'enabled', u'category', u'uuid']:
+                            self.assertIn(key, role)
+
+    # def test_groups(self):
+    #     data = get_url("/pip/projects/")
+    #     self.assertIsInstance(data, dict)
+    #     self.assertIn("projects", data)
+    #     self.assertIs(len(data["projects"]) > 0, True)
+    #     for tenant in data["projects"]:
+    #         users = get_url("/pip/projects/{}/users/".format(tenant["uuid"]))
+    #         self.assertIsInstance(users, dict)
+    #         self.assertIn("users", users)
+    #         self.assertIs(len(users["users"]) > 0, True)
+    #         for user in users["users"]:
+    #             groups = get_url("/pip/projects/{}/groups/{}/".format(tenant["uuid"], user["uuid"]))
+    #             self.assertIsInstance(groups, dict)
+    #             self.assertIn("groups", groups)
+    #             self.assertIs(len(groups["groups"]) > 0, True)
+    #             for key in [u'value', u'description', u'enabled', u'category', u'uuid']:
+    #                 self.assertIn(key, groups)
+
+    def test_role_assignments(self):
+        data = get_url("/pip/projects/")
+        self.assertIsInstance(data, dict)
+        self.assertIn("projects", data)
+        self.assertIs(len(data["projects"]) > 0, True)
+        for tenant in data["projects"]:
+            users = get_url("/pip/projects/{}/users/".format(tenant["uuid"]))
+            self.assertIsInstance(users, dict)
+            self.assertIn("users", users)
+            self.assertIs(len(users["users"]) > 0, True)
+            for user in users["users"]:
+                assignments = get_url("/pip/projects/{}/assignments/roles/{}/".format(tenant["uuid"], user["uuid"]))
+                self.assertIsInstance(assignments, dict)
+                self.assertIn("role_assignments", assignments)
+                if len(assignments["role_assignments"]) > 0:
+                    for assignment in assignments:
+                        for key in [u'subject', u'attributes', u'enabled', u'category', u'description', u'uuid']:
+                            self.assertIn(key, assignment)
+
+    # def test_group_assignments(self):
+    #     data = get_url("/pip/projects/")
+    #     self.assertIsInstance(data, dict)
+    #     self.assertIn("projects", data)
+    #     self.assertIs(len(data["projects"]) > 0, True)
+    #     for tenant in data["projects"]:
+    #         users = get_url("/pip/projects/{}/users/".format(tenant["uuid"]))
+    #         self.assertIsInstance(users, dict)
+    #         self.assertIn("users", users)
+    #         self.assertIs(len(users["users"]) > 0, True)
+    #         for user in users["users"]:
+    #             assignments = get_url("/pip/projects/{}/assignments/groups/{}/".format(tenant["uuid"], user["uuid"]))
+    #             print(assignments)
+    #             self.assertIsInstance(assignments, dict)
+    #             self.assertIn("group_assignments", assignments)
+    #             self.assertIs(len(assignments["group_assignments"]) > 0, True)
+    #             for key in [u'object', u'attributes', u'enabled', u'category', u'description', u'uuid']:
+    #                 self.assertIn(key, assignments)
+
+    def test_image_name(self):
+        data = get_url("/pip/nova/images/")
+        self.assertIsInstance(data, dict)
+        self.assertIn("images", data)
+        self.assertIs(len(data["images"]) > 0, True)
+        for image in data["images"]:
+            self.assertIsInstance(image, dict)
+            self.assertIn("name", image)
+            self.assertIn("uuid", image)
+
+    def test_flavor(self):
+        data = get_url("/pip/nova/flavors/")
+        self.assertIsInstance(data, dict)
+        self.assertIn("flavors", data)
+        self.assertIs(len(data["flavors"]) > 0, True)
+        for flavor in data["flavors"]:
+            self.assertIsInstance(flavor, dict)
+            self.assertIn("name", flavor)
+            self.assertIn("uuid", flavor)
+
+
 
 if __name__ == '__main__':
     unittest.main()
