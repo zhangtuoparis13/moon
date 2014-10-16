@@ -495,48 +495,85 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
             self.assertNotIn(_data["rules"]["relation_super"], ["high", "write", "low"])
 
 
-# class TestAdminInterface_InterExtension(unittest.TestCase):
-#
-#     def setUp(self):
-#         self.pip = get_pip()
-#
-#     def tearDown(self):
-#         pass
-#
-#     def test_inter_extensions(self):
-#         data = get_url("/json/inter-extensions/")
-#         extensions = get_url("/json/intra-extensions/")
-#         self.assertIs(len(extensions["intra_extensions"]) >= 2, True)
-#         self.assertIsInstance(data, dict)
-#         self.assertIs(len(data["inter_extensions"]) == 0, True)
-#         subjects_1 = get_url("/json/intra-extension/{}/subjects".format(extensions["intra_extensions"][0]))
-#         objects_2 = get_url("/json/intra-extension/{}/objects".format(extensions["intra_extensions"][1]))
-#         data = get_url(
-#             "/json/inter-extension/",
-#             post_data={
-#                 "requesting_intra_extension_uuid": extensions["intra_extensions"][0],
-#                 "requested_intra_extension_uuid": extensions["intra_extensions"][1],
-#                 "genre": "trust",
-#                 "sub_list": subjects_1,
-#                 "obj_list": objects_2,
-#                 "act": "write"
-#             })
-#         self.assertIsInstance(data, dict)
-#         self.assertIn('inter_extensions', data)
-#         self.assertIs(len(data["inter_extensions"]) > 0, True)
-#         # for ext in data["inter_extensions"]:
-#         #     _data = get_url("/json/inter-extension/"+ext+"/")
-#         #     self.assertIsInstance(_data, list)
-#         #     # for k in [u'admin', u'authz', u'_id']:
-#         #     #     self.assertIn(k, _data.keys())
-#         #     # for k in [u'perimeter', u'assignment', u'configuration', u'metadata']:
-#         #     #     self.assertIn(k, _data['admin'].keys())
-#         #     # for k in [u'perimeter', u'assignment', u'configuration', u'metadata']:
-#         #     #     self.assertIn(k, _data['authz'].keys())
-#         #     # self.assertIsInstance(_data["_id"], unicode)
-#         #     print(json.dumps(_data, indent=4))
-#
-#
+class TestAdminInterface_InterExtension(unittest.TestCase):
+
+    def setUp(self):
+        self.pip = get_pip()
+        self.policies = get_url("/json/intra-extensions/policies")
+        self.assertIsInstance(self.policies, dict)
+        my_policy = self.policies["policies"].keys()[0]
+        #Create first extension
+        self.new_ext1 = get_url("/json/intra-extension/", post_data={"policymodel": my_policy})
+        self.assertIsInstance(self.new_ext1, dict)
+        self.new_ext1_uuid = self.new_ext1["intra_extensions"][-1]
+        #Create second extension
+        self.new_ext2 = get_url("/json/intra-extension/", post_data={"policymodel": my_policy})
+        self.assertIsInstance(self.new_ext1, dict)
+        self.new_ext2_uuid = self.new_ext1["intra_extensions"][-1]
+        #Get Keystone tenants
+        self.tenants = get_url("/pip/projects/")
+        self.assertIsInstance(self.tenants, dict)
+        self.tenant_admin = None
+        self.tenant_demo = None
+        for tenant in self.tenants["projects"]:
+            if tenant["name"] == "admin":
+                self.tenant_admin = tenant["uuid"]
+            if tenant["name"] == "demo":
+                self.tenant_demo = tenant["uuid"]
+        #Create mapping between extensions and tenants
+        mapping = get_url(
+            "/json/super-extension/tenant/{}/intra_extension/{}".format(
+                self.tenant_admin,
+                self.new_ext1_uuid),
+            method="POST"
+        )
+        mapping = get_url(
+            "/json/super-extension/tenant/{}/intra_extension/{}".format(
+                self.tenant_demo,
+                self.new_ext2_uuid),
+            method="POST"
+        )
+
+    def tearDown(self):
+        #Delete intra_extensions
+        get_url("/json/intra-extension/"+self.new_ext1_uuid+"/", method="DELETE")
+        get_url("/json/intra-extension/"+self.new_ext2_uuid+"/", method="DELETE")
+
+    def test_inter_extensions(self):
+        data = get_url("/json/inter-extensions/")
+        extensions = get_url("/json/intra-extensions/")
+        self.assertIs(len(extensions["intra_extensions"]) >= 2, True)
+        self.assertIsInstance(data, dict)
+        self.assertIs(len(data["inter_extensions"]) == 0, True)
+        subjects_1 = get_url("/json/intra-extension/{}/subjects".format(extensions["intra_extensions"][0]))
+        objects_2 = get_url("/json/intra-extension/{}/objects".format(extensions["intra_extensions"][1]))
+        data = get_url(
+            "/json/inter-extension/",
+            post_data={
+                "requesting_intra_extension_uuid": extensions["intra_extensions"][0],
+                "requested_intra_extension_uuid": extensions["intra_extensions"][1],
+                "genre": "trust",
+                "sub_list": subjects_1,
+                "obj_list": objects_2,
+                "act": "write"
+            })
+        self.assertIsInstance(data, dict)
+        self.assertIn('inter_extensions', data)
+        print(data)
+        self.assertIs(len(data["inter_extensions"]) > 0, True)
+        # for ext in data["inter_extensions"]:
+        #     _data = get_url("/json/inter-extension/"+ext+"/")
+        #     self.assertIsInstance(_data, list)
+        #     # for k in [u'admin', u'authz', u'_id']:
+        #     #     self.assertIn(k, _data.keys())
+        #     # for k in [u'perimeter', u'assignment', u'configuration', u'metadata']:
+        #     #     self.assertIn(k, _data['admin'].keys())
+        #     # for k in [u'perimeter', u'assignment', u'configuration', u'metadata']:
+        #     #     self.assertIn(k, _data['authz'].keys())
+        #     # self.assertIsInstance(_data["_id"], unicode)
+        #     print(json.dumps(_data, indent=4))
+
+
 class TestPIPInterface(unittest.TestCase):
 
     def setUp(self):
