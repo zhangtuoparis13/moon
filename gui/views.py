@@ -78,7 +78,7 @@ def index(request):
     """
     Front interface of the application
     """
-    return render(request, "moon/base_site.html")
+    return render(request, "moon/index.html")
 
 
 @save_auth
@@ -92,7 +92,7 @@ def sync(request, uuid=None):
     sync_results = sync_results.replace("\n", "<br/>\n")
     sync_results = sync_results.replace("KO", "<span class=\"notauthorized\">Error</span>\n")
     sync_results = sync_results.replace("OK", "<span class=\"authorized\">OK</span>\n")
-    return render(request, "moon/base_site.html", {"sync_results": mark_safe(sync_results)})
+    return render(request, "moon/index.html", {"sync_results": mark_safe(sync_results)})
 
 @save_auth
 @login_required(login_url='/auth/login/')
