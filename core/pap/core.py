@@ -384,7 +384,21 @@ class PAP:
             sub_list,
             obj_list,
             act):
-        if self.inter_extensions.admin(user_uuid, "collaboration", "create") == "OK":
+        print("-------------------------------", user_uuid)
+        print(self.inter_extensions.admin(
+            requesting_intra_extension_uuid,
+            requested_intra_extension_uuid,
+            user_uuid,
+            "collaboration",
+            "create"))
+        print("-------------------------------")
+        #TODO use pdp_admin
+        if self.inter_extensions.admin(
+                requesting_intra_extension_uuid,
+                requested_intra_extension_uuid,
+                user_uuid,
+                "collaboration",
+                "create") == "OK":
         # if self.inter_extensions.admin(
         #         requesting_intra_extension_uuid=requesting_intra_extension_uuid,
         #         requested_intra_extension_uuid=requested_intra_extension_uuid,
