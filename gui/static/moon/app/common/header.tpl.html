@@ -1,0 +1,35 @@
+<div class="container banner">
+
+    <div class="row">
+    
+		<div class="col-md-3 sub-banner">
+            <img src="static/moon/img/logo-orange.gif" alt="Orange" />
+            <img src="static/moon/img/logo-openstack.png" alt="OpenStack" />
+        </div>
+        
+        <div class="col-md-6 center-block">
+            <h1 translate="moon.global.applicationName">Moon UI</h1>
+        </div>
+    
+    	<div class="col-md-3">
+	        <span class="pull-right">
+	            <a href="" ng-click="changeLocale('fr', $event)"><img src="static/moon/img/arrow-link.gif" alt="fr_" />fr</a>
+	            <a href="" ng-click="changeLocale('en', $event)"><img src="static/moon/img/arrow-link.gif" alt="en_" />en</a>
+	        </span>
+        </div>
+                
+    </div>
+
+    <div class="row">
+    
+        <ul class="nav nav-tabs">
+            <li ui-sref-active="active"><a ui-sref="moon.tenant" translate="moon.menu.tenants">Tenants</a></li>
+            <li ui-sref-active="active"><a ui-sref="moon.intraExtension" translate="moon.menu.intraExtensions">Intra Extensions</a></li>
+            <li ui-sref-active="active"><a ui-sref="moon.interExtension" translate="moon.menu.interExtensions">Inter Extensions</a></li>
+        </ul>
+                        
+    </div>
+
+</div>
+
+<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="alert.close()">{{alert.msg}}</alert>
