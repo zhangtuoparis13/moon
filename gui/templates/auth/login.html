@@ -1,25 +1,29 @@
 <!DOCTYPE html>
+
 <html>
+    
     <head>
         <title>Moon Login</title>
         {% load staticfiles %}
-        <link rel="stylesheet" href="{% static "moon/main.css" %}" />
     </head>
+    
     <body>
-        <h1 class="title">Moon: an other RBAC</h1>
-
-        <div id="leftpanel">
-
-        </div>
-
-        <div id="authpanel">
-            <form class="box" action="." method="POST">
-                Put your OpenStack credentials:<br/>
-                <input type="hidden" name='csrfmiddlewaretoken' value="{{ csrf_token }}"/>
-                <input type="hidden" name='auth_url' value="{{ auth_url }}"/>
-                {{ form.as_p }}
-                <button type="submit">Authenticate</button>
-            </form>
-        </div>
+    
+        <h1>Moon: an other RBAC</h1>
+                
+		<form action="." method="POST">
+     
+			<h2>Put your OpenStack credentials</h2>
+			    	
+	        <input type="hidden" name='csrfmiddlewaretoken' value="{{ csrf_token }}"/>
+         	<input type="hidden" name='auth_url' value="{{ auth_url }}"/>
+         
+         	{{ form.as_p }}
+         
+	        <button type="submit">Authenticate</button>
+	         
+		</form>
+			       
     </body>
+    
 </html>
