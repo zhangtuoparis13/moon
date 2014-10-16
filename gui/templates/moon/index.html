@@ -1,53 +1,70 @@
-{% load i18n %}
+{% load staticfiles %}
 <!DOCTYPE html>
-<html>
-    <head>
+
+<html xmlns:ng="http://angularjs.org" id="ng-app" ng-app="moonApp">
+
+    <head lang="en">
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        
         <title>Moon</title>
-        {% load staticfiles %}
-        <link rel="stylesheet" href="{% static "moon/main.css" %}" />
-         <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-        <script type="text/javascript" src="{% static "moon/main.js" %}"></script>
+
+        <link href="static/moon/favicon.ico" rel="shortcut icon"/>
+	
+        <link rel="stylesheet" href="static/moon/vendor/bootstrap/dist/css/bootstrap.css">
+        <link rel="stylesheet" href="static/moon/vendor/ng-table/ng-table.css">
+        <link rel="stylesheet" href="static/moon/vendor/select2/select2.css">
+        <link rel="stylesheet" href="static/moon/vendor/angular-motion/dist/angular-motion.css">
+
+        <link rel="stylesheet" href="static/moon/styles/main.css">
+        
     </head>
+
     <body>
-        <div id="title"><h1 class="title">
-            {% block ptitle %}{{ title }} {% trans 'Moon' %}{% endblock %}
-        </h1></div>
-        <div id="plogout"><a href="/auth/logout">Logout</a></div>
-        <div id="message">
+
+		{% verbatim %}
+
+        <div class="container">
+            <div ng-controller="HeaderController" ng-include="'static/moon/app/common/header.tpl.html'"></div>
         </div>
-        <div id="pmain">
-            {% block pmain %}{% endblock %}
-            <div id="pmenu">
-                <h1>Menu</h1>
-                {% block pmenu %}
-                    <ul>
-                        <li><a href="/intra-extensions">Intra Extensions</a></li>
-                        <li><a href="/inter-extensions">Inter Extensions</a></li>
-                        <li><a href="/tenants">Tenants</a></li>
-                        <li><a href="/roles">Roles</a></li>
-                        <li><a href="/logs">Last connections</a></li>
-                    </ul>
-                {% endblock %}
-
-            </div>
-            <div id="pcontent">
-                <h1>{% block tcontent %}Content{% endblock %}</h1>
-                {% block pcontent %}
-                    <a href="/sync" >Sync Moon database with Keystone and Nova Databases</a>
-                    {% if sync_results %}
-                        <p>{{ sync_results }}</p>
-                    {% endif %}
-                {% endblock %}
-
-            </div>
-{#            <div id="plogs">#}
-{#                {% block plogs %}#}
-{#                    <h1>LOGS</h1>#}
-{#                {% endblock %}#}
-{##}
-{#            </div>#}
+        
+        <div class="container">
+            <div ui-view></div>
         </div>
-
-
+        
+        <div class="container">
+            <div ng-controller="FooterController" ng-include="'static/moon/app/common/footer.tpl.html'"></div>
+        </div>
+       
+		{% endverbatim %}
+       
+       	<script defer type="text/javascript" src="static/moon/vendor/jquery/dist/jquery.js"></script>
+       	<script defer type="text/javascript" src="static/moon/vendor/underscore/underscore.js"></script>
+       
+       	
+        <script defer type="text/javascript" src="static/moon/vendor/angular/angular.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-route/angular-route.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-resource/angular-resource.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-cookies/angular-cookies.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-animate/angular-animate.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+		<script defer type="text/javascript" src="static/moon/vendor/angular-ui-router/release/angular-ui-router.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-translate/angular-translate.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-strap/dist/angular-strap.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-strap/dist/angular-strap.tpl.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/ng-table/ng-table.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/select2/select2.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-ui-select2/src/select2.js"></script>
+        
+        <script defer type="text/javascript" src="static/moon/app/app.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/common/common.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/tenant/tenant.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/intra-extension/intra-extension.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/inter-extension/inter-extension.js"></script>
+                                
     </body>
+    
 </html>
