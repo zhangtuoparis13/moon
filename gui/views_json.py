@@ -33,17 +33,17 @@ def send_json(data):
 ##########################################################
 
 
-@login_required(login_url='/auth/login/')
-@save_auth
-def intra_extensions(request, uuid=None):
-    pap = get_pap()
-    return send_json({"intra_extensions": pap.get_intra_extensions(user_id=request.session['user_id']).keys()})
+# @login_required(login_url='/auth/login/')
+# @save_auth
+# def intra_extensions(request, uuid=None):
+#     pap = get_pap()
+#     return send_json({"intra_extensions": pap.get_intra_extensions(user_id=request.session['user_id']).keys()})
 
 
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
-def intra_extension(request, uuid=None):
+def intra_extensions(request, uuid=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
@@ -52,8 +52,10 @@ def intra_extension(request, uuid=None):
                 user_id=request.session['user_id'],
                 extension_setting_name=data["policymodel"])
             return send_json({"intra_extensions": pap.get_intra_extensions(user_id=request.session['user_id']).keys()})
-    extension = pap.get_intra_extensions(user_id=request.session['user_id'])[uuid]
-    return send_json({"intra_extension": extension.get_data()})
+    if uuid:
+        extension = pap.get_intra_extensions(user_id=request.session['user_id'])[uuid]
+        return send_json({"intra_extensions": extension.get_data()})
+    return send_json({"intra_extensions": pap.get_intra_extensions(user_id=request.session['user_id']).keys()})
 
 
 @login_required(login_url='/auth/login/')
@@ -76,22 +78,22 @@ def policies(request):
 #####################################################
 
 
-@login_required(login_url='/auth/login/')
-@save_auth
-def subjects(request, uuid=None):
-    """
-    Retrieve information about subjects from Moon server
-    """
-    pap = get_pap()
-    return send_json({"subjects": list(
-        pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id'])
-    )})
+# @login_required(login_url='/auth/login/')
+# @save_auth
+# def subjects(request, uuid=None):
+#     """
+#     Retrieve information about subjects from Moon server
+#     """
+#     pap = get_pap()
+#     return send_json({"subjects": list(
+#         pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id'])
+#     )})
 
 
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
-def subject(request, uuid=None, subject_id=None):
+def subjects(request, uuid=None, subject_id=None):
     """
     Retrieve information about subjects from Moon server
     """
@@ -118,22 +120,22 @@ def subject(request, uuid=None, subject_id=None):
 #####################################################
 
 
-@login_required(login_url='/auth/login/')
-@save_auth
-def objects(request, uuid=None):
-    """
-    Retrieve information about objects from Moon server
-    """
-    pap = get_pap()
-    return send_json({'objects': list(
-        pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id'])
-    )})
+# @login_required(login_url='/auth/login/')
+# @save_auth
+# def objects(request, uuid=None):
+#     """
+#     Retrieve information about objects from Moon server
+#     """
+#     pap = get_pap()
+#     return send_json({'objects': list(
+#         pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id'])
+#     )})
 
 
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
-def object(request, uuid=None, object_id=None):
+def objects(request, uuid=None, object_id=None):
     """
     Retrieve information about objects from Moon server
     """
@@ -160,19 +162,19 @@ def object(request, uuid=None, object_id=None):
 ###############################################################
 
 
-@login_required(login_url='/auth/login/')
-@save_auth
-def subject_categories(request, uuid=None):
-    pap = get_pap()
-    return send_json({"subject_categories": list(
-        pap.get_subject_categories(extension_uuid=uuid, user_uuid=request.session['user_id'])
-    )})
+# @login_required(login_url='/auth/login/')
+# @save_auth
+# def subject_categories(request, uuid=None):
+#     pap = get_pap()
+#     return send_json({"subject_categories": list(
+#         pap.get_subject_categories(extension_uuid=uuid, user_uuid=request.session['user_id'])
+#     )})
 
 
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
-def subject_category(request, uuid=None, category_id=None):
+def subject_categories(request, uuid=None, category_id=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
@@ -195,19 +197,19 @@ def subject_category(request, uuid=None, category_id=None):
 ###############################################################
 
 
-@login_required(login_url='/auth/login/')
-@save_auth
-def object_categories(request, uuid=None):
-    pap = get_pap()
-    return send_json({"object_categories": list(
-        pap.get_object_categories(extension_uuid=uuid, user_uuid=request.session['user_id'])
-    )})
+# @login_required(login_url='/auth/login/')
+# @save_auth
+# def object_categories(request, uuid=None):
+#     pap = get_pap()
+#     return send_json({"object_categories": list(
+#         pap.get_object_categories(extension_uuid=uuid, user_uuid=request.session['user_id'])
+#     )})
 
 
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
-def object_category(request, uuid=None, category_id=None):
+def object_categories(request, uuid=None, category_id=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
@@ -231,24 +233,24 @@ def object_category(request, uuid=None, category_id=None):
 ######################################################################
 
 
-@login_required(login_url='/auth/login/')
-@save_auth
-def subject_category_values(request, uuid=None):
-    pap = get_pap()
-    results = dict()
-    for cat in pap.get_subject_categories(extension_uuid=uuid, user_uuid=request.session['user_id']):
-        results[cat] = list(pap.get_subject_category_values(
-            extension_uuid=uuid,
-            user_uuid=request.session['user_id'],
-            category_id=cat
-        ))
-    return send_json({"subject_category_values": results})
+# @login_required(login_url='/auth/login/')
+# @save_auth
+# def subject_category_values(request, uuid=None):
+#     pap = get_pap()
+#     results = dict()
+#     for cat in pap.get_subject_categories(extension_uuid=uuid, user_uuid=request.session['user_id']):
+#         results[cat] = list(pap.get_subject_category_values(
+#             extension_uuid=uuid,
+#             user_uuid=request.session['user_id'],
+#             category_id=cat
+#         ))
+#     return send_json({"subject_category_values": results})
 
 
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
-def subject_category_value(request, uuid=None, category_id=None, value=None):
+def subject_category_values(request, uuid=None, category_id=None, value=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
@@ -280,24 +282,24 @@ def subject_category_value(request, uuid=None, category_id=None, value=None):
 ######################################################################
 
 
-@login_required(login_url='/auth/login/')
-@save_auth
-def object_category_values(request, uuid=None):
-    pap = get_pap()
-    results = dict()
-    for cat in pap.get_object_categories(extension_uuid=uuid, user_uuid=request.session['user_id']):
-        results[cat] = list(pap.get_object_category_values(
-            extension_uuid=uuid,
-            user_uuid=request.session['user_id'],
-            category_id=cat
-        ))
-    return send_json({"object_category_values": results})
+# @login_required(login_url='/auth/login/')
+# @save_auth
+# def object_category_values(request, uuid=None):
+#     pap = get_pap()
+#     results = dict()
+#     for cat in pap.get_object_categories(extension_uuid=uuid, user_uuid=request.session['user_id']):
+#         results[cat] = list(pap.get_object_category_values(
+#             extension_uuid=uuid,
+#             user_uuid=request.session['user_id'],
+#             category_id=cat
+#         ))
+#     return send_json({"object_category_values": results})
 
 
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
-def object_category_value(request, uuid=None, category_id=None, value=None):
+def object_category_values(request, uuid=None, category_id=None, value=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
@@ -329,38 +331,38 @@ def object_category_value(request, uuid=None, category_id=None, value=None):
 ######################################################################
 
 
-@login_required(login_url='/auth/login/')
-@save_auth
-def subject_assignments(request, uuid=None):
-    pap = get_pap()
-    results = dict()
-    for cat in pap.get_subject_categories(extension_uuid=uuid, user_uuid=request.session['user_id']):
-        results[cat] = pap.get_subject_assignments(
-            extension_uuid=uuid,
-            user_uuid=request.session['user_id'],
-            category_id=cat
-        )
-    return send_json({"subject_assignments": results})
+# @login_required(login_url='/auth/login/')
+# @save_auth
+# def subject_assignments(request, uuid=None):
+#     pap = get_pap()
+#     results = dict()
+#     for cat in pap.get_subject_categories(extension_uuid=uuid, user_uuid=request.session['user_id']):
+#         results[cat] = pap.get_subject_assignments(
+#             extension_uuid=uuid,
+#             user_uuid=request.session['user_id'],
+#             category_id=cat
+#         )
+#     return send_json({"subject_assignments": results})
 
 
-@login_required(login_url='/auth/login/')
-@save_auth
-def object_assignments(request, uuid=None):
-    pap = get_pap()
-    results = dict()
-    for cat in pap.get_object_categories(extension_uuid=uuid, user_uuid=request.session['user_id']):
-        results[cat] = pap.get_object_assignments(
-            extension_uuid=uuid,
-            user_uuid=request.session['user_id'],
-            category_id=cat
-        )
-    return send_json({"object_assignments": results})
+# @login_required(login_url='/auth/login/')
+# @save_auth
+# def object_assignments(request, uuid=None):
+#     pap = get_pap()
+#     results = dict()
+#     for cat in pap.get_object_categories(extension_uuid=uuid, user_uuid=request.session['user_id']):
+#         results[cat] = pap.get_object_assignments(
+#             extension_uuid=uuid,
+#             user_uuid=request.session['user_id'],
+#             category_id=cat
+#         )
+#     return send_json({"object_assignments": results})
 
 
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
-def subject_assignment(request, uuid=None, category_id=None, subject_id=None, value=None):
+def subject_assignments(request, uuid=None, category_id=None, subject_id=None, value=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
@@ -391,7 +393,7 @@ def subject_assignment(request, uuid=None, category_id=None, subject_id=None, va
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
-def object_assignment(request, uuid=None, category_id=None, object_id=None, value=None):
+def object_assignments(request, uuid=None, category_id=None, object_id=None, value=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
@@ -424,19 +426,19 @@ def object_assignment(request, uuid=None, category_id=None, object_id=None, valu
 ######################################################################
 
 
-@login_required(login_url='/auth/login/')
-@save_auth
-def rules(request, uuid=None):
-    pap = get_pap()
-    return send_json({"rules": list(
-        pap.get_rules(extension_uuid=uuid, user_uuid=request.session['user_id'])
-    )})
+# @login_required(login_url='/auth/login/')
+# @save_auth
+# def rules(request, uuid=None):
+#     pap = get_pap()
+#     return send_json({"rules": list(
+#         pap.get_rules(extension_uuid=uuid, user_uuid=request.session['user_id'])
+#     )})
 
 
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
-def rule(request, uuid=None, sub_cat_value=None, obj_cat_value=None):
+def rules(request, uuid=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
@@ -454,6 +456,9 @@ def rule(request, uuid=None, sub_cat_value=None, obj_cat_value=None):
                 user_uuid=request.session['user_id'],
                 sub_cat_value=filter_input(data["sub_cat_value"]),
                 obj_cat_value=filter_input(data["obj_cat_value"]))
+    # return send_json({"rules": list(
+    #     pap.get_rules(extension_uuid=uuid, user_uuid=request.session['user_id'])
+    # )})
     return send_json(
         {"rules": pap.get_rules(extension_uuid=uuid, user_uuid=request.session['user_id'])}
     )
@@ -464,19 +469,19 @@ def rule(request, uuid=None, sub_cat_value=None, obj_cat_value=None):
 ######################################################################
 
 
-@login_required(login_url='/auth/login/')
-@save_auth
-def inter_extensions(request, uuid=None):
-    pap = get_pap()
-    return send_json({"inter_extensions": list(
-        pap.get_installed_inter_extensions(extension_uuid=uuid, user_uuid=request.session['user_id'])
-    )})
+# @login_required(login_url='/auth/login/')
+# @save_auth
+# def inter_extensions(request, uuid=None):
+#     pap = get_pap()
+#     return send_json({"inter_extensions": list(
+#         pap.get_installed_inter_extensions(extension_uuid=uuid, user_uuid=request.session['user_id'])
+#     )})
 
 
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
-def inter_extension(request, uuid=None):
+def inter_extensions(request, uuid=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
@@ -522,19 +527,19 @@ def inter_extension(request, uuid=None):
 ######################################################################
 
 
-@login_required(login_url='/auth/login/')
-@save_auth
-def super_extensions(request, uuid=None):
-    pap = get_pap()
-    return send_json({"super_extensions": list(
-        pap.list_mappings(user_id=request.session['user_id'])
-    )})
+# @login_required(login_url='/auth/login/')
+# @save_auth
+# def super_extensions(request, uuid=None):
+#     pap = get_pap()
+#     return send_json({"super_extensions": list(
+#         pap.list_mappings(user_id=request.session['user_id'])
+#     )})
 
 
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
-def super_extension(request, tenant_uuid=None, intra_extension_uuid=None):
+def super_extensions(request, tenant_uuid=None, intra_extension_uuid=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         # data = json.loads(request.read())
