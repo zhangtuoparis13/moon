@@ -16,7 +16,6 @@ sys_logger = get_sys_logger()
 
 def translate_uuid(function):
     def wrapped(*args, **kwargs):
-        print(args, kwargs)
         if "user_id" in kwargs:
             try:
                 user = get_pip().get_subjects("admin", kwargs["user_id"]).next()
@@ -235,6 +234,7 @@ class PAP:
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_categories", "read") == "OK":
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_subject_categories()
+        return list()
 
     def add_subject_category(self, extension_uuid, user_uuid, category_id):
         if extension_uuid in self.intra_extensions.keys():
@@ -250,6 +250,7 @@ class PAP:
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "object_categories", "read") == "OK":
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_object_categories()
+        return list()
 
     def add_object_category(self, extension_uuid, user_uuid, category_id):
         if extension_uuid in self.intra_extensions.keys():
@@ -265,6 +266,7 @@ class PAP:
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_category_values", "read") == "OK":
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_subject_category_values(category_id)
+        return list()
 
     def add_subject_category_value(self, extension_uuid, user_uuid, category_id, category_value):
         if extension_uuid in self.intra_extensions.keys():
@@ -281,6 +283,7 @@ class PAP:
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "object_category_values", "read") == "OK":
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_object_category_values(category_id)
+        return list()
 
     def add_object_category_value(self, extension_uuid, user_uuid, category_id, category_value):
         if extension_uuid in self.intra_extensions.keys():
@@ -297,6 +300,7 @@ class PAP:
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_category_assignments", "read") == "OK":
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_subject_assignments(category_id)
+        return list()
 
     def add_subject_assignment(self, extension_uuid, user_uuid, category_id, subject_id, category_value):
         if extension_uuid in self.intra_extensions.keys():
@@ -316,6 +320,7 @@ class PAP:
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "object_category_assignments", "read") == "OK":
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_object_assignments(category_id)
+        return list()
 
     def add_object_assignment(self, extension_uuid, user_uuid, category_id, object_id, category_value):
         if extension_uuid in self.intra_extensions.keys():
@@ -335,6 +340,7 @@ class PAP:
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "rules", "read") == "OK":
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_rules()
+        return dict()
 
     def add_rule(self, extension_uuid, user_uuid, sub_cat_value, obj_cat_value):
         if extension_uuid in self.intra_extensions.keys():
