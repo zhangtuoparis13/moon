@@ -20,8 +20,8 @@ angular.module('moonApp.common', ['ngResource', 'ngAnimate', 'mgcrea.ngStrap'])
         
     ])  
     
-    .controller('FooterController', ['$scope', '$modal', 'VersionService',
-                                     function ($scope, $modal, VersionService) {       
+    .controller('FooterController', ['$scope', '$modal', 'versionService',
+                                     function ($scope, $modal, versionService) {       
     	
     		$scope.browsersModal = $modal({scope: $scope, template: 'static/moon/app/common/compatibility.tpl.html', show: false});
     		
@@ -30,7 +30,7 @@ angular.module('moonApp.common', ['ngResource', 'ngAnimate', 'mgcrea.ngStrap'])
     		};
     		
     		$scope.version = 'SNAPSHOT';
-    		$scope.version = VersionService.version.get(function(data) { 
+    		$scope.version = versionService.version.get(function(data) { 
     			$scope.version = data.version;
     		});
     	
@@ -38,7 +38,7 @@ angular.module('moonApp.common', ['ngResource', 'ngAnimate', 'mgcrea.ngStrap'])
         
     ])  
     
-    .factory('AlertService', ['$rootScope', '$timeout', 
+    .factory('alertService', ['$rootScope', '$timeout', 
                               function($rootScope, $timeout) {
     	
             var alertService = null;
@@ -91,7 +91,7 @@ angular.module('moonApp.common', ['ngResource', 'ngAnimate', 'mgcrea.ngStrap'])
     
     ])
         
-    .factory('BrowserService', ['$rootScope', 
+    .factory('browserService', ['$rootScope', 
                                
         function($rootScope) {
     	
@@ -127,7 +127,7 @@ angular.module('moonApp.common', ['ngResource', 'ngAnimate', 'mgcrea.ngStrap'])
     
     ])
     
-    .factory('VersionService', function($resource) { 
+    .factory('versionService', function($resource) { 
                                    	
         return {
             

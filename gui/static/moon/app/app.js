@@ -14,14 +14,14 @@ var moonApp = angular.module('moonApp', ['ngRoute',
                                          'mgcrea.ngStrap',
                                          'ui.select2',
                                          'moonApp.common',
-                                         'moonApp.tenant',
+                                         'moonApp.project',
                                          'moonApp.intraExtension',
                                          'moonApp.interExtension'])
 
     .config(['$urlRouterProvider', '$translateProvider', '$stateProvider',
         function($urlRouterProvider, $translateProvider, $stateProvider) {
     	
-    		$urlRouterProvider.when('', '/tenant');
+    		$urlRouterProvider.when('', '/project');
     		
             $urlRouterProvider.otherwise('/404');
 
