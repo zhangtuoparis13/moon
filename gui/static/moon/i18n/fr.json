@@ -14,9 +14,35 @@
 	    },
 	    
 	    "menu": {
-	    	"tenants": "Tenants",
+	    	"projects": "Projects",
 	    	"intraExtensions": "Intra Extensions",
 	    	"interExtensions": "Inter Extensions"
+	    },
+	    
+	    "project": {
+	    	"title": "Tenants",
+	    	"form": {
+	    		"search": {
+	    			"placeholder": "Rechercher des Tenants",
+	    			"reset": "Effacer"
+	    		}
+	    	},
+	    	"table": {
+	    		"name": "Nom",
+	    		"domain": "Domaine",
+	    		"managed": "Supervisé",
+	    		"enabled": "Activé",
+	    		"description": "Description",
+	    		"loading": "Chargement des Projets",
+	    		"notFound": "Il n'existe aucun Projets"
+	    	},
+	    	"actions": {
+	    		"title": "Actions",
+	    		"detail": "Détail",
+	    		"delete": "Supprimer",
+	    		"add": "Ajouter un Projet"    	
+	    	}
+	    
 	    }
 	    
 	}

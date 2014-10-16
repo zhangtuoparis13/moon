@@ -14,9 +14,35 @@
 	    },
 	    
 	    "menu": {
-	    	"tenants": "Tenants",
+	    	"projects": "Projects",
 	    	"intraExtensions": "Intra Extensions",
 	    	"interExtensions": "Inter Extensions"
+	    },
+	    
+	    "project": {
+	    	"title": "Tenants",
+	    	"form": {
+	    		"search": {
+	    			"placeholder": "Search Tenants",
+	    			"reset": "Reset"
+	    		}
+	    	},
+	    	"table": {
+	    		"name": "Name",
+	    		"domain": "Domain",
+	    		"managed": "Managed",
+	    		"enabled": "Enabled",
+	    		"description": "Description",
+	    		"loading": "Loading Projects",
+	    		"notFound": "There is not Projects"
+	    	},
+	    	"actions": {
+	    		"title": "Actions",
+	    		"detail": "Detail",
+	    		"delete": "Delete",
+	    		"add": "Add Project"    	
+	    	}
+	    
 	    }
     
     }
