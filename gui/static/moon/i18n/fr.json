@@ -1,0 +1,24 @@
+{
+	"moon": {
+	
+	    "global": {
+	    	"applicationName": "Moon",
+	        "404": "Page non trouvée"
+	    },
+	    
+	    "compatibility": {
+	    	"label": "Compatibilité navigateurs Web",
+	    	"title": "Compatibilité avec les navigateurs existants",
+	    	"content": "Moon est compatible avec : <ul><li>Internet Explorer 9 ou +</li><li><a href=\"http://www.mozilla.org/fr/firefox/\">Firefox</a> à jour</li><li><a href=\"http://chrome.google.com\">Chrome</a> à jour</li></ul>",
+	    	"close": "Fermer"
+	    },
+	    
+	    "menu": {
+	    	"tenants": "Tenants",
+	    	"intraExtensions": "Intra Extensions",
+	    	"interExtensions": "Inter Extensions"
+	    }
+	    
+	}
+        
+}
