@@ -16,6 +16,7 @@ sys_logger = get_sys_logger()
 
 def translate_uuid(function):
     def wrapped(*args, **kwargs):
+        print(args, kwargs)
         if "user_id" in kwargs:
             try:
                 user = get_pip().get_subjects("admin", kwargs["user_id"]).next()
@@ -366,37 +367,31 @@ class PAP:
     # Specific functions for Inter Extensions
     #########################################
 
-    def get_installed_inter_extensions(self, extension_uuid, user_uuid):
+    @translate_uuid
+    def get_installed_inter_extensions(self, user_id, extension_uuid):
         if extension_uuid in self.inter_extensions.get_installed_inter_extensions():
-            if self.inter_extensions[extension_uuid].admin(user_uuid, "inter_extension", "read") == "OK":
+            if self.inter_extensions[extension_uuid].admin(user_id, "inter_extension", "read") == "OK":
                 for inter_ext in self.inter_extensions.get_installed_inter_extensions().values():
                     if extension_uuid and extension_uuid == inter_ext.get_uuid():
                         yield inter_ext
                     elif not extension_uuid:
                         yield inter_ext
 
+    @translate_uuid
     def create_collaboration(
             self,
-            user_uuid,
+            user_id,
             requesting_intra_extension_uuid,
             requested_intra_extension_uuid,
             genre,
             sub_list,
             obj_list,
             act):
-        print("-------------------------------", user_uuid)
-        print(self.inter_extensions.admin(
-            requesting_intra_extension_uuid,
-            requested_intra_extension_uuid,
-            user_uuid,
-            "collaboration",
-            "create"))
-        print("-------------------------------")
         #TODO use pdp_admin
         if self.inter_extensions.admin(
                 requesting_intra_extension_uuid,
                 requested_intra_extension_uuid,
-                user_uuid,
+                user_id,
                 "collaboration",
                 "create") == "OK":
         # if self.inter_extensions.admin(
@@ -415,8 +410,9 @@ class PAP:
             )
         return None, None
 
-    def destroy_collaboration(self, user_uuid, inter_extension_uuid, vent_uuid):
-        if self.inter_extensions.admin(user_uuid, "collaboration", "destroy") == "OK":
+    @translate_uuid
+    def destroy_collaboration(self, user_id, inter_extension_uuid, vent_uuid):
+        if self.inter_extensions.admin(user_id, "collaboration", "destroy") == "OK":
         # if self.inter_extensions.admin(user_uuid, "inter_extension", "write") == "OK":
             self.inter_extensions.destroy_collaboration(
                 inter_extension_uuid=inter_extension_uuid,
@@ -426,57 +422,57 @@ class PAP:
     # Misc functions for Intra/Inter-Extensions
     ###########################################
 
-    def sync_db_with_keystone(self, tenant_uuid=None):
-        pip = get_pip()
-        logs = ""
-        json_data = None
-        pip.set_creds_for_tenant()
-        for tenant in self.get_tenants():
-            #TODO: if new tenant
-            #       -> need to add a new intra extension
-            #       -> need to add a new inter extension with a new vent
-            #TODO: if not new tenant -> need to synchronize users, roles, ...
-            # extension = get_intra_dd().sync_extension(
-            #     tenant_uuid=tenant["uuid"],
-            #     users=self.get_subjects(client),
-            #     roles=self.get_roles(client),
-            #     groups=self.get_groups(client))
-            if tenant_uuid and not tenant_uuid == tenant["uuid"]:
-                continue
-            SYNC_CONF_FILENAME = getattr(settings, "SYNC_CONF_FILENAME", None)
-            sync = json.loads(open(SYNC_CONF_FILENAME).read())
-            if SYNC_CONF_FILENAME:
-                if tenant["name"] not in map(lambda x: x["name"], sync["tenants"]):
-                    logs += "Tenant {} not in configuration file -> KO".format(tenant["name"])
-                    continue
-                for conf in sync["tenants"]:
-                    if conf["name"] == tenant["name"]:
-                        if not os.path.isfile(conf["extension_conf"]):
-                            raise Exception("Unable to find configuration file {}".format(conf["extension_conf"]))
-                        json_data = json.loads(file(conf["extension_conf"]).read())
-            sys_logger.info("Syncing tenant {}".format(tenant["name"]))
-            logs += "Syncing {}".format(tenant["name"])
-            try:
-                pip.set_creds_for_tenant(tenant["name"])
-            except pip.Unauthorized:
-                sys_logger.warning("Cannot authenticate in tenant {}".format(tenant["name"]))
-                logs += " KO (Cannot authenticate in tenant)\n"
-                continue
-            self.inter_extensions().add_tenant(
-                name=tenant["name"],
-                description=tenant["description"],
-                enabled=tenant["enabled"],
-                domain=tenant["domain"],
-                uuid=tenant["uuid"]
-            )
-            try:
-                self.new_intra_extension(tenant=tenant, json_data=json_data)
-                logs += " OK\n"
-            except pip.Forbidden:
-                sys_logger.warning("Cannot list users in tenant {}".format(tenant["name"]))
-                logs += " KO (Cannot list users in tenant)\n"
-                continue
-        return logs
+    # def sync_db_with_keystone(self, tenant_uuid=None):
+    #     pip = get_pip()
+    #     logs = ""
+    #     json_data = None
+    #     pip.set_creds_for_tenant()
+    #     for tenant in self.get_tenants():
+    #         #TODO: if new tenant
+    #         #       -> need to add a new intra extension
+    #         #       -> need to add a new inter extension with a new vent
+    #         #TODO: if not new tenant -> need to synchronize users, roles, ...
+    #         # extension = get_intra_dd().sync_extension(
+    #         #     tenant_uuid=tenant["uuid"],
+    #         #     users=self.get_subjects(client),
+    #         #     roles=self.get_roles(client),
+    #         #     groups=self.get_groups(client))
+    #         if tenant_uuid and not tenant_uuid == tenant["uuid"]:
+    #             continue
+    #         SYNC_CONF_FILENAME = getattr(settings, "SYNC_CONF_FILENAME", None)
+    #         sync = json.loads(open(SYNC_CONF_FILENAME).read())
+    #         if SYNC_CONF_FILENAME:
+    #             if tenant["name"] not in map(lambda x: x["name"], sync["tenants"]):
+    #                 logs += "Tenant {} not in configuration file -> KO".format(tenant["name"])
+    #                 continue
+    #             for conf in sync["tenants"]:
+    #                 if conf["name"] == tenant["name"]:
+    #                     if not os.path.isfile(conf["extension_conf"]):
+    #                         raise Exception("Unable to find configuration file {}".format(conf["extension_conf"]))
+    #                     json_data = json.loads(file(conf["extension_conf"]).read())
+    #         sys_logger.info("Syncing tenant {}".format(tenant["name"]))
+    #         logs += "Syncing {}".format(tenant["name"])
+    #         try:
+    #             pip.set_creds_for_tenant(tenant["name"])
+    #         except pip.Unauthorized:
+    #             sys_logger.warning("Cannot authenticate in tenant {}".format(tenant["name"]))
+    #             logs += " KO (Cannot authenticate in tenant)\n"
+    #             continue
+    #         self.inter_extensions().add_tenant(
+    #             name=tenant["name"],
+    #             description=tenant["description"],
+    #             enabled=tenant["enabled"],
+    #             domain=tenant["domain"],
+    #             uuid=tenant["uuid"]
+    #         )
+    #         try:
+    #             self.new_intra_extension(tenant=tenant, json_data=json_data)
+    #             logs += " OK\n"
+    #         except pip.Forbidden:
+    #             sys_logger.warning("Cannot list users in tenant {}".format(tenant["name"]))
+    #             logs += " KO (Cannot list users in tenant)\n"
+    #             continue
+    #     return logs
 
     def delete_tables(self):
         self.intra_extensions.delete_tables()
