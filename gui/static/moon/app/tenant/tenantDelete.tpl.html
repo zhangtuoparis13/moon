@@ -1,0 +1,27 @@
+<div class="modal" tabindex="-1" role="modalDeleteTenant">
+
+	<div class="modal-dialog">
+
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<button type="button" class="close" ng-click="$hide()">&times;</button>
+				<h4 class="modal-title" translate="moon.tenant.remove.title"></h4>
+			</div>
+			
+			<div class="modal-body">
+				<span translate="moon.tenant.remove.content" translate-values="{ tenantName: remove.tenant.name }"></span>
+			</div>
+			
+			<div class="modal-footer">
+				<div class="btn-toolbar" style="float: right;">
+					<button ng-click="$hide()" class="btn btn-default" translate="moon.tenant.remove.action.cancel">Cancel</button>
+					<button ng-click="remove.remove(remove.tenant)" class="btn btn-warning" translate="moon.tenant.remove.action.delete">Delete</button>
+				</div>
+			</div>
+			
+		</div>
+		
+	</div>
+	
+</div>

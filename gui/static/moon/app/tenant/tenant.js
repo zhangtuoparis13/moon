@@ -170,7 +170,40 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
 		 * delete
 		 */
 		
+        $scope.remove = { tenant: null, modal: null };
 		
+		$scope.remove.modal = $modal({scope: $scope, template: 'static/moon/app/tenant/tenantDelete.tpl.html', show: false});
+		
+		$scope.remove.display = function (tenant) {
+            
+			$scope.remove.tenant = tenant;
+        	$scope.remove.modal.$promise.then($scope.remove.modal.show);
+            
+        };
+                
+        $scope.remove.remove = function(tenant) {
+        	        	
+        	tenantService.tenant.remove({project_uuid: tenant.uuid}, function(data) {
+        		
+        		$scope.tenants = _.chain($scope.tenants).reject({uuid: tenant.uuid}).value();
+        		
+        		$scope.reloadTable();
+        		
+        		$translate('moon.tenant.remove.success', { tenantName: tenant.name }).then(function (translatedValue) {
+        			alertService.alertSuccess(translatedValue);
+                });	
+        		
+        	}, function(response) {
+        		
+        		$translate('moon.tenant.remove.error', { tenantName: tenant.name }).then(function (translatedValue) {
+        			alertService.alertError(translatedValue);
+                });	
+        		
+        	});
+        	
+        	$scope.remove.modal.hide();
+        	
+        };
 		
 		/*
 		 * view
@@ -196,7 +229,8 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
 			tenant: $resource('./pip/projects/:project_uuid', {}, {
      	   		query: { method: 'GET', isArray: false },
      	   		get: { method: 'GET', isArray: false },
-     	   		create: { method: 'POST' }
+     	   		create: { method: 'POST' },
+     	   		remove: { method: 'DELETE' }
     	   	}),
     	   	
     	   	subject: $resource('./pip/projects/:project_uuid/users/:user_uuid', {}, {
