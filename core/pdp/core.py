@@ -218,4 +218,4 @@ def pdp_admin(requesting_intra_extension_uuid, requested_intra_extension_uuid, s
     if requesting_intra_extension_uuid == requested_intra_extension_uuid:
         return intra_extensions.admin(sub, obj, act)
     else:
-        inter_extensions.admin(requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act)
+        return inter_extensions.admin(requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act)
