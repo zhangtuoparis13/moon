@@ -2,7 +2,7 @@
  * @author arnaud marhin<arnaud.marhin@orange.com>
  */
 
-angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap'])
+angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgSwitchery'])
 
 	.config(function($stateProvider) {
 		 
@@ -19,6 +19,8 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap'])
 	.controller('TenantController', ['$scope', '$filter', '$modal', '$translate', 'ngTableParams', 'alertService', 'tenantService', 
 	                                   function ($scope, $filter, $modal, $translate, ngTableParams, alertService, tenantService) {
 
+		$scope.form = {};
+		
 		$scope.tenantsLoading = true;
 		$scope.tenants = [];
 		 
@@ -52,15 +54,21 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap'])
 			$scope: { $data: {} }
 	        
 		});
+		
+		$scope.reloadTable = function() {
+			
+			$scope.tenantsTable.total($scope.tenants.length);
+			$scope.tenantsTable.reload();
+			
+		};
     	
-		tenantService.project.query({}, function(data) {
+		tenantService.tenant.query({}, function(data) {
         	
 			$scope.tenantsLoading = false;
 			$scope.tenants = data.projects;
-			        	
-			$scope.tenantsTable.total($scope.tenants.length);
-			$scope.tenantsTable.reload();
-        	
+			
+			$scope.reloadTable();
+			        	        	
 		}, function(response) {
 			
 			$scope.tenantsLoading = false;
@@ -96,6 +104,75 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap'])
 		};
 		
 		/*
+		 * add
+		 */
+		
+		$scope.defaultTenant = function() { 
+			return { name: null, description: null, enabled: true, domain: 'Default'} 
+		}; 
+		
+		$scope.add = { tenant: null, modal: null };
+		
+		$scope.add.modal = $modal({scope: $scope, template: 'static/moon/app/tenant/tenantAdd.tpl.html', show: false});
+		
+		$scope.add.display = function () {
+            
+			$scope.add.tenant = $scope.defaultTenant();
+        	$scope.add.modal.$promise.then($scope.add.modal.show);
+            
+        };
+                
+        $scope.add.create = function(tenant) {
+        	
+        	if($scope.form.add.$invalid) {
+        	
+	        	if($scope.form.add.name.$pristine && $scope.form.add.name.$invalid) {
+	    			
+	        		$scope.form.add.name.$dirty = true;
+	        		$scope.form.add.name.$setValidity('required', false);
+	    			
+	    		} 
+	        	
+	        	if($scope.form.add.domain.$pristine && $scope.form.add.domain.$invalid) {
+	    			
+	        		$scope.form.add.domain.$dirty = true;
+	        		$scope.form.add.domain.$setValidity('required', false);
+	    			
+	    		}
+        	
+        	} else {
+        	
+	        	tenantService.tenant.create({}, tenant, function(data) {
+	        		
+	        		$scope.tenants.push(tenant);
+	        		
+	        		$scope.reloadTable();
+	        		
+	        		$translate('moon.tenant.add.success', { tenantName: tenant.name }).then(function (translatedValue) {
+	        			alertService.alertSuccess(translatedValue);
+	                });	
+	        		
+	        	}, function(response) {
+	        		
+	        		$translate('moon.tenant.add.error', { tenantName: tenant.name }).then(function (translatedValue) {
+	        			alertService.alertError(translatedValue);
+	                });	
+	        		
+	        	});
+	        	
+	        	$scope.add.modal.hide();
+        	
+    		}
+        	
+        };
+		
+		/*
+		 * delete
+		 */
+		
+		
+		
+		/*
 		 * view
 		 */
 		
@@ -116,9 +193,10 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap'])
                                    	
 		return {
                  	   	
-			project: $resource('./pip/projects/:project_uuid', {}, {
+			tenant: $resource('./pip/projects/:project_uuid', {}, {
      	   		query: { method: 'GET', isArray: false },
-     	   		get: { method: 'GET', isArray: false }
+     	   		get: { method: 'GET', isArray: false },
+     	   		create: { method: 'POST' }
     	   	}),
     	   	
     	   	subject: $resource('./pip/projects/:project_uuid/users/:user_uuid', {}, {

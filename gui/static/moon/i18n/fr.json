@@ -44,7 +44,30 @@
 	    	"view": {
 	    		"title": "Détail du Tenant",
 	    		"close": "Fermer"
-	    	}   
+	    	},
+	    	"add": {
+	    		"title": "Ajouter un nouveau Tenant",
+	    		"form": {
+		    		"name": "Nom",
+		    		"description": "Description",
+		    		"enabled": "Activé",
+		    		"domain": "Domaine"
+	    		},
+	    		"action": {
+		    		"create": "Créer le Tenant",
+		    		"cancel": "Annuler"
+	    		},
+	    		"check": {
+	    			"name": {
+	    				"required": "Le nom est requis"
+	    			},
+	    			"domain": {
+	    				"required": "Le domaine est requis"
+	    			}
+	    		},
+	    		"error": "Impossible de créer le Tenant `{{tenantName}}`",
+	    		"success": "Le Tenant `{{tenantName}}` a été créé avec succès"
+	    	}
 	    }	    
 	}        
 }

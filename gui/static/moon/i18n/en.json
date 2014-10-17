@@ -36,7 +36,7 @@
 	    		"title": "Actions",
 	    		"detail": "Detail",
 	    		"delete": "Delete",
-	    		"add": "Add Tenant"    	
+	    		"add": "Add Tenant"
 	    	},
 	    	"error": {
 	    		"query": "Unable to retrieve Tenants"
@@ -44,6 +44,29 @@
 	    	"view": {
 	    		"title": "Tenant details",
 	    		"close": "Close"
+	    	},
+	    	"add": {
+	    		"title": "Add new Tenant",
+	    		"form": {
+		    		"name": "Name",
+		    		"description": "Description",
+		    		"enabled": "Enabled",
+		    		"domain": "Domain"
+	    		},
+	    		"action": {
+		    		"create": "Create Tenant",
+		    		"cancel": "Cancel"
+	    		},
+	    		"check": {
+	    			"name": {
+	    				"required": "Name is required"
+	    			},
+	    			"domain": {
+	    				"required": "Domain is required"
+	    			}
+	    		},
+	    		"error": "Unable to create Tenant `{{tenantName}}`",
+	    		"success": "Tenant `{{tenantName}}` successfully created"
 	    	}
 	    }
     }
