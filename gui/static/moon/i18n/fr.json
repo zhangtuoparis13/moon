@@ -17,29 +17,27 @@
 	    },
 	    "tenant": {
 	    	"title": "Tenants",
-	    	"form": {
+	    	"list": {
 	    		"search": {
 	    			"placeholder": "Rechercher des Tenants",
 	    			"reset": "Effacer"
-	    		}
-	    	},
-	    	"table": {
-	    		"name": "Nom",
-	    		"domain": "Domaine",
-	    		"managed": "Supervisé",
-	    		"enabled": "Activé",
-	    		"description": "Description",
-	    		"loading": "Chargement des Tenants",
-	    		"notFound": "Il n'existe aucun Tenants"
-	    	},
-	    	"action": {
-	    		"title": "Actions",
-	    		"detail": "Détail",
-	    		"delete": "Supprimer",
-	    		"add": "Ajouter un Tenant"    	
-	    	},
-	    	"error": {
-	    		"query": "Impossible de récupérer la liste des Tenants"
+	    		},
+		    	"table": {
+		    		"name": "Nom",
+		    		"domain": "Domaine",
+		    		"managed": "Supervisé",
+		    		"enabled": "Activé",
+		    		"description": "Description",
+		    		"loading": "Chargement des Tenants",
+		    		"notFound": "Il n'existe aucun Tenants"
+		    	},
+		    	"action": {
+		    		"title": "Actions",
+		    		"detail": "Détail",
+		    		"delete": "Supprimer",
+		    		"add": "Ajouter un Tenant"    	
+		    	},
+		    	"error": "Impossible de récupérer la liste des Tenants"
 	    	},
 	    	"view": {
 	    		"title": "Détail du Tenant",
@@ -67,6 +65,16 @@
 	    		},
 	    		"error": "Impossible de créer le Tenant `{{tenantName}}`",
 	    		"success": "Le Tenant `{{tenantName}}` a été créé avec succès"
+	    	},
+	    	"remove": {
+	    		"title": "Supprimer un Tenant",
+	    		"content": "Voulez-vous supprimer le Tenant `{{tenantName}}` ?",
+	    		"action": {
+	    			"cancel": "Annuler",
+	    			"delete": "Supprimer"
+	    		},
+	    		"error": "Impossible de supprime le Tenant `{{tenantName}}`",
+	    		"success": "Le Tenant `{{tenantName}}` a été supprimé avec succès"
 	    	}
 	    }	    
 	}        

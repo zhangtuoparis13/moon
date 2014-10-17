@@ -3,12 +3,12 @@
 	<form class="form-inline pull-right">
 	    <div class="form-group">
 	        <div>
-	            <input id="searchTenant" data-ng-model="query" type="text" class="form-control" placeholder="{{'moon.tenant.form.search.placeholder' | translate}}" />
+	            <input id="searchTenant" data-ng-model="query" type="text" class="form-control" placeholder="{{'moon.tenant.list.search.placeholder' | translate}}" />
 	        </div>
 	    </div>
 	    <div class="form-group">
 	        <div>
-	            <button type="submit" class="btn btn-danger" data-ng-click="reset()" translate="moon.tenant.form.search.reset">Reset</button>
+	            <button type="submit" class="btn btn-danger" data-ng-click="reset()" translate="moon.tenant.list.search.reset">Reset</button>
 	        </div>
 	    </div>
 	</form>
@@ -39,29 +39,29 @@
                 	<th class="customTables sortable"
 						ng-class="{ 'sort-asc': tenantsTable.isSortBy('name', 'asc'), 'sort-desc': tenantsTable.isSortBy('name', 'desc') }"
 						ng-click="tenantsTable.sorting('name', tenantsTable.isSortBy('name', 'asc') ? 'desc' : 'asc')">
-							<div translate="moon.tenant.table.name">Name</div>
+							<div translate="moon.tenant.list.table.name">Name</div>
 					</th>
                 
 					<th class="customTables sortable"
 						ng-class="{ 'sort-asc': tenantsTable.isSortBy('domain', 'asc'), 'sort-desc': tenantsTable.isSortBy('domain', 'desc') }"
 						ng-click="tenantsTable.sorting('domain', tenantsTable.isSortBy('domain', 'asc') ? 'desc' : 'asc')">
-							<div translate="moon.tenant.table.domain">Domain</div>
+							<div translate="moon.tenant.list.table.domain">Domain</div>
 					</th>
 						
 					<th class="customTables sortable"
 						ng-class="{ 'sort-asc': tenantsTable.isSortBy('managed', 'asc'), 'sort-desc': tenantsTable.isSortBy('managed', 'desc') }"
 						ng-click="tenantsTable.sorting('managed', tenantsTable.isSortBy('managed', 'asc') ? 'desc' : 'asc')">
-							<div translate="moon.tenant.table.managed">Managed</div>
+							<div translate="moon.tenant.list.table.managed">Managed</div>
 					</th>
 					 
                     <th class="customTables sortable"
 						ng-class="{ 'sort-asc': tenantsTable.isSortBy('enabled', 'asc'), 'sort-desc': tenantsTable.isSortBy('enabled', 'desc') }"
 						ng-click="tenantsTable.sorting('enabled', tenantsTable.isSortBy('enabled', 'asc') ? 'desc' : 'asc')">
-							<div translate="moon.tenant.table.enabled">Enabled</div>
+							<div translate="moon.tenant.list.table.enabled">Enabled</div>
 					</th>
 					
                     <th class="customTables">
-						<div translate="moon.tenant.action.title">Actions</div>
+						<div translate="moon.tenant.list.action.title">Actions</div>
 					</th>
                     
                 </tr>
@@ -70,13 +70,13 @@
             
             <tbody ng-if="tenantsLoading">
             	<tr>
-            		<td colspan="5"><span translate="moon.tenant.table.loading">Loading Tenants</span></td>
+            		<td colspan="5"><span translate="moon.tenant.list.table.loading">Loading Tenants</span></td>
             	</tr>
             </tbody>
             
             <tbody ng-if="!tenantsLoading && tenants.length == 0">
             	<tr>
-            		<td colspan="5"><span translate="moon.tenant.table.notFound">There is no Tenants</span></td>
+            		<td colspan="5"><span translate="moon.tenant.list.table.notFound">There is no Tenants</span></td>
             	</tr>
             </tbody>
             
@@ -95,7 +95,7 @@
 	                </td>
 	                <td>
 		                <div class="btn-group" dropdown>
-		                        <button type="button" class="btn btn-default" translate="moon.tenant.action.title">Actions</button>
+		                        <button type="button" class="btn btn-default" translate="moon.tenant.list.action.title">Actions</button>
 		                        <button type="button" class="btn btn-default dropdown-toggle">
 		                            <span class="caret"></span>
 		                            <span class="sr-only">Split Action button!</span>
@@ -103,14 +103,14 @@
 		                        <ul class="dropdown-menu" role="menu">
 		                            <li>
 			                            <a href="" ng-click="view.display(tenant)">
-				                            <span class="glyphicon glyphicon-chevron-right" />
-				                            <medium for="detail" class="control-label" translate="moon.tenant.action.detail">Detail</medium>	   
+				                            <span class="glyphicon glyphicon-chevron-right"></span>
+				                            <medium for="detail" class="control-label" translate="moon.tenant.list.action.detail">Detail</medium>	   
 			                            </a>
 									</li>
 		                            <li>
-			                            <a href="" ng-click="delete.display(tenant)">
-			                            	<span class="glyphicon glyphicon-chevron-right"/>
-			                            	<medium for="delete" class="control-label"  translate="moon.tenant.action.delete">Delete</medium>
+			                            <a href="" ng-click="remove.display(tenant)">
+			                            	<span class="glyphicon glyphicon-chevron-right"></span>
+			                            	<medium for="delete" class="control-label"  translate="moon.tenant.list.action.delete">Delete</medium>
 			                            </a>
 		                            </li>
 		                       </ul>
@@ -129,7 +129,7 @@
 		<div class="form-inline form-group">
            	<a href="" ng-click="add.display()" class="btn btn-default">
             	<span class="glyphicon glyphicon-plus-sign"></span>
-                <span translate="moon.tenant.action.add">Add Tenant</span>
+                <span translate="moon.tenant.list.action.add">Add Tenant</span>
 			</a>
 		</div>
     </div>

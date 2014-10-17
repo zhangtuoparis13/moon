@@ -17,29 +17,27 @@
 	    },
 	    "tenant": {
 	    	"title": "Tenants",
-	    	"form": {
+	    	"list": {
 	    		"search": {
 	    			"placeholder": "Search Tenants",
 	    			"reset": "Reset"
-	    		}
-	    	},
-	    	"table": {
-	    		"name": "Name",
-	    		"domain": "Domain",
-	    		"managed": "Managed",
-	    		"enabled": "Enabled",
-	    		"description": "Description",
-	    		"loading": "Loading Tenants",
-	    		"notFound": "There is not Tenants"
-	    	},
-	    	"action": {
-	    		"title": "Actions",
-	    		"detail": "Detail",
-	    		"delete": "Delete",
-	    		"add": "Add Tenant"
-	    	},
-	    	"error": {
-	    		"query": "Unable to retrieve Tenants"
+		    	},
+		    	"table": {
+		    		"name": "Name",
+		    		"domain": "Domain",
+		    		"managed": "Managed",
+		    		"enabled": "Enabled",
+		    		"description": "Description",
+		    		"loading": "Loading Tenants",
+		    		"notFound": "There is not Tenants"
+		    	},
+		    	"action": {
+		    		"title": "Actions",
+		    		"detail": "Detail",
+		    		"delete": "Delete",
+		    		"add": "Add Tenant"
+		    	},
+		    	"error": "Unable to retrieve Tenants"
 	    	},
 	    	"view": {
 	    		"title": "Tenant details",
@@ -67,6 +65,16 @@
 	    		},
 	    		"error": "Unable to create Tenant `{{tenantName}}`",
 	    		"success": "Tenant `{{tenantName}}` successfully created"
+	    	},
+	    	"remove": {
+	    		"title": "Delete Tenant",
+	    		"content": "Are you sure you want to delete `{{tenantName}}` Tenant ?",
+	    		"action": {
+	    			"cancel": "Cancel",
+	    			"delete": "Delete"
+	    		},
+	    		"error": "Unable to delete Tenant `{{tenantName}}`",
+	    		"success": "Tenant `{{tenantName}}` successfully deleted"
 	    	}
 	    }
     }
