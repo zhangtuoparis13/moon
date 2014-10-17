@@ -3,12 +3,12 @@
 	<form class="form-inline pull-right">
 	    <div class="form-group">
 	        <div>
-	            <input id="searchProject" data-ng-model="query" type="text" class="form-control" placeholder="{{'moon.project.form.search.placeholder' | translate}}" />
+	            <input id="searchTenant" data-ng-model="query" type="text" class="form-control" placeholder="{{'moon.tenant.form.search.placeholder' | translate}}" />
 	        </div>
 	    </div>
 	    <div class="form-group">
 	        <div>
-	            <button type="submit" class="btn btn-danger" data-ng-click="reset()" translate="moon.project.form.search.reset">Reset</button>
+	            <button type="submit" class="btn btn-danger" data-ng-click="reset()" translate="moon.tenant.form.search.reset">Reset</button>
 	        </div>
 	    </div>
 	</form>
@@ -22,13 +22,13 @@
 
 	<div class="table-responsive" role="table">
 	
-        <table class="table table-striped table-hover" ng-table="projectsTable">
+        <table class="table table-striped table-hover" ng-table="tenantsTable">
         
             <colgroup>
                 <col class="col-sm-2" />
                 <col class="col-sm-2" />
                 <col class="col-sm-1" />
-                <col class="col-sm-1" />
+                <col class="col-sm-2" />
                 <col class="col-sm-1" />
             </colgroup>
             
@@ -37,76 +37,82 @@
                 <tr>
                 
                 	<th class="customTables sortable"
-						ng-class="{ 'sort-asc': projectsTable.isSortBy('name', 'asc'), 'sort-desc': projectsTable.isSortBy('name', 'desc') }"
-						ng-click="projectsTable.sorting('name', projectsTable.isSortBy('name', 'asc') ? 'desc' : 'asc')">
-							<div translate="moon.project.table.name">Name</div>
+						ng-class="{ 'sort-asc': tenantsTable.isSortBy('name', 'asc'), 'sort-desc': tenantsTable.isSortBy('name', 'desc') }"
+						ng-click="tenantsTable.sorting('name', tenantsTable.isSortBy('name', 'asc') ? 'desc' : 'asc')">
+							<div translate="moon.tenant.table.name">Name</div>
 					</th>
                 
 					<th class="customTables sortable"
-						ng-class="{ 'sort-asc': projectsTable.isSortBy('domain', 'asc'), 'sort-desc': projectsTable.isSortBy('domain', 'desc') }"
-						ng-click="projectsTable.sorting('domain', projectsTable.isSortBy('domain', 'asc') ? 'desc' : 'asc')">
-							<div translate="moon.project.table.domain">Domain</div>
+						ng-class="{ 'sort-asc': tenantsTable.isSortBy('domain', 'asc'), 'sort-desc': tenantsTable.isSortBy('domain', 'desc') }"
+						ng-click="tenantsTable.sorting('domain', tenantsTable.isSortBy('domain', 'asc') ? 'desc' : 'asc')">
+							<div translate="moon.tenant.table.domain">Domain</div>
 					</th>
 						
 					<th class="customTables sortable"
-						ng-class="{ 'sort-asc': projectsTable.isSortBy('managed', 'asc'), 'sort-desc': projectsTable.isSortBy('managed', 'desc') }"
-						ng-click="projectsTable.sorting('managed', projectsTable.isSortBy('managed', 'asc') ? 'desc' : 'asc')">
-							<div translate="moon.project.table.managed">Managed</div>
+						ng-class="{ 'sort-asc': tenantsTable.isSortBy('managed', 'asc'), 'sort-desc': tenantsTable.isSortBy('managed', 'desc') }"
+						ng-click="tenantsTable.sorting('managed', tenantsTable.isSortBy('managed', 'asc') ? 'desc' : 'asc')">
+							<div translate="moon.tenant.table.managed">Managed</div>
 					</th>
 					 
                     <th class="customTables sortable"
-						ng-class="{ 'sort-asc': projectsTable.isSortBy('enabled', 'asc'), 'sort-desc': projectsTable.isSortBy('enabled', 'desc') }"
-						ng-click="projectsTable.sorting('enabled', projectsTable.isSortBy('enabled', 'asc') ? 'desc' : 'asc')">
-							<div translate="moon.project.table.enabled">Enabled</div>
+						ng-class="{ 'sort-asc': tenantsTable.isSortBy('enabled', 'asc'), 'sort-desc': tenantsTable.isSortBy('enabled', 'desc') }"
+						ng-click="tenantsTable.sorting('enabled', tenantsTable.isSortBy('enabled', 'asc') ? 'desc' : 'asc')">
+							<div translate="moon.tenant.table.enabled">Enabled</div>
 					</th>
 					
                     <th class="customTables">
-						<div translate="moon.project.actions.title">Actions</div>
+						<div translate="moon.tenant.action.title">Actions</div>
 					</th>
                     
                 </tr>
                 
             </thead>
             
-            <tbody ng-if="projectsLoading">
+            <tbody ng-if="tenantsLoading">
             	<tr>
-            		<td colspan="5"><span translate="moon.project.table.loading">Loading projects</span></td>
+            		<td colspan="5"><span translate="moon.tenant.table.loading">Loading Tenants</span></td>
             	</tr>
             </tbody>
             
-            <tbody ng-if="!projectsLoading && projects.length == 0">
+            <tbody ng-if="!tenantsLoading && tenants.length == 0">
             	<tr>
-            		<td colspan="5"><span translate="moon.project.table.notFound">There is no projects</span></td>
+            		<td colspan="5"><span translate="moon.tenant.table.notFound">There is no Tenants</span></td>
             	</tr>
             </tbody>
             
-            <tbody ng-if="!projectsLoading && projects.length  > 0">
+            <tbody ng-if="!tenantsLoading && tenants.length  > 0">
             
-	            <tr ng-repeat="project in $data | filter:search | orderBy:sort:reverse">
-	                <td>{{project.name}} </td>
-	               	<td>{{project.domain}}</td>
-	                <td>{{project.managed}}</td>
-	                <td>{{project.enabled}}</td>
+	            <tr ng-repeat="tenant in $data | filter:search | orderBy:sort:reverse">
+	                <td>{{tenant.name}} </td>
+	               	<td>{{tenant.domain}}</td>
+	                 <td>
+	                	<img ng-if="tenant.managed" src="static/moon/img/tick.png" alt="Managed" />
+	                	<img ng-if="!tenant.managed" src="static/moon/img/stop.png" alt="Not managed" />
+	                </td>
+	                <td>
+	                	<img ng-if="tenant.enabled" src="static/moon/img/tick.png" alt="Enabled" />
+	                	<img ng-if="!tenant.enabled" src="static/moon/img/stop.png" alt="Not enabled" />
+	                </td>
 	                <td>
 		                <div class="btn-group" dropdown>
-		                        <button type="button" class="btn btn-default" translate="moon.project.actions.title">Actions</button>
+		                        <button type="button" class="btn btn-default" translate="moon.tenant.action.title">Actions</button>
 		                        <button type="button" class="btn btn-default dropdown-toggle">
 		                            <span class="caret"></span>
 		                            <span class="sr-only">Split Action button!</span>
 		                        </button>
 		                        <ul class="dropdown-menu" role="menu">
 		                            <li>
-			                            <a href="" ng-click="displayLogoutModal(project)">
+			                            <a href="" ng-click="view.display(tenant)">
 				                            <span class="glyphicon glyphicon-chevron-right" />
-				                            <medium for="detail" class="control-label" translate="moon.project.actions.detail">Detail</medium>	   
+				                            <medium for="detail" class="control-label" translate="moon.tenant.action.detail">Detail</medium>	   
 			                            </a>
 									</li>
-		                            <!-- <li>
-			                            <a href="" ng-click="displayDeleteModal(project)">
+		                            <li>
+			                            <a href="" ng-click="delete.display(tenant)">
 			                            	<span class="glyphicon glyphicon-chevron-right"/>
-			                            	<medium for="delete" class="control-label"  translate="moon.project.actions.delete">Delete</medium>
+			                            	<medium for="delete" class="control-label"  translate="moon.tenant.action.delete">Delete</medium>
 			                            </a>
-		                            </li> -->
+		                            </li>
 		                       </ul>
 		               </div>
 	               </td>
@@ -119,15 +125,13 @@
         
 	</div>
 
-	<!-- 
    	<div class="container">
 		<div class="form-inline form-group">
            	<a href="" class="btn btn-default">
             	<span class="glyphicon glyphicon-plus-sign"></span>
-                <span translate="moon.project.actions.add">Add project</span>
+                <span translate="moon.tenant.action.add">Add Tenant</span>
                </a>
 		</div>
     </div>
-     -->
     
 </div>

@@ -2,35 +2,35 @@
  * @author arnaud marhin<arnaud.marhin@orange.com>
  */
 
-angular.module('moonApp.project', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap'])
+angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap'])
 
 	.config(function($stateProvider) {
 		 
 		$stateProvider
 	        
-		.state('moon.project', {
-			url: '/project',
-			controller: 'ProjectController',
-            templateUrl: 'static/moon/app/project/project.tpl.html'
+		.state('moon.tenant', {
+			url: '/tenant',
+			controller: 'TenantController',
+            templateUrl: 'static/moon/app/tenant/tenant.tpl.html'
 		});
 		 
 	})
 	 
-	.controller('ProjectController', ['$scope', '$filter', '$modal', '$translate', 'ngTableParams', 'alertService', 'projectService', 
-	                                   function ($scope, $filter, $modal, $translate, ngTableParams, alertService, projectService) {
+	.controller('TenantController', ['$scope', '$filter', '$modal', '$translate', 'ngTableParams', 'alertService', 'tenantService', 
+	                                   function ($scope, $filter, $modal, $translate, ngTableParams, alertService, tenantService) {
 
-		$scope.projectsLoading = true;
-		$scope.projects = [];
+		$scope.tenantsLoading = true;
+		$scope.tenants = [];
 		 
 		/*
 		 * list
 		 */
 		 
 		var getData = function() {
-			 return $scope.projects;
+			 return $scope.tenants;
 		};  	
     	
-		$scope.projectsTable = new ngTableParams({
+		$scope.tenantsTable = new ngTableParams({
 	    
 			page: 1,            // show first page
 			count: 10,          // count per page
@@ -53,14 +53,23 @@ angular.module('moonApp.project', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap'])
 	        
 		});
     	
-		projectService.project.query({}, function(data) {
+		tenantService.project.query({}, function(data) {
         	
-			$scope.projectsLoading = false;
-			$scope.projects = data.projects;
+			$scope.tenantsLoading = false;
+			$scope.tenants = data.projects;
+			        	
+			$scope.tenantsTable.total($scope.tenants.length);
+			$scope.tenantsTable.reload();
         	
-			$scope.projectsTable.total($scope.projects.length);
-			$scope.projectsTable.reload();
-        	
+		}, function(response) {
+			
+			$scope.tenantsLoading = false;
+			$scope.tenants = [];
+			
+			$translate('moon.tenant.error.query').then(function (translatedValue) {
+    			alertService.alertError(translatedValue);
+            });	
+			
 		});
 		 
 		/*
@@ -69,10 +78,10 @@ angular.module('moonApp.project', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap'])
 		 
 		$scope.query = '';
 	    	
-		$scope.search = function (project){
+		$scope.search = function (tenant){
 		    
-			if (project.name.indexOf($scope.query)!=-1 
-					|| project.domain.indexOf($scope.query)!=-1) {
+			if (tenant.name.indexOf($scope.query)!=-1 
+					|| tenant.domain.indexOf($scope.query)!=-1) {
 				
 		        return true;
 		    
@@ -85,10 +94,25 @@ angular.module('moonApp.project', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap'])
 		$scope.reset = function() {
 			$scope.query = '';
 		};
+		
+		/*
+		 * view
+		 */
+		
+		$scope.view = { tenant: null, modal: null, subjects: [], objects: [], roles: [], groups: [], roleAssignments: [], groupAssignments: [] };
+		
+		$scope.view.modal = $modal({scope: $scope, template: 'static/moon/app/tenant/tenantView.tpl.html', show: false});
+		
+		$scope.view.display = function (tenant) {
+            
+        	$scope.view.tenant = tenant;
+        	$scope.view.modal.$promise.then($scope.view.modal.show);
+            
+        };
                 		 
 	}])
 	 
-	.factory('projectService', function($resource) { 
+	.factory('tenantService', function($resource) { 
                                    	
 		return {
                  	   	
@@ -97,8 +121,8 @@ angular.module('moonApp.project', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap'])
      	   		get: { method: 'GET', isArray: false }
     	   	}),
     	   	
-    	   	user: $resource('./pip/projects/:project_uuid/users/:user_uuid', {}, {
-    	   		query: { method: 'GET', isArray: true },
+    	   	subject: $resource('./pip/projects/:project_uuid/users/:user_uuid', {}, {
+    	   		query: { method: 'GET', isArray: false },
      	   		get: { method: 'GET', isArray: false }    	   		
     	   	}),
     	   	
