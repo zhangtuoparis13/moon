@@ -207,3 +207,5 @@ OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = 'Default'
 
 # NOTE(saschpe): The openstack_auth.user.Token object isn't JSON-serializable ATM
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
+APPEND_SLASH = False
