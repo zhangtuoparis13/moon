@@ -51,6 +51,8 @@ SYNC_CONF_FILENAME = "/etc/moon/tenants.json"
 
 UNMANAGED_OBJECTS = ("", "token", )
 
+APPEND_SLASH = False
+
 OS_USERNAME = "admin"
 OS_PASSWORD = "P4ssw0rd"
 OS_TENANT_NAME = "admin"
