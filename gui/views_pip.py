@@ -4,15 +4,25 @@ import json
 from django.http import HttpResponse
 from moon.core.pip import get_pip
 from moon.gui.views import save_auth
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
 
 logger = logging.getLogger("moon.django")
 
 
+@csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
 def projects(request, project_uuid=None):
     pip = get_pip()
+    if request.META['REQUEST_METHOD'] == "POST":
+        data = json.loads(request.read())
+        for key in ("name", "description", "enabled", "domain"):
+            if key not in data.keys():
+                return HttpResponse(json.dumps({"projects": list(pip.get_tenants(uuid=project_uuid))}))
+        pip.add_tenant(data)
+    elif request.META['REQUEST_METHOD'] == "DELETE":
+        pip.del_tenant(project_uuid)
     return HttpResponse(json.dumps({"projects": list(pip.get_tenants(uuid=project_uuid))}))
 
 

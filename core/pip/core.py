@@ -51,6 +51,9 @@ class PIP:
         :param token:
         :return:
         """
+        #FIXME The connection must be done with the token given by the user
+        #FIXME Actually, the connection comes from user/pass in moon.settings
+        #FIXME This is a vulnerability
         # from keystoneclient.v3 import client as keystone_client
         # auth_url = getattr(settings, "OPENSTACK_KEYSTONE_URL")
         # self.kclient = keystone_client.Client(token=token.id, auth_url=auth_url)
@@ -345,6 +348,19 @@ class PIP:
             yield t
 
     def add_tenant(self, tenant):
+        """Add a new tenant
+
+        :param tenant: dictionary describing the tenant
+        :return: the id of the new tenant
+
+        The dictionary must be:
+        {
+            "name": "...",
+            "description": "...",
+            "enabled": True,
+            "domain": "Default"
+        }
+        """
         for key in ("name", "description", "enabled", "domain"):
             if key not in tenant.keys():
                 return None
