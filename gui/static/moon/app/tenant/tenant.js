@@ -144,7 +144,11 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
         	
 	        	tenantService.tenant.create({}, tenant, function(data) {
 	        		
-	        		$scope.tenants.push(tenant);
+	        		var created = _(data.projects).find(function(aTenant) {
+	        			return tenant.name === aTenant.name;
+	        		});
+	        		
+	        		$scope.tenants.push(created);
 	        		
 	        		$scope.reloadTable();
 	        		
