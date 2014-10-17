@@ -25,6 +25,8 @@
     "jquery": "2.1.1",
     "ng-table": "0.3.3",
     "select2": "3.4.8",
+    "switchery": "0.6.2",
+    "ng-switchery": "1.0.0-alpha7",
     "underscore": "1.7.0"
   }
 }
