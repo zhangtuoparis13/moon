@@ -602,6 +602,26 @@ class TestPIPInterface(unittest.TestCase):
             for key in [u'domain', u'managed', u'uuid', u'description', u'enabled', u'name']:
                 self.assertIn(key, _data["projects"][0])
             self.assertEqual(tenant["uuid"], _data["projects"][0]["uuid"])
+        #Try creating one tenant
+        tenant = {
+            "name": "TestTenantForMoon",
+            "description": "...",
+            "enabled": True,
+            "domain": "Default"
+        }
+        data = get_url("/pip/projects/", post_data=tenant)
+        self.assertIsInstance(data, dict)
+        self.assertIn("projects", data)
+        self.assertIs(len(data["projects"]) > 0, True)
+        tenant_names = map(lambda x: x["name"], data["projects"])
+        self.assertIn(tenant["name"], tenant_names)
+        for _tenant in data["projects"]:
+            if _tenant["name"] == tenant["name"]:
+                tenant["uuid"] = _tenant["uuid"]
+        #Try destroying one tenant
+        data = get_url("/pip/projects/"+tenant["uuid"]+"/", method="DELETE")
+        tenant_names = map(lambda x: x["name"], data["projects"])
+        self.assertNotIn(tenant["name"], tenant_names)
 
     def test_users(self):
         data = get_url("/pip/projects/")
