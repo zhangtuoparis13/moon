@@ -1,25 +1,21 @@
 {
 	"moon": {
-	
 	    "global": {
 	    	"applicationName": "Moon",
 	        "404": "Page non trouvée"
 	    },
-	    
 	    "compatibility": {
 	    	"label": "Compatibilité navigateurs Web",
 	    	"title": "Compatibilité avec les navigateurs existants",
 	    	"content": "Moon est compatible avec : <ul><li>Internet Explorer 9 ou +</li><li><a href=\"http://www.mozilla.org/fr/firefox/\">Firefox</a> à jour</li><li><a href=\"http://chrome.google.com\">Chrome</a> à jour</li></ul>",
 	    	"close": "Fermer"
 	    },
-	    
 	    "menu": {
-	    	"projects": "Projects",
-	    	"intraExtensions": "Intra Extensions",
-	    	"interExtensions": "Inter Extensions"
+	    	"tenant": "Tenants",
+	    	"intraExtension": "Intra Extensions",
+	    	"interExtension": "Inter Extensions"
 	    },
-	    
-	    "project": {
+	    "tenant": {
 	    	"title": "Tenants",
 	    	"form": {
 	    		"search": {
@@ -33,18 +29,22 @@
 	    		"managed": "Supervisé",
 	    		"enabled": "Activé",
 	    		"description": "Description",
-	    		"loading": "Chargement des Projets",
-	    		"notFound": "Il n'existe aucun Projets"
+	    		"loading": "Chargement des Tenants",
+	    		"notFound": "Il n'existe aucun Tenants"
 	    	},
-	    	"actions": {
+	    	"action": {
 	    		"title": "Actions",
 	    		"detail": "Détail",
 	    		"delete": "Supprimer",
-	    		"add": "Ajouter un Projet"    	
-	    	}
-	    
-	    }
-	    
-	}
-        
+	    		"add": "Ajouter un Tenant"    	
+	    	},
+	    	"error": {
+	    		"query": "Impossible de récupérer la liste des Tenants"
+	    	},
+	    	"view": {
+	    		"title": "Détail du Tenant",
+	    		"close": "Fermer"
+	    	}   
+	    }	    
+	}        
 }
