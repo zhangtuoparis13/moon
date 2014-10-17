@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 
 urlpatterns = patterns(
     'gui.views_json',
-    url(r'intra-extensions/$',
+    url(r'intra-extensions/?$',
         'intra_extensions'),
     # url(r'intra-extension/?$',
     #     'intra_extension'),
