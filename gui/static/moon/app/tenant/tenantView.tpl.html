@@ -6,16 +6,265 @@
 
 			<div class="modal-header">
 				<button type="button" class="close" ng-click="$hide()">&times;</button>
-				<h4 class="modal-title" translate="moon.tenant.view.title"></h4>
+				<h4 class="modal-title" translate="moon.tenant.view.title" translate-values="{tenantName: view.tenant.name}"></h4>
 			</div>
 			
 			<div class="modal-body">
+			
+				<!-- OBJECTS -->
+			
+				<div class="row">
+					<div class="col-md-12">
+						<h1 class="pull-left" translate="moon.tenant.view.object.title">Objects</h1>
+					</div>
+				</div>
+								
+				<div class="row">
 				
+					<div class="col-md-3"><label translate="moon.tenant.view.object.name">Name</label></div>
+	                <div class="col-md-3"><label translate="moon.tenant.view.object.category">Category</label></div>
+					<div class="col-md-4"><label translate="moon.tenant.view.object.description">Description</label></div>
+	                <div class="col-md-2"><label translate="moon.tenant.view.object.enabled">Enabled</label></div>
+	                
+				</div>
+				
+				<div class="row" ng-repeat="object in view.objects">
+				
+					<div class="col-md-3">{{object.name}}</div> 
+                 	<div class="col-md-3">{{object.category}}</div>
+                 	<div class="col-md-4">{{object.description}}</div>
+                 	<div class="col-md-2">
+                    	<img ng-if="object.enabled" src="static/moon/img/tick.png" alt="Enabled" />
+                		<img ng-if="!object.enabled" src="static/moon/img/stop.png" alt="Not enabled" />
+                    </div>
+		                    	                                
+                </div>
+                                
+   				<div>&nbsp;</div>
+				<div>&nbsp;</div>
+				
+				<!-- SUBJECTS -->
+				
+				<div class="row">
+					<div class="col-md-12">
+						<h1 class="pull-left" translate="moon.tenant.view.subject.title">Subjects</h1>
+					</div>
+				</div>
+				
+				<div>&nbsp;</div>
+								
+				<div class="row">
+				
+					<div class="col-md-3"><label translate="moon.tenant.view.subject.name">Name</label></div>
+	                <div class="col-md-3"><label translate="moon.tenant.view.subject.domain">Domain</label></div>
+	                <div class="col-md-4"><label translate="moon.tenant.view.subject.mail">Mail</label></div>
+	                <div class="col-md-2"><label translate="moon.tenant.view.subject.enabled">Enabled</label></div>
+	                
+				</div>
+				
+				<div class="row">
+				
+					<div class="col-md-3">
+						<ui-select ng-model="view.selectedSubject" on-select="view.updateSubjectRelationships(view.tenant, $item)"> 
+	                    	<ui-select-match placeholder="(None)">{{$select.selected.name}}</ui-select-match>
+	                    	<ui-select-choices repeat="subject in view.subjects">
+	                    		<div ng-value="subject">{{subject.name}}</div>
+             				</ui-select-choices>
+	                    </ui-select>
+					</div> 
+                 	<div class="col-md-3">{{view.selectedSubject.domain}}</div>
+					<div class="col-md-4">{{view.selectedSubject.mail}}</div>
+                 	<div class="col-md-2">
+                 		<div ng-if="view.selectedSubject != null">
+	                    	<img ng-if="view.selectedSubject.enabled" src="static/moon/img/tick.png" alt="Enabled" />
+	                		<img ng-if="!view.selectedSubject.enabled" src="static/moon/img/stop.png" alt="Not enabled" />
+                		</div>
+                    </div>
+		                    	                                
+                </div>
+                
+                <div>&nbsp;</div>
+                <div>&nbsp;</div>
+                
+                <!-- ROLES -->
+                
+               	<div ng-if="view.selectedSubject != null">
+                
+	               	<div class="row">
+						<div class="col-md-12">
+							<h1 class="pull-left" translate="moon.tenant.view.role.title">Roles</h1>
+						</div>
+					</div>
+					
+					<div>&nbsp;</div>
+									
+					<div class="row">
+					
+						<div class="col-md-3"><label translate="moon.tenant.view.role.category">Category</label></div>
+						<div class="col-md-3"><label translate="moon.tenant.view.role.value">Value</label></div>
+		                <div class="col-md-4"><label translate="moon.tenant.view.role.description">Description</label></div>
+		                <div class="col-md-2"><label translate="moon.tenant.view.role.enabled">Enabled</label></div>
+		                
+					</div>
+					
+					<div class="row" ng-if="view.rolesLoading">
+						<div class="col-md-12" translate="moon.tenant.view.role.loading">Loading Roles</div>
+					</div>
+					
+					<div class="row" ng-if="!view.rolesLoading && view.roles.length == 0">
+						<div class="col-md-12" translate="moon.tenant.view.role.notFound">Roles not found</div>
+					</div>
+					
+					<div class="row" ng-if="!view.rolesLoading && view.roles.length > 0" ng-repeat="role in view.roles">
+					
+						<div class="col-md-3">{{role.category}}</div> 
+	                 	<div class="col-md-3">{{role.value}}</div>
+	                 	<div class="col-md-4">{{role.description}}</div>
+	                 	<div class="col-md-2">
+	                    	<img ng-if="role.enabled" src="static/moon/img/tick.png" alt="Enabled" />
+	                		<img ng-if="!role.enabled" src="static/moon/img/stop.png" alt="Not enabled" />
+	                    </div>
+			                    	                                
+	                </div>
+	                
+	                <div>&nbsp;</div>
+	                <div>&nbsp;</div>
+                
+                </div>
+                
+                <!-- ROLE ASSIGNMENTS -->
+                
+               	<div ng-if="view.selectedSubject != null">
+                
+	               	<div class="row">
+						<div class="col-md-12">
+							<h1 class="pull-left" translate="moon.tenant.view.roleAssignment.title">Role Assignments</h1>
+						</div>
+					</div>
+					
+					<div>&nbsp;</div>
+									
+					<div class="row">
+					
+						<div class="col-md-3"><label translate="moon.tenant.view.roleAssignment.category">Category</label></div>
+						<div class="col-md-3"><label translate="moon.tenant.view.roleAssignment.attributes">Attributes</label></div>
+		                <div class="col-md-6"><label translate="moon.tenant.view.roleAssignment.description">Description</label></div>
+		                
+					</div>
+					
+					<div class="row" ng-if="view.roleAssignmentsLoading">
+						<div class="col-md-12" translate="moon.tenant.view.roleAssignment.loading">Loading Role Assignments</div>
+					</div>
+					
+					<div class="row" ng-if="!view.roleAssignmentsLoading && view.roleAssignments.length == 0">
+						<div class="col-md-12" translate="moon.tenant.view.roleAssignment.notFound">Role Assignments not found</div>
+					</div>
+					
+					<div class="row" ng-if="!view.roleAssignmentsLoading && view.roleAssignments.length > 0" ng-repeat="roleAssignment in view.roleAssignments">
+					
+						<div class="col-md-3">{{roleAssignment.category}}</div> 
+	                 	<div class="col-md-3">{{roleAssignment.attributes}}</div>
+	                 	<div class="col-md-6">{{roleAssignment.description}}</div>
+			                    	                                
+	                </div>
+	                
+	                <div>&nbsp;</div>
+	                <div>&nbsp;</div>
+                
+                </div>
+                
+                <!-- GROUPS -->
+                
+               	<div ng-if="view.selectedSubject != null">
+                
+	               	<div class="row">
+						<div class="col-md-12">
+							<h1 class="pull-left" translate="moon.tenant.view.group.title">Groups</h1>
+						</div>
+					</div>
+					
+					<div>&nbsp;</div>
+									
+					<div class="row">
+					
+						<div class="col-md-3"><label translate="moon.tenant.view.group.category">Category</label></div>
+						<div class="col-md-3"><label translate="moon.tenant.view.group.value">Value</label></div>
+		                <div class="col-md-4"><label translate="moon.tenant.view.group.description">Description</label></div>
+		                <div class="col-md-2"><label translate="moon.tenant.view.group.enabled">Enabled</label></div>
+		                
+					</div>
+					
+					<div class="row" ng-if="view.groupsLoading">
+						<div class="col-md-12" translate="moon.tenant.view.group.loading">Loading Groups</div>
+					</div>
+					
+					<div class="row" ng-if="!view.groupsLoading && view.groups.length == 0">
+						<div class="col-md-12" translate="moon.tenant.view.group.notFound">Groups not found</div>
+					</div>
+					
+					<div class="row" ng-if="!view.groupsLoading && view.groups.length > 0" ng-repeat="group in view.groups">
+					
+						<div class="col-md-3">{{group.category}}</div> 
+	                 	<div class="col-md-3">{{group.value}}</div>
+	                 	<div class="col-md-4">{{group.description}}</div>
+	                 	<div class="col-md-2">
+	                    	<img ng-if="group.enabled" src="static/moon/img/tick.png" alt="Enabled" />
+	                		<img ng-if="!group.enabled" src="static/moon/img/stop.png" alt="Not enabled" />
+	                    </div>
+			                    	                                
+	                </div>
+	                
+	                <div>&nbsp;</div>
+	                <div>&nbsp;</div>
+                
+                </div>
+                
+                <!-- GROUP ASSIGNMENTS -->
+                
+               	<div ng-if="view.selectedSubject != null">
+                
+	               	<div class="row">
+						<div class="col-md-12">
+							<h1 class="pull-left" translate="moon.tenant.view.groupAssignment.title">Group Assignments</h1>
+						</div>
+					</div>
+					
+					<div>&nbsp;</div>
+									
+					<div class="row">
+					
+						<div class="col-md-3"><label translate="moon.tenant.view.groupAssignment.category">Category</label></div>
+						<div class="col-md-3"><label translate="moon.tenant.view.groupAssignment.attributes">Attributes</label></div>
+		                <div class="col-md-6"><label translate="moon.tenant.view.groupAssignment.description">Description</label></div>
+		                
+					</div>
+					
+					<div class="row" ng-if="view.groupAssignmentsLoading">
+						<div class="col-md-12" translate="moon.tenant.view.groupAssignment.loading">Loading Group Assignments</div>
+					</div>
+					
+					<div class="row" ng-if="!view.groupAssignmentsLoading && view.groupAssignments.length == 0">
+						<div class="col-md-12" translate="moon.tenant.view.groupAssignment.notFound">Group Assignments not found</div>
+					</div>
+					
+					<div class="row" ng-if="!view.groupAssignmentsLoading && view.groupAssignments.length > 0" ng-repeat="groupAssignment in view.groupAssignments">
+					
+						<div class="col-md-3">{{groupAssignment.category}}</div> 
+	                 	<div class="col-md-3">{{groupAssignment.attributes}}</div>
+	                 	<div class="col-md-6">{{groupAssignment.description}}</div>
+			                    	                                
+	                </div>
+	                
+	                <div>&nbsp;</div>
+	                <div>&nbsp;</div>
+                
+                </div>
+                				
 			</div>
 			
 			<div class="modal-footer">
 				<div class="btn-toolbar" style="float: right;">
-					<button ng-click="$hide()" class="btn btn-default" translate="moon.tenant.view.close">Close</button>
+					<button ng-click="$hide()" class="btn btn-default" translate="moon.tenant.view.action.close">Close</button>
 				</div>
 			</div>
 			

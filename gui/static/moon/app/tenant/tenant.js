@@ -2,7 +2,7 @@
  * @author arnaud marhin<arnaud.marhin@orange.com>
  */
 
-angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgSwitchery'])
+angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgSwitchery', 'ui.select'])
 
 	.config(function($stateProvider) {
 		 
@@ -47,8 +47,8 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
 	        	
 				var orderedData = params.sorting() ?
 						
-						$filter('orderBy')(getData(), params.orderBy()) : getData();
-						$defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+					$filter('orderBy')(getData(), params.orderBy()) : getData();
+					$defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
 	        	
 			},
 			$scope: { $data: {} }
@@ -74,7 +74,7 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
 			$scope.tenantsLoading = false;
 			$scope.tenants = [];
 			
-			$translate('moon.tenant.error.query').then(function (translatedValue) {
+			$translate('moon.tenant.list.error').then(function (translatedValue) {
     			alertService.alertError(translatedValue);
             });	
 			
@@ -213,15 +213,134 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
 		 * view
 		 */
 		
-		$scope.view = { tenant: null, modal: null, subjects: [], objects: [], roles: [], groups: [], roleAssignments: [], groupAssignments: [] };
+		$scope.view = { tenant: null, modal: null, subjects: [], selectedSubject: null, objects: [], roles: [], groups: [], roleAssignments: [], groupAssignments: [] };
+				
+		$scope.view.modal = $modal({scope: $scope, placement: 'center', template: 'static/moon/app/tenant/tenantView.tpl.html', show: false});
 		
-		$scope.view.modal = $modal({scope: $scope, template: 'static/moon/app/tenant/tenantView.tpl.html', show: false});
+		$scope.initView = function(tenant) {
+			
+			$scope.view.tenant = tenant;
+			
+			$scope.view.selectedSubject = null;
+        	
+        	$scope.view.subjects = [];
+        	$scope.view.objects = [];
+        	$scope.view.roles = [];
+        	$scope.view.groups = [];
+        	$scope.view.roleAssignments = [];
+        	$scope.view.groupAssignments = [];
+			
+		};
 		
 		$scope.view.display = function (tenant) {
             
-        	$scope.view.tenant = tenant;
+        	$scope.initView(tenant);
+        	
+        	// objects
+        	tenantService.object.query({project_uuid: tenant.uuid}, function(data) {
+        		
+        		$scope.view.objects = data.objects;
+        		
+        	}, function(response) {
+    			
+    			$translate('moon.tenant.view.object.error').then(function (translatedValue) {
+        			alertService.alertError(translatedValue);
+                });	
+        		
+        	});
+        	        	
+        	// subjects
+        	tenantService.subject.query({project_uuid: tenant.uuid}, function(data) {
+        		
+        		$scope.view.subjects = data.users;
+        		
+        	}, function(response) {
+    			
+    			$translate('moon.tenant.view.subject.error').then(function (translatedValue) {
+        			alertService.alertError(translatedValue);
+                });	
+        		
+        	});
+        	        	
         	$scope.view.modal.$promise.then($scope.view.modal.show);
             
+        };
+        
+        $scope.view.updateSubjectRelationships = function(tenant, subject) {
+        	
+        	$scope.view.rolesLoading = true;
+        	$scope.view.roleAssignmentsLoading = true;
+        	$scope.view.groupsLoading = true;
+        	$scope.view.groupAssignmentsLoading = true;
+        	
+        	// role
+        	tenantService.subjectRole.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}, function(data) {
+        		
+        		$scope.view.rolesLoading = false;
+        		
+        		$scope.view.roles = data.roles;
+        		        		
+        	}, function(response) {
+        		
+        		$scope.view.rolesLoading = false;
+    			
+    			$translate('moon.tenant.view.role.error').then(function (translatedValue) {
+        			alertService.alertError(translatedValue);
+                });	
+        		
+        	});
+        	
+        	// roleAssigment
+        	tenantService.roleAssigment.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}, function(data) {
+        		
+        		$scope.view.roleAssignmentsLoading = false;
+        		
+        		$scope.view.roleAssignments = data.role_assignments;
+        		
+        	}, function(response) {
+    			
+        		$scope.view.roleAssignmentsLoading = false;
+        		
+    			$translate('moon.tenant.view.roleAssigment.error').then(function (translatedValue) {
+        			alertService.alertError(translatedValue);
+                });	
+        		
+        	});
+        	
+        	// group
+        	tenantService.subjectGroup.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}, function(data) {
+        		
+        		$scope.view.groupsLoading = false;
+        		
+        		$scope.view.groups = data.groups;
+        		        		
+        	}, function(response) {
+    			
+        		$scope.view.groupsLoading = false;
+        		
+    			$translate('moon.tenant.view.group.error').then(function (translatedValue) {
+        			alertService.alertError(translatedValue);
+                });	
+        		
+        	});
+        	
+        	// groupAssigment
+        	tenantService.groupAssigment.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}, function(data) {
+        		
+        		$scope.view.groupAssignmentsLoading = false;
+        		
+        		$scope.view.groupAssigments = data.group_assignments;
+        		
+        	}, function(response) {
+        		
+        		$scope.view.groupAssignmentsLoading = false;
+    			
+    			$translate('moon.tenant.view.groupAssigment.error').then(function (translatedValue) {
+        			alertService.alertError(translatedValue);
+                });	
+        		
+        	});
+        	
         };
                 		 
 	}])
@@ -242,27 +361,33 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
      	   		get: { method: 'GET', isArray: false }    	   		
     	   	}),
     	   	
-    	   	object: $resource('./pip/projects/:project_uuid/objects/:user_uuid', {}, {
+    	   	object: $resource('./pip/projects/:project_uuid/objects/:object_uuid', {}, {
+    	   		query: { method: 'GET', isArray: false },
+     	   		get: { method: 'GET', isArray: false }    	   		
+    	   	}),
+    	   	
+    	   	role: $resource('./pip/projects/:project_uuid/roles', {}, {
+    	   		query: { method: 'GET', isArray: false }	
+    	   	}),
+    	   	
+    	   	subjectRole: $resource('./pip/projects/:project_uuid/users/:user_uuid/roles', {}, {
+    	   		query: { method: 'GET', isArray: false }	
+    	   	}),
+    	   	
+    	   	group: $resource('./pip/projects/:project_uuid/groups', {}, {
+    	   		query: { method: 'GET', isArray: false }		
+    	   	}),
+    	   	
+    	   	subjectGroup: $resource('./pip/projects/:project_uuid/users/:user_uuid/groups', {}, {
+    	   		query: { method: 'GET', isArray: false }		
+    	   	}),
+    	   	
+    	   	roleAssigment: $resource('./pip/projects/:project_uuid/assignments/roles/:user_uuid', {}, {
     	   		query: { method: 'GET', isArray: true },
      	   		get: { method: 'GET', isArray: false }    	   		
     	   	}),
     	   	
-    	   	role: $resource('./pip/projects/:project_uuid/roles/:user_uuid', {}, {
-    	   		query: { method: 'GET', isArray: true },
-     	   		get: { method: 'GET', isArray: false }    	   		
-    	   	}),
-    	   	
-    	   	group: $resource('./pip/projects/:project_uuid/groups/:user_uuid', {}, {
-    	   		query: { method: 'GET', isArray: true },
-     	   		get: { method: 'GET', isArray: false }    	   		
-    	   	}),
-    	   	
-    	   	roleAssigment: $resource('./pip/projects/:project_uuid/assigments/roles/:user_uuid', {}, {
-    	   		query: { method: 'GET', isArray: true },
-     	   		get: { method: 'GET', isArray: false }    	   		
-    	   	}),
-    	   	
-    	   	groupAssigment: $resource('./pip/projects/:project_uuid/assigments/groups/:user_uuid', {}, {
+    	   	groupAssigment: $resource('./pip/projects/:project_uuid/assignments/groups/:user_uuid', {}, {
     	   		query: { method: 'GET', isArray: true },
      	   		get: { method: 'GET', isArray: false }    	   		
     	   	})

@@ -33,15 +33,71 @@
 		    	},
 		    	"action": {
 		    		"title": "Actions",
-		    		"detail": "Détail",
+		    		"detail": "Consulter",
 		    		"delete": "Supprimer",
 		    		"add": "Ajouter un Tenant"    	
 		    	},
 		    	"error": "Impossible de récupérer la liste des Tenants"
 	    	},
 	    	"view": {
-	    		"title": "Détail du Tenant",
-	    		"close": "Fermer"
+	    		"title": "Détail du Tenant `{{tenantName}}`",
+	    		"action": {
+	    			"close": "Fermer"
+	    		},
+	    		"subject": {
+	    			"title": "Sujets",
+	    			"name": "Nom",
+	    			"mail": "Email",
+	    			"domain": "Domaine",
+	    			"enabled": "Activé",
+	    			"error": "Impossible de récupérer la liste des Sujets"
+	    		},
+	    		"object": {
+	    			"title": "Objets",
+	    			"category": "Catégorie",
+	    			"description": "Description",
+	    			"enabled": "Activé",
+	    			"name": "Nom",
+	    			"error": "Impossible de récupérer la liste des Objets"
+	    		},
+	    		"role": {
+	    			"title": "Roles",
+	    			"category": "Catégorie",
+	    			"value": "Valeur",
+	    			"description": "Description",
+	    			"enabled": "Activé",
+	    			"error": "Impossible de récupérer la liste des Roles",
+	    			"loading": "Chargement des Roles",
+		    		"notFound": "Il n'existe aucun Roles"
+	    		},
+	    		"roleAssignment": {
+	    			"title": "Affectation des roles",
+	    			"category": "Catégorie",
+	    			"attributes": "Attributs",
+	    			"description": "Description",
+	    			"error": "impossible de récupérer la liste des affectations",
+	    			"loading": "Chargement des affectations",
+		    		"notFound": "Il n'existe aucune affectation"
+	    		},
+	    		"group": {
+	    			"title": "Groupes",
+	    			"category": "Catégorie",
+	    			"value": "Valeur",
+	    			"description": "Description",
+	    			"enabled": "Activé",
+	    			"error": "Impossible de récupérer la liste des Groupes",
+	    			"loading": "Chargement des Groupes",
+		    		"notFound": "Il n'existe aucun Groupes"
+	    		},
+	    		"groupAssignment": {
+	    			"title": "Affectation des groupes",
+	    			"category": "Catégorie",
+	    			"attributes": "Attributs",
+	    			"description": "Description",
+	    			"error": "impossible de récupérer la liste des affectations",
+	    			"loading": "Chargement des affectations",
+		    		"notFound": "Il n'existe aucune affectation"
+	    		}
 	    	},
 	    	"add": {
 	    		"title": "Ajouter un nouveau Tenant",

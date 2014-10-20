@@ -33,15 +33,71 @@
 		    	},
 		    	"action": {
 		    		"title": "Actions",
-		    		"detail": "Detail",
+		    		"detail": "Consult",
 		    		"delete": "Delete",
 		    		"add": "Add Tenant"
 		    	},
 		    	"error": "Unable to retrieve Tenants"
 	    	},
 	    	"view": {
-	    		"title": "Tenant details",
-	    		"close": "Close"
+	    		"title": "Tenant `{{tenantName}}` details",
+	    		"action": {
+	    			"close": "Close"
+	    		},
+	    		"subject": {
+	    			"title": "Subjects",
+	    			"name": "Name",
+	    			"mail": "Email",
+	    			"domain": "Domain",
+	    			"enabled": "Enabled",
+	    			"error": "Unable to retrieve Subjects"
+	    		},
+	    		"object": {
+	    			"title": "Objects",
+	    			"category": "Category",
+	    			"description": "Description",
+	    			"enabled": "Enabled",
+	    			"name": "Name",
+	    			"error": "Unable to retrieve Objects"
+	    		},
+	    		"role": {
+	    			"title": "Roles",
+	    			"category": "Category",
+	    			"value": "Value",
+	    			"description": "Description",
+	    			"enabled": "Enabled",
+	    			"error": "Unable to retrieve Roles",
+	    			"loading": "Loading Roles",
+		    		"notFound": "There is not Roles"
+	    		},
+	    		"roleAssignment": {
+	    			"title": "Role Assignments",
+	    			"category": "Category",
+	    			"attributes": "Attributes",
+	    			"description": "Description",
+	    			"error": "Unable to retrieve Role Assignments",
+	    			"loading": "Loading Role Assignments",
+		    		"notFound": "There is not Role Assignments"
+	    		},
+	    		"group": {
+	    			"title": "Groups",
+	    			"category": "Category",
+	    			"value": "Value",
+	    			"description": "Description",
+	    			"enabled": "Enabled",
+	    			"error": "Unable to retrieve Groups",
+	    			"loading": "Loading Groups",
+		    		"notFound": "There is not Groups"
+	    		},
+	    		"groupAssignment": {
+	    			"title": "Group Assignments",
+	    			"category": "Category",
+	    			"attributes": "Attributes",
+	    			"description": "Description",
+	    			"error": "Unable to retrieve Group Assignments",
+	    			"loading": "Loading Group Assignments",
+		    		"notFound": "There is not Group Assignments"
+	    		}
 	    	},
 	    	"add": {
 	    		"title": "Add new Tenant",
