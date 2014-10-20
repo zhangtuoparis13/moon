@@ -12,14 +12,14 @@ var moonApp = angular.module('moonApp', ['ngRoute',
                                          'pascalprecht.translate',
                                          'ngAnimate',
                                          'mgcrea.ngStrap',
-                                         'ui.select2',
+                                         'ui.select',
                                          'moonApp.common',
                                          'moonApp.tenant',
                                          'moonApp.intraExtension',
                                          'moonApp.interExtension'])
 
-    .config(['$urlRouterProvider', '$translateProvider', '$stateProvider',
-        function($urlRouterProvider, $translateProvider, $stateProvider) {
+    .config(['$urlRouterProvider', '$translateProvider', '$stateProvider', 'uiSelectConfig',
+        function($urlRouterProvider, $translateProvider, $stateProvider, uiSelectConfig) {
     	
     		$urlRouterProvider.when('', '/tenant');
     		
@@ -42,6 +42,8 @@ var moonApp = angular.module('moonApp', ['ngRoute',
             })
             .preferredLanguage('en')
             .useCookieStorage();
+            
+            uiSelectConfig.theme = 'selectize';
 
         }
     

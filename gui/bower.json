@@ -20,11 +20,12 @@
     "angular-translate-storage-cookie": "2.4.1",
     "angular-translate-loader-static-files": "2.4.1",
     "angular-ui-router": "0.2.11",
-    "angular-ui-select2": "0.0.5",
+    "angular-ui-select": "0.8.3",
     "bootstrap": "3.2.0",
     "jquery": "2.1.1",
     "ng-table": "0.3.3",
     "select2": "3.4.8",
+    "selectize": "0.11.2",
     "switchery": "0.6.2",
     "ng-switchery": "1.0.0-alpha7",
     "underscore": "1.7.0"
