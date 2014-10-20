@@ -14,7 +14,7 @@ MOON_SERVER_IP = {
 CREDENTIALS = {
     "login": "admin",
     "password": "P4ssw0rd",
-    "Cookie": "novy2h83p4oyz9ujckd361ua7fh9tl6d"
+    "Cookie": "szeflpnhfqz23t1a7l6s6t33bblf3jjw"
 }
 
 
@@ -547,24 +547,36 @@ class TestAdminInterface_InterExtension(unittest.TestCase):
         extensions = get_url("/json/intra-extensions/")
         self.assertIs(len(extensions["intra_extensions"]) >= 2, True)
         self.assertIsInstance(data, dict)
-        print(data)
         self.assertIs(len(data["inter_extensions"]) == 0, True)
-        subjects_1 = get_url("/json/intra-extensions/{}/subjects".format(extensions["intra_extensions"][0]))
-        objects_2 = get_url("/json/intra-extensions/{}/objects".format(extensions["intra_extensions"][1]))
+        #TODO subjects_1 = get_url("/json/intra-extensions/{}/subjects".format(extensions["intra_extensions"][0]))["subjects"]
+        #TODO objects_2 = get_url("/json/intra-extensions/{}/objects".format(extensions["intra_extensions"][1]))["objects"]
         data = get_url(
             "/json/inter-extensions/",
             post_data={
                 "requesting_intra_extension_uuid": extensions["intra_extensions"][0],
                 "requested_intra_extension_uuid": extensions["intra_extensions"][1],
                 "genre": "trust",
-                "sub_list": subjects_1,
-                "obj_list": objects_2,
+                "sub_list": ['user1', 'user2'],
+                "obj_list": ['vm1', 'vm2'],
                 "act": "write"
             })
         self.assertIsInstance(data, dict)
         self.assertIn('inter_extensions', data)
-        print(data)
+        inter_ext_uuid = get_url("/json/inter-extensions/")[u'inter_extensions'][0]["uuid"]
+        inter_ext_vents = get_url("/json/inter-extensions/")[u'inter_extensions'][0]["vents"]["trust"][0]["uuid"]
         self.assertIs(len(data["inter_extensions"]) > 0, True)
+        #TODO test the content of data
+        #Delete an inter-extension
+        data = get_url(
+            "/json/inter-extensions/"+inter_ext_uuid+"/",
+            delete_data={
+                "vents": inter_ext_vents,
+                "genre": "trust",
+            })
+        self.assertIsInstance(data, dict)
+        inter_ext_vents = get_url("/json/inter-extensions/")[u'inter_extensions']
+        self.assertIs(len(inter_ext_vents) == 0, True)
+        #TODO delete the correct vent uuid
         # for ext in data["inter_extensions"]:
         #     _data = get_url("/json/inter-extension/"+ext+"/")
         #     self.assertIsInstance(_data, list)
