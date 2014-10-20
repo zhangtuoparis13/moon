@@ -254,7 +254,7 @@ class PIP:
                 assignment = {}
                 _uuid = str(uuid4()).replace("-", "")
                 assignment["uuid"] = _uuid
-                if user_uuid and user_uuid != _uuid:
+                if user_uuid and user_uuid != user["uuid"]:
                     continue
                 assignment["category"] = "role"
                 assignment["subject"] = user["uuid"]
@@ -312,7 +312,7 @@ class PIP:
                 assignments = {}
                 _uuid = str(uuid4()).replace("-", "")
                 assignments["uuid"] = _uuid
-                if user_uuid and user_uuid != _uuid:
+                if user_uuid and user_uuid != user["uuid"]:
                     continue
                 assignments["category"] = "group"
                 assignments["subject"] = user["uuid"]
