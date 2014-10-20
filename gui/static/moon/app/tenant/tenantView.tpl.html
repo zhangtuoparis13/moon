@@ -18,7 +18,7 @@
 						<h1 class="pull-left" translate="moon.tenant.view.object.title">Objects</h1>
 					</div>
 				</div>
-								
+												
 				<div class="row">
 				
 					<div class="col-md-3"><label translate="moon.tenant.view.object.name">Name</label></div>
@@ -28,8 +28,16 @@
 	                
 				</div>
 				
-				<div class="row" ng-repeat="object in view.objects">
+				<div class="row" ng-if="view.objectsLoading">
+					<div class="col-md-12" translate="moon.tenant.view.object.loading">Loading Objects</div>
+				</div>
 				
+				<div class="row" ng-if="!view.objectsLoading && view.objects.length == 0">
+					<div class="col-md-12" translate="moon.tenant.view.object.notFound">Objects not found</div>
+				</div>
+				
+				<div class="row" ng-if="!view.objectsLoading && view.objects.length > 0" ng-repeat="object in view.objects">
+								
 					<div class="col-md-3">{{object.name}}</div> 
                  	<div class="col-md-3">{{object.category}}</div>
                  	<div class="col-md-4">{{object.description}}</div>

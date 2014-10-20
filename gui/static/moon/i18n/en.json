@@ -58,7 +58,9 @@
 	    			"description": "Description",
 	    			"enabled": "Enabled",
 	    			"name": "Name",
-	    			"error": "Unable to retrieve Objects"
+	    			"error": "Unable to retrieve Objects",
+	    			"loading": "Loading Objects",
+		    		"notFound": "There is not Objects"
 	    		},
 	    		"role": {
 	    			"title": "Roles",

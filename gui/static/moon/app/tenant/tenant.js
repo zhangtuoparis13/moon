@@ -219,6 +219,8 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
 		
 		$scope.initView = function(tenant) {
 			
+			$scope.view.objectsLoading = true;
+			
 			$scope.view.tenant = tenant;
 			
 			$scope.view.selectedSubject = null;
@@ -239,9 +241,13 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
         	// objects
         	tenantService.object.query({project_uuid: tenant.uuid}, function(data) {
         		
+        		$scope.view.objectsLoading = false;
+        		
         		$scope.view.objects = data.objects;
         		
         	}, function(response) {
+        		
+        		$scope.view.objectsLoading = false;
     			
     			$translate('moon.tenant.view.object.error').then(function (translatedValue) {
         			alertService.alertError(translatedValue);

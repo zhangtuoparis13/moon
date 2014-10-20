@@ -29,7 +29,7 @@
 		    		"enabled": "Activé",
 		    		"description": "Description",
 		    		"loading": "Chargement des Tenants",
-		    		"notFound": "Il n'existe aucun Tenants"
+		    		"notFound": "Il n'existe aucun Tenant"
 		    	},
 		    	"action": {
 		    		"title": "Actions",
@@ -58,7 +58,9 @@
 	    			"description": "Description",
 	    			"enabled": "Activé",
 	    			"name": "Nom",
-	    			"error": "Impossible de récupérer la liste des Objets"
+	    			"error": "Impossible de récupérer la liste des Objets",
+	    			"loading": "Chargement des Objets",
+		    		"notFound": "Il n'existe aucun Objet"
 	    		},
 	    		"role": {
 	    			"title": "Roles",
@@ -68,7 +70,7 @@
 	    			"enabled": "Activé",
 	    			"error": "Impossible de récupérer la liste des Roles",
 	    			"loading": "Chargement des Roles",
-		    		"notFound": "Il n'existe aucun Roles"
+		    		"notFound": "Il n'existe aucun Role"
 	    		},
 	    		"roleAssignment": {
 	    			"title": "Affectation des roles",
@@ -76,8 +78,8 @@
 	    			"attributes": "Attributs",
 	    			"description": "Description",
 	    			"error": "impossible de récupérer la liste des affectations",
-	    			"loading": "Chargement des affectations",
-		    		"notFound": "Il n'existe aucune affectation"
+	    			"loading": "Chargement des Affectations",
+		    		"notFound": "Il n'existe aucune Affectation"
 	    		},
 	    		"group": {
 	    			"title": "Groupes",
@@ -87,7 +89,7 @@
 	    			"enabled": "Activé",
 	    			"error": "Impossible de récupérer la liste des Groupes",
 	    			"loading": "Chargement des Groupes",
-		    		"notFound": "Il n'existe aucun Groupes"
+		    		"notFound": "Il n'existe aucun Groupe"
 	    		},
 	    		"groupAssignment": {
 	    			"title": "Affectation des groupes",
@@ -95,8 +97,8 @@
 	    			"attributes": "Attributs",
 	    			"description": "Description",
 	    			"error": "impossible de récupérer la liste des affectations",
-	    			"loading": "Chargement des affectations",
-		    		"notFound": "Il n'existe aucune affectation"
+	    			"loading": "Chargement des Affectations",
+		    		"notFound": "Il n'existe aucune Affectation"
 	    		}
 	    	},
 	    	"add": {
