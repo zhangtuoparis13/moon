@@ -491,13 +491,14 @@ def inter_extensions(request, uuid=None):
             u'obj_list',
             u'act',
             u'genre',
-            u'sub_list']:
+            u'sub_list'
+        ]:
             if key not in data:
                 return send_json({"inter_extensions": list(
-                    pap.get_installed_inter_extensions(extension_uuid=uuid, user_uuid=request.session['user_id'])
+                    pap.get_installed_inter_extensions(extension_uuid=uuid, user_id=request.session['user_id'])
                 )})
-        print pap.create_collaboration(
-            user_uuid=request.session['user_id'],
+        pap.create_collaboration(
+            user_id=request.session['user_id'],
             requesting_intra_extension_uuid=data["requesting_intra_extension_uuid"],
             requested_intra_extension_uuid=data["requested_intra_extension_uuid"],
             genre=data["genre"],
@@ -505,20 +506,24 @@ def inter_extensions(request, uuid=None):
             obj_list=data["obj_list"],
             act=data["act"]
         )
-        # if "sub_cat_value" in data and "obj_cat_value" in data:
-        #     pap.add_rule(
-        #         extension_uuid=uuid,
-        #         user_uuid=request.session['user_id'],
-        #         sub_cat_value=filter_input(data["sub_cat_value"]),
-        #         obj_cat_value=filter_input(data["obj_cat_value"]))
-    # elif request.META['REQUEST_METHOD'] == "DELETE":
-    #     pap.del_rule(
-    #         extension_uuid=uuid,
-    #         user_uuid=request.session['user_id'],
-    #         sub_cat_value=filter_input(sub_cat_value),
-    #         obj_cat_value=filter_input(obj_cat_value))
-    return send_json({"inter_extensions": list(
-        pap.get_installed_inter_extensions(extension_uuid=uuid, user_uuid=request.session['user_id'])
+    elif request.META['REQUEST_METHOD'] == "DELETE":
+        data = json.loads(request.read())
+        for key in [
+            u'genre',
+            u'vents',
+        ]:
+            if key not in data:
+                return send_json({"inter_extensions": list(
+                    pap.get_installed_inter_extensions(extension_uuid=uuid, user_id=request.session['user_id'])
+                )})
+        pap.destroy_collaboration(
+            user_id=request.session['user_id'],
+            genre=data["genre"],
+            inter_extension_uuid=uuid,
+            vent_uuid=data["vents"])
+    return send_json({"inter_extensions": map(
+        lambda x: x.get_data(),
+        pap.get_installed_inter_extensions(extension_uuid=uuid, user_id=request.session['user_id'])
     )})
 
 
