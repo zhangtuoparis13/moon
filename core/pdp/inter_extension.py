@@ -124,7 +124,7 @@ class InterExtension:
     def destroy_collaboration(self, genre, vent_uuid):
         _vent = None
         for _tmp_vent in self.__vents[genre]:
-            if _tmp_vent.get_uuid() is vent_uuid:
+            if _tmp_vent.get_uuid() == vent_uuid:
                 _vent = _tmp_vent
                 break
         if _vent is None:
