@@ -28,6 +28,7 @@
                 <col class="col-md-2" />
                 <col class="col-md-2" />
                 <col class="col-md-1" />
+                <col class="col-md-1" />
                 <col class="col-md-2" />
                 <col class="col-md-1" />
             </colgroup>
@@ -58,6 +59,10 @@
 						ng-class="{ 'sort-asc': tenantsTable.isSortBy('enabled', 'asc'), 'sort-desc': tenantsTable.isSortBy('enabled', 'desc') }"
 						ng-click="tenantsTable.sorting('enabled', tenantsTable.isSortBy('enabled', 'asc') ? 'desc' : 'asc')">
 							<div translate="moon.tenant.list.table.enabled">Enabled</div>
+					</th>
+					
+					<th class="customTables">
+						<div translate="moon.tenant.list.action.mapping">Mapping</div>
 					</th>
 					
                     <th class="customTables">
@@ -93,6 +98,7 @@
 	                	<img ng-if="tenant.enabled" src="static/moon/img/tick.png" alt="Enabled" />
 	                	<img ng-if="!tenant.enabled" src="static/moon/img/stop.png" alt="Not enabled" />
 	                </td>
+	                <td>&nbsp;</td>
 	                <td>
 		                <div class="btn-group" dropdown>
 		                        <button type="button" class="btn btn-default" translate="moon.tenant.list.action.title">Actions</button>

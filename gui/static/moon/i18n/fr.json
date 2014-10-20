@@ -35,7 +35,8 @@
 		    		"title": "Actions",
 		    		"detail": "Consulter",
 		    		"delete": "Supprimer",
-		    		"add": "Ajouter un Tenant"    	
+		    		"add": "Ajouter un Tenant",
+		    		"mapping": "Mapping"   	
 		    	},
 		    	"error": "Impossible de récupérer la liste des Tenants"
 	    	},

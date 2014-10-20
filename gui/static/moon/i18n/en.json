@@ -35,7 +35,8 @@
 		    		"title": "Actions",
 		    		"detail": "Consult",
 		    		"delete": "Delete",
-		    		"add": "Add Tenant"
+		    		"add": "Add Tenant",
+		    		"mapping": "Mapping"
 		    	},
 		    	"error": "Unable to retrieve Tenants"
 	    	},
