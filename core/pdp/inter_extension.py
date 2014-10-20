@@ -61,7 +61,6 @@ class VirtualEntity:
     def get_data_dict(self):
         _dict = dict()
         _dict['uuid'] = self.__uuid
-        _dict['genre'] = self.__genre
         _dict['requesting_subject_list'] = self.__requesting_subject_list
         _dict['requesting_subject_category_value_dict'] = self.__requesting_subject_category_value_dict
         _dict['requesting_object_category_value_dict'] = self.__requesting_object_category_value_dict
@@ -209,3 +208,13 @@ class InterExtension:
 
     def get_vents(self):
         return self.__vents
+
+    def get_data(self):
+        data = dict()
+        data["uuid"] = str(self.__uuid)
+        data["requesting_intra_extension"] = self.requesting_intra_extension.get_data()
+        data["requested_intra_extension"] = self.requested_intra_extension.get_data()
+        data["vents"] = dict()
+        data["vents"]["trust"] = map(lambda x: x.get_data_dict(), self.__vents["trust"])
+        data["vents"]["coordinate"] = map(lambda x: x.get_data_dict(), self.__vents["coordinate"])
+        return data
