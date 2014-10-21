@@ -156,6 +156,27 @@
 		    		"add": "Ajouter une Intra Extension"
 		    	},
 		    	"error": "Impossible de récupérer la liste des Intra Extensions"
+	    	},
+	    	"add": {
+	    		"title": "Ajouter une nouvelle Intra Extension",
+	    		"form": {
+		    		"name": "Nom",
+		    		"policy": "Règle"
+	    		},
+	    		"action": {
+		    		"create": "Créer l'Intra Extension",
+		    		"cancel": "Annuler"
+	    		},
+	    		"check": {
+	    			"name": {
+	    				"required": "Le nom est requis"
+	    			},
+	    			"policy": {
+	    				"required": "Une règle est requise"
+	    			}
+	    		},
+	    		"error": "Impossible de créer l'Intra Extension `{{intraExtensionName}}`",
+	    		"success": "L'Intra Extension `{{intraExtensionName}}` a été créée avec succès"
 	    	}
 	    }	
 	}        

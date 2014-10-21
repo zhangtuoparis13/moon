@@ -156,6 +156,27 @@
 		    		"add": "Add Intra Extension"
 		    	},
 		    	"error": "Unable to retrieve Intra Extensions"
+	    	},
+	    	"add": {
+	    		"title": "Add new Intra Extension",
+	    		"form": {
+		    		"name": "Name",
+		    		"policy": "Policy"
+	    		},
+	    		"action": {
+		    		"create": "Create Intra Extension",
+		    		"cancel": "Cancel"
+	    		},
+	    		"check": {
+	    			"name": {
+	    				"required": "Name is required"
+	    			},
+	    			"policy": {
+	    				"required": "Policy is required"
+	    			}
+	    		},
+	    		"error": "Unable to create Intra Extension `{{intraExtensionName}}`",
+	    		"success": "Intra Extension `{{intraExtensionName}}` successfully created"
 	    	}
 	    }
     }

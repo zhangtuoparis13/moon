@@ -96,7 +96,72 @@ angular.module('moonApp.intraExtension', ['ngTable', 'ngAnimate', 'mgcrea.ngStra
 		 * add
 		 */
 		
+		$scope.add = { intraExtension: null, modal: null, selectedPolicy: null, policies: null };
 		
+		$scope.add.modal = $modal({scope: $scope, template: 'static/moon/app/intra-extension/intra-extension-add.tpl.html', show: false});
+		
+		$scope.add.display = function () {
+            
+			$scope.add.intraExtension = {};
+			
+			intraExtensionService.policy.query({}, function(data) {
+				
+				// FIXME service may return an array and not a resource
+				$scope.add.policies = data.policies;
+				
+			});
+			
+        	$scope.add.modal.$promise.then($scope.add.modal.show);
+            
+        };
+                
+        $scope.add.create = function(intraExtension) {
+        	
+        	if($scope.form.add.$invalid) {
+        	
+	        	if($scope.form.add.name.$pristine && $scope.form.add.name.$invalid) {
+	    			
+	        		$scope.form.add.name.$dirty = true;
+	        		$scope.form.add.name.$setValidity('required', false);
+	    			
+	    		} 
+
+				// FIXME when service will return some valid data
+	        	
+	        	/* if($scope.form.add.policy.$pristine && $scope.form.add.policy.$invalid) {
+	    			
+	        		$scope.form.add.policy.$dirty = true;
+	        		$scope.form.add.policy.$setValidity('required', false);
+	    			
+	    		} */
+        	
+        	} else {
+        	
+        		var policyName = ($scope.add.selectedPolicy) ? $scope.add.selectedPolicy.name : '';
+        		        		
+        		intraExtensionService.intraExtension.create({}, { name: intraExtension.name, policymodel: policyName }, function(data) {
+        			
+        			$scope.intraExtensions.push(data);
+	        		
+	        		$scope.reloadTable();
+        			
+        			$translate('moon.intraExtension.add.success', { intraExtensionName: intraExtension.name }).then(function (translatedValue) {
+	        			alertService.alertSuccess(translatedValue);
+	                });	
+        			
+        		}, function(response) {
+        			
+        			$translate('moon.intraExtension.add.error', { intraExtensionName: intraExtension.name }).then(function (translatedValue) {
+	        			alertService.alertError(translatedValue);
+	                });	
+        			
+        		});
+	        	
+	        	$scope.add.modal.hide();
+        	
+    		}
+        	
+        };
 		
 		/*
 		 * delete
@@ -118,7 +183,8 @@ angular.module('moonApp.intraExtension', ['ngTable', 'ngAnimate', 'mgcrea.ngStra
 			
 			intraExtension: $resource('./json/intra-extensions/:ie_uuid', {}, {
      	   		query: { method: 'GET', isArray: false },
-     	   		get: { method: 'GET', isArray: false }
+     	   		get: { method: 'GET', isArray: false },
+     	   		create: { method: 'POST' }
     	   	}),
     	   	
     	   	tenant: $resource('./json/intra-extensions/:ie_uuid/tenant', {}, {
