@@ -68,7 +68,7 @@
             
 	            <tr ng-repeat="intraExtension in $data | filter:search | orderBy:sort:reverse">
 	                <td>{{intraExtension.authz.metadata.name}}</td>
-					<td ng-if="tenantsAssociatedToIntraExtensions[intraExtension] == null"><img src="static/moon/img/ajax-loader.gif" /></td>
+					<td ng-if="tenantsAssociatedToIntraExtensions[intraExtension] == null"><!-- <img src="static/moon/img/ajax-loader.gif" /> --></td>
 	                <td ng-if="tenantsAssociatedToIntraExtensions[intraExtension] != null" ng-bind="tenantsAssociatedToIntraExtensions[intraExtension].name"></td>
 	                <td>
 		                <div class="btn-group" dropdown>
