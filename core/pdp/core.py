@@ -90,8 +90,8 @@ class IntraExtensions:
         intra_extension.load_from_db()
         self.__installed_intra_extensions[intra_extension.get_uuid()] = intra_extension
 
-    def delete_intra_extension(self, intra_extensin_uuid):
-        self.__installed_intra_extensions.pop(intra_extensin_uuid)
+    def delete_intra_extension(self, intra_extension_uuid):
+        self.__installed_intra_extensions.pop(intra_extension_uuid)
 
     def get_intra_extensions_from_db(self):  # TODO test
         return self.__syncer.get_intra_extensions_from_db()
