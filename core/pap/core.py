@@ -129,6 +129,10 @@ class PAP:
         if self.super_extension.admin(user_id, genre, "delegate") == "OK":
             return self.super_extension.delegate(delegator_id, genre, privilege)
 
+    @translate_uuid
+    def delete_intra_extension(self, user_id, intra_extension_uuid):
+        if self.super_extension.admin(user_id, "intra_extension", "create") == "OK":
+            self.intra_extensions.delete_intra_extension(intra_extension_uuid)
 
     ##########################################
     # Specific functions for Keystone and Nova

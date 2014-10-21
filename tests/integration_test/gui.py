@@ -67,12 +67,21 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
         pass
 
     def test_intra_extensions(self):
+        number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"])
+        #add an intra-extension
+        self.policies = get_url("/json/intra-extensions/policies")
+        self.assertIsInstance(self.policies, dict)
+        my_policy = self.policies["policies"].keys()[0]
+        #Create the extension
+        self.new_ext1 = get_url("/json/intra-extensions/", post_data={"policymodel": my_policy})
+        self.assertIsInstance(self.new_ext1, dict)
+        self.new_ext1_uuid = self.new_ext1["intra_extensions"][-1]
+        self.assertEqual(number_of_intra_ext+1, len(get_url("/json/intra-extensions/")["intra_extensions"]))
         data = get_url("/json/intra-extensions/")
         self.assertIsInstance(data, dict)
         for ext in data["intra_extensions"]:
             _data = get_url("/json/intra-extensions/"+ext+"/")
             self.assertIsInstance(_data, dict)
-            print(_data)
             for k in [u'admin', u'authz', u'_id']:
                 self.assertIn(k, _data["intra_extensions"].keys())
             for k in [u'perimeter', u'assignment', u'configuration', u'metadata']:
@@ -81,8 +90,27 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
                 self.assertIn(k, _data["intra_extensions"]['authz'].keys())
             self.assertIsInstance(_data["intra_extensions"]["_id"], unicode)
             # print(json.dumps(_data, indent=4))
-        #TODO: add an intra-extension
-        #TODO: delete an intra-extension
+        self.assertEqual(number_of_intra_ext+1, len(get_url("/json/intra-extensions/")["intra_extensions"]))
+        #Get Keystone tenants
+        self.tenants = get_url("/pip/projects/")
+        self.assertIsInstance(self.tenants, dict)
+        self.tenant_admin = None
+        self.tenant_demo = None
+        for tenant in self.tenants["projects"]:
+            if tenant["name"] == "admin":
+                self.tenant_admin = tenant["uuid"]
+            if tenant["name"] == "demo":
+                self.tenant_demo = tenant["uuid"]
+        #Create mapping between extensions and tenants
+        mapping = get_url(
+            "/json/super-extensions/tenants/{}/intra_extensions/{}".format(
+                self.tenant_admin,
+                self.new_ext1_uuid),
+            method="POST"
+        )
+        #delete an intra-extension
+        get_url("/json/intra-extensions/"+self.new_ext1_uuid+"/", method="DELETE")
+        self.assertEqual(number_of_intra_ext, len(get_url("/json/intra-extensions/")["intra_extensions"]))
 
     def test_subjects(self):
         data = get_url("/json/intra-extensions/")
