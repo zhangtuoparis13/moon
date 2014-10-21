@@ -147,7 +147,7 @@
 		    		"name": "Nom",
 		    		"tenant": "Tenant",
 		    		"loading": "Chargement des Intra Extensions",
-		    		"notFound": "Il n'existe aucun Intra Extension"
+		    		"notFound": "Il n'existe aucune Intra Extension"
 		    	},
 		    	"action": {
 		    		"title": "Actions",
@@ -177,6 +177,16 @@
 	    		},
 	    		"error": "Impossible de créer l'Intra Extension `{{intraExtensionName}}`",
 	    		"success": "L'Intra Extension `{{intraExtensionName}}` a été créée avec succès"
+	    	},
+	    	"remove": {
+	    		"title": "Supprimer une Intra Extension",
+	    		"content": "Voulez-vous supprimer l'Intra Extension `{{intraExtensionName}}` ?",
+	    		"action": {
+	    			"cancel": "Annuler",
+	    			"delete": "Supprimer"
+	    		},
+	    		"error": "Impossible de supprime l'Intra Extension `{{intraExtensionName}}`",
+	    		"success": "l'Intra Extension `{{intraExtensionName}}` a été supprimé avec succès"
 	    	}
 	    }	
 	}        

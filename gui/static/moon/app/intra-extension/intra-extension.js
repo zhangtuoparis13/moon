@@ -141,6 +141,8 @@ angular.module('moonApp.intraExtension', ['ngTable', 'ngAnimate', 'mgcrea.ngStra
         		        		
         		intraExtensionService.intraExtension.create({}, { name: intraExtension.name, policymodel: policyName }, function(data) {
         			
+        			// FIXME install_intra_extension_from_json not working 
+        			
         			$scope.intraExtensions.push(data);
 	        		
 	        		$scope.reloadTable();
@@ -167,7 +169,40 @@ angular.module('moonApp.intraExtension', ['ngTable', 'ngAnimate', 'mgcrea.ngStra
 		 * delete
 		 */
 		
+        $scope.remove = { intraExtension: null, modal: null };
 		
+		$scope.remove.modal = $modal({scope: $scope, template: 'static/moon/app/intra-extension/intra-extension-delete.tpl.html', show: false});
+		
+		$scope.remove.display = function (intraExtension) {
+            
+			$scope.remove.intraExtension = intraExtension;
+        	$scope.remove.modal.$promise.then($scope.remove.modal.show);
+            
+        };
+                
+        $scope.remove.remove = function(intraExtension) {
+        	        	
+        	intraExtensionService.intraExtension.remove({ie_uuid: intraExtension._id}, function(data) {
+        		
+        		$scope.intraExtensions = _.chain($scope.intraExtensions).reject({_id: intraExtension._id}).value();
+        		
+        		$scope.reloadTable();
+        		
+        		$translate('moon.intraExtension.remove.success', { intraExtensionName: intraExtension.authz.metadata.name }).then(function (translatedValue) {
+        			alertService.alertSuccess(translatedValue);
+                });	
+        		
+        	}, function(response) {
+        		
+        		$translate('moon.intraExtension.remove.error', { intraExtensionName: intraExtension.authz.metadata.name }).then(function (translatedValue) {
+        			alertService.alertError(translatedValue);
+                });	
+        		
+        	});
+        	
+        	$scope.remove.modal.hide();
+        	
+        };
 		
 		/*
 		 * view
@@ -184,7 +219,8 @@ angular.module('moonApp.intraExtension', ['ngTable', 'ngAnimate', 'mgcrea.ngStra
 			intraExtension: $resource('./json/intra-extensions/:ie_uuid', {}, {
      	   		query: { method: 'GET', isArray: false },
      	   		get: { method: 'GET', isArray: false },
-     	   		create: { method: 'POST' }
+     	   		create: { method: 'POST' },
+     	   		remove: { method: 'DELETE' }
     	   	}),
     	   	
     	   	tenant: $resource('./json/intra-extensions/:ie_uuid/tenant', {}, {

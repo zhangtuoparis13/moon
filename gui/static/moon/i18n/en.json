@@ -177,6 +177,16 @@
 	    		},
 	    		"error": "Unable to create Intra Extension `{{intraExtensionName}}`",
 	    		"success": "Intra Extension `{{intraExtensionName}}` successfully created"
+	    	},
+	    	"remove": {
+	    		"title": "Delete Intra Extension",
+	    		"content": "Are you sure you want to delete `{{intraExtensionName}}` Intra Extension ?",
+	    		"action": {
+	    			"cancel": "Cancel",
+	    			"delete": "Delete"
+	    		},
+	    		"error": "Unable to delete Intra Extension `{{intraExtensionName}}`",
+	    		"success": "Intra Extension `{{intraExtensionName}}` successfully deleted"
 	    	}
 	    }
     }

@@ -1,0 +1,27 @@
+<div class="modal" tabindex="-1" role="modalDeleteIntraExtension">
+
+	<div class="modal-dialog">
+
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<button type="button" class="close" ng-click="$hide()">&times;</button>
+				<h4 class="modal-title" translate="moon.intraExtension.remove.title"></h4>
+			</div>
+			
+			<div class="modal-body">
+				<span translate="moon.intraExtension.remove.content" translate-values="{ intraExtensionName: remove.intraExtension.authz.metadata.name }"></span>
+			</div>
+			
+			<div class="modal-footer">
+				<div class="btn-toolbar" style="float: right;">
+					<button ng-click="$hide()" class="btn btn-default" translate="moon.intraExtension.remove.action.cancel">Cancel</button>
+					<button ng-click="remove.remove(remove.intraExtension)" class="btn btn-warning" translate="moon.intraExtension.remove.action.delete">Delete</button>
+				</div>
+			</div>
+			
+		</div>
+		
+	</div>
+	
+</div>
