@@ -135,6 +135,28 @@
 	    		"error": "Unable to delete Tenant `{{tenantName}}`",
 	    		"success": "Tenant `{{tenantName}}` successfully deleted"
 	    	}
+	    },
+	    "intraExtension": {
+	    	"title": "Intra Extensions",
+	    	"list": {
+	    		"search": {
+	    			"placeholder": "Search Intra Extensions",
+	    			"reset": "Reset"
+		    	},
+		    	"table": {
+		    		"name": "Name",
+		    		"tenant": "Tenant",
+		    		"loading": "Loading Intra Extensions", 
+		    		"notFound": "There is not Intra Extensions"
+		    	},
+		    	"action": {
+		    		"title": "Actions",
+		    		"detail": "Consult",
+		    		"delete": "Delete",
+		    		"add": "Add Intra Extension"
+		    	},
+		    	"error": "Unable to retrieve Intra Extensions"
+	    	}
 	    }
     }
 }

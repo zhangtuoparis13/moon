@@ -135,6 +135,28 @@
 	    		"error": "Impossible de supprime le Tenant `{{tenantName}}`",
 	    		"success": "Le Tenant `{{tenantName}}` a été supprimé avec succès"
 	    	}
-	    }	    
+	    },
+	    "intraExtension": {
+	    	"title": "Intra Extensions",
+	    	"list": {
+	    		"search": {
+	    			"placeholder": "Rechercher des Intra Extensions",
+	    			"reset": "Effacer"
+	    		},
+		    	"table": {
+		    		"name": "Nom",
+		    		"tenant": "Tenant",
+		    		"loading": "Chargement des Intra Extensions",
+		    		"notFound": "Il n'existe aucun Intra Extension"
+		    	},
+		    	"action": {
+		    		"title": "Actions",
+		    		"detail": "Consulter",
+		    		"delete": "Supprimer",
+		    		"add": "Ajouter une Intra Extension"
+		    	},
+		    	"error": "Impossible de récupérer la liste des Intra Extensions"
+	    	}
+	    }	
 	}        
 }
