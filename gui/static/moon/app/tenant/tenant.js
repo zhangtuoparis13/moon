@@ -9,6 +9,11 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
 		$stateProvider
 	        
 		.state('moon.tenant', {
+            abstract: true,
+            template: '<div ui-view></div>'
+        })
+		
+		.state('moon.tenant.list', {
 			url: '/tenant',
 			controller: 'TenantController',
             templateUrl: 'static/moon/app/tenant/tenant.tpl.html'

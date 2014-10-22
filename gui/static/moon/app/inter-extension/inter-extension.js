@@ -7,8 +7,13 @@ angular.module('moonApp.interExtension', ['ngTable', 'ngAnimate', 'mgcrea.ngStra
 	 .config(function($stateProvider) {
 		 
 		 $stateProvider
+		 
+		 .state('moon.interExtension', {
+	            abstract: true,
+	            template: '<div ui-view></div>'
+		 })
 	        
-     	.state('moon.interExtension', {
+     	.state('moon.interExtension.list', {
              url: '/interExtension',
              controller: 'InterExtensionController',
              templateUrl: 'static/moon/app/inter-extension/inter-extension.tpl.html'

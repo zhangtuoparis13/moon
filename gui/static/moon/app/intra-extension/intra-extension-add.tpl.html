@@ -28,21 +28,20 @@
 		                </div>
 		            </div>
 		            
-		            <div class="form-group" ng-class="{'has-error': form.add.policy.$invalid && form.add.policy.$dirty}">
+		            <div class="form-group" ng-class="{'has-error': form.add.policy.$dirty && (form.add.policy.$invalid || !add.selectedPolicy)}">
 		            
 		                <label class="col-sm-3 control-label" translate="moon.intraExtension.add.form.policy">Policy</label>
 		                
 		                <div class="col-sm-6">
 		                
-		                	<!-- FIXME: set policy to required -->
-		                    <ui-select ng-model="add.selectedPolicy" name="policy"> 
-		                    	<ui-select-match placeholder="(None)">{{$select.selected.name}}</ui-select-match>
+		                    <ui-select ng-model="add.selectedPolicy" name="policy" required> 
+		                    	<ui-select-match placeholder="(None)">{{$select.selected}}</ui-select-match>
 		                    	<ui-select-choices repeat="policy in add.policies">
-		                    		<div ng-value="policy">{{policy.name}}</div>
+		                    		<div ng-value="policy">{{policy}}</div>
 	             				</ui-select-choices>
 		                    </ui-select>
 		                    
-		                    <div class="help-block" ng-show="form.add.policy.$dirty && form.add.policy.$invalid">
+		                    <div class="help-block" ng-show="form.add.policy.$dirty && (form.add.policy.$invalid || !add.selectedPolicy)">
 		                    	<small class="error" ng-show="form.add.policy.$error.required" translate="moon.intraExtension.add.check.policy.required">Policy is required</small>
 		                    </div>
 		                    
@@ -56,8 +55,13 @@
 			
 			<div class="modal-footer">
 				<div class="btn-toolbar" style="float: right;">
-					<button ng-click="$hide()" class="btn btn-default" translate="moon.intraExtension.add.action.cancel">Cancel</button>
-					<button ng-click="add.create(add.intraExtension)" class="btn btn-warning" translate="moon.intraExtension.add.action.create">Create</button>
+					<a href="" ng-click="$hide()" class="btn btn-default">
+		                <span translate="moon.intraExtension.add.action.cancel">Cancel</span>
+					</a>					
+					<a href="" ng-click="add.create(add.intraExtension)" class="btn btn-warning">
+		            	<span class="glyphicon glyphicon-save"></span>
+		                <span translate="moon.intraExtension.add.action.create">Create</span>
+					</a>
 				</div>
 			</div>
 			

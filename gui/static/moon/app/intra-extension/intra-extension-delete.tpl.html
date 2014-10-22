@@ -10,13 +10,18 @@
 			</div>
 			
 			<div class="modal-body">
-				<span translate="moon.intraExtension.remove.content" translate-values="{ intraExtensionName: remove.intraExtension.authz.metadata.name }"></span>
+				<span translate="moon.intraExtension.remove.content" translate-values="{ intraExtensionName: remove.intraExtension._id }"></span>
 			</div>
 			
 			<div class="modal-footer">
 				<div class="btn-toolbar" style="float: right;">
-					<button ng-click="$hide()" class="btn btn-default" translate="moon.intraExtension.remove.action.cancel">Cancel</button>
-					<button ng-click="remove.remove(remove.intraExtension)" class="btn btn-warning" translate="moon.intraExtension.remove.action.delete">Delete</button>
+					<a href="" ng-click="$hide()" class="btn btn-default">
+		                <span translate="moon.intraExtension.remove.action.cancel">Cancel</span>
+					</a>					
+					<a href="" ng-click="remove.remove(remove.intraExtension)" class="btn btn-warning">
+		            	<span class="glyphicon glyphicon-trash"></span>
+		                <span translate="moon.intraExtension.remove.action.delete">Delete</span>
+					</a>
 				</div>
 			</div>
 			

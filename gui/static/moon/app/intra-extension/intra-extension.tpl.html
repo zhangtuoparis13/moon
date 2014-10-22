@@ -25,7 +25,8 @@
         <table class="table table-striped table-hover" ng-table="intraExtensionsTable">
         
             <colgroup>
-                <col class="col-md-6" />
+                <col class="col-md-4" />
+                <col class="col-md-2" />
                 <col class="col-md-2" />
                 <col class="col-md-1" />
             </colgroup>
@@ -35,9 +36,15 @@
                 <tr>
                 
                 	<th class="customTables sortable"
-						ng-class="{ 'sort-asc': intraExtensionsTable.isSortBy('name', 'asc'), 'sort-desc': intraExtensionsTable.isSortBy('name', 'desc') }"
-						ng-click="intraExtensionsTable.sorting('name', intraExtensionsTable.isSortBy('name', 'asc') ? 'desc' : 'asc')">
+						ng-class="{ 'sort-asc': intraExtensionsTable.isSortBy('_id', 'asc'), 'sort-desc': intraExtensionsTable.isSortBy('_id', 'desc') }"
+						ng-click="intraExtensionsTable.sorting('_id', intraExtensionsTable.isSortBy('_id', 'asc') ? 'desc' : 'asc')">
 							<div translate="moon.intraExtension.list.table.name">Name</div>
+					</th>
+					
+					<th class="customTables sortable" 
+						ng-class="{ 'sort-asc': intraExtensionsTable.isSortBy('authz.metadata.model', 'asc'), 'sort-desc': intraExtensionsTable.isSortBy('authz.metadata.model', 'desc') }"
+						ng-click="intraExtensionsTable.sorting('authz.metadata.model', intraExtensionsTable.isSortBy('authz.metadata.model', 'asc') ? 'desc' : 'asc')"">
+						<div translate="moon.intraExtension.list.table.policy">Policy</div>
 					</th>
 					
 					<th class="customTables">
@@ -67,7 +74,8 @@
             <tbody ng-if="!intraExtensionsLoading && intraExtensions.length  > 0">
             
 	            <tr ng-repeat="intraExtension in $data | filter:search | orderBy:sort:reverse">
-	                <td>{{intraExtension.authz.metadata.name}}</td>
+	                <td>{{intraExtension._id}}</td>
+	                <td>{{intraExtension.authz.metadata.model}}</td>
 					<td ng-if="tenantsAssociatedToIntraExtensions[intraExtension] == null"><!-- <img src="static/moon/img/ajax-loader.gif" /> --></td>
 	                <td ng-if="tenantsAssociatedToIntraExtensions[intraExtension] != null" ng-bind="tenantsAssociatedToIntraExtensions[intraExtension].name"></td>
 	                <td>
@@ -78,15 +86,22 @@
 		                            <span class="sr-only">Split Action button!</span>
 		                        </button>
 		                        <ul class="dropdown-menu" role="menu">
-		                            <li>
-			                            <a href="" ng-click="view.display(intraExtension)">
-				                            <span class="glyphicon glyphicon-chevron-right"></span>
-				                            <medium for="detail" class="control-label" translate="moon.intraExtension.list.action.detail">Detail</medium>	   
+		                        	<li>
+			                            <a href="" ui-sref="moon.intraExtension.configure({uuid: intraExtension._id})">
+			                            	<span class="glyphicon glyphicon-cog"></span>
+			                            	<medium for="rule" class="control-label"  translate="moon.intraExtension.list.action.configure">Configure</medium>
 			                            </a>
-									</li>
+		                            </li>
+									<li>
+			                            <a href="" ui-sref="moon.intraExtension.rule({uuid: intraExtension._id})">
+			                            	<span class="glyphicon glyphicon-list-alt"></span>
+			                            	<medium for="rule" class="control-label"  translate="moon.intraExtension.list.action.rule">Rules</medium>
+			                            </a>
+		                            </li>
+		                            <li class="divider"></li>
 		                            <li>
 			                            <a href="" ng-click="remove.display(intraExtension)">
-			                            	<span class="glyphicon glyphicon-chevron-right"></span>
+			                            	<span class="glyphicon glyphicon-trash"></span>
 			                            	<medium for="delete" class="control-label"  translate="moon.intraExtension.list.action.delete">Delete</medium>
 			                            </a>
 		                            </li>

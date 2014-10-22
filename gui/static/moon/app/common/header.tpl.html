@@ -27,9 +27,9 @@
     <div class="row">
     
         <ul class="nav nav-tabs">
-            <li ui-sref-active="active"><a ui-sref="moon.tenant" translate="moon.menu.tenant">Tenants</a></li>
-            <li ui-sref-active="active"><a ui-sref="moon.intraExtension" translate="moon.menu.intraExtension">Intra Extensions</a></li>
-            <li ui-sref-active="active"><a ui-sref="moon.interExtension" translate="moon.menu.interExtension">Inter Extensions</a></li>
+            <li ng-class="{active: $state.includes('moon.tenant')}"><a ui-sref="moon.tenant.list" translate="moon.menu.tenant">Tenants</a></li>
+            <li ng-class="{active: $state.includes('moon.intraExtension')}"><a ui-sref="moon.intraExtension.list" translate="moon.menu.intraExtension">Intra Extensions</a></li>
+            <li ng-class="{active: $state.includes('moon.interExtension')}"><a ui-sref="moon.interExtension.list" translate="moon.menu.interExtension">Inter Extensions</a></li>
         </ul>
                         
     </div>

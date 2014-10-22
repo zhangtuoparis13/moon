@@ -91,10 +91,10 @@
 	                <td>{{tenant.name}} </td>
 	               	<td>{{tenant.domain}}</td>
 	                 <td>
-	                	<img ng-if="tenant.managed" src="static/moon/img/tick.png" alt="Managed" />
+	                	<span ng-if="tenant.managed" class="glyphicon glyphicon-ok"></span>
 	                </td>
 	                <td>
-	                	<img ng-if="tenant.enabled" src="static/moon/img/tick.png" alt="Enabled" />
+	                	<span ng-if="tenant.enabled" class="glyphicon glyphicon-ok"></span>
 	                </td>
 	                <td>&nbsp;</td>
 	                <td>
@@ -107,13 +107,14 @@
 		                        <ul class="dropdown-menu" role="menu">
 		                            <li>
 			                            <a href="" ng-click="view.display(tenant)">
-				                            <span class="glyphicon glyphicon-chevron-right"></span>
+				                            <span class="glyphicon glyphicon-eye-open"></span>
 				                            <medium for="detail" class="control-label" translate="moon.tenant.list.action.detail">Detail</medium>	   
 			                            </a>
 									</li>
+									<li class="divider"></li>
 		                            <li>
 			                            <a href="" ng-click="remove.display(tenant)">
-			                            	<span class="glyphicon glyphicon-chevron-right"></span>
+			                            	<span class="glyphicon glyphicon-trash"></span>
 			                            	<medium for="delete" class="control-label"  translate="moon.tenant.list.action.delete">Delete</medium>
 			                            </a>
 		                            </li>

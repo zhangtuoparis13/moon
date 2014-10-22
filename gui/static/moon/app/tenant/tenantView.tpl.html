@@ -40,8 +40,7 @@
 					<div class="col-md-3">{{object.name}}</div> 
                  	<div class="col-md-7">{{object.description}}</div>
                  	<div class="col-md-2">
-                    	<img ng-if="object.enabled" src="static/moon/img/tick.png" alt="Enabled" />
-                		<img ng-if="!object.enabled" src="static/moon/img/stop.png" alt="Not enabled" />
+                		<span ng-if="object.enabled" class="glyphicon glyphicon-ok"></span>
                     </div>
 		                    	                                
                 </div>
@@ -82,8 +81,7 @@
 					<div class="col-md-4">{{view.selectedSubject.mail}}</div>
                  	<div class="col-md-2">
                  		<div ng-if="view.selectedSubject != null">
-	                    	<img ng-if="view.selectedSubject.enabled" src="static/moon/img/tick.png" alt="Enabled" />
-	                		<img ng-if="!view.selectedSubject.enabled" src="static/moon/img/stop.png" alt="Not enabled" />
+	                		<span ng-if="view.selectedSubject.enabled" class="glyphicon glyphicon-ok"></span>
                 		</div>
                     </div>
 		                    	                                
@@ -126,10 +124,10 @@
 	                 	<div class="col-md-3">{{role.value}}</div>
 	                 	<div class="col-md-5">{{role.description}}</div>
 	                 	<div class="col-md-2">
-	                    	<img ng-if="isRoleAssigned(role)" src="static/moon/img/tick.png" alt="Assigned" />
+	                    	<span ng-if="isRoleAssigned(role)" class="glyphicon glyphicon-ok"></span>
 	                    </div>
 	                 	<div class="col-md-2">
-	                    	<img ng-if="role.enabled" src="static/moon/img/tick.png" alt="Enabled" />
+	                 		<span ng-if="role.enabled" class="glyphicon glyphicon-ok"></span>
 	                    </div>
 			                    	                                
 	                </div>
@@ -173,10 +171,10 @@
 	                 	<div class="col-md-3">{{group.value}}</div>
 	                 	<div class="col-md-5">{{group.description}}</div>
 	                 	<div class="col-md-2">
-	                    	<img ng-if="isGroupAssigned(group)" src="static/moon/img/tick.png" alt="Assigned" />
+	                    	<span ng-if="isGroupAssigned(group)" class="glyphicon glyphicon-ok"></span>
 	                    </div>
 	                 	<div class="col-md-2">
-	                    	<img ng-if="group.enabled" src="static/moon/img/tick.png" alt="Enabled" />
+	                 		<span ng-if="group.enabled" class="glyphicon glyphicon-ok"></span>
 	                    </div>
 			                    	                                
 	                </div>

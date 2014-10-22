@@ -66,8 +66,13 @@
 			
 			<div class="modal-footer">
 				<div class="btn-toolbar" style="float: right;">
-					<button ng-click="$hide()" class="btn btn-default" translate="moon.tenant.add.action.cancel">Cancel</button>
-					<button ng-click="add.create(add.tenant)" class="btn btn-warning" translate="moon.tenant.add.action.create">Create</button>
+					<a href="" ng-click="$hide()" class="btn btn-default">
+		                <span translate="moon.tenant.add.action.cancel">Cancel</span>
+					</a>					
+					<a href="" ng-click="add.create(add.tenant)" class="btn btn-warning">
+		            	<span class="glyphicon glyphicon-save"></span>
+		                <span translate="moon.tenant.add.action.create">Create</span>
+					</a>
 				</div>
 			</div>
 			

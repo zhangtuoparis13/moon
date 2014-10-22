@@ -15,8 +15,13 @@
 			
 			<div class="modal-footer">
 				<div class="btn-toolbar" style="float: right;">
-					<button ng-click="$hide()" class="btn btn-default" translate="moon.tenant.remove.action.cancel">Cancel</button>
-					<button ng-click="remove.remove(remove.tenant)" class="btn btn-warning" translate="moon.tenant.remove.action.delete">Delete</button>
+					<a href="" ng-click="$hide()" class="btn btn-default">
+		                <span translate="moon.tenant.remove.action.cancel">Cancel</span>
+					</a>					
+					<a href="" ng-click="remove.remove(remove.tenant)" class="btn btn-warning">
+		            	<span class="glyphicon glyphicon-trash"></span>
+		                <span translate="moon.tenant.remove.action.delete">Delete</span>
+					</a>
 				</div>
 			</div>
 			

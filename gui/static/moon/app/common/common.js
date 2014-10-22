@@ -7,6 +7,8 @@ angular.module('moonApp.common', ['ngResource', 'ngAnimate', 'mgcrea.ngStrap'])
     .controller('HeaderController', ['$rootScope', '$scope', '$state', '$translate', 
                                      function ($rootScope, $scope, $state, $translate) {       
     		
+    		$scope.$state = $state;
+    	
 	    	$rootScope.changeLocale = function(localeKey, event) {
 				
 	            event.preventDefault();
