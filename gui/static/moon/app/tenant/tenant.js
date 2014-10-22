@@ -16,8 +16,8 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
 		 
 	})
 	 
-	.controller('TenantController', ['$scope', '$filter', '$modal', '$translate', 'ngTableParams', 'alertService', 'tenantService', 
-	                                   function ($scope, $filter, $modal, $translate, ngTableParams, alertService, tenantService) {
+	.controller('TenantController', ['$q', '$scope', '$filter', '$modal', '$translate', 'ngTableParams', 'alertService', 'tenantService', 
+	                                   function ($q, $scope, $filter, $modal, $translate, ngTableParams, alertService, tenantService) {
 
 		$scope.form = {};
 		
@@ -229,7 +229,7 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
         	$scope.view.objects = [];
         	$scope.view.roles = [];
         	$scope.view.groups = [];
-        	$scope.view.roleAssignments = [];
+        	$scope.view.roleAssignment = [];
         	$scope.view.groupAssignments = [];
 			
 		};
@@ -272,80 +272,87 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
             
         };
         
-        $scope.view.updateSubjectRelationships = function(tenant, subject) {
+        // group or role
+        $scope.isRoleAssigned = function(role) {
+        	        	
+        	return _($scope.view.roleAssignment.attributes).find(function(role_uuid) {
+        		return role.uuid === role_uuid;
+        	}).length != 0;
+        	
+        };
+        
+        $scope.view.getRoles = function(tenant, subject) {
         	
         	$scope.view.rolesLoading = true;
-        	$scope.view.roleAssignmentsLoading = true;
-        	$scope.view.groupsLoading = true;
-        	$scope.view.groupAssignmentsLoading = true;
         	
-        	// role
-        	tenantService.subjectRole.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}, function(data) {
-        		
+        	$scope.view.roles = [];
+        	$scope.view.roleAssignment = null;
+        	
+        	var promises = { roles: tenantService.subjectRole.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}).$promise,
+        					 roleAssigment: tenantService.roleAssigment.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}).$promise };
+        	
+        	$q.all(promises).then(function(promiseResolved) {
+ 		    	
         		$scope.view.rolesLoading = false;
         		
-        		$scope.view.roles = data.roles;
-        		        		
-        	}, function(response) {
+        		$scope.view.roles = promiseResolved.roles.roles;
         		
-        		$scope.view.rolesLoading = false;
+        		$scope.view.roleAssignment = _.first(promiseResolved.roleAssigment.role_assignments);
+ 		    	
+ 		    }, function(reason) {
+ 		    	
+ 		    	$scope.view.rolesLoading = false;
     			
     			$translate('moon.tenant.view.role.error').then(function (translatedValue) {
         			alertService.alertError(translatedValue);
-                });	
-        		
-        	});
+                });
+ 		    	
+ 		    });
+        	        	
+        };
+        
+        $scope.isGroupAssigned = function(group) {
         	
-        	// roleAssigment
-        	tenantService.roleAssigment.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}, function(data) {
-        		
-        		$scope.view.roleAssignmentsLoading = false;
-        		
-        		$scope.view.roleAssignments = data.role_assignments;
-        		
-        	}, function(response) {
-    			
-        		$scope.view.roleAssignmentsLoading = false;
-        		
-    			$translate('moon.tenant.view.roleAssigment.error').then(function (translatedValue) {
-        			alertService.alertError(translatedValue);
-                });	
-        		
-        	});
+        	return _($scope.view.groupAssignment.attributes).find(function(group_uuid) {
+        		return group.uuid === group_uuid;
+        	}).length != 0;
         	
-        	// group
-        	tenantService.subjectGroup.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}, function(data) {
-        		
+        };
+        
+        $scope.view.getGroups = function(tenant, subject) {
+        	
+        	$scope.view.groupsLoading = true;
+        	
+        	$scope.view.groups = [];
+        	$scope.view.groupAssignment = null;
+        	        	
+        	var promises = { groups: tenantService.subjectGroup.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}).$promise, 
+        					 groupAssignment: tenantService.groupAssigment.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}).$promise };
+        	
+        	$q.all(promises).then(function(promiseResolved) {
+ 		    	
         		$scope.view.groupsLoading = false;
         		
-        		$scope.view.groups = data.groups;
-        		        		
-        	}, function(response) {
-    			
-        		$scope.view.groupsLoading = false;
+        		$scope.view.groups = promiseResolved.groups.groups;
         		
-    			$translate('moon.tenant.view.group.error').then(function (translatedValue) {
+        		$scope.view.groupAssignment = _.first(promiseResolved.groupAssignment.group_assignments);
+ 		    	
+ 		    }, function(reason) {
+ 		    	
+ 		    	$scope.view.groupsLoading = false;
+    			
+ 		    	$translate('moon.tenant.view.group.error').then(function (translatedValue) {
         			alertService.alertError(translatedValue);
                 });	
-        		
-        	});
+ 		    	
+ 		    });
         	
-        	// groupAssigment
-        	tenantService.groupAssigment.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}, function(data) {
-        		
-        		$scope.view.groupAssignmentsLoading = false;
-        		
-        		$scope.view.groupAssigments = data.group_assignments;
-        		
-        	}, function(response) {
-        		
-        		$scope.view.groupAssignmentsLoading = false;
-    			
-    			$translate('moon.tenant.view.groupAssigment.error').then(function (translatedValue) {
-        			alertService.alertError(translatedValue);
-                });	
-        		
-        	});
+        };
+        
+        $scope.view.getRolesAndGroups = function(tenant, subject) {
+        	
+        	$scope.view.getRoles(tenant, subject);
+        	$scope.view.getGroups(tenant, subject);
         	
         };
                 		 

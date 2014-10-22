@@ -22,8 +22,7 @@
 				<div class="row">
 				
 					<div class="col-md-3"><label translate="moon.tenant.view.object.name">Name</label></div>
-	                <div class="col-md-3"><label translate="moon.tenant.view.object.category">Category</label></div>
-					<div class="col-md-4"><label translate="moon.tenant.view.object.description">Description</label></div>
+					<div class="col-md-7"><label translate="moon.tenant.view.object.description">Description</label></div>
 	                <div class="col-md-2"><label translate="moon.tenant.view.object.enabled">Enabled</label></div>
 	                
 				</div>
@@ -39,8 +38,7 @@
 				<div class="row" ng-if="!view.objectsLoading && view.objects.length > 0" ng-repeat="object in view.objects">
 								
 					<div class="col-md-3">{{object.name}}</div> 
-                 	<div class="col-md-3">{{object.category}}</div>
-                 	<div class="col-md-4">{{object.description}}</div>
+                 	<div class="col-md-7">{{object.description}}</div>
                  	<div class="col-md-2">
                     	<img ng-if="object.enabled" src="static/moon/img/tick.png" alt="Enabled" />
                 		<img ng-if="!object.enabled" src="static/moon/img/stop.png" alt="Not enabled" />
@@ -73,7 +71,7 @@
 				<div class="row">
 				
 					<div class="col-md-3">
-						<ui-select ng-model="view.selectedSubject" on-select="view.updateSubjectRelationships(view.tenant, $item)"> 
+						<ui-select ng-model="view.selectedSubject" on-select="view.getRolesAndGroups(view.tenant, $item)"> 
 	                    	<ui-select-match placeholder="(None)">{{$select.selected.name}}</ui-select-match>
 	                    	<ui-select-choices repeat="subject in view.subjects">
 	                    		<div ng-value="subject">{{subject.name}}</div>
@@ -108,9 +106,9 @@
 									
 					<div class="row">
 					
-						<div class="col-md-3"><label translate="moon.tenant.view.role.category">Category</label></div>
 						<div class="col-md-3"><label translate="moon.tenant.view.role.value">Value</label></div>
-		                <div class="col-md-4"><label translate="moon.tenant.view.role.description">Description</label></div>
+		                <div class="col-md-5"><label translate="moon.tenant.view.role.description">Description</label></div>
+		                <div class="col-md-2"><label translate="moon.tenant.view.role.assigned">Assigned</label></div>
 		                <div class="col-md-2"><label translate="moon.tenant.view.role.enabled">Enabled</label></div>
 		                
 					</div>
@@ -124,13 +122,14 @@
 					</div>
 					
 					<div class="row" ng-if="!view.rolesLoading && view.roles.length > 0" ng-repeat="role in view.roles">
-					
-						<div class="col-md-3">{{role.category}}</div> 
+					 
 	                 	<div class="col-md-3">{{role.value}}</div>
-	                 	<div class="col-md-4">{{role.description}}</div>
+	                 	<div class="col-md-5">{{role.description}}</div>
+	                 	<div class="col-md-2">
+	                    	<img ng-if="isRoleAssigned(role)" src="static/moon/img/tick.png" alt="Assigned" />
+	                    </div>
 	                 	<div class="col-md-2">
 	                    	<img ng-if="role.enabled" src="static/moon/img/tick.png" alt="Enabled" />
-	                		<img ng-if="!role.enabled" src="static/moon/img/stop.png" alt="Not enabled" />
 	                    </div>
 			                    	                                
 	                </div>
@@ -139,48 +138,7 @@
 	                <div>&nbsp;</div>
                 
                 </div>
-                
-                <!-- ROLE ASSIGNMENTS -->
-                
-               	<div ng-if="view.selectedSubject != null">
-                
-	               	<div class="row">
-						<div class="col-md-12">
-							<h1 class="pull-left" translate="moon.tenant.view.roleAssignment.title">Role Assignments</h1>
-						</div>
-					</div>
-					
-					<div>&nbsp;</div>
-									
-					<div class="row">
-					
-						<div class="col-md-3"><label translate="moon.tenant.view.roleAssignment.category">Category</label></div>
-						<div class="col-md-3"><label translate="moon.tenant.view.roleAssignment.attributes">Attributes</label></div>
-		                <div class="col-md-6"><label translate="moon.tenant.view.roleAssignment.description">Description</label></div>
-		                
-					</div>
-					
-					<div class="row" ng-if="view.roleAssignmentsLoading">
-						<div class="col-md-12"><img src="static/moon/img/ajax-loader.gif" /> <span translate="moon.tenant.view.roleAssignment.loading">Loading Role Assignments</span></div>
-					</div>
-					
-					<div class="row" ng-if="!view.roleAssignmentsLoading && view.roleAssignments.length == 0">
-						<div class="col-md-12" translate="moon.tenant.view.roleAssignment.notFound">Role Assignments not found</div>
-					</div>
-					
-					<div class="row" ng-if="!view.roleAssignmentsLoading && view.roleAssignments.length > 0" ng-repeat="roleAssignment in view.roleAssignments">
-					
-						<div class="col-md-3">{{roleAssignment.category}}</div> 
-	                 	<div class="col-md-3">{{roleAssignment.attributes}}</div>
-	                 	<div class="col-md-6">{{roleAssignment.description}}</div>
-			                    	                                
-	                </div>
-	                
-	                <div>&nbsp;</div>
-	                <div>&nbsp;</div>
-                
-                </div>
-                
+                                
                 <!-- GROUPS -->
                 
                	<div ng-if="view.selectedSubject != null">
@@ -195,9 +153,9 @@
 									
 					<div class="row">
 					
-						<div class="col-md-3"><label translate="moon.tenant.view.group.category">Category</label></div>
 						<div class="col-md-3"><label translate="moon.tenant.view.group.value">Value</label></div>
-		                <div class="col-md-4"><label translate="moon.tenant.view.group.description">Description</label></div>
+		                <div class="col-md-5"><label translate="moon.tenant.view.group.description">Description</label></div>
+		                <div class="col-md-2"><label translate="moon.tenant.view.group.assigned">Assigned</label></div>
 		                <div class="col-md-2"><label translate="moon.tenant.view.group.enabled">Enabled</label></div>
 		                
 					</div>
@@ -211,13 +169,14 @@
 					</div>
 					
 					<div class="row" ng-if="!view.groupsLoading && view.groups.length > 0" ng-repeat="group in view.groups">
-					
-						<div class="col-md-3">{{group.category}}</div> 
+					 
 	                 	<div class="col-md-3">{{group.value}}</div>
-	                 	<div class="col-md-4">{{group.description}}</div>
+	                 	<div class="col-md-5">{{group.description}}</div>
+	                 	<div class="col-md-2">
+	                    	<img ng-if="isGroupAssigned(group)" src="static/moon/img/tick.png" alt="Assigned" />
+	                    </div>
 	                 	<div class="col-md-2">
 	                    	<img ng-if="group.enabled" src="static/moon/img/tick.png" alt="Enabled" />
-	                		<img ng-if="!group.enabled" src="static/moon/img/stop.png" alt="Not enabled" />
 	                    </div>
 			                    	                                
 	                </div>
@@ -226,48 +185,7 @@
 	                <div>&nbsp;</div>
                 
                 </div>
-                
-                <!-- GROUP ASSIGNMENTS -->
-                
-               	<div ng-if="view.selectedSubject != null">
-                
-	               	<div class="row">
-						<div class="col-md-12">
-							<h1 class="pull-left" translate="moon.tenant.view.groupAssignment.title">Group Assignments</h1>
-						</div>
-					</div>
-					
-					<div>&nbsp;</div>
-									
-					<div class="row">
-					
-						<div class="col-md-3"><label translate="moon.tenant.view.groupAssignment.category">Category</label></div>
-						<div class="col-md-3"><label translate="moon.tenant.view.groupAssignment.attributes">Attributes</label></div>
-		                <div class="col-md-6"><label translate="moon.tenant.view.groupAssignment.description">Description</label></div>
-		                
-					</div>
-					
-					<div class="row" ng-if="view.groupAssignmentsLoading">
-						<div class="col-md-12"><img src="static/moon/img/ajax-loader.gif" /> <span translate="moon.tenant.view.groupAssignment.loading">Loading Group Assignments</span></div>
-					</div>
-					
-					<div class="row" ng-if="!view.groupAssignmentsLoading && view.groupAssignments.length == 0">
-						<div class="col-md-12" translate="moon.tenant.view.groupAssignment.notFound">Group Assignments not found</div>
-					</div>
-					
-					<div class="row" ng-if="!view.groupAssignmentsLoading && view.groupAssignments.length > 0" ng-repeat="groupAssignment in view.groupAssignments">
-					
-						<div class="col-md-3">{{groupAssignment.category}}</div> 
-	                 	<div class="col-md-3">{{groupAssignment.attributes}}</div>
-	                 	<div class="col-md-6">{{groupAssignment.description}}</div>
-			                    	                                
-	                </div>
-	                
-	                <div>&nbsp;</div>
-	                <div>&nbsp;</div>
-                
-                </div>
-                				
+                                				
 			</div>
 			
 			<div class="modal-footer">
