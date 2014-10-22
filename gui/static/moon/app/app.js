@@ -16,7 +16,8 @@ var moonApp = angular.module('moonApp', ['ngRoute',
                                          'moonApp.common',
                                          'moonApp.tenant',
                                          'moonApp.intraExtension',
-                                         'moonApp.interExtension'])
+                                         'moonApp.interExtension',
+                                         'moonApp.nova'])
 
     .config(['$urlRouterProvider', '$translateProvider', '$stateProvider', 'uiSelectConfig',
         function($urlRouterProvider, $translateProvider, $stateProvider, uiSelectConfig) {
