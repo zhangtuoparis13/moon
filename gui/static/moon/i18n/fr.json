@@ -197,7 +197,25 @@
 	    		"title": "Configuration de l'Intra Extension `{{intraExtensionName}}`",
 	    		"action": {
 	    			"back": "Liste des Intra Extensions"
-	    		}
+	    		},
+	    		"subject": {
+	    			"title": "Sujets",
+	    			"category": {
+	    				"title": "Catégories"
+	    			}
+	    		},
+	    		"object": {
+	    			"title": "Objets",
+	    			"category": {
+	    				"title": "Catégories"
+	    			}
+	    		}  
+	    	},
+	    	"rule": {
+	    		"title": "Règles de l'Intra Extension `{{intraExtensionName}}`",
+	    		"action": {
+	    			"back": "Liste des Intra Extensions"
+	    		}  
 	    	}
 	    }	
 	}        

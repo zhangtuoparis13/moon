@@ -197,7 +197,25 @@
 	    		"title": "Intra Extension `{{intraExtensionName}}` configuration",
 	    		"action": {
 	    			"back": "Back to Intra Extensions"
-	    		}
+	    		},
+	    		"subject": {
+	    			"title": "Subjects",
+	    			"category": {
+	    				"title": "Categories"
+	    			}
+	    		},
+	    		"object": {
+	    			"title": "Objects",
+	    			"category": {
+	    				"title": "Categories"
+	    			}
+	    		}    		
+	    	},
+	    	"rule": {
+	    		"title": "Intra Extension `{{intraExtensionName}}` rules",
+	    		"action": {
+	    			"back": "Back to Intra Extensions"
+	    		}   		
 	    	}
 	    }
     }

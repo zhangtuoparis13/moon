@@ -1,18 +1,51 @@
-<div class="row">
-	<div class="col-md-12">
-		<h1 class="pull-left" translate="moon.intraExtension.configure.title" translate-values="{ intraExtensionName: intraExtension._id }">Configure</h1>
+<div class="container">
+	
+	<div class="row">
+		<h3 class="pull-left" translate="moon.intraExtension.configure.title" translate-values="{ intraExtensionName: intraExtension._id }">Configure</h3>
 	</div>
-</div>
-
-<div class="row">
-
-	<div class="container">
-		<div class="form-inline form-group">
-           	<a href="" ui-sref="moon.intraExtension.list" class="btn btn-default">
-            	<span class="glyphicon glyphicon-transfer"></span>
-                <span translate="moon.intraExtension.configure.action.back">Back to Intra Extensions</span>
-			</a>
+	
+	<div class="row strong">
+		<div class="col-md-3"><label translate="moon.intraExtension.configure.subject.title">Subjects</label></div>
+		<div class="col-md-3"><label translate="moon.intraExtension.configure.subject.category.title">Categories</label></div>
+		<div class="col-md-3"><label translate="moon.intraExtension.configure.object.category.title">Categories</label></div>
+		<div class="col-md-3"><label translate="moon.intraExtension.configure.object.title">Objects</label></div>
+	</div>
+	
+	<div class="row">
+	
+		<div class="col-md-3">
+		
+			<ui-select multiple theme="bootstrap" ng-model="subject.selected" ng-disabled="disabled">
+				<ui-select-match placeholder="(None)">{{$item}}</ui-select-match>
+				<ui-select-choices repeat="subjectName in subject.subjects">
+					<div ng-value="subjectName">{{subjectName}}</div>
+				</ui-select-choices>
+			</ui-select>
+		
 		</div>
+		
+		<div class="col-md-3"></div>
+		
+		<div class="col-md-3"></div>
+		
+		<div class="col-md-3">
+		
+			<ui-select multiple theme="bootstrap" ng-model="object.selected" ng-disabled="disabled">
+				<ui-select-match placeholder="(None)">{{$item}}</ui-select-match>
+				<ui-select-choices repeat="objectName in object.objects">
+					<div ng-value="objectName">{{objectName}}</div>
+				</ui-select-choices>
+			</ui-select>
+		
+		</div>
+	
+	</div>
+	
+	<div class="row top10">
+		<a href="" ui-sref="moon.intraExtension.list" class="btn btn-default">
+        	<span class="glyphicon glyphicon-transfer"></span>
+            <span translate="moon.intraExtension.configure.action.back">Back to Intra Extensions</span>
+		</a>
     </div>
-
+	
 </div>

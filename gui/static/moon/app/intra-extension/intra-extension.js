@@ -33,7 +33,13 @@ angular.module('moonApp.intraExtension', ['ngTable', 'ngAnimate', 'mgcrea.ngStra
 		.state('moon.intraExtension.rule', {
 			url: '/intraExtension/:uuid/rule',
 			controller: 'IntraExtensionRuleController',
-			templateUrl: 'static/moon/app/intra-extension/intra-extension-rule.tpl.html'
+			templateUrl: 'static/moon/app/intra-extension/intra-extension-rule.tpl.html',
+			resolve: {
+				intraExtension: function($stateParams, intraExtensionService) {
+					return intraExtensionService.intraExtension.get({ie_uuid: $stateParams.uuid}).$promise;
+				}				
+			}
+				
 		});
 		 
 	})
@@ -236,14 +242,23 @@ angular.module('moonApp.intraExtension', ['ngTable', 'ngAnimate', 'mgcrea.ngStra
 		
 		$scope.intraExtension = intraExtension.intra_extensions;
 		
+		$scope.subject = { subjects: [], categories: [], selected: null };
+		$scope.object = { objects: [], categories: [], selected: null };
+		 
+		intraExtensionService.subject.query({ie_uuid: $scope.intraExtension._id }, function(data) {
+			$scope.subject.subjects = data.subjects;
+		});
 		
+		intraExtensionService.object.query({ie_uuid: $scope.intraExtension._id }, function(data) {
+			$scope.object.objects = data.objects;
+		});
 		
 	}])
 	
-	.controller('IntraExtensionRuleController', ['$q', '$scope', '$state', '$stateParams', '$filter', '$modal', '$translate', 'ngTableParams', 'alertService', 'intraExtensionService', 
-	  	                                   		function ($q, $scope, $state, $stateParams, $filter, $modal, $translate, ngTableParams, alertService, intraExtensionService) {
+	.controller('IntraExtensionRuleController', ['$q', '$scope', '$state', '$stateParams', '$filter', '$modal', '$translate', 'intraExtension', 'ngTableParams', 'alertService', 'intraExtensionService', 
+	  	                                   		function ($q, $scope, $state, $stateParams, $filter, $modal, $translate, intraExtension, ngTableParams, alertService, intraExtensionService) {
 		
-		
+		$scope.intraExtension = intraExtension.intra_extensions;
 		
 	}])
 	
@@ -264,6 +279,16 @@ angular.module('moonApp.intraExtension', ['ngTable', 'ngAnimate', 'mgcrea.ngStra
      	   	
 			policy: $resource('./json/intra-extensions/policies', {}, {
      	   		query: { method: 'GET', isArray: false }
+    	   	}),
+    	   	
+    	   	subject: $resource('./json/intra-extensions/:ie_uuid/subjects', {}, {
+    	   		query: { method: 'GET', isArray: false },
+     	   		get: { method: 'GET', isArray: false }
+    	   	}),
+    	   	
+    	   	object: $resource('./json/intra-extensions/:ie_uuid/objects', {}, {
+    	   		query: { method: 'GET', isArray: false },
+     	   		get: { method: 'GET', isArray: false }
     	   	})
     	   	
 		};
