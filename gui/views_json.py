@@ -47,7 +47,7 @@ def intra_extensions(request, uuid=None):
             return send_json({"intra_extensions": pap.get_intra_extensions(user_id=request.session['user_id']).keys()})
     if request.META['REQUEST_METHOD'] == "DELETE":
         pap.delete_intra_extension(user_id=request.session['user_id'], intra_extension_uuid=uuid)
-    if uuid:
+    elif uuid:
         extension = pap.get_intra_extensions(user_id=request.session['user_id'])[uuid]
         return send_json({"intra_extensions": extension.get_data()})
     return send_json({"intra_extensions": pap.get_intra_extensions(user_id=request.session['user_id']).keys()})
