@@ -40,10 +40,11 @@ def intra_extensions(request, uuid=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
-        if "policymodel" in data:
+        if "policymodel" in data and "name" in data:
             uuid = pap.install_intra_extension_from_json(
                 user_id=request.session['user_id'],
-                extension_setting_name=data["policymodel"])
+                extension_setting_name=data["policymodel"],
+                name=data["name"])
             return send_json({
                 "intra_extensions":
                     pap.get_intra_extensions(user_id=request.session['user_id'])[uuid].get_data()

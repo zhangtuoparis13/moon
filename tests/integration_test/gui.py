@@ -73,8 +73,11 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
         self.assertIsInstance(self.policies, dict)
         my_policy = self.policies["policies"].keys()[0]
         #Create the extension
-        self.new_ext1 = get_url("/json/intra-extensions/", post_data={"policymodel": my_policy})
+        self.new_ext1 = get_url(
+            "/json/intra-extensions/",
+            post_data={"policymodel": my_policy, "name": "Intra_Extension Test"})
         self.assertIsInstance(self.new_ext1, dict)
+        print(self.new_ext1["intra_extensions"])
         self.new_ext1_uuid = self.new_ext1["intra_extensions"]["_id"]
         self.assertEqual(number_of_intra_ext+1, len(get_url("/json/intra-extensions/")["intra_extensions"]))
         data = get_url("/json/intra-extensions/")
@@ -82,7 +85,7 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
         for ext in data["intra_extensions"]:
             _data = get_url("/json/intra-extensions/"+ext+"/")
             self.assertIsInstance(_data, dict)
-            for k in [u'admin', u'authz', u'_id']:
+            for k in [u'admin', u'authz', u'_id', u'name']:
                 self.assertIn(k, _data["intra_extensions"].keys())
             for k in [u'perimeter', u'assignment', u'configuration', u'metadata']:
                 self.assertIn(k, _data["intra_extensions"]['admin'].keys())
@@ -534,11 +537,15 @@ class TestAdminInterface_InterExtension(unittest.TestCase):
         self.assertIsInstance(self.policies, dict)
         my_policy = self.policies["policies"].keys()[0]
         #Create first extension
-        self.new_ext1 = get_url("/json/intra-extensions/", post_data={"policymodel": my_policy})
+        self.new_ext1 = get_url(
+            "/json/intra-extensions/",
+            post_data={"policymodel": my_policy, "name": "Intra_Extension Policy 1"})
         self.assertIsInstance(self.new_ext1, dict)
         self.new_ext1_uuid = self.new_ext1["intra_extensions"]["_id"]
         #Create second extension
-        self.new_ext2 = get_url("/json/intra-extensions/", post_data={"policymodel": my_policy})
+        self.new_ext2 = get_url(
+            "/json/intra-extensions/",
+            post_data={"policymodel": my_policy, "name": "Intra_Extension Policy 2"})
         self.assertIsInstance(self.new_ext1, dict)
         self.new_ext2_uuid = self.new_ext1["intra_extensions"]["_id"]
         #Get Keystone tenants
@@ -745,8 +752,8 @@ class TestPIPInterface(unittest.TestCase):
                 self.assertIsInstance(assignments, dict)
                 self.assertIn("role_assignments", assignments)
                 if len(assignments["role_assignments"]) > 0:
-                    for assignment in assignments:
-                        for key in [u'subject', u'attributes', u'enabled', u'category', u'description', u'uuid']:
+                    for assignment in assignments["role_assignments"]:
+                        for key in [u'subject', u'attributes', u'category', u'description', u'uuid']:
                             self.assertIn(key, assignment)
 
     # def test_group_assignments(self):

@@ -103,11 +103,16 @@ class PAP:
                 return self.intra_extensions[uuid]
 
     @translate_uuid
-    def install_intra_extension_from_json(self, user_id, extension_setting_name=None, extension_setting_dir=None):
+    def install_intra_extension_from_json(
+            self,
+            user_id,
+            extension_setting_name=None,
+            extension_setting_dir=None,
+            name="Intra_Extension"):
         if self.super_extension.admin(user_id, "intra_extension", "create") == "OK":
             if extension_setting_name:
                 extension_setting_dir = self.policies[extension_setting_name]["dir"]
-            return self.intra_extensions.install_intra_extension_from_json(extension_setting_dir)
+            return self.intra_extensions.install_intra_extension_from_json(extension_setting_dir, name=name)
 
     @translate_uuid
     def list_mappings(self, user_id):
