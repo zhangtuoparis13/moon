@@ -75,7 +75,7 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
         #Create the extension
         self.new_ext1 = get_url("/json/intra-extensions/", post_data={"policymodel": my_policy})
         self.assertIsInstance(self.new_ext1, dict)
-        self.new_ext1_uuid = self.new_ext1["intra_extensions"][-1]
+        self.new_ext1_uuid = self.new_ext1["intra_extensions"]["_id"]
         self.assertEqual(number_of_intra_ext+1, len(get_url("/json/intra-extensions/")["intra_extensions"]))
         data = get_url("/json/intra-extensions/")
         self.assertIsInstance(data, dict)
@@ -193,7 +193,7 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
         my_policy = policies["policies"].keys()[0]
         new_ext = get_url("/json/intra-extensions/", post_data={"policymodel": my_policy})
         self.assertIsInstance(new_ext, dict)
-        new_ext_uuid = new_ext["intra_extensions"][-1]
+        new_ext_uuid = new_ext["intra_extensions"]["_id"]
         tenants = get_url("/pip/projects/")
         self.assertIsInstance(tenants, dict)
         tenant_admin = None
@@ -436,7 +436,7 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
         data = get_url("/json/intra-extensions/")
         self.assertIsInstance(data, dict)
         for ext in data["intra_extensions"]:
-            user = get_url("/json/intra-extensions/"+ext+"/objects/")["objects"][0]
+            obj = get_url("/json/intra-extensions/"+ext+"/objects/")["objects"][0]
             #Add a new object category value for the test
             _data = get_url("/json/intra-extensions/"+ext+"/object_category_values/",
                             post_data={"category_id": "object_security_level", "value": "ultra-low2"})
@@ -457,28 +457,28 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
                             post_data={
                                 "category_id": "object_security_level",
                                 "value": "ultra-low2",
-                                "object_id": user
+                                "object_id": obj
                             })
             self.assertIsInstance(_data, dict)
             self.assertIn("object_assignments", _data)
             self.assertIsInstance(_data["object_assignments"], dict)
             self.assertIn("object_security_level", _data["object_assignments"])
             self.assertIsInstance(_data["object_assignments"]["object_security_level"], dict)
-            self.assertIn(user, _data["object_assignments"]["object_security_level"])
-            self.assertIsInstance(_data["object_assignments"]["object_security_level"][user], list)
-            self.assertIn("ultra-low2", _data["object_assignments"]["object_security_level"][user])
+            self.assertIn(obj, _data["object_assignments"]["object_security_level"])
+            self.assertIsInstance(_data["object_assignments"]["object_security_level"][obj], list)
+            self.assertIn("ultra-low2", _data["object_assignments"]["object_security_level"][obj])
             #Delete the last assignment
             _data = get_url(
-                "/json/intra-extensions/"+ext+"/object_assignments/object_security_level/"+user+"/ultra-low2/",
+                "/json/intra-extensions/"+ext+"/object_assignments/object_security_level/"+obj+"/ultra-low2/",
                 method="DELETE")
             self.assertIsInstance(_data, dict)
             self.assertIn("object_assignments", _data)
             self.assertIsInstance(_data["object_assignments"], dict)
             self.assertIn("object_security_level", _data["object_assignments"])
             self.assertIsInstance(_data["object_assignments"]["object_security_level"], dict)
-            self.assertIn(user, _data["object_assignments"]["object_security_level"])
-            self.assertIsInstance(_data["object_assignments"]["object_security_level"][user], list)
-            self.assertNotIn("ultra-low2", _data["object_assignments"]["object_security_level"][user])
+            self.assertIn(obj, _data["object_assignments"]["object_security_level"])
+            self.assertIsInstance(_data["object_assignments"]["object_security_level"][obj], list)
+            self.assertNotIn("ultra-low2", _data["object_assignments"]["object_security_level"][obj])
 
     def test_rules(self):
         data = get_url("/json/intra-extensions/")
@@ -536,11 +536,11 @@ class TestAdminInterface_InterExtension(unittest.TestCase):
         #Create first extension
         self.new_ext1 = get_url("/json/intra-extensions/", post_data={"policymodel": my_policy})
         self.assertIsInstance(self.new_ext1, dict)
-        self.new_ext1_uuid = self.new_ext1["intra_extensions"][-1]
+        self.new_ext1_uuid = self.new_ext1["intra_extensions"]["_id"]
         #Create second extension
         self.new_ext2 = get_url("/json/intra-extensions/", post_data={"policymodel": my_policy})
         self.assertIsInstance(self.new_ext1, dict)
-        self.new_ext2_uuid = self.new_ext1["intra_extensions"][-1]
+        self.new_ext2_uuid = self.new_ext1["intra_extensions"]["_id"]
         #Get Keystone tenants
         self.tenants = get_url("/pip/projects/")
         self.assertIsInstance(self.tenants, dict)
