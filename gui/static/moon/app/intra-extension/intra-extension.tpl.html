@@ -74,7 +74,7 @@
             <tbody ng-if="!intraExtensionsLoading && intraExtensions.length  > 0">
             
 	            <tr ng-repeat="intraExtension in $data | filter:search | orderBy:sort:reverse">
-	                <td>{{intraExtension._id}}</td>
+	                <td ng-bind="intraExtension.name[0]"></td>
 	                <td>{{intraExtension.authz.metadata.model}}</td>
 					<td ng-if="tenantsAssociatedToIntraExtensions[intraExtension] == null"><!-- <img src="static/moon/img/ajax-loader.gif" /> --></td>
 	                <td ng-if="tenantsAssociatedToIntraExtensions[intraExtension] != null" ng-bind="tenantsAssociatedToIntraExtensions[intraExtension].name"></td>

@@ -166,20 +166,14 @@ angular.module('moonApp.intraExtension', ['ngTable', 'ngAnimate', 'mgcrea.ngStra
         	} else {
         	        		        		
         		intraExtensionService.intraExtension.create({}, { name: intraExtension.name, policymodel: $scope.add.selectedPolicy }, function(data) {
-        			        			        			
-        			var created = _(data.intra_extensions).find(function(anIntraExtension) {
-	        			return intraExtension.name === anIntraExtension.authz.metadata.name;
-	        		});
-        			
-        			$scope.intraExtensions.push(created);
+        			        			        			        			
+        			$scope.intraExtensions.push(data.intra_extensions);
 	        		
 	        		$scope.reloadTable();
         			
         			$translate('moon.intraExtension.add.success', { intraExtensionName: intraExtension.name }).then(function (translatedValue) {
 	        			alertService.alertSuccess(translatedValue);
 	                });	
-        			
-        			$state.go('moon.intraExtension.configure', { uuid: created._id });
         			
         		}, function(response) {
         			
@@ -218,13 +212,13 @@ angular.module('moonApp.intraExtension', ['ngTable', 'ngAnimate', 'mgcrea.ngStra
         		
         		$scope.reloadTable();
         		
-        		$translate('moon.intraExtension.remove.success', { intraExtensionName: intraExtension.authz.metadata.name }).then(function (translatedValue) {
+        		$translate('moon.intraExtension.remove.success', { intraExtensionName: intraExtension.name[0] }).then(function (translatedValue) {
         			alertService.alertSuccess(translatedValue);
                 });	
         		
         	}, function(response) {
         		
-        		$translate('moon.intraExtension.remove.error', { intraExtensionName: intraExtension.authz.metadata.name }).then(function (translatedValue) {
+        		$translate('moon.intraExtension.remove.error', { intraExtensionName: intraExtension.name[0] }).then(function (translatedValue) {
         			alertService.alertError(translatedValue);
                 });	
         		
