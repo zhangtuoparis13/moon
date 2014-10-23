@@ -441,11 +441,11 @@ def inter_extensions(request, uuid=None):
 def super_extensions(request, tenant_uuid=None, intra_extension_uuid=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
-        # data = json.loads(request.read())
+        data = json.loads(request.read())
         pap.create_mapping(
             user_id=request.session['user_id'],
-            tenant_uuid=filter_input(tenant_uuid),
-            intra_extension_uuid=filter_input(intra_extension_uuid))
+            tenant_uuid=data["tenant_uuid"],
+            intra_extension_uuid=data["intra_extension_uuid"])
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.destroy_mapping(
             user_id=request.session['user_id'],
