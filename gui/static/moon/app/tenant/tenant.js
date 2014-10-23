@@ -118,7 +118,7 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
 		
 		$scope.add = { tenant: null, modal: null };
 		
-		$scope.add.modal = $modal({scope: $scope, template: 'static/moon/app/tenant/tenantAdd.tpl.html', show: false});
+		$scope.add.modal = $modal({scope: $scope, template: 'static/moon/app/tenant/tenant-add.tpl.html', show: false});
 		
 		$scope.add.display = function () {
             
@@ -181,7 +181,7 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
 		
         $scope.remove = { tenant: null, modal: null };
 		
-		$scope.remove.modal = $modal({scope: $scope, template: 'static/moon/app/tenant/tenantDelete.tpl.html', show: false});
+		$scope.remove.modal = $modal({scope: $scope, template: 'static/moon/app/tenant/tenant-delete.tpl.html', show: false});
 		
 		$scope.remove.display = function (tenant) {
             
@@ -220,7 +220,7 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
 		
 		$scope.view = { tenant: null, modal: null, subjects: [], selectedSubject: null, objects: [], roles: [], groups: [], roleAssignments: [], groupAssignments: [] };
 				
-		$scope.view.modal = $modal({scope: $scope, placement: 'center', template: 'static/moon/app/tenant/tenantView.tpl.html', show: false});
+		$scope.view.modal = $modal({scope: $scope, placement: 'center', template: 'static/moon/app/tenant/tenant-view.tpl.html', show: false});
 		
 		$scope.initView = function(tenant) {
 			
