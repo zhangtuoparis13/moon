@@ -40,17 +40,24 @@ def intra_extensions(request, uuid=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
-        if "policymodel" in data:
-            pap.install_intra_extension_from_json(
+        if "policymodel" in data and "name" in data:
+            uuid = pap.install_intra_extension_from_json(
                 user_id=request.session['user_id'],
-                extension_setting_name=data["policymodel"])
-            return send_json({"intra_extensions": pap.get_intra_extensions(user_id=request.session['user_id']).keys()})
-    if request.META['REQUEST_METHOD'] == "DELETE":
+                extension_setting_name=data["policymodel"],
+                name=data["name"])
+            return send_json({
+                "intra_extensions":
+                    pap.get_intra_extensions(user_id=request.session['user_id'])[uuid].get_data()
+            })
+    elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.delete_intra_extension(user_id=request.session['user_id'], intra_extension_uuid=uuid)
-    if uuid:
+    elif uuid:
         extension = pap.get_intra_extensions(user_id=request.session['user_id'])[uuid]
         return send_json({"intra_extensions": extension.get_data()})
-    return send_json({"intra_extensions": pap.get_intra_extensions(user_id=request.session['user_id']).keys()})
+    return send_json({
+        "intra_extensions":
+            pap.get_intra_extensions(user_id=request.session['user_id']).keys()
+    })
 
 
 @login_required(login_url='/auth/login/')
@@ -84,10 +91,13 @@ def subjects(request, uuid=None, subject_id=None):
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
         if "name" in data and "password" in data:
-            pap.add_subject(
+            uuid = pap.add_subject(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
                 subject=data)
+            return send_json({"subjects": list(
+                pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id'])[uuid]
+            )})
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_subject(
             extension_uuid=uuid,
@@ -114,10 +124,16 @@ def objects(request, uuid=None, object_id=None):
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
         if "object" in data:
-            pap.add_object(
+            uuid = pap.add_object(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
                 object=data["object"])
+            if uuid:
+                return send_json({
+                    "objects": pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id'])[uuid]
+                })
+            else:
+                return send_json({"objects": list()})
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_object(
             extension_uuid=uuid,
@@ -141,7 +157,7 @@ def subject_categories(request, uuid=None, category_id=None):
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
         if "category_id" in data:
-            pap.add_subject_category(
+            uuid = pap.add_subject_category(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
                 category_id=filter_input(data["category_id"]))
@@ -376,7 +392,7 @@ def inter_extensions(request, uuid=None):
                 return send_json({"inter_extensions": list(
                     pap.get_installed_inter_extensions(extension_uuid=uuid, user_id=request.session['user_id'])
                 )})
-        pap.create_collaboration(
+        inter_extension_uuid, vent_uuid = pap.create_collaboration(
             user_id=request.session['user_id'],
             requesting_intra_extension_uuid=data["requesting_intra_extension_uuid"],
             requested_intra_extension_uuid=data["requested_intra_extension_uuid"],
@@ -385,6 +401,14 @@ def inter_extensions(request, uuid=None):
             obj_list=data["obj_list"],
             act=data["act"]
         )
+        return send_json({
+            "inter_extensions": map(
+                lambda x: x.get_data(),
+                pap.get_installed_inter_extensions(extension_uuid=uuid, user_id=request.session['user_id'])
+            ),
+            "uuid": inter_extension_uuid,
+            "vents": vent_uuid
+        })
     elif request.META['REQUEST_METHOD'] == "DELETE":
         data = json.loads(request.read())
         for key in [

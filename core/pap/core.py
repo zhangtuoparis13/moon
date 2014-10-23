@@ -103,11 +103,16 @@ class PAP:
                 return self.intra_extensions[uuid]
 
     @translate_uuid
-    def install_intra_extension_from_json(self, user_id, extension_setting_name=None, extension_setting_dir=None):
+    def install_intra_extension_from_json(
+            self,
+            user_id,
+            extension_setting_name=None,
+            extension_setting_dir=None,
+            name="Intra_Extension"):
         if self.super_extension.admin(user_id, "intra_extension", "create") == "OK":
             if extension_setting_name:
                 extension_setting_dir = self.policies[extension_setting_name]["dir"]
-            self.intra_extensions.install_intra_extension_from_json(extension_setting_dir)
+            return self.intra_extensions.install_intra_extension_from_json(extension_setting_dir, name=name)
 
     @translate_uuid
     def list_mappings(self, user_id):
@@ -243,7 +248,7 @@ class PAP:
     def add_subject_category(self, extension_uuid, user_uuid, category_id):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_categories", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.add_subject_category(category_id)
+                return self.intra_extensions[extension_uuid].intra_extension_authz.add_subject_category(category_id)
 
     def del_subject_category(self, extension_uuid, user_uuid, category_id):
         if extension_uuid in self.intra_extensions.keys():
@@ -259,7 +264,7 @@ class PAP:
     def add_object_category(self, extension_uuid, user_uuid, category_id):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "object_categories", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.add_object_category(category_id)
+                return self.intra_extensions[extension_uuid].intra_extension_authz.add_object_category(category_id)
 
     def del_object_category(self, extension_uuid, user_uuid, category_id):
         if extension_uuid in self.intra_extensions.keys():
@@ -275,7 +280,9 @@ class PAP:
     def add_subject_category_value(self, extension_uuid, user_uuid, category_id, category_value):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_category_values", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.add_subject_category_value(category_id, category_value)
+                return self.intra_extensions[extension_uuid].intra_extension_authz.add_subject_category_value(
+                    category_id,
+                    category_value)
 
     def del_subject_category_value(self, extension_uuid, user_uuid, category_id, category_value):
         if extension_uuid in self.intra_extensions.keys():
@@ -292,7 +299,9 @@ class PAP:
     def add_object_category_value(self, extension_uuid, user_uuid, category_id, category_value):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "object_category_values", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.add_object_category_value(category_id, category_value)
+                return self.intra_extensions[extension_uuid].intra_extension_authz.add_object_category_value(
+                    category_id,
+                    category_value)
 
     def del_object_category_value(self, extension_uuid, user_uuid, category_id, category_value):
         if extension_uuid in self.intra_extensions.keys():
@@ -309,7 +318,7 @@ class PAP:
     def add_subject_assignment(self, extension_uuid, user_uuid, category_id, subject_id, category_value):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_category_assignments", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.add_subject_assignment(
+                return self.intra_extensions[extension_uuid].intra_extension_authz.add_subject_assignment(
                     category_id, subject_id, category_value
                 )
 
@@ -329,7 +338,7 @@ class PAP:
     def add_object_assignment(self, extension_uuid, user_uuid, category_id, object_id, category_value):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "object_category_assignments", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.add_object_assignment(
+                return self.intra_extensions[extension_uuid].intra_extension_authz.add_object_assignment(
                     category_id, object_id, category_value
                 )
 
@@ -349,7 +358,9 @@ class PAP:
     def add_rule(self, extension_uuid, user_uuid, sub_cat_value, obj_cat_value):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "rules", "write") == "OK":
-                self.intra_extensions[extension_uuid].intra_extension_authz.add_rule(sub_cat_value, obj_cat_value)
+                return self.intra_extensions[extension_uuid].intra_extension_authz.add_rule(
+                    sub_cat_value,
+                    obj_cat_value)
 
     def del_rule(self, extension_uuid, user_uuid, sub_cat_value, obj_cat_value):
         if extension_uuid in self.intra_extensions.keys():

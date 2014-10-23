@@ -76,12 +76,12 @@ class IntraExtensions:
     def get_installed_intra_extensions(self):
         return self.__installed_intra_extensions
 
-    def install_intra_extension_from_json(self, extension_setting_dir):
+    def install_intra_extension_from_json(self, extension_setting_dir, name="Intra_Extension"):
         extension_setting_abs_dir = extension_setting_dir
         if not os.path.isdir(extension_setting_dir):
             extension_setting_abs_dir = pkg_resources.resource_filename("moon", extension_setting_dir)
         _intra_extension = IntraExtension()
-        _intra_extension.load_from_json(extension_setting_abs_dir)
+        _intra_extension.load_from_json(extension_setting_abs_dir, name=name)
         self.__installed_intra_extensions[_intra_extension.get_uuid()] = _intra_extension
         return _intra_extension.get_uuid()
 
