@@ -235,13 +235,13 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
 	        		tenant.extensionUuid = intraExtension._id;
 	        		tenant.intraExtension = intraExtension;
 	        		
-	        		$translate('moon.tenant.map.success', { tenantName: tenant.name, intraExtensionName: intraExtension.name[0] }).then(function (translatedValue) {
+	        		$translate('moon.tenant.map.success', { tenantName: tenant.name, intraExtensionName: _.first(intraExtension.name) }).then(function (translatedValue) {
 	        			alertService.alertSuccess(translatedValue);
 	                });	
 	        		
 	        	}, function(response) {
 	        		
-	        		$translate('moon.tenant.map.error', { tenantName: tenant.name, intraExtensionName: intraExtension.name[0] }).then(function (translatedValue) {
+	        		$translate('moon.tenant.map.error', { tenantName: tenant.name, intraExtensionName: _.first(intraExtension.name) }).then(function (translatedValue) {
 	        			alertService.alertError(translatedValue);
 	                });	
 	        		
@@ -274,7 +274,7 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
     		
         	tenantService.rest.map.remove(mapping, mapping, function(data) {
         		
-        		$translate('moon.tenant.unmap.success', { tenantName: tenant.name, intraExtensionName: tenant.intraExtension.name[0] }).then(function (translatedValue) {
+        		$translate('moon.tenant.unmap.success', { tenantName: tenant.name, intraExtensionName: _.first(tenant.intraExtension.name) }).then(function (translatedValue) {
         			alertService.alertSuccess(translatedValue);
                 });
         		
@@ -283,7 +283,7 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
         		
         	}, function(response) {
         		
-        		$translate('moon.tenant.unmap.error', { tenantName: tenant.name, intraExtensionName: tenant.intraExtension.name[0] }).then(function (translatedValue) {
+        		$translate('moon.tenant.unmap.error', { tenantName: tenant.name, intraExtensionName: _.first(tenant.intraExtension.name) }).then(function (translatedValue) {
         			alertService.alertError(translatedValue);
                 });	
         		
@@ -539,7 +539,13 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
 	    	   		query: { method: 'GET' }
 	    	   	})
     	   	
-			}
+			},
+			
+			findOne: function(uuid) {
+	   			
+	   			return this.rest.tenant.get({project_uuid: uuid}).$promise;
+	   			
+	   		}
         
         };
     

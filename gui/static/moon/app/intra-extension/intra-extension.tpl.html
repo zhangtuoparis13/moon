@@ -3,12 +3,12 @@
 	<form class="form-inline pull-right">
 	    <div class="form-group">
 	        <div>
-	            <input id="searchIntraExtension" data-ng-model="query" type="text" class="form-control" placeholder="{{'moon.intraExtension.list.search.placeholder' | translate}}" />
+	            <input id="searchIntraExtension" data-ng-model="search.query" type="text" class="form-control" placeholder="{{'moon.intraExtension.list.search.placeholder' | translate}}" />
 	        </div>
 	    </div>
 	    <div class="form-group">
 	        <div>
-	            <button type="submit" class="btn btn-danger" data-ng-click="reset()" translate="moon.intraExtension.list.search.reset">Reset</button>
+	            <button type="submit" class="btn btn-danger" data-ng-click="search.reset()" translate="moon.intraExtension.list.search.reset">Reset</button>
 	        </div>
 	    </div>
 	</form>
@@ -61,7 +61,7 @@
             
             <tbody ng-if="intraExtensionsLoading">
             	<tr>
-            		<td colspan="12"><img src="static/moon/img/ajax-loader.gif" /> <span translate="moon.intraExtension.list.table.loading">Loading Intra Extensions</span></td>
+            		<td colspan="12"><img src="static/moon/img/ajax-loader.gif" /> <em translate="moon.intraExtension.list.table.loading">Loading Intra Extensions</em></td>
             	</tr>
             </tbody>
             
@@ -73,11 +73,22 @@
             
             <tbody ng-if="!intraExtensionsLoading && intraExtensions.length  > 0">
             
-	            <tr ng-repeat="intraExtension in $data | filter:search | orderBy:sort:reverse">
+	            <tr ng-repeat="intraExtension in $data | filter:search.find | orderBy:sort:reverse">
 	                <td ng-bind="intraExtension.name[0]"></td>
 	                <td>{{intraExtension.authz.metadata.model}}</td>
-					<td ng-if="tenantsAssociatedToIntraExtensions[intraExtension] == null"><!-- <img src="static/moon/img/ajax-loader.gif" /> --></td>
-	                <td ng-if="tenantsAssociatedToIntraExtensions[intraExtension] != null" ng-bind="tenantsAssociatedToIntraExtensions[intraExtension].name"></td>
+					<td>
+						<div ng-if="intraExtension.tenant_uuid != null">
+	                	
+	                		<div ng-if="intraExtension.tenant == null">
+		                		<img src="static/moon/img/ajax-loader.gif" /> <em translate="">Loading Tenant</em>
+	                		</div>
+	                	
+	                		<div ng-if="intraExtension.tenant != null">
+		                		{{intraExtension.tenant.name}}
+	                		</div>
+	                		
+	                	</div>
+					</td>
 	                <td>
 		                <div class="btn-group" dropdown>
 		                        <button type="button" class="btn btn-default" translate="moon.intraExtension.list.action.title">Actions</button>
@@ -86,7 +97,7 @@
 		                            <span class="sr-only">Split Action button!</span>
 		                        </button>
 		                        <ul class="dropdown-menu" role="menu">
-		                        	<li>
+		                        	<li ng-if="intraExtension.tenant_uuid != ''">
 			                            <a href="" ui-sref="moon.intraExtension.configure({uuid: intraExtension._id})">
 			                            	<span class="glyphicon glyphicon-cog"></span>
 			                            	<medium for="rule" class="control-label"  translate="moon.intraExtension.list.action.configure">Configure</medium>
