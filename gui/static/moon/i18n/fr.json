@@ -28,6 +28,7 @@
 		    		"managed": "Supervisé",
 		    		"enabled": "Activé",
 		    		"description": "Description",
+		    		"mapping": "Intra Extension",
 		    		"loading": "Chargement des Tenants",
 		    		"notFound": "Il n'existe aucun Tenant"
 		    	},
@@ -36,7 +37,8 @@
 		    		"detail": "Consulter",
 		    		"delete": "Supprimer",
 		    		"add": "Ajouter un Tenant",
-		    		"mapping": "Mapping"   	
+		    		"map": "associé à une Intra Extension",
+		    		"unmap": "dissocier"
 		    	},
 		    	"error": "Impossible de récupérer la liste des Tenants"
 	    	},
@@ -136,6 +138,33 @@
 	    		},
 	    		"error": "Impossible de supprime le Tenant `{{tenantName}}`",
 	    		"success": "Le Tenant `{{tenantName}}` a été supprimé avec succès"
+	    	},
+	    	"map": {
+	    		"title": "Associé le Tenant `{{tenantName}}` avec une Intra Extension",
+	    		"form": {
+		    		"intraExtension": "Intra Extension"
+	    		},
+	    		"action": {
+		    		"map": "Associer",
+		    		"cancel": "Annuler"
+	    		},
+	    		"check": {
+	    			"intraExtension": {
+	    				"required": "L'Intra Extension est requise"
+	    			}
+	    		},
+	    		"error": "Impossible d'associer le Tenant `{{tenantName}}` avec l'Intra Extension `{{intraExtensionName}}`",
+	    		"success": "L'association du Tenant `{{tenantName}}` avec l'Intra Extension `{{intraExtensionName}}` a été effectué avec succès"
+	    	},
+	    	"unmap": {
+	    		"title": "Dissocier le Tenant `{{tenantName}}` et l'Intra Extension`{{intraExtensionName}}`",
+	    		"content": "Voulez-vous dissocier le Tenant `{{tenantName}}` et l'Intra Extension `{{intraExtensionName}}` ?",
+	    		"action": {
+		    		"unmap": "Dissocier",
+		    		"cancel": "Annuler"
+	    		},
+	    		"error": "Impossible de dissocier le Tenant `{{tenantName}}` et l'Intra Extension `{{intraExtensionName}}`",
+	    		"success": "La dissociation du Tenant `{{tenantName}}` et de l'Intra Extension `{{intraExtensionName}}` a été effectué avec succès"
 	    	}
 	    },
 	    "intraExtension": {

@@ -28,6 +28,7 @@
 		    		"managed": "Managed",
 		    		"enabled": "Enabled",
 		    		"description": "Description",
+		    		"mapping": "Intra Extension",
 		    		"loading": "Loading Tenants",
 		    		"notFound": "There is not Tenants"
 		    	},
@@ -36,7 +37,8 @@
 		    		"detail": "Consult",
 		    		"delete": "Delete",
 		    		"add": "Add Tenant",
-		    		"mapping": "Mapping"
+		    		"map": "map with an Intra Extension",
+		    		"unmap": "unmap"
 		    	},
 		    	"error": "Unable to retrieve Tenants"
 	    	},
@@ -136,6 +138,33 @@
 	    		},
 	    		"error": "Unable to delete Tenant `{{tenantName}}`",
 	    		"success": "Tenant `{{tenantName}}` successfully deleted"
+	    	},
+	    	"map": {
+	    		"title": "Map Tenant `{{tenantName}}` with an Intra Extension",
+	    		"form": {
+		    		"intraExtension": "Intra Extension"
+	    		},
+	    		"action": {
+		    		"map": "Map",
+		    		"cancel": "Cancel"
+	    		},
+	    		"check": {
+	    			"intraExtension": {
+	    				"required": "Intra Extension is required"
+	    			}
+	    		},
+	    		"error": "Unable to map Tenant `{{tenantName}}` with Intra Extension `{{intraExtensionName}}`",
+	    		"success": "Tenant `{{tenantName}}` successfully mapped with Intra Extension `{{intraExtensionName}}`"
+	    	},
+	    	"unmap": {
+	    		"title": "Unmap Tenant `{{tenantName}}` / Intra Extension`{{intraExtensionName}}`",
+	    		"content": "Are you sure you want to unmap Tenant `{{tenantName}}` / Intra Extension `{{intraExtensionName}}` ?",
+	    		"action": {
+		    		"unmap": "Unmap",
+		    		"cancel": "Cancel"
+	    		},
+	    		"error": "Unable to unmap Tenant `{{tenantName}}` / Intra Extension `{{intraExtensionName}}`",
+	    		"success": "Tenant `{{tenantName}}` / Intra Extension `{{intraExtensionName}}` successfully unmapped"
 	    	}
 	    },
 	    "intraExtension": {
