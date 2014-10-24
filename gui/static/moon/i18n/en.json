@@ -29,7 +29,10 @@
 		    		"enabled": "Enabled",
 		    		"description": "Description",
 		    		"mapping": "Intra Extension",
-		    		"loading": "Loading Tenants",
+		    		"loading": {
+		    			"tenant": "Loading Tenants",
+		    			"intraExtension": "Loading Intra Extension"
+		    		},
 		    		"notFound": "There is not Tenants"
 		    	},
 		    	"action": {
@@ -178,7 +181,10 @@
 		    		"name": "Name",
 		    		"policy": "Policy",
 		    		"tenant": "Tenant",
-		    		"loading": "Loading Intra Extensions", 
+		    		"loading": {
+		    			"intraExtension": "Loading Intra Extensions",
+		    			"tenant": "Loading Tenant"
+		    		}, 
 		    		"notFound": "There is not Intra Extensions"
 		    	},
 		    	"action": {

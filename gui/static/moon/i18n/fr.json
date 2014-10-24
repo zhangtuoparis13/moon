@@ -29,7 +29,10 @@
 		    		"enabled": "Activé",
 		    		"description": "Description",
 		    		"mapping": "Intra Extension",
-		    		"loading": "Chargement des Tenants",
+		    		"loading": {
+		    			"tenant": "Chargement des Tenants",
+		    			"intraExtension": "Chargement de l'Intra Extension"
+		    		},
 		    		"notFound": "Il n'existe aucun Tenant"
 		    	},
 		    	"action": {
@@ -178,7 +181,10 @@
 		    		"name": "Nom",
 		    		"policy": "Règle",
 		    		"tenant": "Tenant",
-		    		"loading": "Chargement des Intra Extensions",
+		    		"loading": {
+		    			"intraExtension": "Chargement des Intra Extensions",
+		    			"tenant": "Chargement du Tenant"
+		    		},
 		    		"notFound": "Il n'existe aucune Intra Extension"
 		    	},
 		    	"action": {

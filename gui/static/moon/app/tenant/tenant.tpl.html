@@ -75,7 +75,7 @@
             
             <tbody ng-if="tenantsLoading">
             	<tr>
-            		<td colspan="5"><img src="static/moon/img/ajax-loader.gif" /> <em translate="moon.tenant.list.table.loading">Loading Tenants</em></td>
+            		<td colspan="5"><img src="static/moon/img/ajax-loader.gif" /> <em translate="moon.tenant.list.table.loading.tenant">Loading Tenants</em></td>
             	</tr>
             </tbody>
             
@@ -104,7 +104,7 @@
 	                	<div ng-if="tenant.extensionUuid != null">
 	                	
 	                		<div ng-if="tenant.intraExtension == null">
-		                		<img src="static/moon/img/ajax-loader.gif" /> <em translate="">Loading Intra Extension</em>
+		                		<img src="static/moon/img/ajax-loader.gif" /> <em translate="moon.tenant.list.table.loading.intraExtension">Loading Intra Extension</em>
 	                		</div>
 	                	
 	                		<div ng-if="tenant.intraExtension != null">
