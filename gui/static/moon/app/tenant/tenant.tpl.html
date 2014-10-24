@@ -3,12 +3,12 @@
 	<form class="form-inline pull-right">
 	    <div class="form-group">
 	        <div>
-	            <input id="searchTenant" data-ng-model="query" type="text" class="form-control" placeholder="{{'moon.tenant.list.search.placeholder' | translate}}" />
+	            <input id="searchTenant" data-ng-model="search.query" type="text" class="form-control" placeholder="{{'moon.tenant.list.search.placeholder' | translate}}" />
 	        </div>
 	    </div>
 	    <div class="form-group">
 	        <div>
-	            <button type="submit" class="btn btn-danger" data-ng-click="reset()" translate="moon.tenant.list.search.reset">Reset</button>
+	            <button type="submit" class="btn btn-danger" data-ng-click="search.reset()" translate="moon.tenant.list.search.reset">Reset</button>
 	        </div>
 	    </div>
 	</form>
@@ -62,7 +62,7 @@
 					</th>
 					
 					<th class="customTables">
-						<div translate="moon.tenant.list.action.mapping">Mapping</div>
+						<div translate="moon.tenant.list.table.mapping">Mapping</div>
 					</th>
 					
                     <th class="customTables">
@@ -75,7 +75,7 @@
             
             <tbody ng-if="tenantsLoading">
             	<tr>
-            		<td colspan="5"><img src="static/moon/img/ajax-loader.gif" /> <span translate="moon.tenant.list.table.loading">Loading Tenants</span></td>
+            		<td colspan="5"><img src="static/moon/img/ajax-loader.gif" /> <em translate="moon.tenant.list.table.loading">Loading Tenants</em></td>
             	</tr>
             </tbody>
             
@@ -87,7 +87,7 @@
             
             <tbody ng-if="!tenantsLoading && tenants.length  > 0">
             
-	            <tr ng-repeat="tenant in $data | filter:search | orderBy:sort:reverse">
+	            <tr ng-repeat="tenant in $data | filter:search.find | orderBy:sort:reverse">
 	                <td>{{tenant.name}} </td>
 	               	<td>{{tenant.domain}}</td>
 	                 <td>
@@ -96,7 +96,25 @@
 	                <td>
 	                	<span ng-if="tenant.enabled" class="glyphicon glyphicon-ok"></span>
 	                </td>
-	                <td>&nbsp;</td>
+	                <td>
+	                	<a href="" ng-if="tenant.extensionUuid == null" ng-click="map.display(tenant)">
+	                		<span class="glyphicon glyphicon-link"></span> <em translate="moon.tenant.list.action.map">map with an Intra Extension</em>
+	                	</a>
+	                	
+	                	<div ng-if="tenant.extensionUuid != null">
+	                	
+	                		<div ng-if="tenant.intraExtension == null">
+		                		<img src="static/moon/img/ajax-loader.gif" /> <em translate="">Loading Intra Extension</em>
+	                		</div>
+	                	
+	                		<div ng-if="tenant.intraExtension != null">
+		                		<span ng-bind="tenant.intraExtension.name[0]"></span> (<a href="" ng-click="unmap.display(tenant)">
+		                			<span class="glyphicon glyphicon-transfer"></span> <em translate="moon.tenant.list.action.unmap">unmap with an Intra Extension</em>
+		                		</a>)
+	                		</div>
+	                		
+	                	</div>
+	                </td>
 	                <td>
 		                <div class="btn-group" dropdown>
 		                        <button type="button" class="btn btn-default" translate="moon.tenant.list.action.title">Actions</button>

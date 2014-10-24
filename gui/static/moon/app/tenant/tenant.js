@@ -16,25 +16,55 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
 		.state('moon.tenant.list', {
 			url: '/tenant',
 			controller: 'TenantController',
-            templateUrl: 'static/moon/app/tenant/tenant.tpl.html'
+            templateUrl: 'static/moon/app/tenant/tenant.tpl.html',
+            resolve: {
+            	tenants: function(tenantService) {
+            		return tenantService.rest.tenant.query({}).$promise;
+            	},
+            	superExtensions: function(tenantService) {
+            		return tenantService.rest.superExtention.query({}).$promise;
+            	}
+            }
 		});
 		 
 	})
 	 
-	.controller('TenantController', ['$q', '$scope', '$filter', '$modal', '$translate', 'ngTableParams', 'alertService', 'tenantService', 
-	                                   function ($q, $scope, $filter, $modal, $translate, ngTableParams, alertService, tenantService) {
+	.controller('TenantController', ['$q', '$scope', '$filter', '$modal', '$translate', 'ngTableParams', 'alertService', 'tenantService', 'intraExtensionService', 'tenants', 'superExtensions',
+	                                   function ($q, $scope, $filter, $modal, $translate, ngTableParams, alertService, tenantService, intraExtensionService, tenants, superExtensions) {
 
 		$scope.form = {};
-		
-		$scope.tenantsLoading = true;
-		$scope.tenants = [];
+				
+		$scope.tenantsLoading = false;
+		$scope.tenants = tenants.projects;
+
+		// mapped each tenant with his extensions UUID
+		_($scope.tenants).each(function(aTenant) {
+			
+			aTenant.intraExtension = null;
+			aTenant.extensionUuid = null;
+			
+			var extension = _(superExtensions.super_extensions).find(function(anExtension) {
+				return anExtension.tenant_uuid === aTenant.uuid;
+			});
+			
+			if(extension) {
+				
+				aTenant.extensionUuid = _.first(extension.intra_extension_uuids);
+				
+				intraExtensionService.findOne(aTenant.extensionUuid).then(function(intraExtension) {
+					aTenant.intraExtension = intraExtension.intra_extensions;
+				});
+				
+			}
+			
+		});
 		 
 		/*
-		 * list
+		 * ---- list
 		 */
 		 
 		var getData = function() {
-			 return $scope.tenants;
+			 return $scope.tenants ? $scope.tenants : [];
 		};  	
     	
 		$scope.tenantsTable = new ngTableParams({
@@ -50,10 +80,8 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
 			total: function () { return getData().length; }, // length of data
 			getData: function($defer, params) {
 	        	
-				var orderedData = params.sorting() ?
-						
-					$filter('orderBy')(getData(), params.orderBy()) : getData();
-					$defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+				var orderedData = params.sorting() ? $filter('orderBy')(getData(), params.orderBy()) : getData();
+				$defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
 	        	
 			},
 			$scope: { $data: {} }
@@ -66,35 +94,17 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
 			$scope.tenantsTable.reload();
 			
 		};
-    	
-		tenantService.tenant.query({}, function(data) {
-        	
-			$scope.tenantsLoading = false;
-			$scope.tenants = data.projects;
-			
-			$scope.reloadTable();
-			        	        	
-		}, function(response) {
-			
-			$scope.tenantsLoading = false;
-			$scope.tenants = [];
-			
-			$translate('moon.tenant.list.error').then(function (translatedValue) {
-    			alertService.alertError(translatedValue);
-            });	
-			
-		});
 		 
 		/*
-		 * search
+		 * ---- search
 		 */
 		 
-		$scope.query = '';
-	    	
-		$scope.search = function (tenant){
+		$scope.search = { query: '', find: null, reset: null };
+			    	
+		$scope.search.find = function (tenant){
 		    
-			if (tenant.name.indexOf($scope.query)!=-1 
-					|| tenant.domain.indexOf($scope.query)!=-1) {
+			if (tenant.name.indexOf($scope.search.query)!=-1 
+					|| tenant.domain.indexOf($scope.search.query)!=-1) {
 				
 		        return true;
 		    
@@ -104,12 +114,12 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
 		        
 		};
 		
-		$scope.reset = function() {
-			$scope.query = '';
+		$scope.search.reset = function() {
+			$scope.search.query = '';
 		};
 		
 		/*
-		 * add
+		 * ---- add
 		 */
 		
 		$scope.defaultTenant = function() { 
@@ -147,7 +157,7 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
         	
         	} else {
         	
-	        	tenantService.tenant.create({}, tenant, function(data) {
+	        	tenantService.rest.tenant.create({}, tenant, function(data) {
 	        		
 	        		var created = _(data.projects).find(function(aTenant) {
 	        			return tenant.name === aTenant.name;
@@ -174,9 +184,117 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
     		}
         	
         };
+        
+        /*
+         * ---- map (can be 1-* but for the demo it will be 1-1)
+         */
+        
+        $scope.map = { tenant: null, modal: null, intraExtensions: null, intraExtensionsLoading: null, selectedIntraExtension: null };
+		        
+		$scope.map.modal = $modal({scope: $scope, template: 'static/moon/app/tenant/tenant-map.tpl.html', show: false});
+				
+		$scope.map.display = function (tenant) {
+            
+			$scope.map.tenant = tenant;
+			$scope.map.intraExtensions = null;
+			$scope.map.selectedIntraExtension = null;
+			
+			$scope.map.intraExtensionsLoading = true;
+			
+			intraExtensionService.findAll(function(data) {
+				
+				$scope.map.intraExtensions = _(data).filter(function(intraExtension) {
+					return intraExtension.tenant_uuid == "";
+				});
+				
+				$scope.map.intraExtensionsLoading = false;
+				
+			});
+		
+        	$scope.map.modal.$promise.then($scope.map.modal.show);
+            
+        };
+                                                
+        $scope.map.map = function(tenant, intraExtension) {
+        	
+        	if($scope.form.map.$invalid) {
+        	
+	        	if($scope.form.map.intraExtension.$pristine && $scope.form.map.intraExtension.$invalid) {
+	    			
+	        		$scope.form.map.intraExtension.$dirty = true;
+	        		$scope.form.map.intraExtension.$setValidity('required', false);
+	    			
+	    		} 
+	        	        	
+        	} else {
+        	
+        		var mapping = {tenant_uuid: tenant.uuid, intra_extension_uuid: intraExtension._id};
+        		
+	        	tenantService.rest.map.create(mapping, mapping, function(data) {
+	        		
+	        		tenant.extensionUuid = intraExtension._id;
+	        		tenant.intraExtension = intraExtension;
+	        		
+	        		$translate('moon.tenant.map.success', { tenantName: tenant.name, intraExtensionName: intraExtension.name[0] }).then(function (translatedValue) {
+	        			alertService.alertSuccess(translatedValue);
+	                });	
+	        		
+	        	}, function(response) {
+	        		
+	        		$translate('moon.tenant.map.error', { tenantName: tenant.name, intraExtensionName: intraExtension.name[0] }).then(function (translatedValue) {
+	        			alertService.alertError(translatedValue);
+	                });	
+	        		
+	        	});
+	        		        	
+	        	$scope.map.modal.hide();
+        	
+    		}
+        	
+        };
+        
+        /*
+         * ---- unmap
+         */
+        
+        $scope.unmap = { tenant: null, modal: null };
+        
+        $scope.unmap.modal = $modal({scope: $scope, template: 'static/moon/app/tenant/tenant-unmap.tpl.html', show: false});
+        
+        $scope.unmap.display = function (tenant) {
+            
+			$scope.unmap.tenant = tenant;
+        	$scope.unmap.modal.$promise.then($scope.unmap.modal.show);
+            
+        };
+        
+        $scope.unmap.unmap = function(tenant) {
+        	
+        	var mapping = {tenant_uuid: tenant.uuid, intra_extension_uuid: tenant.intraExtension._id};
+    		
+        	tenantService.rest.map.remove(mapping, mapping, function(data) {
+        		
+        		$translate('moon.tenant.unmap.success', { tenantName: tenant.name, intraExtensionName: tenant.intraExtension.name[0] }).then(function (translatedValue) {
+        			alertService.alertSuccess(translatedValue);
+                });
+        		
+        		tenant.extensionUuid = null;
+        		tenant.intraExtension= null;
+        		
+        	}, function(response) {
+        		
+        		$translate('moon.tenant.unmap.error', { tenantName: tenant.name, intraExtensionName: tenant.intraExtension.name[0] }).then(function (translatedValue) {
+        			alertService.alertError(translatedValue);
+                });	
+        		
+        	});
+        	
+        	$scope.unmap.modal.hide();
+        	
+        };
 		
 		/*
-		 * delete
+		 * ---- delete
 		 */
 		
         $scope.remove = { tenant: null, modal: null };
@@ -192,7 +310,7 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
                 
         $scope.remove.remove = function(tenant) {
         	        	
-        	tenantService.tenant.remove({project_uuid: tenant.uuid}, function(data) {
+        	tenantService.rest.tenant.remove({project_uuid: tenant.uuid}, function(data) {
         		
         		$scope.tenants = _.chain($scope.tenants).reject({uuid: tenant.uuid}).value();
         		
@@ -215,14 +333,14 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
         };
 		
 		/*
-		 * view
+		 * ---- view
 		 */
 		
 		$scope.view = { tenant: null, modal: null, subjects: [], selectedSubject: null, objects: [], roles: [], groups: [], roleAssignments: [], groupAssignments: [] };
 				
 		$scope.view.modal = $modal({scope: $scope, placement: 'center', template: 'static/moon/app/tenant/tenant-view.tpl.html', show: false});
 		
-		$scope.initView = function(tenant) {
+		$scope.resetView = function(tenant) {
 			
 			$scope.view.objectsLoading = true;
 			
@@ -241,10 +359,10 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
 		
 		$scope.view.display = function (tenant) {
             
-        	$scope.initView(tenant);
+        	$scope.resetView(tenant);
         	
         	// objects
-        	tenantService.object.query({project_uuid: tenant.uuid}, function(data) {
+        	tenantService.rest.object.query({project_uuid: tenant.uuid}, function(data) {
         		
         		$scope.view.objectsLoading = false;
         		
@@ -261,7 +379,7 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
         	});
         	        	
         	// subjects
-        	tenantService.subject.query({project_uuid: tenant.uuid}, function(data) {
+        	tenantService.rest.subject.query({project_uuid: tenant.uuid}, function(data) {
         		
         		$scope.view.subjects = data.users;
         		
@@ -293,8 +411,8 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
         	$scope.view.roles = [];
         	$scope.view.roleAssignment = null;
         	
-        	var promises = { roles: tenantService.subjectRole.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}).$promise,
-        					 roleAssigment: tenantService.roleAssigment.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}).$promise };
+        	var promises = { roles: tenantService.rest.subjectRole.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}).$promise,
+        					 roleAssigment: tenantService.rest.roleAssigment.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}).$promise };
         	
         	$q.all(promises).then(function(promiseResolved) {
  		    	
@@ -331,8 +449,8 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
         	$scope.view.groups = [];
         	$scope.view.groupAssignment = null;
         	        	
-        	var promises = { groups: tenantService.subjectGroup.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}).$promise, 
-        					 groupAssignment: tenantService.groupAssigment.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}).$promise };
+        	var promises = { groups: tenantService.rest.subjectGroup.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}).$promise, 
+        					 groupAssignment: tenantService.rest.groupAssigment.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}).$promise };
         	
         	$q.all(promises).then(function(promiseResolved) {
  		    	
@@ -363,52 +481,65 @@ angular.module('moonApp.tenant', ['ngTable', 'ngAnimate', 'mgcrea.ngStrap', 'NgS
                 		 
 	}])
 	 
-	.factory('tenantService', function($resource) { 
+	.factory('tenantService', function($q, $resource) { 
                                    	
 		return {
+			
+			rest: {
                  	   	
-			tenant: $resource('./pip/projects/:project_uuid', {}, {
-     	   		query: { method: 'GET', isArray: false },
-     	   		get: { method: 'GET', isArray: false },
-     	   		create: { method: 'POST' },
-     	   		remove: { method: 'DELETE' }
-    	   	}),
+				tenant: $resource('./pip/projects/:project_uuid', {}, {
+	     	   		query: { method: 'GET', isArray: false },
+	     	   		get: { method: 'GET', isArray: false },
+	     	   		create: { method: 'POST' },
+	     	   		remove: { method: 'DELETE' }
+	    	   	}),
+	    	   	
+	    	   	subject: $resource('./pip/projects/:project_uuid/users/:user_uuid', {}, {
+	    	   		query: { method: 'GET', isArray: false },
+	     	   		get: { method: 'GET', isArray: false }    	   		
+	    	   	}),
+	    	   	
+	    	   	object: $resource('./pip/projects/:project_uuid/objects/:object_uuid', {}, {
+	    	   		query: { method: 'GET', isArray: false },
+	     	   		get: { method: 'GET', isArray: false }    	   		
+	    	   	}),
+	    	   	
+	    	   	role: $resource('./pip/projects/:project_uuid/roles', {}, {
+	    	   		query: { method: 'GET', isArray: false }	
+	    	   	}),
+	    	   	
+	    	   	subjectRole: $resource('./pip/projects/:project_uuid/users/:user_uuid/roles', {}, {
+	    	   		query: { method: 'GET', isArray: false }	
+	    	   	}),
+	    	   	
+	    	   	group: $resource('./pip/projects/:project_uuid/groups', {}, {
+	    	   		query: { method: 'GET', isArray: false }		
+	    	   	}),
+	    	   	
+	    	   	subjectGroup: $resource('./pip/projects/:project_uuid/users/:user_uuid/groups', {}, {
+	    	   		query: { method: 'GET', isArray: false }		
+	    	   	}),
+	    	   	
+	    	   	roleAssigment: $resource('./pip/projects/:project_uuid/assignments/roles/:user_uuid', {}, {
+	    	   		query: { method: 'GET', isArray: false },
+	     	   		get: { method: 'GET', isArray: false }    	   		
+	    	   	}),
+	    	   	
+	    	   	groupAssigment: $resource('./pip/projects/:project_uuid/assignments/groups/:user_uuid', {}, {
+	    	   		query: { method: 'GET', isArray: false },
+	     	   		get: { method: 'GET', isArray: false }    	   		
+	    	   	}),
+	    	   	
+	    	   	map: $resource('./json/super-extensions/tenants/:tenant_uuid/intra_extensions/:intra_extension_uuid', {}, {
+	    	   		create: { method: 'POST' },
+	    	   		remove: { method: 'DELETE' }
+	    	   	}),
+	    	   	
+	    	   	superExtention: $resource('./json/super-extensions', {}, {
+	    	   		query: { method: 'GET' }
+	    	   	})
     	   	
-    	   	subject: $resource('./pip/projects/:project_uuid/users/:user_uuid', {}, {
-    	   		query: { method: 'GET', isArray: false },
-     	   		get: { method: 'GET', isArray: false }    	   		
-    	   	}),
-    	   	
-    	   	object: $resource('./pip/projects/:project_uuid/objects/:object_uuid', {}, {
-    	   		query: { method: 'GET', isArray: false },
-     	   		get: { method: 'GET', isArray: false }    	   		
-    	   	}),
-    	   	
-    	   	role: $resource('./pip/projects/:project_uuid/roles', {}, {
-    	   		query: { method: 'GET', isArray: false }	
-    	   	}),
-    	   	
-    	   	subjectRole: $resource('./pip/projects/:project_uuid/users/:user_uuid/roles', {}, {
-    	   		query: { method: 'GET', isArray: false }	
-    	   	}),
-    	   	
-    	   	group: $resource('./pip/projects/:project_uuid/groups', {}, {
-    	   		query: { method: 'GET', isArray: false }		
-    	   	}),
-    	   	
-    	   	subjectGroup: $resource('./pip/projects/:project_uuid/users/:user_uuid/groups', {}, {
-    	   		query: { method: 'GET', isArray: false }		
-    	   	}),
-    	   	
-    	   	roleAssigment: $resource('./pip/projects/:project_uuid/assignments/roles/:user_uuid', {}, {
-    	   		query: { method: 'GET', isArray: true },
-     	   		get: { method: 'GET', isArray: false }    	   		
-    	   	}),
-    	   	
-    	   	groupAssigment: $resource('./pip/projects/:project_uuid/assignments/groups/:user_uuid', {}, {
-    	   		query: { method: 'GET', isArray: true },
-     	   		get: { method: 'GET', isArray: false }    	   		
-    	   	})
+			}
         
         };
     
