@@ -237,6 +237,37 @@
 	    			"title": "Subjects",
 	    			"category": {
 	    				"title": "Categories"
+	    			},
+	    			"add": {
+	    				"title": "Add new Subject",
+	    				"form": {
+		    				"name": "Name",
+		    				"domain": "Domain",
+		    				"enabled": "Enabled",
+		    				"project": "Project",
+		    				"password": "Password",
+		    				"description": "Description"
+						},
+						"action": {
+							"cancel": "Cancel",
+							"add": "Add Subject"
+						},
+			    		"check": {
+			    			"name": {
+			    				"required": "Name is required"
+			    			},
+			    			"domain": {
+			    				"required": "Domain is required"
+			    			},
+			    			"project": {
+			    				"required": "Project is required"
+			    			},
+			    			"password": {
+			    				"required": "Password is required"
+			    			}
+			    		},
+			    		"error": "Unable to add Subject `{{subjectName}}`",
+			    		"success": "Subject `{{subjectName}}` successfully added"
 	    			}
 	    		},
 	    		"object": {

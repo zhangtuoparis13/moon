@@ -36,7 +36,7 @@ angular.module('moonApp.intraExtension', ['ngTable', 'ngAnimate', 'mgcrea.ngStra
 			resolve: {
 				intraExtension: function($stateParams, intraExtensionService) {
 					return intraExtensionService.rest.intraExtension.get({ie_uuid: $stateParams.uuid}).$promise;
-				}				
+				}
 			}
 		})
 		
@@ -47,7 +47,7 @@ angular.module('moonApp.intraExtension', ['ngTable', 'ngAnimate', 'mgcrea.ngStra
 			resolve: {
 				intraExtension: function($stateParams, intraExtensionService) {
 					return intraExtensionService.rest.intraExtension.get({ie_uuid: $stateParams.uuid}).$promise;
-				}				
+				}
 			}
 				
 		});
@@ -263,25 +263,127 @@ angular.module('moonApp.intraExtension', ['ngTable', 'ngAnimate', 'mgcrea.ngStra
 		 
 	}])
 	
-	.controller('IntraExtensionConfigureController', ['$q', '$scope', '$state', '$stateParams', '$filter', '$modal', '$translate', 'intraExtension', 'ngTableParams', 'alertService', 'intraExtensionService', 
-	  	                                   		function ($q, $scope, $state, $stateParams, $filter, $modal, $translate, intraExtension, ngTableParams, alertService, intraExtensionService) {
+	.controller('IntraExtensionConfigureController', ['$q', '$scope', '$state', '$stateParams', '$filter', '$modal', '$translate', 'ngTableParams', 'alertService', 'intraExtensionService', 'intraExtension', 
+	  	                                   		function ($q, $scope, $state, $stateParams, $filter, $modal, $translate, ngTableParams, alertService, intraExtensionService, intraExtension) {
+		
+		$scope.form = {};
 		
 		$scope.intraExtension = intraExtension.intra_extensions;
+				
+		/*
+		 * ---- subject
+		 */
 		
-		$scope.subject = { subjects: [], categories: [], selected: null };
-		$scope.object = { objects: [], categories: [], selected: null };
-		 
+		$scope.subject = { subjects: [], 
+						   categories: [], 
+						   selected: [], 
+						   add: {}, 
+						   remove: {} };
+		
 		intraExtensionService.rest.subject.query({ie_uuid: $scope.intraExtension._id }, function(data) {
-			
 			$scope.subject.subjects = data.subjects;
-			
 		});
 		
+		/*
+		 * -- add
+		 */
+		
+		$scope.getDefaultSubject = function() {
+			
+			return { name: null, 
+					 domain: null, 
+					 enabled: false, 
+					 project: null, 
+					 password: null, 
+					 description: null };
+					 
+		};
+		
+		$scope.subject.add = { intraExtension: null, 
+							   subject: $scope.getDefaultSubject(), 
+							   modal: $modal({scope: $scope, template: 'static/moon/app/intra-extension/intra-extension-configure-subject-add.tpl.html', show: false}) };
+				
+		$scope.subject.add.display = function (intraExtension) {
+			
+			$scope.subject.add.intraExtension = intraExtension;
+			$scope.subject.add.subject = $scope.getDefaultSubject();
+			
+			$scope.subject.add.modal.$promise.then($scope.subject.add.modal.show);
+            
+        };
+        
+        $scope.subject.add.create = function(intraExtension, subject) {
+        	
+        	if($scope.form.add.subject.$invalid) {
+            	
+	        	if($scope.form.add.subject.name.$pristine && $scope.form.add.subject.name.$invalid) {
+	    			
+	        		$scope.form.add.subject.name.$dirty = true;
+	        		$scope.form.add.subject.name.$setValidity('required', false);
+	    			
+	    		} 
+	        	
+	        	if($scope.form.add.subject.domain.$pristine && $scope.form.add.subject.domain.$invalid) {
+	    			
+	        		$scope.form.add.subject.domain.$dirty = true;
+	        		$scope.form.add.subject.domain.$setValidity('required', false);
+	    			
+	    		}
+	        	
+	        	if($scope.form.add.subject.project.$pristine && $scope.form.add.subject.project.$invalid) {
+	    			
+	        		$scope.form.add.subject.project.$dirty = true;
+	        		$scope.form.add.subject.project.$setValidity('required', false);
+	    			
+	    		}
+
+				if($scope.form.add.subject.password.$pristine && $scope.form.add.subject.password.$invalid) {
+					
+					$scope.form.add.subject.password.$dirty = true;
+					$scope.form.add.subject.password.$setValidity('required', false);
+					
+				}
+        	
+        	} else {
+        		
+        		intraExtensionService.rest.subject.create({ie_uuid: intraExtension._id}, subject, function(data) {
+        			
+        			$scope.subject.subjects.push(subject);
+        			$scope.subject.selected.push(subject);
+        			
+        			$translate('moon.intraExtension.configure.subject.add.success', { subjectName: subject.name }).then(function (translatedValue) {
+	        			alertService.alertSuccess(translatedValue);
+	                });	
+        			
+        		}, function(error) {
+        			
+        			$translate('moon.intraExtension.configure.subject.add.error', { subjectName: subject.name }).then(function (translatedValue) {
+	        			alertService.alertError(translatedValue);
+	                });	
+        			
+        		});
+        		
+        		$scope.subject.add.modal.hide();
+        		
+        	}
+        	
+        };
+        
+        /*
+         * -- delete
+         */
+        
+        /*
+         * ---- object
+         */
+        
+        $scope.object = { objects: [], categories: [], selected: null };
+		 
 		intraExtensionService.rest.object.query({ie_uuid: $scope.intraExtension._id }, function(data) {
-			
 			$scope.object.objects = data.objects;
-			
 		});
+		
+		
 		
 	}])
 	
@@ -315,7 +417,8 @@ angular.module('moonApp.intraExtension', ['ngTable', 'ngAnimate', 'mgcrea.ngStra
 	    	   	
 	    	   	subject: $resource('./json/intra-extensions/:ie_uuid/subjects', {}, {
 	    	   		query: { method: 'GET', isArray: false },
-	     	   		get: { method: 'GET', isArray: false }
+	     	   		get: { method: 'GET', isArray: false },
+	     	   		create: { method: 'POST' }
 	    	   	}),
 	    	   	
 	    	   	object: $resource('./json/intra-extensions/:ie_uuid/objects', {}, {

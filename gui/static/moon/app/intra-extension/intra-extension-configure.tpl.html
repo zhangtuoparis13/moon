@@ -1,7 +1,7 @@
 <div class="container">
 	
 	<div class="row">
-		<h3 class="pull-left" translate="moon.intraExtension.configure.title" translate-values="{ intraExtensionName: intraExtension._id }">Configure</h3>
+		<h3 class="pull-left" translate="moon.intraExtension.configure.title" translate-values="{ intraExtensionName: intraExtension.name[0] }">Configure</h3>
 	</div>
 	
 	<div class="row strong">
@@ -15,12 +15,23 @@
 	
 		<div class="col-md-3">
 		
-			<ui-select multiple theme="bootstrap" ng-model="subject.selected" ng-disabled="disabled">
-				<ui-select-match placeholder="(None)">{{$item}}</ui-select-match>
-				<ui-select-choices repeat="subjectName in subject.subjects">
-					<div ng-value="subjectName">{{subjectName}}</div>
-				</ui-select-choices>
-			</ui-select>
+			<div class="row">
+				<ui-select multiple theme="bootstrap" ng-model="subject.selected" ng-disabled="disabled">
+					<ui-select-match placeholder="(None)">{{$item}}</ui-select-match>
+					<ui-select-choices repeat="subjectName in subject.subjects">
+						<div ng-value="subjectName">{{subjectName}}</div>
+					</ui-select-choices>
+				</ui-select>
+			</div>
+			
+			<div class="row top05">
+				<a href="" class="black" ng-click="subject.add.display(intraExtension)">
+		        	<span class="glyphicon glyphicon-plus-sign"></span>
+				</a>
+				<a href="" class="black" ng-click="">
+		        	<span class="glyphicon glyphicon-minus-sign"></span>
+				</a>
+			</div>
 		
 		</div>
 		
@@ -30,12 +41,23 @@
 		
 		<div class="col-md-3">
 		
-			<ui-select multiple theme="bootstrap" ng-model="object.selected" ng-disabled="disabled">
-				<ui-select-match placeholder="(None)">{{$item}}</ui-select-match>
-				<ui-select-choices repeat="objectName in object.objects">
-					<div ng-value="objectName">{{objectName}}</div>
-				</ui-select-choices>
-			</ui-select>
+			<div class="row">
+				<ui-select multiple theme="bootstrap" ng-model="object.selected" ng-disabled="disabled">
+					<ui-select-match placeholder="(None)">{{$item}}</ui-select-match>
+					<ui-select-choices repeat="objectName in object.objects">
+						<div ng-value="objectName">{{objectName}}</div>
+					</ui-select-choices>
+				</ui-select>
+			</div>
+			
+			<div class="row top05">
+				<a href="" class="black" ng-click="">
+		        	<span class="glyphicon glyphicon-plus-sign"></span>
+				</a>
+				<a href="" class="black" ng-click="">
+		        	<span class="glyphicon glyphicon-minus-sign"></span>
+				</a>
+			</div>
 		
 		</div>
 	

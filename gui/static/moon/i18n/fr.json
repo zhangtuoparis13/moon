@@ -237,6 +237,37 @@
 	    			"title": "Sujets",
 	    			"category": {
 	    				"title": "Catégories"
+	    			},
+	    			"add": {
+	    				"title": "Ajouter un nouveau Sujet",
+	    				"form": {
+		    				"name": "Nom",
+		    				"domain": "Domaine",
+		    				"enabled": "Activé",
+		    				"project": "Projet",
+		    				"password": "Mot de passe",
+		    				"description": "Description"
+		    			},
+						"action": {
+							"cancel": "Annuler",
+							"add": "Ajouter Sujet"
+						},
+			    		"check": {
+			    			"name": {
+			    				"required": "Le nom est requis"
+			    			},
+			    			"domain": {
+			    				"required": "Le domaine est requis"
+			    			},
+			    			"project": {
+			    				"required": "Le projet est requis"
+			    			},
+			    			"password": {
+			    				"required": "Le mot de passe est requis"
+			    			}
+			    		},
+			    		"error": "Impossible d'ajouter le Subjet `{{subjectName}}`",
+			    		"success": "Le Subjet `{{subjectName}}` a été ajouté avec succès"
 	    			}
 	    		},
 	    		"object": {
