@@ -37,7 +37,7 @@
 		    		"detail": "Consulter",
 		    		"delete": "Supprimer",
 		    		"add": "Ajouter un Tenant",
-		    		"map": "associé à une Intra Extension",
+		    		"map": "associer à une Intra Extension",
 		    		"unmap": "dissocier"
 		    	},
 		    	"error": "Impossible de récupérer la liste des Tenants"
