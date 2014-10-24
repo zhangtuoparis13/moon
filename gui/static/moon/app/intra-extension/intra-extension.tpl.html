@@ -97,7 +97,7 @@
 		                            <span class="sr-only">Split Action button!</span>
 		                        </button>
 		                        <ul class="dropdown-menu" role="menu">
-		                        	<li ng-if="intraExtension.tenant_uuid != ''">
+		                        	<li ng-if="intraExtension.tenant_uuid != null">
 			                            <a href="" ui-sref="moon.intraExtension.configure({uuid: intraExtension._id})">
 			                            	<span class="glyphicon glyphicon-cog"></span>
 			                            	<medium for="rule" class="control-label"  translate="moon.intraExtension.list.action.configure">Configure</medium>
