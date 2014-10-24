@@ -118,6 +118,10 @@ hr {
 .top25 { margin-top: 2.5em; }
 .top30 { margin-top: 3.0em; }
 
+.black {
+	color: #333
+}
+
 /* */
 
 .modal-backdrop.am-fade {
