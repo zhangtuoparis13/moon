@@ -37,12 +37,14 @@ class TenantIntraExtensionMapping:
                     return "[SuperExtension Error] Create Mapping for Existing Mapping"
                 else:
                     _mapping["intra_extension_uuids"].append(intra_extension_uuid)
+                    get_intra_extensions()[intra_extension_uuid].set_tenant_uuid(tenant_uuid)
                     return "[SuperExtension] Create Mapping for Existing Tenant: OK"
 
         _mapping = dict()
         _mapping["tenant_uuid"] = tenant_uuid
         _mapping["intra_extension_uuids"] = [intra_extension_uuid]
         self.tenant_intra_extension_mapping.append(_mapping)
+        get_intra_extensions()[intra_extension_uuid].set_tenant_uuid(tenant_uuid)
         return "[SuperExtension] Create Mapping for No Existing Mapping: OK"
 
     def destroy_mapping(self, tenant_uuid, intra_extension_uuid):
@@ -52,6 +54,7 @@ class TenantIntraExtensionMapping:
                     _mapping["intra_extension_uuids"].remove(intra_extension_uuid)
                 else:
                     self.tenant_intra_extension_mapping.remove(_mapping)
+                get_intra_extensions()[intra_extension_uuid].set_tenant_uuid(None)
                 return "[SuperExtension] Destroy Mapping: OK"
         return "[SuperExtension Error] Destroy Unknown Mapping"
 

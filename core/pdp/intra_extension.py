@@ -27,6 +27,9 @@ class IntraExtension:
     def get_tenant_uuid(self):
         return self.__tenant_uuid
 
+    def set_tenant_uuid(self, tenant_uuid):
+        self.__tenant_uuid = tenant_uuid
+
     def authz(self, sub, obj, act):
         # authz_logger.warning('intra_extension/authz request: [sub {}, obj {}, act {}]'.format(sub, obj, act))
         return self.intra_extension_authz.authz(sub, obj, act)
