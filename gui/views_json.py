@@ -95,9 +95,12 @@ def subjects(request, uuid=None, subject_id=None):
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
                 subject=data)
-            return send_json({"subjects": list(
-                pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id'])[uuid]
-            )})
+            if uuid:
+                return send_json({"subjects": list(
+                    pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id'])[uuid]
+                )})
+            else:
+                return send_json({"subjects": list()})
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_subject(
             extension_uuid=uuid,
