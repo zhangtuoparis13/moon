@@ -21,7 +21,7 @@
                          'moonApp.tenant',
                          'moonApp.intraExtension',
                          'moonApp.interExtension',
-                         'moonApp.nova'])
+                         'moon.nova'])
 
     .config(configurer)
     .run(runner);

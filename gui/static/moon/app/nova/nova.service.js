@@ -2,10 +2,18 @@
  * @author arnaud marhin<arnaud.marhin@orange.com>
  */
 
-angular.module('moonApp.nova', ['ngResource'])
+(function() {
 
-	.factory('novaService', function($resource) { 
-                                   	
+	'use strict';
+
+	angular
+		.module('moon.nova')
+			.factory('novaService', novaService);
+	
+	novaService.$inject = ['$resource'];
+	
+	function novaService($resource) { 
+	                                   	
         return {
             
             image: $resource('./pip/nova/images', {}, {
@@ -18,6 +26,6 @@ angular.module('moonApp.nova', ['ngResource'])
         
         };
     
-    })
-    
-;
+    };
+	
+})();
