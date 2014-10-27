@@ -8,7 +8,8 @@
 
 	angular
 	
-		.module('moon', ['ngRoute',                                            
+		.module('moon', ['ngResource',
+		                 'ngRoute',                                            
                          'ui.router',
                          'ui.bootstrap',
                          'ngTable',
@@ -17,7 +18,6 @@
                          'ngAnimate',
                          'mgcrea.ngStrap',
                          'ui.select',
-                         'moonApp.common',
                          'moonApp.tenant',
                          'moonApp.intraExtension',
                          'moonApp.interExtension',
