@@ -263,8 +263,8 @@ angular.module('moonApp.intraExtension', ['ngTable', 'ngAnimate', 'mgcrea.ngStra
 		 
 	}])
 	
-	.controller('IntraExtensionConfigureController', ['$q', '$scope', '$state', '$stateParams', '$filter', '$modal', '$translate', 'ngTableParams', 'alertService', 'intraExtensionService', 'intraExtension', 
-	  	                                   		function ($q, $scope, $state, $stateParams, $filter, $modal, $translate, ngTableParams, alertService, intraExtensionService, intraExtension) {
+	.controller('IntraExtensionConfigureController', ['$q', '$scope', '$state', '$stateParams', '$filter', '$modal', '$translate', 'ngTableParams', 'alertService', 'tenantService', 'intraExtensionService', 'intraExtension', 
+	  	                                   		function ($q, $scope, $state, $stateParams, $filter, $modal, $translate, ngTableParams, alertService, tenantService, intraExtensionService, intraExtension) {
 		
 		$scope.form = {};
 		
@@ -281,7 +281,17 @@ angular.module('moonApp.intraExtension', ['ngTable', 'ngAnimate', 'mgcrea.ngStra
 						   remove: {} };
 		
 		intraExtensionService.rest.subject.query({ie_uuid: $scope.intraExtension._id }, function(data) {
-			$scope.subject.subjects = data.subjects;
+						
+			var promises = [];
+			
+			_(data.subjects).each(function(subjectId) {
+				promises.push(tenantService.rest.subject.get({ project_uuid: $scope.intraExtension.tenant_uuid, user_uuid: subjectId }));
+			});
+			
+			$q.all(promises).then(function(data) {
+				$scope.subject.subjects = data;
+			});
+			
 		});
 		
 		/*
@@ -290,18 +300,20 @@ angular.module('moonApp.intraExtension', ['ngTable', 'ngAnimate', 'mgcrea.ngStra
 		
 		$scope.getDefaultSubject = function() {
 			
-			return { name: null, 
-					 domain: null, 
+			return { name: '', 
+					 domain: 'Default', 
 					 enabled: false, 
-					 project: null, 
-					 password: null, 
-					 description: null };
+					 project: '', 
+					 password: '', 
+					 description: '' };
 					 
 		};
 		
 		$scope.subject.add = { intraExtension: null, 
 							   subject: $scope.getDefaultSubject(), 
-							   modal: $modal({scope: $scope, template: 'static/moon/app/intra-extension/intra-extension-configure-subject-add.tpl.html', show: false}) };
+							   modal: $modal({ scope: $scope, 
+								   			   template: 'static/moon/app/intra-extension/intra-extension-configure-subject-add.tpl.html', 
+								   			   show: false }) };
 				
 		$scope.subject.add.display = function (intraExtension) {
 			
@@ -396,87 +408,7 @@ angular.module('moonApp.intraExtension', ['ngTable', 'ngAnimate', 'mgcrea.ngStra
 	
 	.factory('intraExtensionService', function($q, $resource) { 
 		
-		return {
-			
-			rest: {
-			
-				intraExtension: $resource('./json/intra-extensions/:ie_uuid', {}, {
-	     	   		query: { method: 'GET', isArray: false },
-	     	   		get: { method: 'GET', isArray: false },
-	     	   		create: { method: 'POST' },
-	     	   		remove: { method: 'DELETE' }
-	    	   	}),
-	    	   	    	   	
-	    	   	tenant: $resource('./json/intra-extensions/:ie_uuid/tenant', {}, {
-	     	   		query: { method: 'GET', isArray: false }
-	    	   	}),
-	     	   	
-				policy: $resource('./json/intra-extensions/policies', {}, {
-	     	   		query: { method: 'GET', isArray: false }
-	    	   	}),
-	    	   	
-	    	   	subject: $resource('./json/intra-extensions/:ie_uuid/subjects', {}, {
-	    	   		query: { method: 'GET', isArray: false },
-	     	   		get: { method: 'GET', isArray: false },
-	     	   		create: { method: 'POST' }
-	    	   	}),
-	    	   	
-	    	   	object: $resource('./json/intra-extensions/:ie_uuid/objects', {}, {
-	    	   		query: { method: 'GET', isArray: false },
-	     	   		get: { method: 'GET', isArray: false }
-	    	   	})
-    	   	
-			},
-			
-			findAll: function(doSomething) {
-
-    	   		var _self = this;
-    	   		
-    	   		this.rest.intraExtension.query({}).$promise.then(function(result) {
-
-    	   			return _.map(result.intra_extensions, function(uuid) {
-    	   				return _self.findOne(uuid);
-    	   			}); 
-
-    	   		}).then(function(uuids) {
-    	   			
-    	   			$q.all(uuids).then(function(result) {
-    	   				
-    	   				return _(result).map(function(resource) {
-    	   					return resource.intra_extensions;
-    	   				});
-    	   				    	   				
-    	   			}).then(doSomething);
-    	   			
-    	   		});
-
-	   		},
-	   		
-	   		findOne: function(uuid) {
-	   			
-	   			return this.rest.intraExtension.get({ie_uuid: uuid}).$promise;
-	   			
-	   		},
-	   		
-	   		findSome: function(uuids) {
-	   			
-	   			var _self = this;
-	   			
-	   			var promises = _(uuids).map(function(uuid) {
-	   				return _self.findOne(uuid);
-	   			});
-	   			
-	   			$q.all(promises).then(function(result) {
-	   				
-	   				return _(result).map(function(resource) {
-	   					return resource.intra_extensions;
-	   				});
-	   				
-	   			});
-	   			
-	   		}
-    	   	
-		};
+		
 		
 	})
 	 

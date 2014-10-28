@@ -1,4 +1,4 @@
-<div class="modal" tabindex="-1" role="modalDeleteTenant">
+<div ng-controller="TenantDeleteController as del" class="modal" tabindex="-1" role="modalDeleteTenant">
 
 	<div class="modal-dialog">
 
@@ -10,7 +10,7 @@
 			</div>
 			
 			<div class="modal-body">
-				<span translate="moon.tenant.remove.content" translate-values="{ tenantName: remove.tenant.name }"></span>
+				<span translate="moon.tenant.remove.content" translate-values="{ tenantName: del.tenant.name }"></span>
 			</div>
 			
 			<div class="modal-footer">
@@ -18,7 +18,7 @@
 					<a href="" ng-click="$hide()" class="btn btn-default">
 		                <span translate="moon.tenant.remove.action.cancel">Cancel</span>
 					</a>					
-					<a href="" ng-click="remove.remove(remove.tenant)" class="btn btn-warning">
+					<a href="" ng-click="del.remove(del.tenant)" class="btn btn-warning">
 		            	<span class="glyphicon glyphicon-trash"></span>
 		                <span translate="moon.tenant.remove.action.delete">Delete</span>
 					</a>

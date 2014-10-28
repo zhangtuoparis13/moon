@@ -160,7 +160,7 @@
 	    		"success": "Tenant `{{tenantName}}` successfully mapped with Intra Extension `{{intraExtensionName}}`"
 	    	},
 	    	"unmap": {
-	    		"title": "Unmap Tenant `{{tenantName}}` / Intra Extension`{{intraExtensionName}}`",
+	    		"title": "Unmap Tenant and Intra Extension",
 	    		"content": "Are you sure you want to unmap Tenant `{{tenantName}}` / Intra Extension `{{intraExtensionName}}` ?",
 	    		"action": {
 		    		"unmap": "Unmap",

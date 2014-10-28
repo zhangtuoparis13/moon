@@ -160,7 +160,7 @@
 	    		"success": "L'association du Tenant `{{tenantName}}` avec l'Intra Extension `{{intraExtensionName}}` a été effectué avec succès"
 	    	},
 	    	"unmap": {
-	    		"title": "Dissocier le Tenant `{{tenantName}}` et l'Intra Extension`{{intraExtensionName}}`",
+	    		"title": "Dissociation Tenant et Intra Extension",
 	    		"content": "Voulez-vous dissocier le Tenant `{{tenantName}}` et l'Intra Extension `{{intraExtensionName}}` ?",
 	    		"action": {
 		    		"unmap": "Dissocier",

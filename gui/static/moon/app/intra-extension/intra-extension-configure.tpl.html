@@ -18,8 +18,8 @@
 			<div class="row">
 				<ui-select multiple theme="bootstrap" ng-model="subject.selected" ng-disabled="disabled">
 					<ui-select-match placeholder="(None)">{{$item}}</ui-select-match>
-					<ui-select-choices repeat="subjectName in subject.subjects">
-						<div ng-value="subjectName">{{subjectName}}</div>
+					<ui-select-choices repeat="subject in subject.subjects">
+						<div ng-value="subject">{{subject}}</div>
 					</ui-select-choices>
 				</ui-select>
 			</div>

@@ -7,7 +7,7 @@
 	'use strict';
 
 	angular
-		.module('moon.nova')
+		.module('moon')
 			.factory('novaService', novaService);
 	
 	novaService.$inject = ['$resource'];

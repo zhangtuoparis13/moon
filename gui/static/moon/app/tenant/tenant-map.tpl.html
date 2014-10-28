@@ -1,4 +1,4 @@
-<div class="modal" tabindex="-1" role="modalMappingTenant">
+<div ng-controller="TenantMapController as map" class="modal" tabindex="-1" role="modalMappingTenant">
 
 	<div class="modal-dialog">
 
@@ -11,9 +11,9 @@
 			
 			<div class="modal-body">
 				
-				<form class="form-horizontal" role="form" name="form.map" ng-init="map.setForm(this)">
+				<form class="form-horizontal" role="form" name="map.form">
 				
-					<div class="form-group" ng-class="{'has-error': form.map.intraExtension.$dirty && (form.map.intraExtension.$invalid || !map.selectedIntraExtension)}">
+					<div class="form-group" ng-class="{'has-error': map.form.intraExtension.$dirty && (map.form.intraExtension.$invalid || !map.selectedIntraExtension)}">
 		            
 		                <label class="col-sm-3 control-label" translate="moon.tenant.map.form.intraExtension">Intra Extension</label>
 		                
@@ -28,8 +28,8 @@
 		                    
 		                    <img ng-if="map.intraExtensionsLoading" src="static/moon/img/ajax-loader.gif" />
 		                    		                    
-		                    <div class="help-block" ng-show="form.map.intraExtension.$dirty && (form.map.intraExtension.$invalid || !map.selectedIntraExtension)">
-		                    	<small class="error" ng-show="form.map.intraExtension.$error.required" translate="moon.tenant.map.check.intraExtension.required">Intra Extension is required</small>
+		                    <div class="help-block" ng-show="map.form.intraExtension.$dirty && (map.form.intraExtension.$invalid || !map.selectedIntraExtension)">
+		                    	<small class="error" ng-show="map.form.intraExtension.$error.required" translate="moon.tenant.map.check.intraExtension.required">Intra Extension is required</small>
 		                    </div>
 		                    
 		                </div>

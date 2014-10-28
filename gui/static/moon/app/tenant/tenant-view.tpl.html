@@ -1,4 +1,4 @@
-<div class="modal" tabindex="-1" role="modalViewTenant">
+<div ng-controller="TenantViewController as view" class="modal" tabindex="-1" role="modalViewTenant">
 
 	<div class="modal-dialog">
 
@@ -11,7 +11,7 @@
 			
 			<div class="modal-body">
 			
-				<!-- OBJECTS -->
+				<!-- objects -->
 			
 				<div class="row">
 					<div class="col-md-12">
@@ -19,7 +19,7 @@
 					</div>
 				</div>
 												
-				<div class="row">
+				<div class="row top05">
 				
 					<div class="col-md-3"><label translate="moon.tenant.view.object.name">Name</label></div>
 					<div class="col-md-7"><label translate="moon.tenant.view.object.description">Description</label></div>
@@ -31,11 +31,11 @@
 					<div class="col-md-12"><img src="static/moon/img/ajax-loader.gif" /> <em translate="moon.tenant.view.object.loading">Loading Objects</em></div>
 				</div>
 				
-				<div class="row" ng-if="!view.objectsLoading && view.objects.length == 0">
+				<div class="row" ng-if="!view.objectsLoading && !view.hasObjects()">
 					<div class="col-md-12" translate="moon.tenant.view.object.notFound">Objects not found</div>
 				</div>
 				
-				<div class="row" ng-if="!view.objectsLoading && view.objects.length > 0" ng-repeat="object in view.objects">
+				<div class="row" ng-if="!view.objectsLoading && view.hasObjects()" ng-repeat="object in view.objects">
 								
 					<div class="col-md-3">{{object.name}}</div> 
                  	<div class="col-md-7">{{object.description}}</div>
@@ -44,21 +44,16 @@
                     </div>
 		                    	                                
                 </div>
-                                
-   				<div>&nbsp;</div>
-				<div>&nbsp;</div>
+                
+				<!-- subjects -->
 				
-				<!-- SUBJECTS -->
-				
-				<div class="row">
+				<div class="row top10">
 					<div class="col-md-12">
 						<h1 class="pull-left" translate="moon.tenant.view.subject.title">Subjects</h1>
 					</div>
 				</div>
-				
-				<div>&nbsp;</div>
-								
-				<div class="row">
+												
+				<div class="row top05">
 				
 					<div class="col-md-3"><label translate="moon.tenant.view.subject.name">Name</label></div>
 	                <div class="col-md-3"><label translate="moon.tenant.view.subject.domain">Domain</label></div>
@@ -70,12 +65,13 @@
 				<div class="row">
 				
 					<div class="col-md-3">
-						<ui-select ng-model="view.selectedSubject" on-select="view.getRolesAndGroups(view.tenant, $item)"> 
+						<ui-select ng-model="view.selectedSubject" on-select="view.resolveRoles(view.tenant, $item); view.resolveGroups(view.tenant, $item)"> 
 	                    	<ui-select-match placeholder="(None)">{{$select.selected.name}}</ui-select-match>
 	                    	<ui-select-choices repeat="subject in view.subjects">
 	                    		<div ng-value="subject">{{subject.name}}</div>
              				</ui-select-choices>
 	                    </ui-select>
+	                    <img ng-if="view.subjectsLoading" src="static/moon/img/ajax-loader.gif" />
 					</div> 
                  	<div class="col-md-3">{{view.selectedSubject.domain}}</div>
 					<div class="col-md-4">{{view.selectedSubject.mail}}</div>
@@ -87,22 +83,17 @@
 		                    	                                
                 </div>
                 
-                <div>&nbsp;</div>
-                <div>&nbsp;</div>
+                <!-- roles -->
                 
-                <!-- ROLES -->
+               	<div ng-if="view.hasSelectedSubject()">
                 
-               	<div ng-if="view.selectedSubject != null">
-                
-	               	<div class="row">
+	               	<div class="row top10">
 						<div class="col-md-12">
 							<h1 class="pull-left" translate="moon.tenant.view.role.title">Roles</h1>
 						</div>
 					</div>
-					
-					<div>&nbsp;</div>
-									
-					<div class="row">
+														
+					<div class="row top05">
 					
 						<div class="col-md-3"><label translate="moon.tenant.view.role.value">Value</label></div>
 		                <div class="col-md-5"><label translate="moon.tenant.view.role.description">Description</label></div>
@@ -115,41 +106,36 @@
 						<div class="col-md-12"><img src="static/moon/img/ajax-loader.gif" /> <em translate="moon.tenant.view.role.loading">Loading Roles</em></div>
 					</div>
 					
-					<div class="row" ng-if="!view.rolesLoading && view.roles.length == 0">
+					<div class="row" ng-if="!view.rolesLoading && !view.hasRoles()">
 						<div class="col-md-12" translate="moon.tenant.view.role.notFound">Roles not found</div>
 					</div>
 					
-					<div class="row" ng-if="!view.rolesLoading && view.roles.length > 0" ng-repeat="role in view.roles">
+					<div class="row" ng-if="!view.rolesLoading && view.hasRoles()" ng-repeat="role in view.roles">
 					 
 	                 	<div class="col-md-3">{{role.value}}</div>
 	                 	<div class="col-md-5">{{role.description}}</div>
 	                 	<div class="col-md-2">
-	                    	<span ng-if="isRoleAssigned(role)" class="glyphicon glyphicon-ok"></span>
+	                    	<span ng-if="view.isRoleAssigned(role)" class="glyphicon glyphicon-ok"></span>
 	                    </div>
 	                 	<div class="col-md-2">
 	                 		<span ng-if="role.enabled" class="glyphicon glyphicon-ok"></span>
 	                    </div>
 			                    	                                
 	                </div>
-	                
-	                <div>&nbsp;</div>
-	                <div>&nbsp;</div>
                 
                 </div>
                                 
-                <!-- GROUPS -->
+                <!-- groups -->
                 
-               	<div ng-if="view.selectedSubject != null">
+               	<div ng-if="view.hasSelectedSubject()">
                 
-	               	<div class="row">
+	               	<div class="row top10">
 						<div class="col-md-12">
 							<h1 class="pull-left" translate="moon.tenant.view.group.title">Groups</h1>
 						</div>
 					</div>
-					
-					<div>&nbsp;</div>
-									
-					<div class="row">
+														
+					<div class="row top05">
 					
 						<div class="col-md-3"><label translate="moon.tenant.view.group.value">Value</label></div>
 		                <div class="col-md-5"><label translate="moon.tenant.view.group.description">Description</label></div>
@@ -162,31 +148,28 @@
 						<div class="col-md-12"><img src="static/moon/img/ajax-loader.gif" /> <em translate="moon.tenant.view.group.loading">Loading Groups</em></div>
 					</div>
 					
-					<div class="row" ng-if="!view.groupsLoading && view.groups.length == 0">
+					<div class="row" ng-if="!view.groupsLoading && !view.hasGroups()">
 						<div class="col-md-12" translate="moon.tenant.view.group.notFound">Groups not found</div>
 					</div>
 					
-					<div class="row" ng-if="!view.groupsLoading && view.groups.length > 0" ng-repeat="group in view.groups">
+					<div class="row" ng-if="!view.groupsLoading && view.hasGroups()" ng-repeat="group in view.groups">
 					 
 	                 	<div class="col-md-3">{{group.value}}</div>
 	                 	<div class="col-md-5">{{group.description}}</div>
 	                 	<div class="col-md-2">
-	                    	<span ng-if="isGroupAssigned(group)" class="glyphicon glyphicon-ok"></span>
+	                    	<span ng-if="view.isGroupAssigned(group)" class="glyphicon glyphicon-ok"></span>
 	                    </div>
 	                 	<div class="col-md-2">
 	                 		<span ng-if="group.enabled" class="glyphicon glyphicon-ok"></span>
 	                    </div>
 			                    	                                
 	                </div>
-	                
-	                <div>&nbsp;</div>
-	                <div>&nbsp;</div>
                 
                 </div>
                                 				
 			</div>
 			
-			<div class="modal-footer">
+			<div class="modal-footer top10">
 				<div class="btn-toolbar" style="float: right;">
 					<button ng-click="$hide()" class="btn btn-default" translate="moon.tenant.view.action.close">Close</button>
 				</div>
