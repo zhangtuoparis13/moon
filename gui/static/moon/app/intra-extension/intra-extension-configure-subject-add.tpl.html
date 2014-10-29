@@ -1,4 +1,4 @@
-<div class="modal" tabindex="-1" role="modalAddSubject">
+<div ng-controller="IntraExtensionConfigurationAddSubjectController as add" class="modal" tabindex="-1" role="modalAddSubjectIntraExtension">
 
 	<div class="modal-dialog">
 
@@ -11,33 +11,33 @@
 			
 			<div class="modal-body">
 				
-				<form class="form-horizontal" role="form" name="form.add.subject" ng-init="add.subject.setForm(this)">
+				<form class="form-horizontal" role="form" name="add.form">
 				
-					<div class="form-group" ng-class="{'has-error': form.add.subject.name.$invalid && form.add.subject.name.$dirty}">
+					<div class="form-group" ng-class="{'has-error': add.form.name.$invalid && add.form.name.$dirty}">
 					
 		                <label for="name" class="col-sm-3 control-label" translate="moon.intraExtension.configure.subject.add.form.name">Name</label>
 		            
 		                <div class="col-sm-6">
 		            
-		                    <input name="name" class="form-control" type="text" data-ng-model="subject.add.subject.name" required />
+		                    <input name="name" class="form-control" type="text" data-ng-model="add.subject.name" required />
 		                                        
-		                    <div class="help-block" ng-show="form.add.subject.name.$dirty && form.add.subject.name.$invalid">
-		                    	<small class="error" ng-show="form.add.subject.name.$error.required" translate="moon.intraExtension.configure.subject.add.check.name.required">Name is required</small>
+		                    <div class="help-block" ng-show="add.form.name.$dirty && add.form.name.$invalid">
+		                    	<small class="error" ng-show="add.form.name.$error.required" translate="moon.intraExtension.configure.subject.add.check.name.required">Name is required</small>
 		                    </div>
 		                    
 		                </div>
 		            </div>
 		            
-		            <div class="form-group" ng-class="{'has-error': form.add.subject.domain.$invalid && form.add.subject.domain.$dirty}">
+		            <div class="form-group" ng-class="{'has-error': add.form.domain.$invalid && add.form.domain.$dirty}">
 		            
 		                <label class="col-sm-3 control-label" translate="moon.intraExtension.configure.subject.add.form.domain">Domain</label>
 		            
 		                <div class="col-sm-6">
 		                
-		                    <input name="domain" type="text" class="form-control" required data-ng-model="subject.add.subject.domain" required />
+		                    <input name="domain" type="text" class="form-control" required data-ng-model="add.subject.domain" required />
 		                                        
-		                    <div class="help-block" ng-show="form.add.subject.domain.$dirty && form.add.subject.domain.$invalid">
-		                    	<small class="error" ng-show="form.add.subject.domain.$error.required" translate="moon.intraExtension.configure.subject.add.check.domain.required">Domain is required</small>
+		                    <div class="help-block" ng-show="add.form.domain.$dirty && add.form.domain.$invalid">
+		                    	<small class="error" ng-show="add.form.domain.$error.required" translate="moon.intraExtension.configure.subject.add.check.domain.required">Domain is required</small>
 		                    </div>
 		                    
 		                </div>
@@ -48,37 +48,37 @@
 		                <label class="col-sm-3 control-label" translate="moon.intraExtension.configure.subject.add.form.enabled">Enabled</label>
 		                <div class="col-sm-6">
 		                    <div class="radio">
-		                        <input type="checkbox" class="js-switch" data-ng-model="subject.add.subject.enabled" ui-switch />
+		                        <input type="checkbox" class="js-switch" data-ng-model="add.subject.enabled" ui-switch />
 		                    </div>
 		                </div>
 		            </div>
 		            
-		             <div class="form-group"  ng-class="{'has-error': form.add.subject.project.$invalid && form.add.subject.project.$dirty}">
+		             <div class="form-group"  ng-class="{'has-error': add.form.project.$invalid && add.form.project.$dirty}">
 		            
 		                <label class="col-sm-3 control-label" translate="moon.intraExtension.configure.subject.add.form.project">Project</label>
 		                
 		                <div class="col-sm-6">
 		                
-		                    <input name="project" class="form-control" type="text" data-ng-model="subject.add.subject.project" required />
+		                    <input name="project" class="form-control" type="text" data-ng-model="add.subject.project" required />
 		                    
-		                    <div class="help-block" ng-show="form.add.subject.project.$dirty && form.add.subject.project.$invalid">
-		                    	<small class="error" ng-show="form.add.subject.project.$error.required" translate="moon.intraExtension.configure.subject.add.check.project.required">Project is required</small>
+		                    <div class="help-block" ng-show="add.form.project.$dirty && add.form.project.$invalid">
+		                    	<small class="error" ng-show="add.form.project.$error.required" translate="moon.intraExtension.configure.subject.add.check.project.required">Project is required</small>
 		                    </div>
 		                    
 		                </div>
 		                
 		            </div>
 		            
-		            <div class="form-group"  ng-class="{'has-error': form.add.subject.password.$invalid && form.add.subject.password.$dirty}">
+		            <div class="form-group"  ng-class="{'has-error': add.form.password.$invalid && add.form.password.$dirty}">
 		            
 		                <label class="col-sm-3 control-label" translate="moon.intraExtension.configure.subject.add.form.password">Password</label>
 		                
 		                <div class="col-sm-6">
 		                
-		                    <input name="password" class="form-control" type="password" data-ng-model="subject.add.subject.password" required />
+		                    <input name="password" class="form-control" type="password" data-ng-model="add.subject.password" required />
 		                    
-		                    <div class="help-block" ng-show="form.add.subject.password.$dirty && form.add.subject.password.$invalid">
-		                    	<small class="error" ng-show="form.add.subject.password.$error.required" translate="moon.intraExtension.configure.subject.add.check.password.required">Password is required</small>
+		                    <div class="help-block" ng-show="add.form.password.$dirty && add.form.password.$invalid">
+		                    	<small class="error" ng-show="add.form.password.$error.required" translate="moon.intraExtension.configure.subject.add.check.password.required">Password is required</small>
 		                    </div>
 		                    
 		                </div>
@@ -88,7 +88,7 @@
 		            <div class="form-group">
 		                <label class="col-sm-3 control-label" translate="moon.intraExtension.configure.subject.add.form.description">Description</label>
 		                <div class="col-sm-6">
-		                    <textarea class="form-control" data-ng-model="subject.add.subject.description"></textarea>
+		                    <textarea class="form-control" data-ng-model="add.subject.description"></textarea>
 		                </div>
 		            </div>
 		            
@@ -101,7 +101,7 @@
 					<a href="" ng-click="$hide()" class="btn btn-default">
 		                <span translate="moon.intraExtension.configure.subject.add.action.cancel">Cancel</span>
 					</a>					
-					<a href="" ng-click="subject.add.create(subject.add.intraExtension, subject.add.subject)" class="btn btn-warning">
+					<a href="" ng-click="add.create(add.intraExtension, add.subject)" class="btn btn-warning">
 		            	<span class="glyphicon glyphicon-plus"></span>
 		                <span translate="moon.intraExtension.configure.subject.add.action.add">Add Subject</span>
 					</a>

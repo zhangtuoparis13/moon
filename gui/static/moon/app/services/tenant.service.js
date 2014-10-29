@@ -73,7 +73,7 @@
 			},
 			
 			findOne: function(uuid) {
-	   			return this.rest.tenant.get({project_uuid: uuid}).$promise;
+	   			return this.data.tenant.get({project_uuid: uuid}).$promise;
 	   		}
         
         };

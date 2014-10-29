@@ -89,10 +89,33 @@
 			
 			.state('moon.intraExtension', {
 	            url: '/intraExtension',
-	            templateUrl: 'static/moon/app/intra-extension/intra-extension.tpl.html',
-	            controller: 'InterExtensionListController',
-	            controllerAs: 'list'
+	            templateUrl: 'static/moon/app/intra-extension/intra-extension-list.tpl.html',
+	            controller: 'IntraExtensionListController',
+	            controllerAs: 'list',
+	            resolve: {
+	            	intraExtensions: function(intraExtensionService) {
+	            		return intraExtensionService.findAll();
+	            	}
+	            }
 	        })
+	        
+	        .state('moon.intraExtensionConfiguration', {
+				url: '/intraExtension/:uuid/configure',
+				templateUrl: 'static/moon/app/intra-extension/intra-extension-configure.tpl.html',
+				controller: 'IntraExtensionConfigurationController',
+				controllerAs: 'conf',
+				resolve: {
+					intraExtension: function($stateParams, intraExtensionService) {
+						return intraExtensionService.data.intraExtension.get({ie_uuid: $stateParams.uuid}).$promise;
+					},
+					subjects: function(intraExtensionService, intraExtension) {
+						return intraExtensionService.data.subject.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+					},
+					objects: function(intraExtensionService, intraExtension) {
+						return intraExtensionService.data.object.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+					}
+				}
+			})
 			
 			.state('moon.interExtension', {
 	            url: '/interExtension',

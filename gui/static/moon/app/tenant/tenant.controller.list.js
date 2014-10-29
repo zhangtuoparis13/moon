@@ -176,7 +176,7 @@
 		};
 		
 		function getMappedIntraExtensionName(tenant) {
-			return tenant.intraExtension.name[0];
+			return _.first(tenant.intraExtension.name);
 		};
    			 
 		/*
