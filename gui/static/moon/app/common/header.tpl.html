@@ -13,8 +13,8 @@
     
     	<div class="col-md-3">
 	        <span class="pull-right">
-	            <a href="" ng-click="changeLocale('fr', $event)"><img src="static/moon/img/arrow-link.gif" alt="fr_" />fr</a>
-	            <a href="" ng-click="changeLocale('en', $event)"><img src="static/moon/img/arrow-link.gif" alt="en_" />en</a>
+	            <a href="" ng-click="header.changeLocale('fr', $event)"><img src="static/moon/img/arrow-link.gif" alt="fr_" />fr</a>
+	            <a href="" ng-click="header.changeLocale('en', $event)"><img src="static/moon/img/arrow-link.gif" alt="en_" />en</a>
 	        </span>
         </div>
                 
@@ -27,9 +27,9 @@
     <div class="row">
     
         <ul class="nav nav-tabs">
-            <li ng-class="{active: header.$state.includes('moon.tenant')}"><a ui-sref="moon.tenant" translate="moon.menu.tenant">Tenants</a></li>
-            <li ng-class="{active: header.$state.includes('moon.intraExtension')}"><a ui-sref="moon.intraExtension" translate="moon.menu.intraExtension">Intra Extensions</a></li>
-            <li ng-class="{active: header.$state.includes('moon.interExtension')}"><a ui-sref="moon.interExtension" translate="moon.menu.interExtension">Inter Extensions</a></li>
+            <li ng-class="{active: header.isTenantTabActive()}"><a ui-sref="moon.tenant" translate="moon.menu.tenant">Tenants</a></li>
+            <li ng-class="{active: header.isIntraExtensionTabActive()}"><a ui-sref="moon.intraExtension" translate="moon.menu.intraExtension">Intra Extensions</a></li>
+            <li ng-class="{active: header.isInterExtensionTabActive()}"><a ui-sref="moon.interExtension" translate="moon.menu.interExtension">Inter Extensions</a></li>
         </ul>
                         
     </div>

@@ -10,13 +10,27 @@
 		.module('moon')
 				.controller('HeaderController', HeaderController)
 	
-	HeaderController.$inject = ['$rootScope', '$state', '$translate'];
+	HeaderController.$inject = ['$translate', 'menuService'];
 	
-	function HeaderController($rootScope, $state, $translate) {
-				    
-		this.$state = $state;
+	function HeaderController($translate, menuService) {
+				 
+		var header = this;
 		
-    	$rootScope.changeLocale = function(localeKey, event) {
+		/*
+		 * 
+		 */
+		
+		header.isTenantTabActive = menuService.isTenantTabActive;
+		header.isIntraExtensionTabActive = menuService.isIntraExtensionTabActive;
+		header.isInterExtensionTabActive = menuService.isInterExtensionTabActive;
+		
+		header.changeLocale = changeLocale; 
+		
+		/*
+		 * 
+		 */
+		
+		function changeLocale(localeKey, event) {
 			
             event.preventDefault();
             
