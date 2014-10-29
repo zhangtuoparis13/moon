@@ -225,7 +225,7 @@
 	    			"cancel": "Annuler",
 	    			"delete": "Supprimer"
 	    		},
-	    		"error": "Impossible de supprime l'Intra Extension `{{intraExtensionName}}`",
+	    		"error": "Impossible de supprimer l'Intra Extension `{{intraExtensionName}}`",
 	    		"success": "l'Intra Extension `{{intraExtensionName}}` a été supprimé avec succès"
 	    	},
 	    	"configure": {
@@ -268,13 +268,35 @@
 			    		},
 			    		"error": "Impossible d'ajouter le Subjet `{{subjectName}}`",
 			    		"success": "Le Subjet `{{subjectName}}` a été ajouté avec succès"
-	    			}
+	    			},
+	    			"remove": {
+			    		"title": "Supprimer un Sujet",
+			    		"content": "Voulez-vous supprimer le Sujet `{{subjectName}}` de l'Intra Extension `{{intraExtensionName}}` ?",
+			    		"action": {
+			    			"cancel": "Annuler",
+			    			"delete": "Supprimer"
+			    		},
+			    		"error": "Impossible de supprimer le Sujet `{{subjectName}}`",
+			    		"success": "Le Sujet `{{subjectName}}` a été supprimé avec succès"
+			    	}
 	    		},
 	    		"object": {
 	    			"title": "Objets",
 	    			"category": {
 	    				"title": "Catégories"
-	    			}
+	    			},
+	    			"add": {
+	    			},
+	    			"remove": {
+			    		"title": "Supprimer un Objet",
+			    		"content": "Voulez-vous supprimer l'Objet `{{objectName}}` de l'Intra Extension `{{intraExtensionName}}` ?",
+			    		"action": {
+			    			"cancel": "Annuler",
+			    			"delete": "Supprimer"
+			    		},
+			    		"error": "Impossible de supprimer l'Objet `{{objectName}}`",
+			    		"success": "L'Objet `{{objectName}}` a été supprimé avec succès"
+			    	}
 	    		}  
 	    	},
 	    	"rule": {

@@ -268,12 +268,34 @@
 			    		},
 			    		"error": "Unable to add Subject `{{subjectName}}`",
 			    		"success": "Subject `{{subjectName}}` successfully added"
+	    			},
+	    			"remove": {
+	    				"title": "Delete Subject",
+			    		"content": "Are you sure you want to delete `{{subjectName}}` subject of `{{intraExtensionName}}` Intra Extension ?",
+			    		"action": {
+			    			"cancel": "Cancel",
+			    			"delete": "Delete"
+			    		},
+			    		"error": "Unable to delete Subject `{{subjectName}}`",
+			    		"success": "Subject `{{subjectName}}` successfully deleted"
 	    			}
 	    		},
 	    		"object": {
 	    			"title": "Objects",
 	    			"category": {
 	    				"title": "Categories"
+	    			},
+	    			"add": {
+	    			},
+	    			"remove": {
+	    				"title": "Delete Object",
+			    		"content": "Are you sure you want to delete `{{objectName}}` object of `{{intraExtensionName}}` Intra Extension ?",
+			    		"action": {
+			    			"cancel": "Cancel",
+			    			"delete": "Delete"
+			    		},
+			    		"error": "Unable to delete Object `{{objectName}}`",
+			    		"success": "Object `{{objectName}}` successfully deleted"
 	    			}
 	    		}    		
 	    	},

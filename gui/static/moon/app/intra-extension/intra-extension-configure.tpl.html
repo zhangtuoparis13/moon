@@ -16,8 +16,10 @@
 		<div class="col-md-3">
 		
 			<div class="row">
-				<ui-select multiple theme="bootstrap" ng-model="conf.subject.selectedSubjects" ng-disabled="disabled">
-					<ui-select-match placeholder="(None)">{{$item.name}}</ui-select-match>
+				<ui-select multiple theme="bootstrap" ng-model="conf.subject.selectedSubjects" ng-disabled="disabled" ng-click="alert('toto')">
+					<ui-select-match placeholder="(None)">
+						<span ng-click="conf.subject.setCurrentSubject($item)">{{$item.name}}</span>
+					</ui-select-match>
 					<ui-select-choices repeat="subject in conf.subject.subjects">
 						<div ng-value="subject">{{subject.name}}</div>
 					</ui-select-choices>
@@ -43,7 +45,9 @@
 		
 			<div class="row">
 				<ui-select multiple theme="bootstrap" ng-model="conf.object.selectedObjects" ng-disabled="disabled">
-					<ui-select-match placeholder="(None)">{{$item.name}}</ui-select-match>
+					<ui-select-match placeholder="(None)">
+						<span ng-click="conf.object.setCurrentObject($item)">{{$item.name}}</span>
+					</ui-select-match>
 					<ui-select-choices repeat="object in conf.object.objects">
 						<div ng-value="object">{{object.name}}</div>
 					</ui-select-choices>

@@ -1,4 +1,4 @@
-<div ng-controller="IntraExtensionDeleteController as del" class="modal" tabindex="-1" role="modalDeleteIntraExtension">
+<div ng-controller="IntraExtensionConfigurationDeleteObjectController as del" class="modal" tabindex="-1" role="modalDeleteObjectIntraExtension">
 
 	<div class="modal-dialog">
 
@@ -6,21 +6,21 @@
 
 			<div class="modal-header">
 				<button type="button" class="close" ng-click="$hide()">&times;</button>
-				<h4 class="modal-title" translate="moon.intraExtension.remove.title"></h4>
+				<h4 class="modal-title" translate="moon.intraExtension.configure.object.remove.title"></h4>
 			</div>
 			
 			<div class="modal-body">
-				<span translate="moon.intraExtension.remove.content" translate-values="{ intraExtensionName: del.intraExtension.name[0] }"></span>
+				<span translate="moon.intraExtension.configure.object.remove.content" translate-values="{ objectName: del.object.name, intraExtensionName: del.intraExtension.name[0] }"></span>
 			</div>
 			
 			<div class="modal-footer">
 				<div class="btn-toolbar" style="float: right;">
 					<a href="" ng-click="$hide()" class="btn btn-default">
-		                <span translate="moon.intraExtension.remove.action.cancel">Cancel</span>
+		                <span translate="moon.intraExtension.configure.object.remove.action.cancel">Cancel</span>
 					</a>					
-					<a href="" ng-click="del.remove(del.intraExtension)" class="btn btn-warning">
+					<a href="" ng-click="del.remove(del.intraExtension, del.object)" class="btn btn-warning">
 		            	<span class="glyphicon glyphicon-trash"></span>
-		                <span translate="moon.intraExtension.remove.action.delete">Delete</span>
+		                <span translate="moon.intraExtension.configure.object.remove.action.delete">Delete</span>
 					</a>
 				</div>
 			</div>

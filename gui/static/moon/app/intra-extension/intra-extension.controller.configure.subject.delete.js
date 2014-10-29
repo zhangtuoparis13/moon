@@ -21,6 +21,7 @@
 		 */
 		
 		del.intraExtension = $scope.intraExtension;
+		del.subject = $scope.subject;
 		del.remove = deleteSubject;
 		
 		/*
