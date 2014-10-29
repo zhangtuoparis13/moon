@@ -266,8 +266,8 @@
 			    				"required": "Le mot de passe est requis"
 			    			}
 			    		},
-			    		"error": "Impossible d'ajouter le Subjet `{{subjectName}}`",
-			    		"success": "Le Subjet `{{subjectName}}` a été ajouté avec succès"
+			    		"error": "Impossible d'ajouter le Sujet `{{subjectName}}`",
+			    		"success": "Le Sujet `{{subjectName}}` a été ajouté avec succès"
 	    			},
 	    			"remove": {
 			    		"title": "Supprimer un Sujet",
@@ -286,6 +286,29 @@
 	    				"title": "Catégories"
 	    			},
 	    			"add": {
+	    				"title": "Ajouter un nouvel Objet",
+	    				"form": {
+		    				"name": "Nom",
+		    				"image": "Image",
+		    				"flavor": "Type"
+		    			},
+						"action": {
+							"cancel": "Annuler",
+							"add": "Ajouter Objet"
+						},
+			    		"check": {
+			    			"name": {
+			    				"required": "Le nom est requis"
+			    			},
+			    			"image": {
+			    				"required": "L'image est requise"
+			    			},
+			    			"flavor": {
+			    				"required": "Le type est requis"
+			    			}
+			    		},
+			    		"error": "Impossible d'ajouter l'Objet `{{objectName}}`",
+			    		"success": "L'Objet `{{objectName}}` a été ajouté avec succès"
 	    			},
 	    			"remove": {
 			    		"title": "Supprimer un Objet",

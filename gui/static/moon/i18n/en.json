@@ -286,6 +286,29 @@
 	    				"title": "Categories"
 	    			},
 	    			"add": {
+	    				"title": "Add new Object",
+	    				"form": {
+		    				"name": "Name",
+		    				"image": "Image",
+		    				"flavor": "Flavor"
+						},
+						"action": {
+							"cancel": "Cancel",
+							"add": "Add Object"
+						},
+			    		"check": {
+			    			"name": {
+			    				"required": "Name is required"
+			    			},
+			    			"image": {
+			    				"required": "Image is required"
+			    			},
+			    			"flavor": {
+			    				"required": "Flavor is required"
+			    			}
+			    		},
+			    		"error": "Unable to add Object `{{objectName}}`",
+			    		"success": "Object `{{objectName}}` successfully added"
 	    			},
 	    			"remove": {
 	    				"title": "Delete Object",

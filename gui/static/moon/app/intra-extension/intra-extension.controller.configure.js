@@ -27,7 +27,7 @@
 				subjectCategories: [],
 				selectedSubjects: [],
 				selectedCategories: [],
-				currentSubject: {},
+				currentSubject: null,
 				setCurrentSubject: setCurrentSubject,
 				add: { 
 					modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-add.tpl.html', show: false }), 
@@ -45,7 +45,7 @@
 				objectCategories: [],
 				selectedObjects: [],
 				selectedCategories: [], 
-				currentObject: {},
+				currentObject: null,
 				setCurrentObject: setCurrentObject,
 				add: {
 					modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-add.tpl.html', show: false }), 
@@ -142,10 +142,14 @@
 		
 		function showSubjectDeleteModal() {
 			
-			conf.subject.del.modal.$scope.intraExtension = conf.intraExtension;
-			conf.subject.del.modal.$scope.subject = conf.subject.currentSubject;
+			if(conf.subject.currentSubject) {
 			
-			conf.subject.del.modal.$promise.then(conf.subject.del.modal.show);
+				conf.subject.del.modal.$scope.intraExtension = conf.intraExtension;
+				conf.subject.del.modal.$scope.subject = conf.subject.currentSubject;
+				
+				conf.subject.del.modal.$promise.then(conf.subject.del.modal.show);
+			
+			}
 			
 		};
 		
@@ -171,16 +175,20 @@
 		};
 		
 		function showObjectAddModal() {
-			
-			
+			conf.object.add.modal.$scope.intraExtension = conf.intraExtension;
+			conf.object.add.modal.$promise.then(conf.object.add.modal.show);			
 		};
 		
 		function showObjectDeleteModal() {
 			
-			conf.object.del.modal.$scope.intraExtension = conf.intraExtension;
-			conf.object.del.modal.$scope.object = conf.object.currentObject;
+			if(conf.object.currentObject) {
 			
-			conf.object.del.modal.$promise.then(conf.object.del.modal.show);
+				conf.object.del.modal.$scope.intraExtension = conf.intraExtension;
+				conf.object.del.modal.$scope.object = conf.object.currentObject;
+				
+				conf.object.del.modal.$promise.then(conf.object.del.modal.show);
+			
+			}
 			
 		};
 		
