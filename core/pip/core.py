@@ -117,6 +117,12 @@ class PIP:
     def get_objects(self, tenant=None, object_uuid=None):
         s = dict()
         #TODO: need to send the token in parameter of all functions in PIP
+        if tenant:
+            __tenant = self.get_tenants(uuid=tenant)
+            if __tenant:
+                self.set_creds_for_tenant(tenant_name=__tenant.next()["name"])
+            else:
+                self.set_creds_for_tenant(tenant_name=tenant)
         for server in self.nclient.servers.list():
             o = dict()
             o["name"] = server.name
