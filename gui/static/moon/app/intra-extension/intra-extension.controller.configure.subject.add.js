@@ -22,7 +22,7 @@
 		
 		add.form = {};
 		add.intraExtension = $scope.intraExtension;
-		add.subject = { name: '', domain: 'Default', enabled: true, project: '', password: '', description: '' };
+		add.subject = { name: '', domain: 'Default', enabled: true, project: add.intraExtension.tenant.uuid, password: '', description: '' };
 		
 		add.create = addSubject;
 		
@@ -45,13 +45,6 @@
 	    			
 	        		add.form.domain.$dirty = true;
 	        		add.form.domain.$setValidity('required', false);
-	    			
-	    		}
-	        	
-	        	if(add.form.project.$pristine && add.form.project.$invalid) {
-	    			
-	        		add.form.project.$dirty = true;
-	        		add.form.project.$setValidity('required', false);
 	    			
 	    		}
 
