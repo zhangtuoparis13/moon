@@ -10,9 +10,9 @@
 		.module('moon')
 			.controller('IntraExtensionConfigurationController', IntraExtensionConfigurationController);
 	
-	IntraExtensionConfigurationController.$inject = ['$q', '$rootScope', '$scope', '$translate', '$modal', 'alertService', 'tenantService', 'intraExtensionService', 'intraExtension', 'subjects', 'objects'];
+	IntraExtensionConfigurationController.$inject = ['$q', '$rootScope', '$scope', '$translate', '$modal', 'alertService', 'tenantService', 'intraExtensionService', 'intraExtension', 'tenant', 'subjects', 'objects'];
 	
-	function IntraExtensionConfigurationController($q, $rootScope, $scope, $translate, $modal, alertService, tenantService, intraExtensionService, intraExtension, subjects, objects) {
+	function IntraExtensionConfigurationController($q, $rootScope, $scope, $translate, $modal, alertService, tenantService, intraExtensionService, intraExtension, tenant, subjects, objects) {
 		
 		var conf = this;
 		
@@ -21,6 +21,7 @@
 		 */
 		
 		conf.intraExtension = intraExtension.intra_extensions;
+		conf.intraExtension.tenant = _.first(tenant.projects);
 				
 		conf.subject = { 
 				subjects: [],
@@ -67,7 +68,10 @@
 		var rootListeners = {
 				
 				'event:intraExtensionSubjectCreatedSuccess': $rootScope.$on('event:intraExtensionSubjectCreatedSuccess', intraExtensionSubjectCreatedSuccess),
-				'event:intraExtensionSubjectCreatedError': $rootScope.$on('event:intraExtensionSubjectCreatedError', intraExtensionSubjectCreatedError)
+				'event:intraExtensionSubjectCreatedError': $rootScope.$on('event:intraExtensionSubjectCreatedError', intraExtensionSubjectCreatedError),
+				
+				'event:intraExtensionObjectCreatedSuccess': $rootScope.$on('event:intraExtensionObjectCreatedSuccess', intraExtensionObjectCreatedSuccess),
+				'event:intraExtensionObjectCreatedError': $rootScope.$on('event:intraExtensionObjectCreatedError', intraExtensionObjectCreatedError)
 				
 		};
 		
@@ -190,6 +194,19 @@
 			
 			}
 			
+		};
+		
+		function intraExtensionObjectCreatedSuccess(event, object) {
+			
+			conf.object.objects.push(object);
+			conf.object.selectedObjects.push(object);
+			
+			conf.object.add.modal.hide();
+			
+		};
+		
+		function intraExtensionObjectCreatedError() {
+			conf.object.del.modal.hide();
 		};
 		
 	};

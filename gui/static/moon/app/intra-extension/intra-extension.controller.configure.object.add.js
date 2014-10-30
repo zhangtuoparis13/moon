@@ -10,9 +10,9 @@
 		.module('moon')
 			.controller('IntraExtensionConfigurationAddObjectController', IntraExtensionConfigurationAddObjectController);
 	
-	IntraExtensionConfigurationAddObjectController.$inject = ['$scope', '$translate', 'alertService', 'intraExtensionService'];
+	IntraExtensionConfigurationAddObjectController.$inject = ['$scope', '$translate', 'alertService', 'intraExtensionService', 'novaService'];
 	
-	function IntraExtensionConfigurationAddObjectController($scope, $translate, alertService, intraExtensionService) {
+	function IntraExtensionConfigurationAddObjectController($scope, $translate, alertService, intraExtensionService, novaService) {
 		
 		var add = this;
 		
@@ -24,7 +24,46 @@
 		add.intraExtension = $scope.intraExtension;
 		add.object = { name: '', image: '', flavor: '' };
 		
+		add.images  =[];
+		add.imagesLoading = true;
+		
+		add.flavors = [];
+		add.flavorsLoading = true;
+		
 		add.create = addObject;
+		
+		resolveImages();
+		resolveFlavors();
+		
+		/*
+		 * 
+		 */
+		
+		function resolveImages() {
+			
+			return novaService.data.image.query().$promise.then(function(data) {
+				
+				add.images = data.images;
+				add.imagesLoading = false;
+				
+				return add.images;
+				
+			});
+			
+		};
+		
+		function resolveFlavors() {
+			
+			return novaService.data.flavor.query().$promise.then(function(data) {
+				
+				add.flavors = data.flavors;
+				add.flavorsLoading = false;
+				
+				return add.flavors;
+				
+			});
+			
+		};
 		
 		/*
 		 * 
@@ -57,18 +96,21 @@
 
         	} else {
         		
-        		// TODO
-        		intraExtensionService.data.object.create({ie_uuid: intraExtension._id}, object, createSuccess, createError);
+        		var payload = { name: object.name, image: object.image.name, flavor: object.flavor.name };
+        		
+        		intraExtensionService.data.object.create({ie_uuid: intraExtension._id}, payload, createSuccess, createError);
         		        		        		
         	}	
 			
 			function createSuccess(data) {
     			
-    			$translate('moon.intraExtension.configure.object.add.success', { objectName: object.name }).then(function (translatedValue) {
+				var created = _.first(data.objects);
+				
+    			$translate('moon.intraExtension.configure.object.add.success', { objectName: created.name }).then(function (translatedValue) {
         			alertService.alertSuccess(translatedValue);
                 });	
     			
-    			$scope.$emit('event:intraExtensionObjectCreatedSuccess', object);
+    			$scope.$emit('event:intraExtensionObjectCreatedSuccess', created);
     			
     		};
     		
@@ -78,7 +120,7 @@
         			alertService.alertError(translatedValue);
                 });	
     			
-    			$scope.$emit('event:intraExtensionObjectCreatedError', object);
+    			$scope.$emit('event:intraExtensionObjectCreatedError');
     			        			
     		};
 			
