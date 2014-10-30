@@ -108,6 +108,9 @@
 					intraExtension: function($stateParams, intraExtensionService) {
 						return intraExtensionService.data.intraExtension.get({ie_uuid: $stateParams.uuid}).$promise;
 					},
+					tenant: function(tenantService, intraExtension) {
+						return tenantService.findOne(intraExtension.intra_extensions.tenant_uuid);
+					},
 					subjects: function(intraExtensionService, intraExtension) {
 						return intraExtensionService.data.subject.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
 					},
