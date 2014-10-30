@@ -42,7 +42,7 @@
 			intraExtensionService.findAll().then(function(data) {
 				
 				map.intraExtensions = _(data).filter(function(intraExtension) {
-					return intraExtension.tenant_uuid == "";
+					return intraExtension.tenant_uuid == "" || intraExtension.tenant_uuid == null;
 				});
 				
 				map.intraExtensionsLoading = false;
