@@ -1,0 +1,77 @@
+<div class="container">
+	
+	<div class="row">
+		<h3 class="pull-left" translate="moon.intraExtension.configure.title" translate-values="{ intraExtensionName: conf.intraExtension.name[0] }">Configure</h3>
+	</div>
+	
+	<div class="row strong">
+		<div class="col-md-3"><label translate="moon.intraExtension.configure.subject.title">Subjects</label></div>
+		<div class="col-md-3"><label translate="moon.intraExtension.configure.subject.category.title">Categories</label></div>
+		<div class="col-md-3"><label translate="moon.intraExtension.configure.object.category.title">Categories</label></div>
+		<div class="col-md-3"><label translate="moon.intraExtension.configure.object.title">Objects</label></div>
+	</div>
+	
+	<div class="row">
+	
+		<div class="col-md-3">
+		
+			<div class="row">
+				<ui-select multiple theme="bootstrap" ng-model="conf.subject.selectedSubjects" ng-disabled="disabled" ng-click="alert('toto')">
+					<ui-select-match placeholder="(None)">
+						<span ng-click="conf.subject.setCurrentSubject($item)">{{$item.name}}</span>
+					</ui-select-match>
+					<ui-select-choices repeat="subject in conf.subject.subjects">
+						<div ng-value="subject">{{subject.name}}</div>
+					</ui-select-choices>
+				</ui-select>
+			</div>
+			
+			<div class="row top05">
+				<a href="" class="black" ng-click="conf.subject.add.showModal()">
+		        	<span class="glyphicon glyphicon-plus-sign"></span>
+				</a>
+				<a href="" class="black" ng-click="conf.subject.del.showModal()">
+		        	<span class="glyphicon glyphicon-minus-sign"></span>
+				</a>
+			</div>
+		
+		</div>
+		
+		<div class="col-md-3"></div>
+		
+		<div class="col-md-3"></div>
+		
+		<div class="col-md-3">
+		
+			<div class="row">
+				<ui-select multiple theme="bootstrap" ng-model="conf.object.selectedObjects" ng-disabled="disabled">
+					<ui-select-match placeholder="(None)">
+						<span ng-click="conf.object.setCurrentObject($item)">{{$item.name}}</span>
+					</ui-select-match>
+					<ui-select-choices repeat="object in conf.object.objects">
+						<div ng-value="object">{{object.name}}</div>
+					</ui-select-choices>
+				</ui-select>
+			</div>
+			
+			<div class="row top05">
+				<a href="" class="black" ng-click="conf.object.add.showModal()">
+		        	<span class="glyphicon glyphicon-plus-sign"></span>
+				</a>
+				<a href="" class="black" ng-click="conf.object.del.showModal()">
+		        	<span class="glyphicon glyphicon-minus-sign"></span>
+				</a>
+			</div>
+		
+		</div>
+	
+	</div>
+	
+	<div class="row top10">
+		<a href="" ui-sref="moon.intraExtension" class="btn btn-default">
+        	<span class="glyphicon glyphicon-transfer"></span>
+            <span translate="moon.intraExtension.configure.action.back">Back to Intra Extensions</span>
+		</a>
+    </div>
+	
+</div>

@@ -1,0 +1,16 @@
+{
+    "subjects": [
+        "admin"
+    ],
+    "objects": [
+        "subjects",
+        "objects",
+        "subject_categories",
+        "object_categories",
+        "subject_category_values",
+        "object_category_values",
+        "rules",
+        "subject_category_assignments",
+        "object_category_assignments"
+    ]
+}

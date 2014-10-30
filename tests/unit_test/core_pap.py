@@ -16,8 +16,8 @@ class TestCorePAPIntraExtensions(unittest.TestCase):
         extension_setting_abs_dir = pkg_resources.resource_filename("moon", 'samples/mls001')
         self.pap = get_pap()
         self.pip = get_pip()
-        self.pap.add_from_json(extension_setting_abs_dir)
-        self.ext_uuid = self.pap.get_intra_extensions().keys()[0]
+        self.pap.install_intra_extension_from_json("admin", extension_setting_dir=extension_setting_abs_dir)
+        self.ext_uuid = self.pap.get_intra_extensions("admin").keys()[0]
         # self.extension = IntraExtension()
         # print(self.extension.get_uuid())
         # print(self.pap.get_intra_extensions().keys())
@@ -77,6 +77,10 @@ class TestCorePAPIntraExtensions(unittest.TestCase):
             "image_name": "Cirros3.2",
             "flavor_name": "m1.nano"
         }
+        images = map(lambda x: x["name"], get_pip().get_images())
+        for _img in images:
+            if "irros" in _img:
+                server["image_name"] = _img
         object_uuid = self.pap.add_object(self.ext_uuid, "user1", object=server)
         objects = self.pap.get_objects(self.ext_uuid, "user1")
         self.assertIsInstance(objects, list)

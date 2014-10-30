@@ -11,16 +11,24 @@ class IntraExtension:
         self.intra_extension_authz = Extension()
         self.intra_extension_admin = Extension()
         self.__syncer = IntraExtensionSyncer()
+        self.__name = ""
 
-    def load_from_json(self, extension_setting_abs_dir):
+    def load_from_json(self, extension_setting_abs_dir, name="Intra_Extension"):
         self.intra_extension_authz.load_from_json(os.path.join(extension_setting_abs_dir, 'authz'))
         self.intra_extension_admin.load_from_json(os.path.join(extension_setting_abs_dir, 'admin'))
+        self.__name = name
 
     def get_uuid(self):
         return str(self.__uuid)
 
+    def get_name(self):
+        return self.__name
+
     def get_tenant_uuid(self):
         return self.__tenant_uuid
+
+    def set_tenant_uuid(self, tenant_uuid):
+        self.__tenant_uuid = tenant_uuid
 
     def authz(self, sub, obj, act):
         # authz_logger.warning('intra_extension/authz request: [sub {}, obj {}, act {}]'.format(sub, obj, act))
@@ -58,10 +66,11 @@ class IntraExtension:
                                                                               sub_cat_value_dict, obj_cat_value_dict)
 
     def __str__(self):
-        return """IntraExtension {}
+        return """IntraExtension {} ({})
     subjects: {}
     objects: {}
         """.format(
+            self.__name,
             self.get_uuid(),
             self.intra_extension_authz.get_subjects(),
             self.intra_extension_authz.get_objects(),
@@ -69,6 +78,7 @@ class IntraExtension:
 
     def get_data(self):
         data = dict()
+        data["name"] = self.__name,
         data["_id"] = self.__uuid
         data["tenant_uuid"] = self.__tenant_uuid
         data["authz"] = self.intra_extension_authz.get_data()
@@ -77,6 +87,7 @@ class IntraExtension:
 
     def set_data(self, data):
         self.__uuid = data["_id"]
+        self.__name = data["name"]
         self.__tenant_uuid = data["tenant_uuid"]
         self.intra_extension_authz.set_data(data["authz"])
         self.intra_extension_admin.set_data(data["admin"])

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 MySQLPASSWD="P4ssw0rd"
-OPENSTACK_SERVER="192.168.119.113"
+OPENSTACK_SERVER="192.168.103.88"
 
 #if necessary, set a proxy
 export http_proxy="http://vis:visiteur@www-cache.aql.fr:3128";

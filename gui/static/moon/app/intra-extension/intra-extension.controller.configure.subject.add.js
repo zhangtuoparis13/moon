@@ -1,0 +1,96 @@
+/**
+ * @author arnaud marhin<arnaud.marhin@orange.com>
+ */
+
+(function() {
+
+	'use strict';
+					
+	angular
+		.module('moon')
+			.controller('IntraExtensionConfigurationAddSubjectController', IntraExtensionConfigurationAddSubjectController);
+	
+	IntraExtensionConfigurationAddSubjectController.$inject = ['$scope', '$translate', 'alertService', 'intraExtensionService'];
+	
+	function IntraExtensionConfigurationAddSubjectController($scope, $translate, alertService, intraExtensionService) {
+		
+		var add = this;
+		
+		/*
+		 * 
+		 */
+		
+		add.form = {};
+		add.intraExtension = $scope.intraExtension;
+		add.subject = { name: '', domain: 'Default', enabled: true, project: '', password: '', description: '' };
+		
+		add.create = addSubject;
+		
+		/*
+		 * 
+		 */
+		
+		function addSubject(intraExtension, subject) {
+			
+			if(add.form.$invalid) {
+            	
+	        	if(add.form.name.$pristine && add.form.name.$invalid) {
+	    			
+	        		add.form.name.$dirty = true;
+	        		add.form.name.$setValidity('required', false);
+	    			
+	    		} 
+	        	
+	        	if(add.form.domain.$pristine && add.form.domain.$invalid) {
+	    			
+	        		add.form.domain.$dirty = true;
+	        		add.form.domain.$setValidity('required', false);
+	    			
+	    		}
+	        	
+	        	if(add.form.project.$pristine && add.form.project.$invalid) {
+	    			
+	        		add.form.project.$dirty = true;
+	        		add.form.project.$setValidity('required', false);
+	    			
+	    		}
+
+				if(add.form.password.$pristine && add.form.password.$invalid) {
+					
+					add.form.password.$dirty = true;
+					add.form.password.$setValidity('required', false);
+					
+				}
+        	
+        	} else {
+        		
+        		// TODO
+        		intraExtensionService.data.subject.create({ie_uuid: intraExtension._id}, subject, createSuccess, createError);
+        		        		        		
+        	}	
+			
+			function createSuccess(data) {
+    			
+    			$translate('moon.intraExtension.configure.subject.add.success', { subjectName: subject.name }).then(function (translatedValue) {
+        			alertService.alertSuccess(translatedValue);
+                });	
+    			
+    			$scope.$emit('event:intraExtensionSubjectCreatedSuccess', subject);
+    			
+    		};
+    		
+    		function createError(reason) {
+    			
+    			$translate('moon.intraExtension.configure.subject.add.error', { subjectName: subject.name }).then(function (translatedValue) {
+        			alertService.alertError(translatedValue);
+                });	
+    			
+    			$scope.$emit('event:intraExtensionSubjectCreatedError', subject);
+    			        			
+    		};
+			
+		};		
+		
+	};
+	
+})();

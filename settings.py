@@ -51,6 +51,8 @@ SYNC_CONF_FILENAME = "/etc/moon/tenants.json"
 
 UNMANAGED_OBJECTS = ("", "token", )
 
+APPEND_SLASH = False
+
 OS_USERNAME = "admin"
 OS_PASSWORD = "P4ssw0rd"
 OS_TENANT_NAME = "admin"
@@ -207,3 +209,5 @@ OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = 'Default'
 
 # NOTE(saschpe): The openstack_auth.user.Token object isn't JSON-serializable ATM
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
+APPEND_SLASH = False

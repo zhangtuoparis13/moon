@@ -37,12 +37,14 @@ class TenantIntraExtensionMapping:
                     return "[SuperExtension Error] Create Mapping for Existing Mapping"
                 else:
                     _mapping["intra_extension_uuids"].append(intra_extension_uuid)
+                    get_intra_extensions()[intra_extension_uuid].set_tenant_uuid(tenant_uuid)
                     return "[SuperExtension] Create Mapping for Existing Tenant: OK"
 
         _mapping = dict()
         _mapping["tenant_uuid"] = tenant_uuid
         _mapping["intra_extension_uuids"] = [intra_extension_uuid]
         self.tenant_intra_extension_mapping.append(_mapping)
+        get_intra_extensions()[intra_extension_uuid].set_tenant_uuid(tenant_uuid)
         return "[SuperExtension] Create Mapping for No Existing Mapping: OK"
 
     def destroy_mapping(self, tenant_uuid, intra_extension_uuid):
@@ -52,6 +54,7 @@ class TenantIntraExtensionMapping:
                     _mapping["intra_extension_uuids"].remove(intra_extension_uuid)
                 else:
                     self.tenant_intra_extension_mapping.remove(_mapping)
+                get_intra_extensions()[intra_extension_uuid].set_tenant_uuid(None)
                 return "[SuperExtension] Destroy Mapping: OK"
         return "[SuperExtension Error] Destroy Unknown Mapping"
 
@@ -76,12 +79,12 @@ class IntraExtensions:
     def get_installed_intra_extensions(self):
         return self.__installed_intra_extensions
 
-    def install_intra_extension_from_json(self, extension_setting_dir):
+    def install_intra_extension_from_json(self, extension_setting_dir, name="Intra_Extension"):
         extension_setting_abs_dir = extension_setting_dir
         if not os.path.isdir(extension_setting_dir):
             extension_setting_abs_dir = pkg_resources.resource_filename("moon", extension_setting_dir)
         _intra_extension = IntraExtension()
-        _intra_extension.load_from_json(extension_setting_abs_dir)
+        _intra_extension.load_from_json(extension_setting_abs_dir, name=name)
         self.__installed_intra_extensions[_intra_extension.get_uuid()] = _intra_extension
         return _intra_extension.get_uuid()
 
@@ -90,8 +93,8 @@ class IntraExtensions:
         intra_extension.load_from_db()
         self.__installed_intra_extensions[intra_extension.get_uuid()] = intra_extension
 
-    def delete_intra_extension(self, intra_extensin_uuid):
-        self.__installed_intra_extensions.pop(intra_extensin_uuid)
+    def delete_intra_extension(self, intra_extension_uuid):
+        self.__installed_intra_extensions.pop(intra_extension_uuid)
 
     def get_intra_extensions_from_db(self):  # TODO test
         return self.__syncer.get_intra_extensions_from_db()
@@ -218,4 +221,4 @@ def pdp_admin(requesting_intra_extension_uuid, requested_intra_extension_uuid, s
     if requesting_intra_extension_uuid == requested_intra_extension_uuid:
         return intra_extensions.admin(sub, obj, act)
     else:
-        inter_extensions.admin(requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act)
+        return inter_extensions.admin(requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act)

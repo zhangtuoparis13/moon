@@ -1,7 +1,7 @@
 {
     "subject_category_assignments": {
         "role":{
-            "dbc8d8e2c967477faa656174e21cd738": ["admin"],
+            "504de31b636c43bbb7c2dd1b76ee6cca": ["admin"],
             "user1": ["admin"],
             "user2": ["dev"]
         }

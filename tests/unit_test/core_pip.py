@@ -74,7 +74,12 @@ class TestCorePIP(unittest.TestCase):
             self.assertEqual("admin", obj["tenant"])
         from uuid import uuid4
         vm_name = "PIPTest-" + str(uuid4())
-        self.pip.add_object(name=vm_name)
+        image = "Cirros3.2"
+        images = map(lambda x: x["name"], get_pip().get_images())
+        for _img in images:
+            if "irros" in _img:
+                image = _img
+        self.pip.add_object(name=vm_name, image_name=image)
         max_cpt = 0
         vm_names = list()
         vm_uuid = None

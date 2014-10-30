@@ -1,0 +1,32 @@
+{
+    "subject_category_assignments": {
+        "role":{
+            "user1": ["admin"],
+            "user2": ["dev"]
+        }
+    },
+    "object_category_assignments": {
+        "action": {
+            "subjects": [],
+            "objects": [],
+            "subject_categories": [],
+            "object_categories": [],
+            "subject_category_values": [],
+            "object_category_values": [],
+            "rules": [],
+            "subject_category_assignments": [],
+            "object_category_assignments": []
+        },
+        "object_id": {
+            "subjects": ["subjects"],
+            "objects": ["objects"],
+            "subject_categories": ["subject_categories"],
+            "object_categories": ["object_categories"],
+            "subject_category_values": ["subject_category_values"],
+            "object_category_values": ["object_category_values"],
+            "rules": ["rules"],
+            "subject_category_assignments": ["subject_category_assignments"],
+            "object_category_assignments": ["object_category_assignments"]
+        }
+    }
+}

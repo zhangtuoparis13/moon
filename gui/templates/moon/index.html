@@ -1,0 +1,102 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+
+<html xmlns:ng="http://angularjs.org" id="ng-app" ng-app="moon">
+
+    <head lang="en">
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        
+        <title>Moon</title>
+
+        <link href="static/moon/favicon.ico" rel="shortcut icon"/>
+	
+        <link rel="stylesheet" href="static/moon/vendor/bootstrap/dist/css/bootstrap.css">
+        <link rel="stylesheet" href="static/moon/vendor/ng-table/ng-table.css">
+        <link rel="stylesheet" href="static/moon/vendor/select2/select2.css">
+        <link rel="stylesheet" href="static/moon/vendor/angular-ui-select/dist/select.css">
+        <link rel="stylesheet" href="static/moon/vendor/selectize/dist/css/selectize.default.css">
+        <link rel="stylesheet" href="static/moon/vendor/angular-motion/dist/angular-motion.css">
+        <link rel="stylesheet" href="static/moon/vendor/switchery/dist/switchery.css">
+
+        <link rel="stylesheet" href="static/moon/styles/main.css">
+        
+    </head>
+
+    <body>
+
+		{% verbatim %}
+
+        <div class="container">
+            <div ng-controller="HeaderController" ng-include="'static/moon/app/common/header.tpl.html'"></div>
+        </div>
+        
+        <div class="container">
+            <div ui-view></div>
+        </div>
+        
+        <div class="container">
+            <div ng-controller="FooterController" ng-include="'static/moon/app/common/footer.tpl.html'"></div>
+        </div>
+       
+		{% endverbatim %}
+       
+       	<script defer type="text/javascript" src="static/moon/vendor/jquery/dist/jquery.js"></script>
+       	<script defer type="text/javascript" src="static/moon/vendor/underscore/underscore.js"></script>
+       
+       	
+        <script defer type="text/javascript" src="static/moon/vendor/angular/angular.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-route/angular-route.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-resource/angular-resource.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-cookies/angular-cookies.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-animate/angular-animate.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+		<script defer type="text/javascript" src="static/moon/vendor/angular-ui-router/release/angular-ui-router.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-translate/angular-translate.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-strap/dist/angular-strap.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-strap/dist/angular-strap.tpl.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/ng-table/ng-table.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/select2/select2.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/angular-ui-select/dist/select.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/switchery/dist/switchery.js"></script>
+        <script defer type="text/javascript" src="static/moon/vendor/ng-switchery/src/ng-switchery.js"></script>
+        
+        <script defer type="text/javascript" src="static/moon/app/moon.module.js"></script>
+        
+        <script defer type="text/javascript" src="static/moon/app/services/menu.service.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/services/alert.service.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/services/browser.service.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/services/version.service.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/services/tenant.service.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/services/intra-extension.service.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/services/nova.service.js"></script>
+        
+		<script defer type="text/javascript" src="static/moon/app/common/header.controller.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/common/footer.controller.js"></script>
+        
+        <script defer type="text/javascript" src="static/moon/app/tenant/tenant.controller.list.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/tenant/tenant.controller.add.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/tenant/tenant.controller.delete.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/tenant/tenant.controller.map.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/tenant/tenant.controller.unmap.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/tenant/tenant.controller.view.js"></script>
+        
+        <script defer type="text/javascript" src="static/moon/app/intra-extension/intra-extension.controller.list.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/intra-extension/intra-extension.controller.add.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/intra-extension/intra-extension.controller.delete.js"></script>
+        
+        <script defer type="text/javascript" src="static/moon/app/intra-extension/intra-extension.controller.configure.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/intra-extension/intra-extension.controller.configure.subject.add.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/intra-extension/intra-extension.controller.configure.subject.delete.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/intra-extension/intra-extension.controller.configure.object.add.js"></script>
+        <script defer type="text/javascript" src="static/moon/app/intra-extension/intra-extension.controller.configure.object.delete.js"></script>
+        
+        <script defer type="text/javascript" src="static/moon/app/inter-extension/inter-extension.controller.list.js"></script>
+        
+                                
+    </body>
+    
+</html>

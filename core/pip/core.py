@@ -5,8 +5,7 @@ Information gathering from the infrastructure
 from moon.tools.openstack_credentials import get_keystone_creds, get_nova_creds
 import logging
 from uuid import uuid4
-from keystoneclient.openstack.common.apiclient.exceptions import Unauthorized, Forbidden, Conflict
-from moon import settings
+from keystoneclient.openstack.common.apiclient.exceptions import Unauthorized, Forbidden, Conflict, NotFound
 
 logger = logging.getLogger("moon.pip")
 
@@ -52,6 +51,9 @@ class PIP:
         :param token:
         :return:
         """
+        #FIXME The connection must be done with the token given by the user
+        #FIXME Actually, the connection comes from user/pass in moon.settings
+        #FIXME This is a vulnerability
         # from keystoneclient.v3 import client as keystone_client
         # auth_url = getattr(settings, "OPENSTACK_KEYSTONE_URL")
         # self.kclient = keystone_client.Client(token=token.id, auth_url=auth_url)
@@ -153,6 +155,17 @@ class PIP:
     def del_object(self, uuid):
         instance = self.nclient.servers.find(id=uuid)
         instance.delete()
+        cpt = 0
+        import time
+        while True:
+            try:
+                self.nclient.servers.find(id=uuid)
+                time.sleep(1)
+                cpt += 1
+                if cpt > 10:
+                    return
+            except:
+                return
 
     def get_roles(self, tenant_name="admin", project_uuid=None, user_uuid=None):
         try:
@@ -241,7 +254,7 @@ class PIP:
                 assignment = {}
                 _uuid = str(uuid4()).replace("-", "")
                 assignment["uuid"] = _uuid
-                if user_uuid and user_uuid != _uuid:
+                if user_uuid and user_uuid != user["uuid"]:
                     continue
                 assignment["category"] = "role"
                 assignment["subject"] = user["uuid"]
@@ -299,7 +312,7 @@ class PIP:
                 assignments = {}
                 _uuid = str(uuid4()).replace("-", "")
                 assignments["uuid"] = _uuid
-                if user_uuid and user_uuid != _uuid:
+                if user_uuid and user_uuid != user["uuid"]:
                     continue
                 assignments["category"] = "group"
                 assignments["subject"] = user["uuid"]
@@ -335,6 +348,19 @@ class PIP:
             yield t
 
     def add_tenant(self, tenant):
+        """Add a new tenant
+
+        :param tenant: dictionary describing the tenant
+        :return: the id of the new tenant
+
+        The dictionary must be:
+        {
+            "name": "...",
+            "description": "...",
+            "enabled": True,
+            "domain": "Default"
+        }
+        """
         for key in ("name", "description", "enabled", "domain"):
             if key not in tenant.keys():
                 return None

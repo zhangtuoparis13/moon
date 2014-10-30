@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 
 urlpatterns = patterns(
     'gui.views_pip',
-    url(r'projects/$', 'projects'),
+    url(r'projects/?$', 'projects'),
     url(r'projects/(?P<project_uuid>[\w-]{32,36})/?$', 'projects'),
     url(r'projects/(?P<project_uuid>[\w-]{32,36})/users/?$', 'users'),
     url(r'projects/(?P<project_uuid>[\w-]{32,36})/users/(?P<user_uuid>[\w-]{3,36})/?$', 'users'),
