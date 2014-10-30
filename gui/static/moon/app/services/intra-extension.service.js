@@ -41,7 +41,8 @@
 	    	   	
 	    	   	object: $resource('./json/intra-extensions/:ie_uuid/objects', {}, {
 	    	   		query: { method: 'GET', isArray: false },
-	     	   		get: { method: 'GET', isArray: false }
+	     	   		get: { method: 'GET', isArray: false },
+	     	   		create: { method: 'POST' }
 	    	   	})
     	   	
 			},
