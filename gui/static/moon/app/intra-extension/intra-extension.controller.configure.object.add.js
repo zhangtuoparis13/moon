@@ -69,7 +69,7 @@
 		 * 
 		 */
 		
-		function addObject(intraExtension, object) {
+		function addObject() {
 			
 			if(add.form.$invalid) {
             	
@@ -96,9 +96,9 @@
 
         	} else {
         		
-        		var payload = { name: object.name, image: object.image.name, flavor: object.flavor.name };
+        		var payload = { name: add.object.name, image: add.object.image.name, flavor: add.object.flavor.name };
         		
-        		intraExtensionService.data.object.create({ie_uuid: intraExtension._id}, payload, createSuccess, createError);
+        		intraExtensionService.data.object.create({ie_uuid: add.intraExtension._id}, payload, createSuccess, createError);
         		        		        		
         	}	
 			
@@ -116,7 +116,7 @@
     		
     		function createError(reason) {
     			
-    			$translate('moon.intraExtension.configure.object.add.error', { objectName: object.name }).then(function (translatedValue) {
+    			$translate('moon.intraExtension.configure.object.add.error', { objectName: add.object.name }).then(function (translatedValue) {
         			alertService.alertError(translatedValue);
                 });	
     			

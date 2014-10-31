@@ -28,7 +28,7 @@
 		 * 
 		 */
 		
-		function deleteSubject(intraExtension, subject) {
+		function deleteSubject() {
 				
 			// TODO
 			

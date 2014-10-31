@@ -28,7 +28,7 @@
 		 * 
 		 */
 		
-		function deleteObject(intraExtension, object) {
+		function deleteObject() {
 				
 			// TODO
 			

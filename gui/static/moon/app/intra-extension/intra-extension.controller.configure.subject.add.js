@@ -30,7 +30,7 @@
 		 * 
 		 */
 		
-		function addSubject(intraExtension, subject) {
+		function addSubject() {
 			
 			if(add.form.$invalid) {
             	
@@ -58,27 +58,27 @@
         	} else {
         		
         		// TODO
-        		intraExtensionService.data.subject.create({ie_uuid: intraExtension._id}, subject, createSuccess, createError);
+        		intraExtensionService.data.subject.create({ie_uuid: add.intraExtension._id}, add.subject, createSuccess, createError);
         		        		        		
         	}	
 			
 			function createSuccess(data) {
     			
-    			$translate('moon.intraExtension.configure.subject.add.success', { subjectName: subject.name }).then(function (translatedValue) {
+    			$translate('moon.intraExtension.configure.subject.add.success', { subjectName: add.subject.name }).then(function (translatedValue) {
         			alertService.alertSuccess(translatedValue);
                 });	
     			
-    			$scope.$emit('event:intraExtensionSubjectCreatedSuccess', subject);
+    			$scope.$emit('event:intraExtensionSubjectCreatedSuccess', add.subject);
     			
     		};
     		
     		function createError(reason) {
     			
-    			$translate('moon.intraExtension.configure.subject.add.error', { subjectName: subject.name }).then(function (translatedValue) {
+    			$translate('moon.intraExtension.configure.subject.add.error', { subjectName: add.subject.name }).then(function (translatedValue) {
         			alertService.alertError(translatedValue);
                 });	
     			
-    			$scope.$emit('event:intraExtensionSubjectCreatedError', subject);
+    			$scope.$emit('event:intraExtensionSubjectCreatedError', add.subject);
     			        			
     		};
 			
