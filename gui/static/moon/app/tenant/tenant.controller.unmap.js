@@ -27,32 +27,32 @@
 		 * 
 		 */
 		
-		function unmapTenant(tenant) {
+		function unmapTenant() {
 			
-			var mapping = {tenant_uuid: tenant.uuid, intra_extension_uuid: tenant.intraExtension._id};
+			var mapping = {tenant_uuid: unmap.tenant.uuid, intra_extension_uuid: unmap.tenant.intraExtension._id};
     		
         	tenantService.data.map.remove(mapping, mapping, unmapSuccess, unmapError);
         	
         	function unmapSuccess(data) {
         		
-        		$translate('moon.tenant.unmap.success', { tenantName: tenant.name, intraExtensionName: _.first(tenant.intraExtension.name) }).then(function (translatedValue) {
+        		$translate('moon.tenant.unmap.success', { tenantName: unmap.tenant.name, intraExtensionName: _.first(unmap.tenant.intraExtension.name) }).then(function (translatedValue) {
         			alertService.alertSuccess(translatedValue);
                 });
         		
-        		tenant.extensionUuid = null;
-        		tenant.intraExtension= null;
+        		unmap.tenant.extensionUuid = null;
+        		unmap.tenant.intraExtension= null;
         		
-        		$scope.$emit('event:tenantUnmappedSuccess', tenant);
+        		$scope.$emit('event:tenantUnmappedSuccess', unmap.tenant);
         		
         	};
         	
         	function unmapError(reason) {
         		
-        		$translate('moon.tenant.unmap.error', { tenantName: tenant.name, intraExtensionName: _.first(tenant.intraExtension.name) }).then(function (translatedValue) {
+        		$translate('moon.tenant.unmap.error', { tenantName: unmap.tenant.name, intraExtensionName: _.first(unmap.tenant.intraExtension.name) }).then(function (translatedValue) {
         			alertService.alertError(translatedValue);
                 });
         		
-        		$scope.$emit('event:tenantUnmappedError', tenant);
+        		$scope.$emit('event:tenantUnmappedError', unmap.tenant);
         		
         	};
 			
