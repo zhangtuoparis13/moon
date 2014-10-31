@@ -56,11 +56,19 @@
 	    $urlRouterProvider.when('', '/tenant');
 	    $urlRouterProvider.otherwise('/404');
 	    
-	    /*
-	     * states
-	     */
+	    configureDefaultRoutes($stateProvider);	    
 	    
-	    $stateProvider
+	    configureTenantRoutes($stateProvider);
+	    
+	    configureIntraExtensionRoutes($stateProvider);
+	    
+	    configureInterExtensionRoutes($stateProvider);
+	   		
+	};
+	
+	function configureDefaultRoutes($stateProvider) {
+		
+		$stateProvider
 	    
 		    .state('moon', {
 		        abstract: true,
@@ -70,9 +78,22 @@
 		    .state('moon.404', {
 	    		url: '/404',
 	            templateUrl: 'static/moon/app/common/404.tpl.html'
+	        });
+		
+		return $stateProvider;
+		
+	};
+	
+	function configureTenantRoutes($stateProvider) {
+		
+		 $stateProvider
+	        
+	        .state('moon.tenant', {
+				abstract: true,
+		        template: '<div ui-view></div>'
 	        })
 	        		
-			.state('moon.tenant', {
+			.state('moon.tenant.list', {
 				url: '/tenant',
 				templateUrl: 'static/moon/app/tenant/tenant-list.tpl.html',
 				controller: 'TenantListController',
@@ -85,10 +106,23 @@
 	            		return tenantService.data.tenant.query().$promise;
 	            	}
 	            }
-			})
-			
+			});
+		 
+		 return $stateProvider;
+		
+	};
+	
+	function configureIntraExtensionRoutes($stateProvider) {
+		
+		$stateProvider
+		
 			.state('moon.intraExtension', {
-	            url: '/intraExtension',
+				abstract: true,
+		        template: '<div ui-view></div>'
+	        })
+			
+			.state('moon.intraExtension.list', {
+				url: '/intraExtension',
 	            templateUrl: 'static/moon/app/intra-extension/intra-extension-list.tpl.html',
 	            controller: 'IntraExtensionListController',
 	            controllerAs: 'list',
@@ -97,14 +131,13 @@
 	            		return intraExtensionService.findAll();
 	            	}
 	            }
-	        })
+	        })			
 	        
-	        .state('moon.intraExtensionConfiguration', {
-				url: '/intraExtension/:uuid/configure',
-				templateUrl: 'static/moon/app/intra-extension/intra-extension-configure.tpl.html',
-				controller: 'IntraExtensionConfigurationController',
-				controllerAs: 'conf',
-				resolve: {
+	        .state('moon.intraExtension.edit', {
+		        abstract: true,
+		        url: '/intraExtension/:uuid',
+		        template: '<div ui-view></div>',
+		        resolve: {
 					intraExtension: function($stateParams, intraExtensionService) {
 						return intraExtensionService.data.intraExtension.get({ie_uuid: $stateParams.uuid}).$promise;
 					},
@@ -118,14 +151,43 @@
 						return intraExtensionService.data.object.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
 					}
 				}
+		    })
+	        
+	        .state('moon.intraExtension.edit.configuration', {
+				url: '/configure',
+				templateUrl: 'static/moon/app/intra-extension/intra-extension-configure.tpl.html',
+				controller: 'IntraExtensionConfigurationController',
+				controllerAs: 'conf'
 			})
 			
+			.state('moon.intraExtension.edit.rule', {
+				url: '/rule',
+				templateUrl: 'static/moon/app/intra-extension/intra-extension-rule.tpl.html',
+				controller: 'IntraExtensionRuleController',
+				controllerAs: 'rule'
+			});
+		
+		return $stateProvider;
+		
+	};
+	
+	function configureInterExtensionRoutes($stateProvider) {
+		
+		$stateProvider
+		
 			.state('moon.interExtension', {
+				abstract: true,
+		        template: '<div ui-view></div>'
+	        })
+			
+			.state('moon.interExtension.list', {
 	            url: '/interExtension',
 	            templateUrl: 'static/moon/app/inter-extension/inter-extension-list.tpl.html',
 	            controller: 'InterExtensionListController',
 	            controllerAs: 'list'
 	        });
+		
+		return $stateProvider;
 		
 	};
 	
