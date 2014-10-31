@@ -6,8 +6,14 @@ Graphic interface to access the admin interface
 
 Description
 ---------------------------------
-
 None
+
+Installation
+---------------------------------
+<pre><code>~ apt-get install npm
+~ npm install bower -g
+~ bower install
+</code></pre>
 
 URL that return HTML data
 -------------------------
