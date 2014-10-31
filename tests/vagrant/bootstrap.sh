@@ -32,7 +32,9 @@ apt-get install -y --force-yes \
     graphviz \
     python-sqlalchemy \
     python-pygraphviz \
-    mongodb-server
+    mongodb-server \
+    nodejs \
+    npm
 
 #apt-get install swi-prolog
 #cd /tmp
@@ -46,6 +48,11 @@ pip install python-keystoneclient
 pip install python-novaclient
 pip install pymongo
 pip install oslo.config
+
+# installing dependencies for gui
+npm install bower -g
+cd /moon/gui/
+bower install
 
 #Hack to simplify the installation and development process
 ln -s /moon/ /usr/local/lib/python2.7/dist-packages/moon

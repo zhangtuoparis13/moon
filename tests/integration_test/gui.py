@@ -14,7 +14,7 @@ MOON_SERVER_IP = {
 CREDENTIALS = {
     "login": "admin",
     "password": "P4ssw0rd",
-    "Cookie": "szeflpnhfqz23t1a7l6s6t33bblf3jjw"
+    "Cookie": "5pvcirgqme9p850k573bzuye8uf87itr"
 }
 
 
@@ -67,7 +67,7 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
         pass
 
     def test_intra_extensions(self):
-number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"])
+        number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"])
         #add an intra-extension
         self.policies = get_url("/json/intra-extensions/policies")
         self.assertIsInstance(self.policies, dict)
@@ -77,7 +77,6 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
             "/json/intra-extensions/",
             post_data={"policymodel": my_policy, "name": "Intra_Extension Test"})
         self.assertIsInstance(self.new_ext1, dict)
-        print(self.new_ext1["intra_extensions"])
         self.new_ext1_uuid = self.new_ext1["intra_extensions"]["_id"]
         self.assertEqual(number_of_intra_ext+1, len(get_url("/json/intra-extensions/")["intra_extensions"]))
         data = get_url("/json/intra-extensions/")
@@ -106,10 +105,11 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
                 self.tenant_demo = tenant["uuid"]
         #Create mapping between extensions and tenants
         mapping = get_url(
-            "/json/super-extensions/tenants/{}/intra_extensions/{}".format(
-                self.tenant_admin,
-                self.new_ext1_uuid),
-            method="POST"
+            "/json/super-extensions/",
+            post_data={
+                "tenant_uuid": self.tenant_admin,
+                "intra_extension_uuid": self.new_ext1_uuid
+            }
         )
         #delete an intra-extension
         get_url("/json/intra-extensions/"+self.new_ext1_uuid+"/", method="DELETE")
@@ -139,7 +139,7 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
         data = get_url("/json/intra-extensions/")
         self.assertIsInstance(data, dict)
         user = {
-            "name": "TestUser",
+            "name": "TestUser"+str(uuid4()),
             'domain': "default",
             'enabled': True,
             'project': "admin",
@@ -194,20 +194,22 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
         policies = get_url("/json/intra-extensions/policies")
         self.assertIsInstance(policies, dict)
         my_policy = policies["policies"].keys()[0]
-        new_ext = get_url("/json/intra-extensions/", post_data={"policymodel": my_policy})
+        new_ext = get_url("/json/intra-extensions/", post_data={"policymodel": my_policy, "name": "TestGUI_IntraExtension"})
         self.assertIsInstance(new_ext, dict)
         new_ext_uuid = new_ext["intra_extensions"]["_id"]
         tenants = get_url("/pip/projects/")
         self.assertIsInstance(tenants, dict)
         tenant_admin = None
         for tenant in tenants["projects"]:
-            tenant_admin = tenant["uuid"]
-            break
+            if tenant["name"] == "admin":
+                tenant_admin = tenant["uuid"]
+                break
         mapping = get_url(
-            "/json/super-extensions/tenants/{}/intra_extensions/{}".format(
-                tenant_admin,
-                new_ext_uuid),
-            method="POST"
+            "/json/super-extensions/",
+            post_data={
+                "tenant_uuid": tenant_admin,
+                "intra_extension_uuid": new_ext_uuid
+            }
         )
         #Add a new server
         _data = get_url("/json/intra-extensions/"+new_ext_uuid+"/objects/", post_data={"object": new_vm})
@@ -560,16 +562,20 @@ class TestAdminInterface_InterExtension(unittest.TestCase):
                 self.tenant_demo = tenant["uuid"]
         #Create mapping between extensions and tenants
         mapping = get_url(
-            "/json/super-extensions/tenants/{}/intra_extensions/{}".format(
+            "/json/super-extensions/".format(
                 self.tenant_admin,
                 self.new_ext1_uuid),
-            method="POST"
+            post_data={
+                "tenant_uuid": self.tenant_admin,
+                "intra_extension_uuid": self.new_ext2_uuid
+            }
         )
         mapping = get_url(
-            "/json/super-extensions/tenants/{}/intra_extensions/{}".format(
-                self.tenant_demo,
-                self.new_ext2_uuid),
-            method="POST"
+            "/json/super-extensions/",
+            post_data={
+                "tenant_uuid": self.tenant_demo,
+                "intra_extension_uuid": self.new_ext2_uuid
+            }
         )
 
     def tearDown(self):
@@ -691,6 +697,8 @@ class TestPIPInterface(unittest.TestCase):
         self.assertIn("projects", data)
         self.assertIs(len(data["projects"]) > 0, True)
         for tenant in data["projects"]:
+            if tenant["name"] not in ("admin", "demo"):
+                continue
             data = get_url("/pip/projects/{}/objects/".format(tenant["uuid"]))
             self.assertIsInstance(data, dict)
             self.assertIn("objects", data)
