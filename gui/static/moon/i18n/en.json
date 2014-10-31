@@ -2,7 +2,8 @@
 	"moon": {
 	    "global": {
 	    	"applicationName": "Moon",
-	        "404": "Page not found"
+	        "404": "Page not found",
+	        "error": "A global error occurs: {{stacktrace}}"
 	    },
 	    "compatibility": {
 	    	"label": "Browsers compatibility",

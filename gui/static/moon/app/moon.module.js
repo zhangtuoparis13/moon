@@ -195,9 +195,9 @@
 	 * runner
 	 */
 	
-	runner.$inject = ['$rootScope', '$state', '$modal'];
+	runner.$inject = ['$rootScope', '$state', '$modal', '$translate', 'alertService'];
 	
-	function runner($rootScope, $state, $modal) {
+	function runner($rootScope, $state, $modal, $translate, alertService) {
 		
 		$rootScope.transitionModal = $modal({ scope: $rootScope, template: 'static/moon/app/common/waiting.tpl.html', backdrop: 'static', show: false });
 						
@@ -213,8 +213,29 @@
 			$rootScope.transitionModal.hide();
 	    };
 	    
-	    function stateChangeError() {
+	    function stateChangeError(event, toState, toParams, fromState, fromParams, error) {
+	    	
+	    	var stacktrace = getStacktrace(event, toState, toParams, fromState, fromParams, error);
+	    
+	    	$translate('moon.global.error', { stacktrace: stacktrace }).then(function (translatedValue) {
+    			alertService.alertError(translatedValue);
+            });
+	    	
 			$rootScope.transitionModal.hide();
+						
+	    };
+	    
+	    function getStacktrace(event, toState, toParams, fromState, fromParams, error) {
+	    	
+	    	var stacktrace = {};
+	    	
+	    	stacktrace.status = error.status;
+	    	stacktrace.message = error.statusText;
+	    	stacktrace.state = toState;
+	    	stacktrace.params = toParams;
+	    	
+	    	return stacktrace;
+	    	
 	    };
 		
 	};
