@@ -6,11 +6,34 @@ from django.http import HttpResponse
 from moon.core.pap import get_pap
 from moon.core.pip import get_pip
 from moon.gui.views import save_auth
+from moon import settings
 import re
 
 
 logger = logging.getLogger("moon.django")
 # LOGS = get_log_manager()
+
+
+def catch_error(function):
+    def wrapped(*args, **kwargs):
+        try:
+            result = function(*args, **kwargs)
+            return result
+        except:
+            import traceback
+            stacktrace=traceback.format_exc()
+            if getattr(settings, "DEBUG"):
+                return send_error(
+                    code=500,
+                    message="Error in {} ({})".format(function.__name__, stacktrace.splitlines()[-1]),
+                    stacktrace=stacktrace
+                )
+            else:
+                return send_error(
+                    code=500,
+                    message="Error in {} ({})".format(function.__name__, stacktrace.splitlines()[-1]),
+                )
+    return wrapped
 
 
 def filter_input(data):
@@ -23,11 +46,25 @@ def filter_input(data):
 def send_json(data):
     try:
         # print(pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id']))
+        # print("send_json", data)
+        for key in data.keys():
+            if data[key] in (str, unicode):
+                if "<!DOCTYPE html>" in data[key]:
+                    print("\033[41mAn error occured\033[m")
+                    print(data[key])
         return HttpResponse(json.dumps(data))
     except:
         import traceback
         print(traceback.print_exc())
         return HttpResponse(json.dumps({}))
+
+
+def send_error(code=500, message="", stacktrace=""):
+    return send_json({
+        "code": code,
+        "message": message,
+        "stacktrace": stacktrace
+    })
 
 ##########################################################
 # Functions for getting information about intra-extensions
@@ -37,6 +74,7 @@ def send_json(data):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def intra_extensions(request, uuid=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
@@ -51,7 +89,9 @@ def intra_extensions(request, uuid=None):
                     pap.get_intra_extensions(user_id=request.session['user_id'])[uuid].get_data()
             })
     elif request.META['REQUEST_METHOD'] == "DELETE":
-        pap.delete_intra_extension(user_id=request.session['user_id'], intra_extension_uuid=uuid)
+        result = pap.delete_intra_extension(user_id=request.session['user_id'], intra_extension_uuid=uuid)
+        if "error" in result:
+            return send_error(code=500, message=result)
     elif uuid:
         extension = pap.get_intra_extensions(user_id=request.session['user_id'])[uuid]
         return send_json({"intra_extensions": extension.get_data()})
@@ -63,6 +103,7 @@ def intra_extensions(request, uuid=None):
 
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def tenant(request, uuid=None):
     pap = get_pap()
     extension = pap.get_intra_extensions()[uuid]
@@ -71,6 +112,7 @@ def tenant(request, uuid=None):
 
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def policies(request):
     pap = get_pap()
     return send_json({"policies": pap.get_policies()})
@@ -84,6 +126,7 @@ def policies(request):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def subjects(request, uuid=None, subject_id=None):
     """
     Retrieve information about subjects from Moon server
@@ -96,11 +139,10 @@ def subjects(request, uuid=None, subject_id=None):
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
                 subject=data)
-            print(pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id']))
             if subject_uuid in pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id']):
                 return send_json({"subjects": (subject_uuid, )})
             else:
-                return send_json({"subjects": list()})
+                return send_json({"subjects": list(), "error": subject_uuid + " not found in Moon Database."})
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_subject(
             extension_uuid=uuid,
@@ -119,6 +161,7 @@ def subjects(request, uuid=None, subject_id=None):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def objects(request, uuid=None, object_id=None):
     """
     Retrieve information about objects from Moon server
@@ -131,15 +174,15 @@ def objects(request, uuid=None, object_id=None):
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
                 object=data["object"])
-            if uuid:
+            if object_uuid:
                 if object_uuid in pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id']):
                     return send_json({
                         "objects": (object_uuid, )
                     })
                 else:
-                    return send_json({"objects": list()})
+                    return send_json({"objects": list(), "error": object_uuid + " not found in Moon Database."})
             else:
-                return send_json({"objects": list()})
+                return send_json({"objects": list(), "error": "Error in creating {}.".format(data["object"])})
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_object(
             extension_uuid=uuid,
@@ -158,6 +201,7 @@ def objects(request, uuid=None, object_id=None):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def subject_categories(request, uuid=None, category_id=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
@@ -184,6 +228,7 @@ def subject_categories(request, uuid=None, category_id=None):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def object_categories(request, uuid=None, category_id=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
@@ -211,6 +256,7 @@ def object_categories(request, uuid=None, category_id=None):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def subject_category_values(request, uuid=None, category_id=None, value=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
@@ -246,6 +292,7 @@ def subject_category_values(request, uuid=None, category_id=None, value=None):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def object_category_values(request, uuid=None, category_id=None, value=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
@@ -281,6 +328,7 @@ def object_category_values(request, uuid=None, category_id=None, value=None):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def subject_assignments(request, uuid=None, category_id=None, subject_id=None, value=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
@@ -312,6 +360,7 @@ def subject_assignments(request, uuid=None, category_id=None, subject_id=None, v
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def object_assignments(request, uuid=None, category_id=None, object_id=None, value=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
@@ -348,6 +397,7 @@ def object_assignments(request, uuid=None, category_id=None, object_id=None, val
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def rules(request, uuid=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
@@ -382,6 +432,7 @@ def rules(request, uuid=None):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def inter_extensions(request, uuid=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
@@ -444,19 +495,25 @@ def inter_extensions(request, uuid=None):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def super_extensions(request, tenant_uuid=None, intra_extension_uuid=None):
     pap = get_pap()
+    result = ""
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
-        pap.create_mapping(
+        result = pap.create_mapping(
             user_id=request.session['user_id'],
             tenant_uuid=data["tenant_uuid"],
             intra_extension_uuid=data["intra_extension_uuid"])
+        if "error" not in result:
+            result = ""
     elif request.META['REQUEST_METHOD'] == "DELETE":
-        pap.destroy_mapping(
+        print("#####################################################")
+        print("destroy_mapping", pap.destroy_mapping(
             user_id=request.session['user_id'],
             tenant_uuid=filter_input(tenant_uuid),
-            intra_extension_uuid=filter_input(intra_extension_uuid))
-    return send_json({"super_extensions": list(
-        pap.list_mappings(user_id=request.session['user_id'])
-    )})
+            intra_extension_uuid=filter_input(intra_extension_uuid)))
+    return send_json({
+        "super_extensions": list(pap.list_mappings(user_id=request.session['user_id'])),
+        "error": result
+    })

@@ -14,7 +14,7 @@ MOON_SERVER_IP = {
 CREDENTIALS = {
     "login": "admin",
     "password": "P4ssw0rd",
-    "Cookie": "5pvcirgqme9p850k573bzuye8uf87itr"
+    "Cookie": "pcdzjbjpu10rdcigbmp1oywm83ohvmlr"
 }
 
 
@@ -65,6 +65,29 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    def test_errors(self):
+        data = get_url("/json/intra-extensions/")
+        self.assertIsInstance(data, dict)
+        user = {
+            "name": "TestUser"+str(uuid4()),
+            'domain': "default",
+            'enabled': True,
+            'project': "admin",
+            'password': "password",
+            'description': "Test user for integration tests"
+        }
+        tenants = get_url("/pip/projects/")
+        admin_tenant = filter(lambda x: x["name"] == "admin", tenants["projects"])
+        ext = data["intra_extensions"][0]
+        # ext_data = get_url("/json/intra-extension/"+ext+"/")
+        _data = get_url("/json/intra-extensions/"+ext+"/subjects/", post_data=user)
+        self.assertIsInstance(_data, dict)
+        self.assertIn("subjects", _data)
+        self.assertIsInstance(_data["subjects"], list)
+        self.assertEqual(len(_data["subjects"]) > 0, True)
+        _data = get_url("/json/intra-extensions/"+ext+"/subjects/", post_data=user)
+        print(_data)
 
     def test_intra_extensions(self):
         number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"])
@@ -548,8 +571,8 @@ class TestAdminInterface_InterExtension(unittest.TestCase):
         self.new_ext2 = get_url(
             "/json/intra-extensions/",
             post_data={"policymodel": my_policy, "name": "Intra_Extension Policy 2"})
-        self.assertIsInstance(self.new_ext1, dict)
-        self.new_ext2_uuid = self.new_ext1["intra_extensions"]["_id"]
+        self.assertIsInstance(self.new_ext2, dict)
+        self.new_ext2_uuid = self.new_ext2["intra_extensions"]["_id"]
         #Get Keystone tenants
         self.tenants = get_url("/pip/projects/")
         self.assertIsInstance(self.tenants, dict)
@@ -802,7 +825,6 @@ class TestPIPInterface(unittest.TestCase):
             self.assertIsInstance(flavor, dict)
             self.assertIn("name", flavor)
             self.assertIn("uuid", flavor)
-
 
 
 if __name__ == '__main__':
