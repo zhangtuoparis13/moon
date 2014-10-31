@@ -94,7 +94,9 @@ class IntraExtensions:
         self.__installed_intra_extensions[intra_extension.get_uuid()] = intra_extension
 
     def delete_intra_extension(self, intra_extension_uuid):
-        self.__installed_intra_extensions.pop(intra_extension_uuid)
+        if intra_extension_uuid not in self.__installed_intra_extensions.keys():
+            return "Error {} not found in installed intra_extensions".format(intra_extension_uuid)
+        return self.__installed_intra_extensions.pop(intra_extension_uuid)
 
     def get_intra_extensions_from_db(self):  # TODO test
         return self.__syncer.get_intra_extensions_from_db()
