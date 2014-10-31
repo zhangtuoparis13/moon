@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 import json
 from django.http import HttpResponse
 from moon.core.pap import get_pap
+from moon.core.pip import get_pip
 from moon.gui.views import save_auth
 import re
 
@@ -91,13 +92,15 @@ def subjects(request, uuid=None, subject_id=None):
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
         if "name" in data and "password" in data:
-            uuid = pap.add_subject(
+            subject_uuid = pap.add_subject(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
                 subject=data)
-            return send_json({"subjects": list(
-                pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id'])[uuid]
-            )})
+            print(pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id']))
+            if subject_uuid in pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id']):
+                return send_json({"subjects": (subject_uuid, )})
+            else:
+                return send_json({"subjects": list()})
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_subject(
             extension_uuid=uuid,
@@ -124,14 +127,17 @@ def objects(request, uuid=None, object_id=None):
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
         if "object" in data:
-            uuid = pap.add_object(
+            object_uuid = pap.add_object(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
                 object=data["object"])
             if uuid:
-                return send_json({
-                    "objects": pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id'])[uuid]
-                })
+                if object_uuid in pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id']):
+                    return send_json({
+                        "objects": (object_uuid, )
+                    })
+                else:
+                    return send_json({"objects": list()})
             else:
                 return send_json({"objects": list()})
     elif request.META['REQUEST_METHOD'] == "DELETE":
@@ -157,7 +163,7 @@ def subject_categories(request, uuid=None, category_id=None):
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
         if "category_id" in data:
-            uuid = pap.add_subject_category(
+            pap.add_subject_category(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
                 category_id=filter_input(data["category_id"]))
