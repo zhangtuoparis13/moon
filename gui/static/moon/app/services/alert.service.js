@@ -8,7 +8,7 @@
 	
 	angular
 		.module('moon')
-				.factory('alertService', alertService)
+				.factory('alertService', alertService);
 	
 	alertService.$inject = ['$rootScope', '$timeout'];
 	
