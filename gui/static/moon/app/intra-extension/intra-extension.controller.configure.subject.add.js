@@ -57,13 +57,14 @@
         	
         	} else {
         		
-        		// TODO
         		intraExtensionService.data.subject.create({ie_uuid: add.intraExtension._id}, add.subject, createSuccess, createError);
         		        		        		
         	}	
 			
 			function createSuccess(data) {
     			
+				add.subject.uuid = _.first(data.subjects);
+				
     			$translate('moon.intraExtension.configure.subject.add.success', { subjectName: add.subject.name }).then(function (translatedValue) {
         			alertService.alertSuccess(translatedValue);
                 });	

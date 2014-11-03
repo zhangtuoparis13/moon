@@ -33,10 +33,11 @@
 	     	   		query: { method: 'GET', isArray: false }
 	    	   	}),
 	    	   	
-	    	   	subject: $resource('./json/intra-extensions/:ie_uuid/subjects', {}, {
+	    	   	subject: $resource('./json/intra-extensions/:ie_uuid/subjects/:subject_uuid', {}, {
 	    	   		query: { method: 'GET', isArray: false },
 	     	   		get: { method: 'GET', isArray: false },
-	     	   		create: { method: 'POST' }
+	     	   		create: { method: 'POST' },
+	     	   		remove: { method: 'DELETE' }
 	    	   	}),
 	    	   	
 	    	   	object: $resource('./json/intra-extensions/:ie_uuid/objects', {}, {

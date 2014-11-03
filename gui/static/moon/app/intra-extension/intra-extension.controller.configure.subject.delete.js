@@ -30,7 +30,27 @@
 		
 		function deleteSubject() {
 				
-			// TODO
+			intraExtensionService.data.subject.remove({ie_uuid: del.intraExtension._id, subject_uuid: del.subject.uuid}, deleteSuccess, deleteError);
+			
+			function deleteSuccess(data) {
+				
+				$translate('moon.intraExtension.configure.subject.remove.success', { subjectName: del.subject.name }).then(function (translatedValue) {
+        			alertService.alertSuccess(translatedValue);
+                });	
+				
+				$scope.$emit('event:intraExtensionSubjectDeletedSuccess', del.subject);
+				
+			};
+			
+			function deleteError(reason) {
+				
+				$translate('moon.intraExtension.configure.subject.remove.error', { subjectName: del.subject.name }).then(function (translatedValue) {
+        			alertService.alertError(translatedValue);
+                });
+				
+				$scope.$emit('event:intraExtensionSubjectDeletedError', del.subject);
+				
+			};
 			
 		};		
 		

@@ -70,6 +70,9 @@
 				'event:intraExtensionSubjectCreatedSuccess': $rootScope.$on('event:intraExtensionSubjectCreatedSuccess', intraExtensionSubjectCreatedSuccess),
 				'event:intraExtensionSubjectCreatedError': $rootScope.$on('event:intraExtensionSubjectCreatedError', intraExtensionSubjectCreatedError),
 				
+				'event:intraExtensionSubjectDeletedSuccess': $rootScope.$on('event:intraExtensionSubjectDeletedSuccess', intraExtensionSubjectDeletedSuccess),
+				'event:intraExtensionSubjectDeletedError': $rootScope.$on('event:intraExtensionSubjectDeletedError', intraExtensionSubjectDeletedError),
+				
 				'event:intraExtensionObjectCreatedSuccess': $rootScope.$on('event:intraExtensionObjectCreatedSuccess', intraExtensionObjectCreatedSuccess),
 				'event:intraExtensionObjectCreatedError': $rootScope.$on('event:intraExtensionObjectCreatedError', intraExtensionObjectCreatedError)
 				
@@ -161,6 +164,7 @@
 			
 			conf.subject.subjects.push(subject);
 			conf.subject.selectedSubjects.push(subject);
+			conf.subject.currentSubject = subject;
 			
 			conf.subject.add.modal.hide();
 						
@@ -168,6 +172,25 @@
 		
 		function intraExtensionSubjectCreatedError(event, subject) {
 			conf.subject.add.modal.hide();			
+		};
+		
+		function removeSubjectFrom(subject, subjectList) {
+			return _.chain(subjectList).reject({uuid: subject.uuid}).value();
+		};
+		
+		function intraExtensionSubjectDeletedSuccess(event, subject) {
+			
+			conf.subject.subjects = removeSubjectFrom(subject, conf.subject.subjects);
+			conf.subject.selectedSubjects = removeSubjectFrom(subject, conf.subject.selectedSubjects);
+			
+			conf.subject.del.modal.hide();
+			
+		};
+		
+		function intraExtensionSubjectDeletedError(event, subject) {
+			
+			conf.subject.del.modal.hide();
+			
 		};
 		
 		/*
