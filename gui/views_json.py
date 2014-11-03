@@ -169,11 +169,11 @@ def objects(request, uuid=None, object_id=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
-        if "object" in data:
+        if "name" in data and "image_name" in data and "flavor_name" in data:
             object_uuid = pap.add_object(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
-                object=data["object"])
+                object=data)
             if object_uuid:
                 if object_uuid in pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id']):
                     return send_json({
@@ -183,6 +183,8 @@ def objects(request, uuid=None, object_id=None):
                     return send_json({"objects": list(), "error": object_uuid + " not found in Moon Database."})
             else:
                 return send_json({"objects": list(), "error": "Error in creating {}.".format(data["object"])})
+        else:
+            return send_error(code=500, message="Data in body are inconsistent")
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_object(
             extension_uuid=uuid,
