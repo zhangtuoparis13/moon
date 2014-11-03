@@ -145,10 +145,28 @@
 						return tenantService.findOne(intraExtension.intra_extensions.tenant_uuid);
 					},
 					subjects: function(intraExtensionService, intraExtension) {
-						return intraExtensionService.data.subject.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+						return intraExtensionService.data.subject.subject.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+					},
+					subjectCategories: function(intraExtensionService, intraExtension) {
+						return intraExtensionService.data.subject.categories.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+					},
+					subjectCategoryValues: function(intraExtensionService, intraExtension) {
+						return intraExtensionService.data.subject.categoryValues.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+					},
+					subjectAssignments: function(intraExtensionService, intraExtension) {
+						return intraExtensionService.data.subject.assignments.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
 					},
 					objects: function(intraExtensionService, intraExtension) {
-						return intraExtensionService.data.object.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+						return intraExtensionService.data.object.object.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+					},
+					objectCategories: function(intraExtensionService, intraExtension) {
+						return intraExtensionService.data.object.categories.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+					},
+					objectCategoryValues: function(intraExtensionService, intraExtension) {
+						return intraExtensionService.data.object.categoryValues.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+					},
+					objectAssignments: function(intraExtensionService, intraExtension) {
+						return intraExtensionService.data.object.assignments.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
 					}
 				}
 		    })
