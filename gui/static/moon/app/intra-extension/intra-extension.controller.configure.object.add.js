@@ -96,9 +96,9 @@
 
         	} else {
         		
-        		var payload = { name: add.object.name, image: add.object.image.name, flavor: add.object.flavor.name };
+        		var payload = { name: add.object.name, image_name: add.object.image.name, flavor_name: add.object.flavor.name };
         		
-        		intraExtensionService.data.object.create({ie_uuid: add.intraExtension._id}, payload, createSuccess, createError);
+        		intraExtensionService.data.object.object.create({ie_uuid: add.intraExtension._id}, payload, createSuccess, createError);
         		        		        		
         	}	
 			

@@ -237,7 +237,34 @@
 	    		"subject": {
 	    			"title": "Sujets",
 	    			"category": {
-	    				"title": "Catégories"
+	    				"title": "Catégories",
+	    				"add": {
+		    				"title": "Ajouter une nouvelle Catégorie",
+		    				"form": {
+			    				"name": "Nom"
+							},
+							"action": {
+								"cancel": "Annuler",
+								"add": "Ajouter Catégorie"
+							},
+				    		"check": {
+				    			"name": {
+				    				"required": "Le nom est requis"
+				    			}
+				    		},
+				    		"error": "Impossible d'ajouter la Catégorie `{{categoryName}}`",
+				    		"success": "Catégorie `{{categoryName}}` ajoutée avec succès"
+		    			},
+		    			"remove": {
+		    				"title": "Supprimer une Catégorie",
+				    		"content": "Voulez-vous supprimer la Catégorie `{{categoryName}}` de l'Intra Extension `{{intraExtensionName}}` ?",
+				    		"action": {
+				    			"cancel": "Annuler",
+				    			"delete": "Supprimer"
+				    		},
+				    		"error": "Impossible de supprimer la Catégorie `{{categoryName}}`",
+				    		"success": "La Catégorie `{{categoryName}}` a été supprimée avec succès"
+		    			}
 	    			},
 	    			"add": {
 	    				"title": "Ajouter un nouveau Sujet",

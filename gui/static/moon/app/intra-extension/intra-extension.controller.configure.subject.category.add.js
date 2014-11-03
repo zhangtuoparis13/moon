@@ -8,11 +8,11 @@
 					
 	angular
 		.module('moon')
-			.controller('IntraExtensionConfigurationAddSubjectController', IntraExtensionConfigurationAddSubjectController);
+			.controller('IntraExtensionConfigurationAddSubjectCategoryController', IntraExtensionConfigurationAddSubjectCategoryController);
 	
-	IntraExtensionConfigurationAddSubjectController.$inject = ['$scope', '$translate', 'alertService', 'intraExtensionService'];
+	IntraExtensionConfigurationAddSubjectCategoryController.$inject = ['$scope', '$translate', 'alertService', 'intraExtensionService'];
 	
-	function IntraExtensionConfigurationAddSubjectController($scope, $translate, alertService, intraExtensionService) {
+	function IntraExtensionConfigurationAddSubjectCategoryController($scope, $translate, alertService, intraExtensionService) {
 		
 		var add = this;
 		
@@ -22,15 +22,15 @@
 		
 		add.form = {};
 		add.intraExtension = $scope.intraExtension;
-		add.subject = { name: '', domain: 'Default', enabled: true, project: add.intraExtension.tenant.uuid, password: '', description: '' };
+		add.category = { name: '' };
 		
-		add.create = addSubject;
+		add.create = addCategory;
 		
 		/*
 		 * 
 		 */
 		
-		function addSubject() {
+		function addCategory() {
 			
 			if(add.form.$invalid) {
             	
@@ -39,21 +39,7 @@
 	        		add.form.name.$dirty = true;
 	        		add.form.name.$setValidity('required', false);
 	    			
-	    		} 
-	        	
-	        	if(add.form.domain.$pristine && add.form.domain.$invalid) {
-	    			
-	        		add.form.domain.$dirty = true;
-	        		add.form.domain.$setValidity('required', false);
-	    			
 	    		}
-
-				if(add.form.password.$pristine && add.form.password.$invalid) {
-					
-					add.form.password.$dirty = true;
-					add.form.password.$setValidity('required', false);
-					
-				}
         	
         	} else {
         		

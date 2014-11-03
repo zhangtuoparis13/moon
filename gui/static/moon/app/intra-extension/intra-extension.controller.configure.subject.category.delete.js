@@ -8,11 +8,11 @@
 					
 	angular
 		.module('moon')
-			.controller('IntraExtensionConfigurationDeleteSubjectController', IntraExtensionConfigurationDeleteSubjectController);
+			.controller('IntraExtensionConfigurationDeleteSubjectCategoryController', IntraExtensionConfigurationDeleteSubjectCategoryController);
 	
-	IntraExtensionConfigurationDeleteSubjectController.$inject = ['$scope', '$translate', 'alertService', 'intraExtensionService'];
+	IntraExtensionConfigurationDeleteSubjectCategoryController.$inject = ['$scope', '$translate', 'alertService', 'intraExtensionService'];
 	
-	function IntraExtensionConfigurationDeleteSubjectController($scope, $translate, alertService, intraExtensionService) {
+	function IntraExtensionConfigurationDeleteSubjectCategoryController($scope, $translate, alertService, intraExtensionService) {
 		
 		var del = this;
 		

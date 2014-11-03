@@ -237,7 +237,34 @@
 	    		"subject": {
 	    			"title": "Subjects",
 	    			"category": {
-	    				"title": "Categories"
+	    				"title": "Categories",
+	    				"add": {
+		    				"title": "Add new Category",
+		    				"form": {
+			    				"name": "Name"
+							},
+							"action": {
+								"cancel": "Cancel",
+								"add": "Add Category"
+							},
+				    		"check": {
+				    			"name": {
+				    				"required": "Name is required"
+				    			}
+				    		},
+				    		"error": "Unable to add Subject Category `{{categoryName}}`",
+				    		"success": "Subject Category `{{categoryName}}` successfully added"
+		    			},
+		    			"remove": {
+		    				"title": "Delete Category",
+				    		"content": "Are you sure you want to delete `{{categoryName}}` subject category of `{{intraExtensionName}}` Intra Extension ?",
+				    		"action": {
+				    			"cancel": "Cancel",
+				    			"delete": "Delete"
+				    		},
+				    		"error": "Unable to delete Subject Category `{{categoryName}}`",
+				    		"success": "Subject Category `{{categoryName}}` successfully deleted"
+		    			}
 	    			},
 	    			"add": {
 	    				"title": "Add new Subject",
