@@ -483,8 +483,11 @@
 		 */
 				
 		function showObjectAddModal() {
-			conf.object.action.add.modal.$scope.intraExtension = conf.intraExtension;
-			conf.object.action.add.modal.$promise.then(conf.object.action.add.modal.show);			
+			
+			conf.action.object.add.modal.$scope.intraExtension = conf.intraExtension;
+			
+			conf.action.object.add.modal.$promise.then(conf.action.object.add.modal.show);	
+			
 		};
 				
 		function intraExtensionObjectCreatedSuccess(event, object) {
@@ -492,12 +495,14 @@
 			conf.object.list.push(object);
 			conf.object.selected = object;
 			
-			conf.object.action.add.modal.hide();
+			conf.action.object.add.modal.hide();
 			
 		};
 		
 		function intraExtensionObjectCreatedError() {
-			conf.object.action.add.modal.hide();
+			
+			conf.action.object.add.modal.hide();
+			
 		};
 		
 		/*
@@ -542,16 +547,23 @@
 
 		function showObjectCategoryAddModal() {
 			
+			conf.action.objectCategory.add.modal.$scope.intraExtension = conf.intraExtension;
+			conf.action.objectCategory.add.modal.$promise.then(conf.action.objectCategory.add.modal.show);
 			
 		};
 		
 		function intraExtensionObjectCategoryCreatedSuccess(event, category) {
 			
+			conf.objectCategory.list.push(category);
+			conf.objectCategory.selected = category;
+			
+			conf.action.objectCategory.add.modal.hide();	
 			
 		};
 		
 		function intraExtensionObjectCategoryCreatedError(event, category) {
 			
+			conf.action.objectCategory.add.modal.hide();
 			
 		};
 		

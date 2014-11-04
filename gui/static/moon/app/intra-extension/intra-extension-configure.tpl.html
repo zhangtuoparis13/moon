@@ -140,10 +140,10 @@
 						<img ng-if="conf.object.loading" src="static/moon/img/ajax-loader.gif" />
 						
 						<div class="row top05">
-							<a href="" class="black" ng-click="conf.object.action.add.showModal()">
+							<a href="" class="black" ng-click="conf.action.object.add.showModal()">
 					        	<span class="glyphicon glyphicon-plus-sign"></span>
 							</a>
-							<a href="" class="black" ng-click="conf.object.action.del.showModal()">
+							<a href="" class="black" ng-click="conf.action.object.del.showModal()">
 					        	<span class="glyphicon glyphicon-minus-sign"></span>
 							</a>
 						</div>
@@ -153,21 +153,21 @@
 					<div class="col-md-3 col-md-offset-1">
 					
 						<div class="row">
-							<ui-select ng-model="conf.object.category.selectedCategory" name="objectCategory"> 
+							<ui-select ng-model="conf.objectCategory.selected" name="objectCategory"> 
 								<ui-select-match placeholder="(None)" ng-bind="$select.selected.name"></ui-select-match>
-					           	<ui-select-choices repeat="category in conf.object.category.list">
+					           	<ui-select-choices repeat="category in conf.objectCategory.list">
 					           		<div ng-bind="category.name" ng-value="category"></div>
 					   				</ui-select-choices>
 							</ui-select>
 						</div>
 						
-						<img ng-if="conf.object.category.loading" src="static/moon/img/ajax-loader.gif" />
+						<img ng-if="conf.objectCategory.loading" src="static/moon/img/ajax-loader.gif" />
 						
 						<div class="row top05">
-							<a href="" class="black" ng-click="">
+							<a href="" class="black" ng-click="conf.action.objectCategory.add.showModal()">
 					        	<span class="glyphicon glyphicon-plus-sign"></span>
 							</a>
-							<a href="" class="black" ng-click="">
+							<a href="" class="black" ng-click="conf.action.objectCategory.del.showModal()">
 					        	<span class="glyphicon glyphicon-minus-sign"></span>
 							</a>
 						</div>
@@ -176,22 +176,22 @@
 					
 					<div class="col-md-3 col-md-offset-1">
 					
-						<div class="row" ng-if="conf.object.category.selectedCategory">
+						<div class="row" ng-if="conf.objectCategory.selected">
 						
 							<div>
-								<ui-select ng-model="conf.object.category.selectedValue" name="objectCategoryValue" ng-change="conf.objectCategoryValue.reset()">
+								<ui-select ng-model="conf.objectCategoryValue.selected" name="objectCategoryValue" ng-change="conf.objectCategoryValue.reset()">
 									<ui-select-match placeholder="(None)" ng-bind="$select.selected"></ui-select-match>
-									<ui-select-choices repeat="value in conf.object.category.selectedCategory.values">
+									<ui-select-choices repeat="value in conf.objectCategory.selected.values">
 										<div ng-bind="value" ng-value="value"></div>
 									</ui-select-choices>
 								</ui-select>
 							</div>
 														
 							<div class="top05">
-								<a href="" class="black" ng-click="">
+								<a href="" class="black" ng-click="conf.action.objectCategoryValue.add.showModal()">
 						        	<span class="glyphicon glyphicon-plus-sign"></span>
 								</a>
-								<a href="" class="black" ng-click="">
+								<a href="" class="black" ng-click="conf.action.objectCategoryValue.del.showModal()">
 						        	<span class="glyphicon glyphicon-minus-sign"></span>
 								</a>
 							</div>

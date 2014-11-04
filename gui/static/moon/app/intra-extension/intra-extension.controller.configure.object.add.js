@@ -104,13 +104,13 @@
 			
 			function createSuccess(data) {
     			
-				var created = _.first(data.objects);
+				add.object.uuid = _.first(data.objects);
 				
-    			$translate('moon.intraExtension.configure.object.add.success', { objectName: created.name }).then(function (translatedValue) {
+    			$translate('moon.intraExtension.configure.object.add.success', { objectName: add.object.name }).then(function (translatedValue) {
         			alertService.alertSuccess(translatedValue);
                 });	
     			
-    			$scope.$emit('event:intraExtensionObjectCreatedSuccess', created);
+    			$scope.$emit('event:intraExtensionObjectCreatedSuccess', add.object);
     			
     		};
     		
