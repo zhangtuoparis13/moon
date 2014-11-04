@@ -153,6 +153,10 @@
 		resolveObjectCategoriesAndValues(objectCategories, objectCategoryValues);
 		
 		/*
+		 * =======================================================================================
+		 */
+		
+		/*
 		 * events
 		 */
 		
@@ -199,6 +203,10 @@
 		for (var unbind in rootListeners) {
 			  $scope.$on('$destroy', rootListeners[unbind]);
 		}
+		
+		/*
+		 * =======================================================================================
+		 */
 		
 		/*
 		 * resolve
@@ -285,6 +293,10 @@
 			return conf.objectCategory.list; 
 			
 		};
+		
+		/*
+		 * =======================================================================================
+		 */
 		
 		/*
 		 * add subject
@@ -479,6 +491,10 @@
 		};
 		
 		/*
+		 * =======================================================================================
+		 */
+		
+		/*
 		 * add object
 		 */
 				
@@ -642,16 +658,35 @@
 		
 		function showObjectCategoryValueDeleteModal() {
 			
+			if(conf.objectCategoryValue.selected) {
+				
+				conf.action.objectCategoryValue.del.modal.$scope.intraExtension = conf.intraExtension;
+				conf.action.objectCategoryValue.del.modal.$scope.category = conf.objectCategory.selected;
+				conf.action.objectCategoryValue.del.modal.$scope.value = conf.objectCategoryValue.selected;
+				
+				conf.action.objectCategoryValue.del.modal.$promise.then(conf.action.objectCategoryValue.del.modal.show);
+				
+			}
 			
 		};
 		
 		function intraExtensionObjectCategoryValueDeletedSuccess(event, categoryAndValue) {
 			
+			var category = _(conf.objectCategory.list).find(function(aCategory) {
+				return aCategory.name === categoryAndValue.category.name; 
+			});	
+			
+			category.values = _.chain(category.values).without(categoryAndValue.value).value();
+			
+			conf.objectCategoryValue.selected = null;
+			
+			conf.action.objectCategoryValue.del.modal.hide();
 			
 		};
 		
 		function intraExtensionObjectCategoryValueDeletedError(event, categoryAndValue) {
 			
+			conf.action.objectCategoryValue.del.modal.hide();
 			
 		};
 		
