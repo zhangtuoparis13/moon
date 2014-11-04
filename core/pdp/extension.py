@@ -307,6 +307,7 @@ class Extension:
 
     def del_subject_category(self, category_id):
         if category_id in self.get_subject_categories():
+            self.configuration.get_subject_category_values().pop(category_id)
             self.get_subject_categories().remove(category_id)
             return self.get_subject_categories()
         else:
@@ -325,6 +326,7 @@ class Extension:
 
     def del_object_category(self, category_id):
         if category_id in self.get_object_categories():
+            self.configuration.get_object_category_values().pop(category_id)
             self.get_object_categories().remove(category_id)
             return self.get_object_categories()
         else:
