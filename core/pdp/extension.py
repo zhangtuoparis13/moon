@@ -302,6 +302,7 @@ class Extension:
             return "[ERROR] Add Subject Category: Subject Category Exists"
         else:
             self.get_subject_categories().append(category_id)
+            self.configuration.get_subject_category_values()[category_id] = list()
             return self.get_subject_categories()
 
     def del_subject_category(self, category_id):
@@ -319,6 +320,7 @@ class Extension:
             return "[ERROR] Add Object Category: Object Category Exists"
         else:
             self.get_object_categories().append(category_id)
+            self.configuration.get_object_category_values()[category_id] = list()
             return self.get_object_categories()
 
     def del_object_category(self, category_id):
