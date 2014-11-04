@@ -605,16 +605,34 @@
 		
 		function showObjectCategoryValueAddModal() {
 			
+			if(conf.objectCategory.selected) {
+				
+				conf.action.objectCategoryValue.add.modal.$scope.intraExtension = conf.intraExtension;
+				conf.action.objectCategoryValue.add.modal.$scope.category = conf.objectCategory.selected;
+				
+				conf.action.objectCategoryValue.add.modal.$promise.then(conf.action.objectCategoryValue.add.modal.show);
+				
+			}		
 			
 		};
 		
-		function intraExtensionObjectCategoryValueCreatedSuccess(event, objectAndValue) {
+		function intraExtensionObjectCategoryValueCreatedSuccess(event, categoryAndValue) {
 			
+			var category = _(conf.objectCategory.list).find(function(aCategory) {
+				return aCategory.name === categoryAndValue.category.name; 
+			});	
+			
+			category.values.push(categoryAndValue.value);
+			
+			conf.objectCategoryValue.selected = categoryAndValue.value;
+			
+			conf.action.objectCategoryValue.add.modal.hide();
 			
 		};
 		
-		function intraExtensionObjectCategoryValueCreatedError(event, objectAndValue) {
+		function intraExtensionObjectCategoryValueCreatedError(event, categoryAndValue) {
 			
+			conf.action.objectCategoryValue.add.modal.hide();
 			
 		};
 		
@@ -627,12 +645,12 @@
 			
 		};
 		
-		function intraExtensionObjectCategoryValueDeletedSuccess(event, objectAndValue) {
+		function intraExtensionObjectCategoryValueDeletedSuccess(event, categoryAndValue) {
 			
 			
 		};
 		
-		function intraExtensionObjectCategoryValueDeletedError(event, objectAndValue) {
+		function intraExtensionObjectCategoryValueDeletedError(event, categoryAndValue) {
 			
 			
 		};

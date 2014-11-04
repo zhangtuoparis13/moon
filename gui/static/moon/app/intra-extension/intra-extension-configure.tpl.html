@@ -153,7 +153,7 @@
 					<div class="col-md-3 col-md-offset-1">
 					
 						<div class="row">
-							<ui-select ng-model="conf.objectCategory.selected" name="objectCategory"> 
+							<ui-select ng-model="conf.objectCategory.selected" name="objectCategory" ng-change="conf.objectCategoryValue.reset()"> 
 								<ui-select-match placeholder="(None)" ng-bind="$select.selected.name"></ui-select-match>
 					           	<ui-select-choices repeat="category in conf.objectCategory.list">
 					           		<div ng-bind="category.name" ng-value="category"></div>
@@ -179,7 +179,7 @@
 						<div class="row" ng-if="conf.objectCategory.selected">
 						
 							<div>
-								<ui-select ng-model="conf.objectCategoryValue.selected" name="objectCategoryValue" ng-change="conf.objectCategoryValue.reset()">
+								<ui-select ng-model="conf.objectCategoryValue.selected" name="objectCategoryValue">
 									<ui-select-match placeholder="(None)" ng-bind="$select.selected"></ui-select-match>
 									<ui-select-choices repeat="value in conf.objectCategory.selected.values">
 										<div ng-bind="value" ng-value="value"></div>
