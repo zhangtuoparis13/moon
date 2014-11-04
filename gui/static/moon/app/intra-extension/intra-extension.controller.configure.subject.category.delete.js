@@ -21,34 +21,34 @@
 		 */
 		
 		del.intraExtension = $scope.intraExtension;
-		del.subject = $scope.subject;
-		del.remove = deleteSubject;
+		del.category = $scope.category;
+		del.remove = deleteCategory;
 		
 		/*
 		 * 
 		 */
 		
-		function deleteSubject() {
+		function deleteCategory() {
 				
-			intraExtensionService.data.subject.subject.remove({ie_uuid: del.intraExtension._id, subject_uuid: del.subject.uuid}, deleteSuccess, deleteError);
+			intraExtensionService.data.subject.category.remove({ie_uuid: del.intraExtension._id, category_name: del.category.name}, deleteSuccess, deleteError);
 			
 			function deleteSuccess(data) {
 				
-				$translate('moon.intraExtension.configure.subject.remove.success', { subjectName: del.subject.name }).then(function (translatedValue) {
+				$translate('moon.intraExtension.configure.subject.category.remove.success', { categoryName: del.category.name }).then(function (translatedValue) {
         			alertService.alertSuccess(translatedValue);
                 });	
 				
-				$scope.$emit('event:intraExtensionSubjectDeletedSuccess', del.subject);
+				$scope.$emit('event:intraExtensionSubjectCategoryDeletedSuccess', del.category);
 				
 			};
 			
 			function deleteError(reason) {
 				
-				$translate('moon.intraExtension.configure.subject.remove.error', { subjectName: del.subject.name }).then(function (translatedValue) {
+				$translate('moon.intraExtension.configure.subject.category.remove.error', { categoryName: del.category.name }).then(function (translatedValue) {
         			alertService.alertError(translatedValue);
                 });
 				
-				$scope.$emit('event:intraExtensionSubjectDeletedError', del.subject);
+				$scope.$emit('event:intraExtensionSubjectCategoryDeletedError', del.category);
 				
 			};
 			

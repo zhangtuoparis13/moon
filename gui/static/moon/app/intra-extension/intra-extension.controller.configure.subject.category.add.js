@@ -43,7 +43,6 @@
         	
         	} else {
         		
-				// TODO
         		intraExtensionService.data.subject.category.create({ie_uuid: add.intraExtension._id}, {category_id: add.category.name}, createSuccess, createError);
         		        		        		
         	}	

@@ -59,7 +59,7 @@
         		
         		intraExtensionService.data.subject.subject.create({ie_uuid: add.intraExtension._id}, add.subject, createSuccess, createError);
         		        		        		
-        	}	
+        	}
 			
 			function createSuccess(data) {
     			

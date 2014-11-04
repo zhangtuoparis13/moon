@@ -42,9 +42,10 @@
 		     	   		remove: { method: 'DELETE' }
 		    	   	}),
 		    	   	
-		    	   	category: $resource('./json/intra-extensions/:ie_uuid/subject_categories', {}, {
+		    	   	category: $resource('./json/intra-extensions/:ie_uuid/subject_categories/:category_name', {}, {
 		    	   		query: { method: 'GET', isArray: false },
-		    	   		create: { method: 'POST' }
+		    	   		create: { method: 'POST' },
+		    	   		remove: { method: 'DELETE' }
 		    	   	}),
 		    	   	
 		    	   	categoryValue: $resource('./json/intra-extensions/:ie_uuid/subject_category_values', {}, {

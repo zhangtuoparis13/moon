@@ -56,11 +56,19 @@
 		
 		conf.intraExtension = intraExtension.intra_extensions;
 		conf.intraExtension.tenant = _.first(tenant.projects);
-				
-		conf.subject = {
-				list: [],
-				selected: null,
-				action: {
+		
+		conf.subject = { loading: true, list: [], selected: null };
+		conf.subjectCategory = { loading: true, list: [], selected: null };
+		conf.subjectCategoryValue = { selected: null };
+		conf.subjectAssignment = { loading: true, list: [] };
+		
+		conf.object = { loading: true, list: [], selected: null };
+		conf.objectCategory = { loading: true, list: [], selected: null };
+		conf.objectCategoryValue = { selected: null };
+		conf.objectAssignment = { loading: true, list: [] };
+		
+		conf.action = {
+				subject: {
 					add: {
 						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-add.tpl.html', show: false }), 
 					 	showModal: showSubjectAddModal
@@ -70,45 +78,35 @@
 					 	showModal: showSubjectDeleteModal
 					}
 				},
-				category: {
-					list: [],
-					selectedCategory: null,
-					selectedValue: null,
-					action: {
-						addCategory: {
-							modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-category-add.tpl.html', show: false }), 
-						 	showModal: showSubjectCategoryAddModal
-						},
-						delCategory: {
-							modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-category-delete.tpl.html', show: false }), 
-						 	showModal: showSubjectCategoryDeleteModal
-						},
-						addCategoryValue: {
-							modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-category-value-add.tpl.html', show: false }), 
-						 	showModal: showSubjectCategoryValueAddModal
-						},
-						delCategoryValue: {
-							modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-category-value-delete.tpl.html', show: false }), 
-						 	showModal: showSubjectCategoryValueDeleteModal
-						}
+				subjectCategory: {
+					add: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-category-add.tpl.html', show: false }), 
+					 	showModal: showSubjectCategoryAddModal
+					},
+					del: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-category-delete.tpl.html', show: false }), 
+					 	showModal: showSubjectCategoryDeleteModal
 					}
 				},
-				assigments: {
-					action: {
-						add: {
-							
-						},
-						del: {
-							
-						}
+				subjectCategoryValue: {
+					add: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-category-value-add.tpl.html', show: false }), 
+					 	showModal: showSubjectCategoryValueAddModal
+					},
+					del: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-category-value-delete.tpl.html', show: false }), 
+					 	showModal: showSubjectCategoryValueDeleteModal
 					}
-				}
-		};
-		
-		conf.object = {
-				list: [],
-				selected: null,
-				action: {
+				},
+				subjectAssignment: {
+					add: {
+						
+					},
+					del: {
+						
+					}
+				},
+				object: {
 					add: {
 						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-add.tpl.html', show: false }), 
 					 	showModal: showObjectAddModal
@@ -118,41 +116,36 @@
 					 	showModal: showObjectDeleteModal
 					}
 				},
-				category: {
-					list: [],
-					selectedCategory: null,
-					selectedValue: null,
-					action: {
-						addCategory: {
-							modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-category-add.tpl.html', show: false }), 
-						 	showModal: showObjectCategoryAddModal
-						},
-						delCategory: {
-							modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-category-delete.tpl.html', show: false }), 
-						 	showModal: showObjectCategoryDeleteModal
-						},
-						addCategoryValue: {
-							modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-category-value-add.tpl.html', show: false }), 
-						 	showModal: showObjectCategoryValueAddModal
-						},
-						delCategoryValue: {
-							modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-category-value-delete.tpl.html', show: false }), 
-						 	showModal: showObjectCategoryValueDeleteModal
-						}
+				objectCategory: {
+					add: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-category-add.tpl.html', show: false }), 
+					 	showModal: showObjectCategoryAddModal
+					},
+					del: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-category-delete.tpl.html', show: false }), 
+					 	showModal: showObjectCategoryDeleteModal
 					}
 				},
-				assigments: {
-					action: {
-						add: {
-							
-						},
-						del: {
-							
-						}
+				objectCategoryValue: {
+					add: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-category-value-add.tpl.html', show: false }), 
+					 	showModal: showObjectCategoryValueAddModal
+					},
+					del: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-category-value-delete.tpl.html', show: false }), 
+					 	showModal: showObjectCategoryValueDeleteModal
+					}
+				},
+				objectAssignment: {
+					add: {
+						
+					},
+					del: {
+						
 					}
 				}
 		};
-										
+		
 		resolveSubjects(subjects);
 		resolveObjects(objects);
 		
@@ -229,6 +222,8 @@
 					return aSubject != null || aSubject != undefined;
 				});
 				
+				conf.subject.loading = false;
+				
 				return conf.subject.list;
 				
 			});
@@ -253,6 +248,8 @@
 					return anObject != null || anObject != undefined;
 				});
 				
+				conf.object.loading = false;
+				
 				return conf.object.list;
 				
 			});
@@ -261,27 +258,31 @@
 		
 		function resolveSubjectCategoriesAndValues(subjectCategories, subjectCategoryValues) {
 			
-			conf.subject.category.list = _(subjectCategories.subject_categories).map(function(aCategory) {
+			conf.subjectCategory.list = _(subjectCategories.subject_categories).map(function(aCategory) {
 				
 				return { name: aCategory, 
 						 values: subjectCategoryValues.subject_category_values[aCategory] };
 				
 			});
 			
-			return conf.subject.category.list; 
+			conf.subjectCategory.loading = false;
+			
+			return conf.subjectCategory.list; 
 			
 		};
 		
 		function resolveObjectCategoriesAndValues(objectCategories, objectCategoryValues) {
 			
-			conf.object.category.list = _(objectCategories.object_categories).map(function(aCategory) {
+			conf.objectCategory.list = _(objectCategories.object_categories).map(function(aCategory) {
 				
 				return { name: aCategory, 
 						 values: objectCategoryValues.object_category_values[aCategory] };
 				
 			});
 			
-			return conf.object.category.list; 
+			conf.objectCategory.loading = false;
+			
+			return conf.objectCategory.list; 
 			
 		};
 		
@@ -290,8 +291,11 @@
 		 */
 
 		function showSubjectAddModal() {
-			conf.subject.action.add.modal.$scope.intraExtension = conf.intraExtension;
-			conf.subject.action.add.modal.$promise.then(conf.subject.action.add.modal.show);
+			
+			conf.action.subject.add.modal.$scope.intraExtension = conf.intraExtension;
+			
+			conf.action.subject.add.modal.$promise.then(conf.action.subject.add.modal.show);
+			
 		};
 				
 		function intraExtensionSubjectCreatedSuccess(event, subject) {
@@ -299,12 +303,12 @@
 			conf.subject.list.push(subject);
 			conf.subject.selected = subject;
 			
-			conf.subject.action.add.modal.hide();
+			conf.action.subject.add.modal.hide();
 						
 		};
 		
 		function intraExtensionSubjectCreatedError(event, subject) {
-			conf.subject.action.add.modal.hide();			
+			conf.action.subject.add.modal.hide();			
 		};
 		
 		/*
@@ -315,10 +319,10 @@
 			
 			if(conf.subject.selected) {
 			
-				conf.subject.action.del.modal.$scope.intraExtension = conf.intraExtension;
-				conf.subject.action.del.modal.$scope.subject = conf.subject.selected;
+				conf.action.subject.del.modal.$scope.intraExtension = conf.intraExtension;
+				conf.action.subject.del.modal.$scope.subject = conf.subject.selected;
 				
-				conf.subject.action.del.modal.$promise.then(conf.subject.action.del.modal.show);
+				conf.action.subject.del.modal.$promise.then(conf.action.subject.del.modal.show);
 			
 			}
 			
@@ -329,13 +333,13 @@
 			conf.subject.list = _.chain(conf.subject.list).reject({uuid: subject.uuid}).value();
 			conf.subject.selected = null;
 			
-			conf.subject.action.del.modal.hide();
+			conf.action.subject.del.modal.hide();
 			
 		};
 		
 		function intraExtensionSubjectDeletedError(event, subject) {
 			
-			conf.subject.action.del.modal.hide();
+			conf.action.subject.del.modal.hide();
 			
 		};
 		
@@ -345,20 +349,22 @@
 
 		function showSubjectCategoryAddModal() {
 
-			conf.subject.category.action.addCategory.modal.$scope.intraExtension = conf.intraExtension;
-			conf.subject.category.action.addCategory.modal.$promise.then(conf.subject.category.action.addCategory.modal.show);
+			conf.action.subjectCategory.add.modal.$scope.intraExtension = conf.intraExtension;
+			conf.action.subjectCategory.add.modal.$promise.then(conf.action.subjectCategory.add.modal.show);
 			
 		};
 		
 		function intraExtensionSubjectCategoryCreatedSuccess(event, category) {
 			
-			conf.subject.category.list.push(category);
-			conf.subject.category.selected = category;
+			conf.subjectCategory.list.push(category);
+			conf.subjectCategory.selected = category;
+			
+			conf.action.subjectCategory.add.modal.hide();	
 			
 		};
 		
 		function intraExtensionSubjectCategoryCreatedError(event, category) {
-			conf.subject.category.action.addCategory.modal.hide();				
+			conf.action.subjectCategory.add.modal.hide();				
 		};
 		
 		/*
@@ -367,16 +373,29 @@
 		
 		function showSubjectCategoryDeleteModal() {
 			
+			if(conf.subjectCategory.selected) {
+				
+				conf.action.subjectCategory.del.modal.$scope.intraExtension = conf.intraExtension;
+				conf.action.subjectCategory.del.modal.$scope.category = conf.subjectCategory.selected;
+				
+				conf.action.subjectCategory.del.modal.$promise.then(conf.action.subjectCategory.del.modal.show);
+			
+			}
 			
 		};
 		
 		function intraExtensionSubjectCategoryDeletedSuccess(event, category) {
 			
+			conf.subjectCategory.list = _.chain(conf.subjectCategory.list).reject({name: category.name}).value();
+			conf.subjectCategory.selected = null;
+			
+			conf.action.subjectCategory.del.modal.hide();
 			
 		};
 		
 		function intraExtensionSubjectCategoryDeletedError(event, category) {
 			
+			conf.action.subjectCategory.del.modal.hide();
 			
 		};
 		

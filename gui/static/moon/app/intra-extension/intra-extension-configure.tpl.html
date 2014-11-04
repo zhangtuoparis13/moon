@@ -35,11 +35,13 @@
 							</ui-select>
 						</div>
 						
+						<img ng-if="conf.subject.loading" src="static/moon/img/ajax-loader.gif" />
+						
 						<div class="row top05">
-							<a href="" class="black" ng-click="conf.subject.action.add.showModal()">
+							<a href="" class="black" ng-click="conf.action.subject.add.showModal()">
 					        	<span class="glyphicon glyphicon-plus-sign"></span>
 							</a>
-							<a href="" class="black" ng-click="conf.subject.action.del.showModal()">
+							<a href="" class="black" ng-click="conf.action.subject.del.showModal()">
 					        	<span class="glyphicon glyphicon-minus-sign"></span>
 							</a>
 						</div>
@@ -49,19 +51,21 @@
 					<div class="col-md-3 col-md-offset-1">
 					
 						<div class="row">
-							<ui-select ng-model="conf.subject.category.selectedCategory" name="subjectCategory"> 
+							<ui-select ng-model="conf.subjectCategory.selected" name="subjectCategory"> 
 								<ui-select-match placeholder="(None)" ng-bind="$select.selected.name"></ui-select-match>
-					           	<ui-select-choices repeat="category in conf.subject.category.list">
+					           	<ui-select-choices repeat="category in conf.subjectCategory.list">
 					           		<div ng-bind="category.name" ng-value="category"></div>
 				   				</ui-select-choices>
 							</ui-select>
 						</div>
 						
+						<img ng-if="conf.subjectCategory.loading" src="static/moon/img/ajax-loader.gif" />
+						
 						<div class="row top05">
-							<a href="" class="black" ng-click="conf.subject.category.action.addCategory.showModal()">
+							<a href="" class="black" ng-click="conf.action.subjectCategory.add.showModal()">
 					        	<span class="glyphicon glyphicon-plus-sign"></span>
 							</a>
-							<a href="" class="black" ng-click="">
+							<a href="" class="black" ng-click="conf.action.subjectCategory.del.showModal()">
 					        	<span class="glyphicon glyphicon-minus-sign"></span>
 							</a>
 						</div>
@@ -70,24 +74,24 @@
 					
 					<div class="col-md-3 col-md-offset-1">
 					
-						<div class="row" ng-if="conf.subject.category.selectedCategory">
+						<div class="row" ng-if="conf.subjectCategory.selected">
 						
 							<div>
 						
-								<ui-select ng-model="conf.subject.category.selectedValue" name="subjectCategoryValue">
+								<ui-select ng-model="conf.subjectCategoryValue.selected" name="subjectCategoryValue">
 									<ui-select-match placeholder="(None)" ng-bind="$select.selected"></ui-select-match>
-									<ui-select-choices repeat="value in conf.subject.category.selectedCategory.values">
+									<ui-select-choices repeat="value in conf.subjectCategory.selected.values">
 										<div ng-value="value" ng-bind="value"></div>
 									</ui-select-choices>
 								</ui-select>
 							
 							</div>
-							
+														
 							<div class="top05">
-								<a href="" class="black" ng-click="">
+								<a href="" class="black" ng-click="conf.action.subjectCategoryValue.add.showModal()">
 						        	<span class="glyphicon glyphicon-plus-sign"></span>
 								</a>
-								<a href="" class="black" ng-click="">
+								<a href="" class="black" ng-click="conf.action.subjectCategoryValue.del.showModal()">
 						        	<span class="glyphicon glyphicon-minus-sign"></span>
 								</a>
 							</div>
@@ -133,6 +137,8 @@
 							</ui-select>
 						</div>
 						
+						<img ng-if="conf.object.loading" src="static/moon/img/ajax-loader.gif" />
+						
 						<div class="row top05">
 							<a href="" class="black" ng-click="conf.object.action.add.showModal()">
 					        	<span class="glyphicon glyphicon-plus-sign"></span>
@@ -154,6 +160,8 @@
 					   				</ui-select-choices>
 							</ui-select>
 						</div>
+						
+						<img ng-if="conf.object.category.loading" src="static/moon/img/ajax-loader.gif" />
 						
 						<div class="row top05">
 							<a href="" class="black" ng-click="">
@@ -178,7 +186,7 @@
 									</ui-select-choices>
 								</ui-select>
 							</div>
-							
+														
 							<div class="top05">
 								<a href="" class="black" ng-click="">
 						        	<span class="glyphicon glyphicon-plus-sign"></span>
