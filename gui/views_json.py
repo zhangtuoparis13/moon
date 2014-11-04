@@ -92,7 +92,7 @@ def intra_extensions(request, uuid=None):
             })
     elif request.META['REQUEST_METHOD'] == "DELETE":
         result = pap.delete_intra_extension(user_id=request.session['user_id'], intra_extension_uuid=uuid)
-        if "error" in result:
+        if result is dict and "error" in result:
             return send_error(code=500, message=result)
     elif uuid:
         extension = pap.get_intra_extensions(user_id=request.session['user_id'])[uuid]
