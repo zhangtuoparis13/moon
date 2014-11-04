@@ -227,10 +227,14 @@ class PAP:
         """
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "write") == "OK":
+                tenant = self.intra_extensions[extension_uuid].get_tenant_uuid()
+                if not tenant:
+                    return
                 object_id = get_pip().add_object(
                     name=object["name"],
                     image_name=object["image_name"],
-                    flavor_name=object["flavor_name"]
+                    flavor_name=object["flavor_name"],
+                    tenant=tenant
                 )
                 if object_id:
                     self.intra_extensions[extension_uuid].intra_extension_authz.add_object(object_id)
@@ -239,7 +243,10 @@ class PAP:
     def del_object(self, extension_uuid, user_uuid, object_id):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "write") == "OK":
-                get_pip().del_object(object_id)
+                tenant = self.intra_extensions[extension_uuid].get_tenant_uuid()
+                if not tenant:
+                    return
+                get_pip().del_object(object_id, tenant=tenant)
                 self.intra_extensions[extension_uuid].intra_extension_authz.del_object(object_id)
                 #TODO need to check if the subject is not in other tables like assignment
 
