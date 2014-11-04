@@ -303,7 +303,7 @@ class Extension:
         else:
             self.get_subject_categories().append(category_id)
             self.configuration.get_subject_category_values()[category_id] = list()
-            self.assignment.get_subject_category_assignments()[category_id] = list()
+            self.assignment.get_subject_category_assignments()[category_id] = dict()
             return self.get_subject_categories()
 
     def del_subject_category(self, category_id):
@@ -324,7 +324,7 @@ class Extension:
         else:
             self.get_object_categories().append(category_id)
             self.configuration.get_object_category_values()[category_id] = list()
-            self.assignment.get_object_category_assignments()[category_id] = list()
+            self.assignment.get_object_category_assignments()[category_id] = dict()
             return self.get_object_categories()
 
     def del_object_category(self, category_id):
