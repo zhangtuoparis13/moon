@@ -141,7 +141,7 @@ class PAP:
     @translate_uuid
     def delete_intra_extension(self, user_id, intra_extension_uuid):
         if self.super_extension.admin(user_id, "intra_extension", "destroy") == "OK":
-            print self.intra_extensions.delete_intra_extension(intra_extension_uuid)
+            return self.intra_extensions.delete_intra_extension(intra_extension_uuid)
 
     ##########################################
     # Specific functions for Keystone and Nova
