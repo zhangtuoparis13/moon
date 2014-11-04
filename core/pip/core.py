@@ -142,7 +142,13 @@ class PIP:
             elif not object_uuid:
                 yield o
 
-    def add_object(self, name, image_name="Cirros3.2", flavor_name="m1.nano"):
+    def add_object(self, name, tenant, image_name="Cirros3.2", flavor_name="m1.nano"):
+        if tenant:
+            __tenant = self.get_tenants(uuid=tenant)
+            if __tenant:
+                self.set_creds_for_tenant(tenant_name=__tenant.next()["name"])
+            else:
+                self.set_creds_for_tenant(tenant_name=tenant)
         import time
         image = self.nclient.images.find(name=image_name)
         flavor = self.nclient.flavors.find(name=flavor_name)
@@ -158,7 +164,13 @@ class PIP:
                 return
         return instance.id
 
-    def del_object(self, uuid):
+    def del_object(self, uuid, tenant):
+        if tenant:
+            __tenant = self.get_tenants(uuid=tenant)
+            if __tenant:
+                self.set_creds_for_tenant(tenant_name=__tenant.next()["name"])
+            else:
+                self.set_creds_for_tenant(tenant_name=tenant)
         instance = self.nclient.servers.find(id=uuid)
         instance.delete()
         cpt = 0
