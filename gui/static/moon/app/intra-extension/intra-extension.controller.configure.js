@@ -573,16 +573,29 @@
 		
 		function showObjectCategoryDeleteModal() {
 			
+			if(conf.objectCategory.selected) {
+				
+				conf.action.objectCategory.del.modal.$scope.intraExtension = conf.intraExtension;
+				conf.action.objectCategory.del.modal.$scope.category = conf.objectCategory.selected;
+				
+				conf.action.objectCategory.del.modal.$promise.then(conf.action.objectCategory.del.modal.show);
+			
+			}
 			
 		};
 		
 		function intraExtensionObjectCategoryDeletedSuccess(event, category) {
 			
+			conf.objectCategory.list = _.chain(conf.objectCategory.list).reject({name: category.name}).value();
+			conf.objectCategory.selected = null;
+			
+			conf.action.objectCategory.del.modal.hide();
 			
 		};
 		
 		function intraExtensionObjectCategoryDeletedError(event, category) {
 			
+			conf.action.objectCategory.del.modal.hide();
 			
 		};
 		
