@@ -30,7 +30,27 @@
 		
 		function deleteObject() {
 				
-			// TODO
+			intraExtensionService.data.object.object.remove({ie_uuid: del.intraExtension._id, object_uuid: del.object.uuid}, deleteSuccess, deleteError);
+			
+			function deleteSuccess(data) {
+				
+				$translate('moon.intraExtension.configure.object.remove.success', { objectName: del.object.name }).then(function (translatedValue) {
+        			alertService.alertSuccess(translatedValue);
+                });	
+				
+				$scope.$emit('event:intraExtensionObjectDeletedSuccess', del.object);
+				
+			};
+			
+			function deleteError(reason) {
+				
+				$translate('moon.intraExtension.configure.object.remove.error', { objectName: del.object.name }).then(function (translatedValue) {
+        			alertService.alertError(translatedValue);
+                });
+				
+				$scope.$emit('event:intraExtensionObjectDeletedError', del.object);
+				
+			};
 			
 		};		
 		

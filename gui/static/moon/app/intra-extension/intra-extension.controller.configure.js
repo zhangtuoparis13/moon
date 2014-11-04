@@ -529,10 +529,10 @@
 			
 			if(conf.object.selected) {
 			
-				conf.object.action.del.modal.$scope.intraExtension = conf.intraExtension;
-				conf.object.action.del.modal.$scope.object = conf.object.current;
+				conf.action.object.del.modal.$scope.intraExtension = conf.intraExtension;
+				conf.action.object.del.modal.$scope.object = conf.object.selected;
 				
-				conf.object.action.del.modal.$promise.then(conf.object.action.del.modal.show);
+				conf.action.object.del.modal.$promise.then(conf.action.object.del.modal.show);
 			
 			}
 			
@@ -543,13 +543,13 @@
 			conf.object.list = _.chain(conf.object.list).reject({uuid: object.uuid}).value();
 			conf.object.selected = null;
 			
-			conf.object.action.del.modal.hide();
+			conf.action.object.del.modal.hide();
 			
 		};
 		
 		function intraExtensionObjectDeletedError(event, object) {
 			
-			conf.object.action.del.modal.hide();
+			conf.action.object.del.modal.hide();
 			
 		};
 		
