@@ -268,8 +268,13 @@
 			
 			conf.subjectCategory.list = _(subjectCategories.subject_categories).map(function(aCategory) {
 				
-				return { name: aCategory, 
-						 values: subjectCategoryValues.subject_category_values[aCategory] };
+				var catValues = subjectCategoryValues.subject_category_values[aCategory];
+				
+				if(!catValues) {
+					catValues = [];
+				}
+				
+				return { name: aCategory, values: catValues };
 				
 			});
 			
@@ -283,8 +288,13 @@
 			
 			conf.objectCategory.list = _(objectCategories.object_categories).map(function(aCategory) {
 				
-				return { name: aCategory, 
-						 values: objectCategoryValues.object_category_values[aCategory] };
+				var catValues = objectCategoryValues.object_category_values[aCategory];
+				
+				if(!catValues) {
+					catValues = [];
+				}
+				
+				return { name: aCategory, values: catValues };
 				
 			});
 			
