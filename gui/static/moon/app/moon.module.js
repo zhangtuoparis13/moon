@@ -148,25 +148,25 @@
 						return intraExtensionService.data.subject.subject.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
 					},
 					subjectCategories: function(intraExtensionService, intraExtension) {
-						return intraExtensionService.data.subject.categories.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+						return intraExtensionService.data.subject.category.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
 					},
 					subjectCategoryValues: function(intraExtensionService, intraExtension) {
-						return intraExtensionService.data.subject.categoryValues.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+						return intraExtensionService.data.subject.categoryValue.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
 					},
 					subjectAssignments: function(intraExtensionService, intraExtension) {
-						return intraExtensionService.data.subject.assignments.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+						return intraExtensionService.data.subject.assignment.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
 					},
 					objects: function(intraExtensionService, intraExtension) {
 						return intraExtensionService.data.object.object.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
 					},
 					objectCategories: function(intraExtensionService, intraExtension) {
-						return intraExtensionService.data.object.categories.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+						return intraExtensionService.data.object.category.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
 					},
 					objectCategoryValues: function(intraExtensionService, intraExtension) {
-						return intraExtensionService.data.object.categoryValues.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+						return intraExtensionService.data.object.categoryValue.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
 					},
 					objectAssignments: function(intraExtensionService, intraExtension) {
-						return intraExtensionService.data.object.assignments.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+						return intraExtensionService.data.object.assignment.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
 					}
 				}
 		    })

@@ -4,167 +4,209 @@
 		<h3 class="pull-left" translate="moon.intraExtension.configure.title" translate-values="{ intraExtensionName: conf.intraExtension.name[0] }">Configure</h3>
 	</div>
 	
-	<div class="row strong">
-				
-		<div class="col-md-2"><label translate="moon.intraExtension.configure.subject.title">Subjects</label></div>
-		<div class="col-md-2 col-md-offset-1"><label translate="moon.intraExtension.configure.subject.category.title">Categories</label></div>
-		
-		<div class="col-md-2 col-md-offset-2"><label translate="moon.intraExtension.configure.object.category.title">Categories</label></div>
-		<div class="col-md-2 col-md-offset-1"><label translate="moon.intraExtension.configure.subject.category.title">Objects</label></div>
+	<div class="panel panel-default">
 	
-	</div>
+		<div class="panel-heading">
+		
+			<div class="container">
+				<div class="row">
+					<div class="col-md-3"><label translate="moon.intraExtension.configure.subject.title">Subjects</label></div>
+					<div class="col-md-3 col-md-offset-1"><label translate="moon.intraExtension.configure.subject.category.title">Categories</label></div>
+					<div class="col-md-3 col-md-offset-1"><label translate="moon.intraExtension.configure.subject.categoryValue.title">Values</label></div>
+				</div>
+			</div>
 			
-	<div class="row">
-
-		<div class="col-md-2">
+		</div>
 	
-			<div class="row">
-				<ui-select multiple theme="bootstrap" ng-model="conf.subject.selected">
-					<ui-select-match placeholder="(None)">
-						<span ng-click="conf.subject.setCurrent($item)">{{$item.name}}</span>
-					</ui-select-match>
-					<ui-select-choices repeat="subject in conf.subject.list">
-						<div ng-value="subject">{{subject.name}}</div>
-					</ui-select-choices>
-				</ui-select>
-			</div>
-			
-			<div class="row top05">
-				<a href="" class="black" ng-click="conf.subject.action.add.showModal()">
-		        	<span class="glyphicon glyphicon-plus-sign"></span>
-				</a>
-				<a href="" class="black" ng-click="conf.subject.action.del.showModal()">
-		        	<span class="glyphicon glyphicon-minus-sign"></span>
-				</a>
-			</div>
+		<div class="panel-body">
 		
-		</div>
-						
-		<div class="col-md-2 col-md-offset-1">
-		
-			<div class="row">
-				<ui-select ng-model="conf.subject.category.selected" name="subjectCategory"> 
-					<ui-select-match placeholder="(None)" ng-bind="$select.selected.name"></ui-select-match>
-		           	<ui-select-choices repeat="category in conf.subject.category.list">
-		           		<div ng-bind="category.name" ng-value="category"></div>
-		   				</ui-select-choices>
-				</ui-select>
-			</div>
-			
-			<div class="row top05">
-				<a href="" class="black" ng-click="">
-		        	<span class="glyphicon glyphicon-plus-sign"></span>
-				</a>
-				<a href="" class="black" ng-click="">
-		        	<span class="glyphicon glyphicon-minus-sign"></span>
-				</a>
-			</div>
-			
-			<div class="row top05" ng-if="conf.subject.category.selected">
-			
-				<div>
-			
-					<ui-select multiple theme="bootstrap" name="subjectCategoryValues" ng-model="conf.subject.category.selected.values">
-						<ui-select-match placeholder="(None)">
-							<span>{{$item}}</span>
-						</ui-select-match>
-						<ui-select-choices repeat="value in conf.subject.category.selected.values">
-							<div>{{value}}</div>
-						</ui-select-choices>
-					</ui-select>
-				
-				</div>
-				
-				<div class="top05">
-					<a href="" class="black" ng-click="">
-			        	<span class="glyphicon glyphicon-plus-sign"></span>
-					</a>
-					<a href="" class="black" ng-click="">
-			        	<span class="glyphicon glyphicon-minus-sign"></span>
-					</a>
-				</div>
-								
-			</div>
-						
-		</div>
-		
-		<div class="col-md-2 col-md-offset-2">
-		
-			<div class="row">
-				<ui-select ng-model="conf.object.category.selected" name="objectCategory"> 
-					<ui-select-match placeholder="(None)" ng-bind="$select.selected.name"></ui-select-match>
-		           	<ui-select-choices repeat="category in conf.object.category.list">
-		           		<div ng-bind="category.name" ng-value="category"></div>
-		   				</ui-select-choices>
-				</ui-select>
-			</div>
-			
-			<div class="row top05">
-				<a href="" class="black" ng-click="">
-		        	<span class="glyphicon glyphicon-plus-sign"></span>
-				</a>
-				<a href="" class="black" ng-click="">
-		        	<span class="glyphicon glyphicon-minus-sign"></span>
-				</a>
-			</div>
-			
-			<div class="row top05" ng-if="conf.object.category.selected">
-			
-				<div>
-					<ui-select multiple theme="bootstrap" name="objectCategoryValues" ng-model="conf.object.category.selected.values">
-						<ui-select-match placeholder="(None)">
-							<span>{{$item}}</span>
-						</ui-select-match>
-						<ui-select-choices repeat="value in conf.object.category.selected.values">
-							<div>{{value}}</div>
-						</ui-select-choices>
-					</ui-select>
-				</div>
-				
-				<div class="top05">
-					<a href="" class="black" ng-click="">
-			        	<span class="glyphicon glyphicon-plus-sign"></span>
-					</a>
-					<a href="" class="black" ng-click="">
-			        	<span class="glyphicon glyphicon-minus-sign"></span>
-					</a>
-				</div>
-				
-			</div>
-		
-		</div>
+			<div class="container">
 					
-		<div class="col-md-2 col-md-offset-1">
-	
-			<div class="row">
-				<ui-select multiple theme="bootstrap" ng-model="conf.object.selected">
-					<ui-select-match placeholder="(None)">
-						<span ng-click="conf.object.setCurrent($item)">{{$item.name}}</span>
-					</ui-select-match>
-					<ui-select-choices repeat="object in conf.object.list">
-						<div ng-value="object">{{object.name}}</div>
-					</ui-select-choices>
-				</ui-select>
+				<div class="row">
+			
+					<div class="col-md-3">
+				
+						<div class="row">
+							<ui-select ng-model="conf.subject.selected" name="subject">
+								<ui-select-match placeholder="(None)" ng-bind="$select.selected.name"></ui-select-match>
+								<ui-select-choices repeat="subject in conf.subject.list">
+									<div ng-bind="subject.name" ng-value="subject"></div>
+								</ui-select-choices>
+							</ui-select>
+						</div>
+						
+						<div class="row top05">
+							<a href="" class="black" ng-click="conf.subject.action.add.showModal()">
+					        	<span class="glyphicon glyphicon-plus-sign"></span>
+							</a>
+							<a href="" class="black" ng-click="conf.subject.action.del.showModal()">
+					        	<span class="glyphicon glyphicon-minus-sign"></span>
+							</a>
+						</div>
+					
+					</div>
+									
+					<div class="col-md-3 col-md-offset-1">
+					
+						<div class="row">
+							<ui-select ng-model="conf.subject.category.selectedCategory" name="subjectCategory"> 
+								<ui-select-match placeholder="(None)" ng-bind="$select.selected.name"></ui-select-match>
+					           	<ui-select-choices repeat="category in conf.subject.category.list">
+					           		<div ng-bind="category.name" ng-value="category"></div>
+				   				</ui-select-choices>
+							</ui-select>
+						</div>
+						
+						<div class="row top05">
+							<a href="" class="black" ng-click="conf.subject.category.action.addCategory.showModal()">
+					        	<span class="glyphicon glyphicon-plus-sign"></span>
+							</a>
+							<a href="" class="black" ng-click="">
+					        	<span class="glyphicon glyphicon-minus-sign"></span>
+							</a>
+						</div>
+												
+					</div>
+					
+					<div class="col-md-3 col-md-offset-1">
+					
+						<div class="row" ng-if="conf.subject.category.selectedCategory">
+						
+							<div>
+						
+								<ui-select ng-model="conf.subject.category.selectedValue" name="subjectCategoryValue">
+									<ui-select-match placeholder="(None)" ng-bind="$select.selected"></ui-select-match>
+									<ui-select-choices repeat="value in conf.subject.category.selectedCategory.values">
+										<div ng-value="value" ng-bind="value"></div>
+									</ui-select-choices>
+								</ui-select>
+							
+							</div>
+							
+							<div class="top05">
+								<a href="" class="black" ng-click="">
+						        	<span class="glyphicon glyphicon-plus-sign"></span>
+								</a>
+								<a href="" class="black" ng-click="">
+						        	<span class="glyphicon glyphicon-minus-sign"></span>
+								</a>
+							</div>
+											
+						</div>
+					
+					</div>
+					
+				</div>
+				
 			</div>
 			
-			<div class="row top05">
-				<a href="" class="black" ng-click="conf.object.action.add.showModal()">
-		        	<span class="glyphicon glyphicon-plus-sign"></span>
-				</a>
-				<a href="" class="black" ng-click="conf.object.action.del.showModal()">
-		        	<span class="glyphicon glyphicon-minus-sign"></span>
-				</a>
-			</div>
-		
 		</div>
-	
+		
 	</div>
 	
-	<div class="row top10">
-		<a href="" ui-sref="moon.intraExtension.list" class="btn btn-default">
-        	<span class="glyphicon glyphicon-transfer"></span>
-            <span translate="moon.intraExtension.configure.action.back">Back to Intra Extensions</span>
-		</a>
+	<div class="panel panel-default top10">
+	
+		<div class="panel-heading">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-3"><label translate="moon.intraExtension.configure.object.title">Object</label></div>
+					<div class="col-md-3 col-md-offset-1"><label translate="moon.intraExtension.configure.object.category.title">Objects</label></div>
+					<div class="col-md-3 col-md-offset-1"><label translate="moon.intraExtension.configure.object.categoryValue.title">Values</label></div>
+				</div>
+			</div>
+		</div>
+	
+		<div class="panel-body">
+		
+			<div class="container">
+					
+				<div class="row">		
+				
+					<div class="col-md-3">
+				
+						<div class="row">
+							<ui-select ng-model="conf.object.selected" name="object">
+								<ui-select-match placeholder="(None)" ng-bind="$select.selected.name"></ui-select-match>
+								<ui-select-choices repeat="object in conf.object.list">
+									<div ng-value="object" ng-bind="object.name"></div>
+								</ui-select-choices>
+							</ui-select>
+						</div>
+						
+						<div class="row top05">
+							<a href="" class="black" ng-click="conf.object.action.add.showModal()">
+					        	<span class="glyphicon glyphicon-plus-sign"></span>
+							</a>
+							<a href="" class="black" ng-click="conf.object.action.del.showModal()">
+					        	<span class="glyphicon glyphicon-minus-sign"></span>
+							</a>
+						</div>
+					
+					</div>
+					
+					<div class="col-md-3 col-md-offset-1">
+					
+						<div class="row">
+							<ui-select ng-model="conf.object.category.selectedCategory" name="objectCategory"> 
+								<ui-select-match placeholder="(None)" ng-bind="$select.selected.name"></ui-select-match>
+					           	<ui-select-choices repeat="category in conf.object.category.list">
+					           		<div ng-bind="category.name" ng-value="category"></div>
+					   				</ui-select-choices>
+							</ui-select>
+						</div>
+						
+						<div class="row top05">
+							<a href="" class="black" ng-click="">
+					        	<span class="glyphicon glyphicon-plus-sign"></span>
+							</a>
+							<a href="" class="black" ng-click="">
+					        	<span class="glyphicon glyphicon-minus-sign"></span>
+							</a>
+						</div>
+								
+					</div>
+					
+					<div class="col-md-3 col-md-offset-1">
+					
+						<div class="row" ng-if="conf.object.category.selectedCategory">
+						
+							<div>
+								<ui-select ng-model="conf.object.category.selectedValue" name="objectCategoryValue">
+									<ui-select-match placeholder="(None)" ng-bind="$select.selected"></ui-select-match>
+									<ui-select-choices repeat="value in conf.object.category.selectedCategory.values">
+										<div ng-bind="value" ng-value="value"></div>
+									</ui-select-choices>
+								</ui-select>
+							</div>
+							
+							<div class="top05">
+								<a href="" class="black" ng-click="">
+						        	<span class="glyphicon glyphicon-plus-sign"></span>
+								</a>
+								<a href="" class="black" ng-click="">
+						        	<span class="glyphicon glyphicon-minus-sign"></span>
+								</a>
+							</div>
+							
+						</div>
+					
+					</div>
+									
+				</div>
+				
+			</div>
+			
+		</div>
+		
+	</div>
+	
+	<div class="container">
+		<div class="row top05">
+			<a href="" ui-sref="moon.intraExtension.list" class="btn btn-default">
+	        	<span class="glyphicon glyphicon-transfer"></span>
+	            <span translate="moon.intraExtension.configure.action.back">Back to Intra Extensions</span>
+			</a>
+	    </div>
     </div>
 	
 </div>

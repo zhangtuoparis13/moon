@@ -43,29 +43,28 @@
         	
         	} else {
         		
-        		intraExtensionService.data.subject.subject.create({ie_uuid: add.intraExtension._id}, add.subject, createSuccess, createError);
+				// TODO
+        		intraExtensionService.data.subject.category.create({ie_uuid: add.intraExtension._id}, {category_id: add.category.name}, createSuccess, createError);
         		        		        		
         	}	
 			
 			function createSuccess(data) {
-    			
-				add.subject.uuid = _.first(data.subjects);
-				
-    			$translate('moon.intraExtension.configure.subject.add.success', { subjectName: add.subject.name }).then(function (translatedValue) {
+    							
+    			$translate('moon.intraExtension.configure.subject.category.add.success', { categoryName: add.category.name }).then(function (translatedValue) {
         			alertService.alertSuccess(translatedValue);
                 });	
     			
-    			$scope.$emit('event:intraExtensionSubjectCreatedSuccess', add.subject);
+    			$scope.$emit('event:intraExtensionSubjectCategoryCreatedSuccess', add.category);
     			
     		};
     		
     		function createError(reason) {
     			
-    			$translate('moon.intraExtension.configure.subject.add.error', { subjectName: add.subject.name }).then(function (translatedValue) {
+    			$translate('moon.intraExtension.configure.subject.category.add.error', { categoryName: add.category.name }).then(function (translatedValue) {
         			alertService.alertError(translatedValue);
                 });	
     			
-    			$scope.$emit('event:intraExtensionSubjectCreatedError', add.subject);
+    			$scope.$emit('event:intraExtensionSubjectCategoryCreatedError', add.category);
     			        			
     		};
 			

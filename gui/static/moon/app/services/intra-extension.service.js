@@ -42,15 +42,16 @@
 		     	   		remove: { method: 'DELETE' }
 		    	   	}),
 		    	   	
-		    	   	categories: $resource('./json/intra-extensions/:ie_uuid/subject_categories', {}, {
+		    	   	category: $resource('./json/intra-extensions/:ie_uuid/subject_categories', {}, {
+		    	   		query: { method: 'GET', isArray: false },
+		    	   		create: { method: 'POST' }
+		    	   	}),
+		    	   	
+		    	   	categoryValue: $resource('./json/intra-extensions/:ie_uuid/subject_category_values', {}, {
 		    	   		query: { method: 'GET', isArray: false }
 		    	   	}),
 		    	   	
-		    	   	categoryValues: $resource('./json/intra-extensions/:ie_uuid/subject_category_values', {}, {
-		    	   		query: { method: 'GET', isArray: false }
-		    	   	}),
-		    	   	
-		    	   	assignments: $resource('./json/intra-extensions/:ie_uuid/subject_assignments', {}, {
+		    	   	assignment: $resource('./json/intra-extensions/:ie_uuid/subject_assignments', {}, {
 		    	   		query: { method: 'GET', isArray: false }
 		    	   	})
 	    	   		
@@ -64,15 +65,15 @@
 		     	   		create: { method: 'POST' }
 		    	   	}),
 		    	   	
-		    	   	categories: $resource('./json/intra-extensions/:ie_uuid/object_categories', {}, {
+		    	   	category: $resource('./json/intra-extensions/:ie_uuid/object_categories', {}, {
 		    	   		query: { method: 'GET', isArray: false }
 		    	   	}),
 		    	   	
-		    	   	categoryValues: $resource('./json/intra-extensions/:ie_uuid/object_category_values', {}, {
+		    	   	categoryValue: $resource('./json/intra-extensions/:ie_uuid/object_category_values', {}, {
 		    	   		query: { method: 'GET', isArray: false }
 		    	   	}),		    	   	
 		    	   	
-		    	   	assignments: $resource('./json/intra-extensions/:ie_uuid/object_assignments', {}, {
+		    	   	assignment: $resource('./json/intra-extensions/:ie_uuid/object_assignments', {}, {
 		    	   		query: { method: 'GET', isArray: false }
 		    	   	})
 	    	   		

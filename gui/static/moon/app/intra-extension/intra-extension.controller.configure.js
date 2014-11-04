@@ -59,9 +59,7 @@
 				
 		conf.subject = {
 				list: [],
-				current: null,
-				setCurrent: setCurrentSubject,
-				selected: [],
+				selected: null,
 				action: {
 					add: {
 						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-add.tpl.html', show: false }), 
@@ -74,7 +72,8 @@
 				},
 				category: {
 					list: [],
-					selected: null,
+					selectedCategory: null,
+					selectedValue: null,
 					action: {
 						addCategory: {
 							modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-category-add.tpl.html', show: false }), 
@@ -108,9 +107,7 @@
 		
 		conf.object = {
 				list: [],
-				current: null,
-				setCurrent: setCurrentObject,
-				selected: [],
+				selected: null,
 				action: {
 					add: {
 						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-add.tpl.html', show: false }), 
@@ -123,7 +120,8 @@
 				},
 				category: {
 					list: [],
-					selected: null,
+					selectedCategory: null,
+					selectedValue: null,
 					action: {
 						addCategory: {
 							modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-category-add.tpl.html', show: false }), 
@@ -290,10 +288,6 @@
 		/*
 		 * add subject
 		 */
-		
-		function setCurrentSubject(subject) {
-			conf.subject.current = subject;
-		};
 
 		function showSubjectAddModal() {
 			conf.subject.action.add.modal.$scope.intraExtension = conf.intraExtension;
@@ -303,8 +297,7 @@
 		function intraExtensionSubjectCreatedSuccess(event, subject) {
 			
 			conf.subject.list.push(subject);
-			conf.subject.selected.push(subject);
-			conf.subject.current = subject;
+			conf.subject.selected = subject;
 			
 			conf.subject.action.add.modal.hide();
 						
@@ -317,17 +310,13 @@
 		/*
 		 * delete subject
 		 */
-		
-		function removeSubjectFrom(subject, subjectList) {
-			return _.chain(subjectList).reject({uuid: subject.uuid}).value();
-		};
-		
+				
 		function showSubjectDeleteModal() {
 			
-			if(conf.subject.current) {
+			if(conf.subject.selected) {
 			
 				conf.subject.action.del.modal.$scope.intraExtension = conf.intraExtension;
-				conf.subject.action.del.modal.$scope.subject = conf.subject.current;
+				conf.subject.action.del.modal.$scope.subject = conf.subject.selected;
 				
 				conf.subject.action.del.modal.$promise.then(conf.subject.action.del.modal.show);
 			
@@ -337,8 +326,8 @@
 		
 		function intraExtensionSubjectDeletedSuccess(event, subject) {
 			
-			conf.subject.list = removeSubjectFrom(subject, conf.subject.list);
-			conf.subject.selected = removeSubjectFrom(subject, conf.subject.selected);
+			conf.subject.list = _.chain(conf.subject.list).reject({uuid: subject.uuid}).value();
+			conf.subject.selected = null;
 			
 			conf.subject.action.del.modal.hide();
 			
@@ -355,18 +344,21 @@
 		 */
 
 		function showSubjectCategoryAddModal() {
-			
+
+			conf.subject.category.action.addCategory.modal.$scope.intraExtension = conf.intraExtension;
+			conf.subject.category.action.addCategory.modal.$promise.then(conf.subject.category.action.addCategory.modal.show);
 			
 		};
 		
 		function intraExtensionSubjectCategoryCreatedSuccess(event, category) {
 			
+			conf.subject.category.list.push(category);
+			conf.subject.category.selected = category;
 			
 		};
 		
 		function intraExtensionSubjectCategoryCreatedError(event, category) {
-			
-			
+			conf.subject.category.action.addCategory.modal.hide();				
 		};
 		
 		/*
@@ -429,11 +421,7 @@
 		/*
 		 * add object
 		 */
-		
-		function setCurrentObject(object) {
-			conf.object.current = object;
-		};
-		
+				
 		function showObjectAddModal() {
 			conf.object.action.add.modal.$scope.intraExtension = conf.intraExtension;
 			conf.object.action.add.modal.$promise.then(conf.object.action.add.modal.show);			
@@ -442,8 +430,7 @@
 		function intraExtensionObjectCreatedSuccess(event, object) {
 			
 			conf.object.list.push(object);
-			conf.object.selected.push(object);
-			conf.object.current = object;
+			conf.object.selected = object;
 			
 			conf.object.action.add.modal.hide();
 			
@@ -456,14 +443,10 @@
 		/*
 		 * delete object
 		 */
-		
-		function removeObjectFrom(object, objectList) {
-			return _.chain(objectList).reject({uuid: object.uuid}).value();
-		};
-		
+				
 		function showObjectDeleteModal() {
 			
-			if(conf.object.current) {
+			if(conf.object.selected) {
 			
 				conf.object.action.del.modal.$scope.intraExtension = conf.intraExtension;
 				conf.object.action.del.modal.$scope.object = conf.object.current;
@@ -476,8 +459,8 @@
 		
 		function intraExtensionObjectDeletedSuccess(event, object) {
 			
-			conf.object.list = removeObjectFrom(object, conf.object.list);
-			conf.object.selected = removeObjectFrom(subobjectject, conf.object.selected);
+			conf.object.list = _.chain(conf.object.list).reject({uuid: object.uuid}).value();
+			conf.object.selected = null;
 			
 			conf.object.action.del.modal.hide();
 			
