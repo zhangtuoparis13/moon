@@ -52,11 +52,11 @@ def send_json(data, code=200):
                 if "<!DOCTYPE html>" in data[key]:
                     print("\033[41mAn error occured\033[m")
                     print(data[key])
-        return HttpResponse(json.dumps(data), code=code)
+        return HttpResponse(json.dumps(data), status=code)
     except:
         import traceback
         print(traceback.print_exc())
-        return HttpResponse(json.dumps({}), code=500)
+        return HttpResponse(json.dumps({}), status=500)
 
 
 def send_error(code=500, message="", stacktrace=""):
