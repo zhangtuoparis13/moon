@@ -312,15 +312,15 @@
 	    				"add": {
 		    				"title": "Add new Value",
 		    				"form": {
-			    				"name": "Name"
+			    				"value": "Value"
 							},
 							"action": {
 								"cancel": "Cancel",
 								"add": "Add Value"
 							},
 				    		"check": {
-				    			"name": {
-				    				"required": "Name is required"
+				    			"value": {
+				    				"required": "Value is required"
 				    			}
 				    		},
 				    		"error": "Unable to add Subject Category Value`{{valueName}}`",
@@ -410,15 +410,15 @@
 	    				"add": {
 		    				"title": "Add new Value",
 		    				"form": {
-			    				"name": "Name"
+			    				"value": "Value"
 							},
 							"action": {
 								"cancel": "Cancel",
 								"add": "Add Value"
 							},
 				    		"check": {
-				    			"name": {
-				    				"required": "Name is required"
+				    			"value": {
+				    				"required": "Value is required"
 				    			}
 				    		},
 				    		"error": "Unable to add Object Category Value`{{valueName}}`",

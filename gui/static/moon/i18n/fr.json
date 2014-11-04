@@ -312,15 +312,15 @@
 	    				"add": {
 		    				"title": "Ajouter une nouvelle Valeur",
 		    				"form": {
-			    				"name": "Nom"
+			    				"value": "Valeur"
 							},
 							"action": {
 								"cancel": "Annuler",
 								"add": "Ajouter Valeur"
 							},
 				    		"check": {
-				    			"name": {
-				    				"required": "Le nom est requis"
+				    			"value": {
+				    				"required": "La valeur est requise"
 				    			}
 				    		},
 				    		"error": "Impossible d'ajouter la Valeur `{{valueName}}`",
@@ -410,15 +410,15 @@
 	    				"add": {
 		    				"title": "Ajouter une nouvelle Valeur",
 		    				"form": {
-			    				"name": "Nom"
+			    				"value": "Valeur"
 							},
 							"action": {
 								"cancel": "Annuler",
 								"add": "Ajouter Valeur"
 							},
 				    		"check": {
-				    			"name": {
-				    				"required": "Le nom est requis"
+				    			"value": {
+				    				"required": "La valeur est requise"
 				    			}
 				    		},
 				    		"error": "Impossible d'ajouter la Valeur `{{valueName}}`",

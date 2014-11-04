@@ -59,12 +59,12 @@
 		
 		conf.subject = { loading: true, list: [], selected: null };
 		conf.subjectCategory = { loading: true, list: [], selected: null };
-		conf.subjectCategoryValue = { selected: null };
+		conf.subjectCategoryValue = { selected: null, reset: resetSubjectCategoryValue };
 		conf.subjectAssignment = { loading: true, list: [] };
 		
 		conf.object = { loading: true, list: [], selected: null };
 		conf.objectCategory = { loading: true, list: [], selected: null };
-		conf.objectCategoryValue = { selected: null };
+		conf.objectCategoryValue = { selected: null, reset: resetObjectCategoryValue };
 		conf.objectAssignment = { loading: true, list: [] };
 		
 		conf.action = {
@@ -346,6 +346,10 @@
 		/*
 		 * add subject category
 		 */
+		
+		function resetSubjectCategoryValue() {
+			conf.subjectCategoryValue.selected = null;
+		};
 
 		function showSubjectCategoryAddModal() {
 
@@ -405,16 +409,34 @@
 		
 		function showSubjectCategoryValueAddModal() {
 			
+			if(conf.subjectCategory.selected) {
+				
+				conf.action.subjectCategoryValue.add.modal.$scope.intraExtension = conf.intraExtension;
+				conf.action.subjectCategoryValue.add.modal.$scope.category = conf.subjectCategory.selected;
+				
+				conf.action.subjectCategoryValue.add.modal.$promise.then(conf.action.subjectCategoryValue.add.modal.show);
+				
+			}			
 			
 		};
 		
 		function intraExtensionSubjectCategoryValueCreatedSuccess(event, categoryAndValue) {
 			
+			var category = _(conf.subjectCategory.list).find(function(aCategory) {
+				return aCategory.name === categoryAndValue.category.name; 
+			});	
+			
+			category.values.push(categoryAndValue.value);
+			
+			conf.subjectCategoryValue.selected = categoryAndValue.value;
+			
+			conf.action.subjectCategoryValue.add.modal.hide();
 			
 		};
 		
 		function intraExtensionSubjectCategoryValueCreatedError(event, categoryAndValue) {
 			
+			conf.action.subjectCategoryValue.add.modal.hide();
 			
 		};
 		
@@ -424,16 +446,35 @@
 		
 		function showSubjectCategoryValueDeleteModal() {
 			
+			if(conf.subjectCategoryValue.selected) {
+				
+				conf.action.subjectCategoryValue.del.modal.$scope.intraExtension = conf.intraExtension;
+				conf.action.subjectCategoryValue.del.modal.$scope.category = conf.subjectCategory.selected;
+				conf.action.subjectCategoryValue.del.modal.$scope.value = conf.subjectCategoryValue.selected;
+				
+				conf.action.subjectCategoryValue.del.modal.$promise.then(conf.action.subjectCategoryValue.del.modal.show);
+				
+			}
 			
 		};
 		
 		function intraExtensionSubjectCategoryValueDeletedSuccess(event, categoryAndValue) {
 			
+			var category = _(conf.subjectCategory.list).find(function(aCategory) {
+				return aCategory.name === categoryAndValue.category.name; 
+			});	
+			
+			category.values = _.chain(category.values).without(categoryAndValue.value).value();
+			
+			conf.subjectCategoryValue.selected = null;
+			
+			conf.action.subjectCategoryValue.del.modal.hide();
 			
 		};
 		
 		function intraExtensionSubjectCategoryValueDeletedError(event, categoryAndValue) {
 			
+			conf.action.subjectCategoryValue.del.modal.hide();
 			
 		};
 		
@@ -492,8 +533,12 @@
 		};
 		
 		/*
-		 * add subject category
+		 * add object category
 		 */
+		
+		function resetObjectCategoryValue() {
+			conf.objectCategoryValue.selected = null;
+		};
 
 		function showObjectCategoryAddModal() {
 			
@@ -511,7 +556,7 @@
 		};
 		
 		/*
-		 * delete subject category
+		 * delete object category
 		 */
 		
 		function showObjectCategoryDeleteModal() {
@@ -530,7 +575,7 @@
 		};
 		
 		/*
-		 * add subject category value
+		 * add object category value
 		 */
 		
 		function showObjectCategoryValueAddModal() {
@@ -549,7 +594,7 @@
 		};
 		
 		/*
-		 * delete subject category value
+		 * delete object category value
 		 */
 		
 		function showObjectCategoryValueDeleteModal() {

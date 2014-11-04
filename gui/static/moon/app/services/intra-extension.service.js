@@ -48,8 +48,10 @@
 		    	   		remove: { method: 'DELETE' }
 		    	   	}),
 		    	   	
-		    	   	categoryValue: $resource('./json/intra-extensions/:ie_uuid/subject_category_values', {}, {
-		    	   		query: { method: 'GET', isArray: false }
+		    	   	categoryValue: $resource('./json/intra-extensions/:ie_uuid/subject_category_values/:category/:value', {}, {
+		    	   		query: { method: 'GET', isArray: false },
+		    	   		create: { method: 'POST' },
+		    	   		remove: { method: 'DELETE' }
 		    	   	}),
 		    	   	
 		    	   	assignment: $resource('./json/intra-extensions/:ie_uuid/subject_assignments', {}, {
