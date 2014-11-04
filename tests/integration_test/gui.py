@@ -62,9 +62,52 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
         # print(auth)
         # print("----------------------------\033[m")
         self.pip = get_pip()
+        self.policies = get_url("/json/intra-extensions/policies")
+        self.assertIsInstance(self.policies, dict)
+        my_policy = self.policies["policies"].keys()[1]
+        #Create first extension
+        self.new_ext1 = get_url(
+            "/json/intra-extensions/",
+            post_data={"policymodel": my_policy, "name": "Intra_Extension Policy 1"})
+        self.assertIsInstance(self.new_ext1, dict)
+        self.new_ext1_uuid = self.new_ext1["intra_extensions"]["_id"]
+        #Create second extension
+        self.new_ext2 = get_url(
+            "/json/intra-extensions/",
+            post_data={"policymodel": my_policy, "name": "Intra_Extension Policy 2"})
+        self.assertIsInstance(self.new_ext2, dict)
+        self.new_ext2_uuid = self.new_ext2["intra_extensions"]["_id"]
+        #Get Keystone tenants
+        self.tenants = get_url("/pip/projects/")
+        self.assertIsInstance(self.tenants, dict)
+        self.tenant_admin = None
+        self.tenant_demo = None
+        for tenant in self.tenants["projects"]:
+            if tenant["name"] == "admin":
+                self.tenant_admin = tenant["uuid"]
+            if tenant["name"] == "demo":
+                self.tenant_demo = tenant["uuid"]
+        #Create mapping between extensions and tenants
+        mapping = get_url(
+            "/json/super-extensions/".format(
+                self.tenant_admin,
+                self.new_ext1_uuid),
+            post_data={
+                "tenant_uuid": self.tenant_admin,
+                "intra_extension_uuid": self.new_ext2_uuid
+            }
+        )
+        mapping = get_url(
+            "/json/super-extensions/",
+            post_data={
+                "tenant_uuid": self.tenant_demo,
+                "intra_extension_uuid": self.new_ext2_uuid
+            }
+        )
 
     def tearDown(self):
-        pass
+        get_url("/json/intra-extensions/"+self.new_ext1_uuid+"/", method="DELETE")
+        get_url("/json/intra-extensions/"+self.new_ext2_uuid+"/", method="DELETE")
 
     def test_errors(self):
         data = get_url("/json/intra-extensions/")
@@ -235,7 +278,7 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
             }
         )
         #Add a new server
-        _data = get_url("/json/intra-extensions/"+new_ext_uuid+"/objects/", post_data={"object": new_vm})
+        _data = get_url("/json/intra-extensions/"+new_ext_uuid+"/objects/", post_data=new_vm)
         self.assertIsInstance(_data, dict)
         self.assertIn("objects", _data)
         self.assertIsInstance(_data["objects"], list)
@@ -436,8 +479,12 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
             self.assertIn("ultra-low2", _data["subject_assignments"]["subject_security_level"][user])
             #Delete the last assignment
             _data = get_url(
-                "/json/intra-extensions/"+ext+"/subject_assignments/subject_security_level/"+user+"/ultra-low2/",
-                method="DELETE")
+                "/json/intra-extensions/"+ext+"/subject_assignments/",
+                delete_data={
+                    "category_id": "subject_security_level",
+                    "value": "ultra-low2",
+                    "subject_id": user
+                })
             self.assertIsInstance(_data, dict)
             self.assertIn("subject_assignments", _data)
             self.assertIsInstance(_data["subject_assignments"], dict)
@@ -497,8 +544,12 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
             self.assertIn("ultra-low2", _data["object_assignments"]["object_security_level"][obj])
             #Delete the last assignment
             _data = get_url(
-                "/json/intra-extensions/"+ext+"/object_assignments/object_security_level/"+obj+"/ultra-low2/",
-                method="DELETE")
+                "/json/intra-extensions/"+ext+"/object_assignments/",
+                delete_data={
+                    "category_id": "object_security_level",
+                    "value": "ultra-low2",
+                    "object_id": obj
+                })
             self.assertIsInstance(_data, dict)
             self.assertIn("object_assignments", _data)
             self.assertIsInstance(_data["object_assignments"], dict)
