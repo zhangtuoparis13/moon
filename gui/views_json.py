@@ -43,7 +43,7 @@ def filter_input(data):
     return data
 
 
-def send_json(data):
+def send_json(data, code=200):
     try:
         # print(pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id']))
         # print("send_json", data)
@@ -52,19 +52,21 @@ def send_json(data):
                 if "<!DOCTYPE html>" in data[key]:
                     print("\033[41mAn error occured\033[m")
                     print(data[key])
-        return HttpResponse(json.dumps(data))
+        return HttpResponse(json.dumps(data), code=code)
     except:
         import traceback
         print(traceback.print_exc())
-        return HttpResponse(json.dumps({}))
+        return HttpResponse(json.dumps({}), code=500)
 
 
 def send_error(code=500, message="", stacktrace=""):
-    return send_json({
-        "code": code,
-        "message": message,
-        "stacktrace": stacktrace
-    })
+    return send_json(
+        {
+            "code": code,
+            "message": message,
+            "stacktrace": stacktrace
+        },
+        code=code)
 
 ##########################################################
 # Functions for getting information about intra-extensions
