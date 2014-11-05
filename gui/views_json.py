@@ -21,7 +21,8 @@ def catch_error(function):
             return result
         except:
             import traceback
-            stacktrace=traceback.format_exc()
+            stacktrace = traceback.format_exc()
+            print(stacktrace)
             if getattr(settings, "DEBUG"):
                 return send_error(
                     code=500,
