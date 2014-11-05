@@ -22,7 +22,7 @@
 		
 		add.form = {};
 		add.intraExtension = $scope.intraExtension;
-		add.category = { name: '' };
+		add.category = { name: '', values: [] };
 		
 		add.create = addCategory;
 		

@@ -384,6 +384,7 @@
 			
 			conf.subjectCategory.list.push(category);
 			conf.subjectCategory.selected = category;
+			conf.subjectCategoryValue.reset();
 			
 			conf.action.subjectCategory.add.modal.hide();	
 			
@@ -414,6 +415,7 @@
 			
 			conf.subjectCategory.list = _.chain(conf.subjectCategory.list).reject({name: category.name}).value();
 			conf.subjectCategory.selected = null;
+			conf.subjectCategoryValue.reset();
 			
 			conf.action.subjectCategory.del.modal.hide();
 			
@@ -582,6 +584,7 @@
 			
 			conf.objectCategory.list.push(category);
 			conf.objectCategory.selected = category;
+			conf.objectCategoryValue.reset();
 			
 			conf.action.objectCategory.add.modal.hide();	
 			
@@ -614,6 +617,7 @@
 			
 			conf.objectCategory.list = _.chain(conf.objectCategory.list).reject({name: category.name}).value();
 			conf.objectCategory.selected = null;
+			conf.objectCategoryValue.reset();
 			
 			conf.action.objectCategory.del.modal.hide();
 			
