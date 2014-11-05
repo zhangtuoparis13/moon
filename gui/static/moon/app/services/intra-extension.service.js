@@ -33,16 +33,59 @@
 	     	   		query: { method: 'GET', isArray: false }
 	    	   	}),
 	    	   	
-	    	   	subject: $resource('./json/intra-extensions/:ie_uuid/subjects', {}, {
-	    	   		query: { method: 'GET', isArray: false },
-	     	   		get: { method: 'GET', isArray: false },
-	     	   		create: { method: 'POST' }
-	    	   	}),
+	    	   	subject: {
+	    	   		
+	    	   		subject: $resource('./json/intra-extensions/:ie_uuid/subjects/:subject_uuid', {}, {
+		    	   		query: { method: 'GET', isArray: false },
+		     	   		get: { method: 'GET', isArray: false },
+		     	   		create: { method: 'POST' },
+		     	   		remove: { method: 'DELETE' }
+		    	   	}),
+		    	   	
+		    	   	category: $resource('./json/intra-extensions/:ie_uuid/subject_categories/:category_name', {}, {
+		    	   		query: { method: 'GET', isArray: false },
+		    	   		create: { method: 'POST' },
+		    	   		remove: { method: 'DELETE' }
+		    	   	}),
+		    	   	
+		    	   	categoryValue: $resource('./json/intra-extensions/:ie_uuid/subject_category_values/:category/:value', {}, {
+		    	   		query: { method: 'GET', isArray: false },
+		    	   		create: { method: 'POST' },
+		    	   		remove: { method: 'DELETE' }
+		    	   	}),
+		    	   	
+		    	   	assignment: $resource('./json/intra-extensions/:ie_uuid/subject_assignments', {}, {
+		    	   		query: { method: 'GET', isArray: false }
+		    	   	})
+	    	   		
+	    	   	},
 	    	   	
-	    	   	object: $resource('./json/intra-extensions/:ie_uuid/objects', {}, {
-	    	   		query: { method: 'GET', isArray: false },
-	     	   		get: { method: 'GET', isArray: false }
-	    	   	})
+	    	   	object: {
+	    	   		
+	    	   		object: $resource('./json/intra-extensions/:ie_uuid/objects/:object_uuid', {}, {
+		    	   		query: { method: 'GET', isArray: false },
+		     	   		get: { method: 'GET', isArray: false },
+		     	   		create: { method: 'POST' },
+		     	   		remove: { method: 'DELETE' }
+		    	   	}),
+		    	   	
+		    	   	category: $resource('./json/intra-extensions/:ie_uuid/object_categories/:category_name', {}, {
+		    	   		query: { method: 'GET', isArray: false },
+		    	   		create: { method: 'POST' },
+		    	   		remove: { method: 'DELETE' }
+		    	   	}),
+		    	   	
+		    	   	categoryValue: $resource('./json/intra-extensions/:ie_uuid/object_category_values/:category/:value', {}, {
+		    	   		query: { method: 'GET', isArray: false },
+		    	   		create: { method: 'POST' },
+		    	   		remove: { method: 'DELETE' }
+		    	   	}),		    	   	
+		    	   	
+		    	   	assignment: $resource('./json/intra-extensions/:ie_uuid/object_assignments', {}, {
+		    	   		query: { method: 'GET', isArray: false }
+		    	   	})
+	    	   		
+	    	   	}    	   	
     	   	
 			},
 			

@@ -23,15 +23,15 @@
 		return service;
 		
 		function isTenantTabActive() {
-			return $state.is('moon.tenant');
+			return $state.includes('moon.tenant');
 		};
 			
 		function isIntraExtensionTabActive() {
-			return $state.is('moon.intraExtension') || $state.is('moon.intraExtensionConfiguration');
+			return $state.includes('moon.intraExtension');
 		};
 		
 		function isInterExtensionTabActive() {
-			return $state.is('moon.interExtension');
+			return $state.includes('moon.interExtension');
 		};
 		
 	};

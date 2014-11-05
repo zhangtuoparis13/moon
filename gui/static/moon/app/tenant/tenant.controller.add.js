@@ -28,7 +28,7 @@
 		 * ---- create
 		 */
 		
-		function createTenant(tenant) {
+		function createTenant() {
         	
         	if(add.form.$invalid) {
         	
@@ -48,14 +48,14 @@
         	
         	} else {
         	
-	        	tenantService.data.tenant.create({}, tenant, createSuccess, createError);
+	        	tenantService.data.tenant.create({}, add.tenant, createSuccess, createError);
 
     		}
         	
         	function createSuccess(data) {
         		
         		var created = _(data.projects).find(function(aTenant) {
-        			return tenant.name === aTenant.name;
+        			return add.tenant.name === aTenant.name;
         		});
         		
         		$translate('moon.tenant.add.success', { tenantName: created.name }).then(function (translatedValue) {
@@ -68,11 +68,11 @@
         	
         	function createError(reason) {
         		
-        		$translate('moon.tenant.add.error', { tenantName: tenant.name }).then(function (translatedValue) {
+        		$translate('moon.tenant.add.error', { tenantName: add.tenant.name }).then(function (translatedValue) {
         			alertService.alertError(translatedValue);
                 });	
         		
-        		$scope.$emit('event:tenantCreatedError', tenant);
+        		$scope.$emit('event:tenantCreatedError', add.tenant);
         		
         	};
         	

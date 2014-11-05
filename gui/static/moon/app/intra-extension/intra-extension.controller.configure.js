@@ -10,9 +10,43 @@
 		.module('moon')
 			.controller('IntraExtensionConfigurationController', IntraExtensionConfigurationController);
 	
-	IntraExtensionConfigurationController.$inject = ['$q', '$rootScope', '$scope', '$translate', '$modal', 'alertService', 'tenantService', 'intraExtensionService', 'intraExtension', 'subjects', 'objects'];
+	IntraExtensionConfigurationController.$inject = ['$q', 
+	                                                 '$rootScope', 
+	                                                 '$scope', 
+	                                                 '$translate', 
+	                                                 '$modal', 
+	                                                 'alertService', 
+	                                                 'tenantService', 
+	                                                 'intraExtensionService', 
+	                                                 'intraExtension', 
+	                                                 'tenant', 
+	                                                 'subjects', 
+	                                                 'subjectCategories', 
+	                                                 'subjectCategoryValues', 
+	                                                 'subjectAssignments', 
+	                                                 'objects', 
+	                                                 'objectCategories', 
+	                                                 'objectCategoryValues', 
+	                                                 'objectAssignments'];
 	
-	function IntraExtensionConfigurationController($q, $rootScope, $scope, $translate, $modal, alertService, tenantService, intraExtensionService, intraExtension, subjects, objects) {
+	function IntraExtensionConfigurationController($q, 
+												   $rootScope, 
+												   $scope, 
+												   $translate, 
+												   $modal, 
+												   alertService, 
+												   tenantService, 
+												   intraExtensionService, 
+												   intraExtension, 
+												   tenant, 
+												   subjects, 
+												   subjectCategories, 
+												   subjectCategoryValues, 
+												   subjectAssignments, 
+												   objects, 
+												   objectCategories, 
+												   objectCategoryValues, 
+												   objectAssignments) {
 		
 		var conf = this;
 		
@@ -21,44 +55,113 @@
 		 */
 		
 		conf.intraExtension = intraExtension.intra_extensions;
+		conf.intraExtension.tenant = _.first(tenant.projects);
 				
-		conf.subject = { 
-				subjects: [],
-				subjectCategories: [],
-				selectedSubjects: [],
-				selectedCategories: [],
-				currentSubject: null,
-				setCurrentSubject: setCurrentSubject,
-				add: { 
-					modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-add.tpl.html', show: false }), 
-				 	showModal: showSubjectAddModal
+		conf.subject = { loading: true, list: [], selected: null };
+		conf.subjectCategory = { loading: true, list: [], selected: null };
+		conf.subjectCategoryValue = { selected: null, current: null, setCurrent: setCurrentSubjectCategoryValue, reset: resetSubjectCategoryValue };
+		conf.subjectAssignment = { loading: true, list: [] };
+		
+		conf.getSubject = getSubjectFromUuid;
+		
+		conf.object = { loading: true, list: [], selected: null };
+		conf.objectCategory = { loading: true, list: [], selected: null };
+		conf.objectCategoryValue = { selected: null, current: null, setCurrent: setCurrentObjectCategoryValue, reset: resetObjectCategoryValue };
+		conf.objectAssignment = { loading: true, list: [] };
+		
+		conf.getObject = getObjectFromUuid;
+		
+		conf.action = {
+				subject: {
+					add: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-add.tpl.html', show: false }), 
+					 	showModal: showSubjectAddModal
+					},
+					del: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-delete.tpl.html', show: false }), 
+					 	showModal: showSubjectDeleteModal
+					}
 				},
-				del: { 
-					modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-delete.tpl.html', show: false }), 
-				 	showModal: showSubjectDeleteModal
+				subjectCategory: {
+					add: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-category-add.tpl.html', show: false }), 
+					 	showModal: showSubjectCategoryAddModal
+					},
+					del: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-category-delete.tpl.html', show: false }), 
+					 	showModal: showSubjectCategoryDeleteModal
+					}
+				},
+				subjectCategoryValue: {
+					add: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-category-value-add.tpl.html', show: false }), 
+					 	showModal: showSubjectCategoryValueAddModal
+					},
+					del: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-subject-category-value-delete.tpl.html', show: false }), 
+					 	showModal: showSubjectCategoryValueDeleteModal
+					}
+				},
+				subjectAssignment: {
+					add: {
+						
+					},
+					del: {
+						
+					}
+				},
+				object: {
+					add: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-add.tpl.html', show: false }), 
+					 	showModal: showObjectAddModal
+					},
+					del: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-delete.tpl.html', show: false }), 
+					 	showModal: showObjectDeleteModal
+					}
+				},
+				objectCategory: {
+					add: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-category-add.tpl.html', show: false }), 
+					 	showModal: showObjectCategoryAddModal
+					},
+					del: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-category-delete.tpl.html', show: false }), 
+					 	showModal: showObjectCategoryDeleteModal
+					}
+				},
+				objectCategoryValue: {
+					add: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-category-value-add.tpl.html', show: false }), 
+					 	showModal: showObjectCategoryValueAddModal
+					},
+					del: {
+						modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-category-value-delete.tpl.html', show: false }), 
+					 	showModal: showObjectCategoryValueDeleteModal
+					}
+				},
+				objectAssignment: {
+					add: {
+						
+					},
+					del: {
+						
+					}
 				}
 		};
 		
-		
-		conf.object = { 
-				objects: [],
-				objectCategories: [],
-				selectedObjects: [],
-				selectedCategories: [], 
-				currentObject: null,
-				setCurrentObject: setCurrentObject,
-				add: {
-					modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-add.tpl.html', show: false }), 
-		 	 	 	showModal: showObjectAddModal
-				},
-				del: {
-					modal: $modal({ template: 'static/moon/app/intra-extension/intra-extension-configure-object-delete.tpl.html', show: false }), 
-		 	 	 	showModal: showObjectDeleteModal
-				}
-		};
-				
 		resolveSubjects(subjects);
 		resolveObjects(objects);
+		
+		resolveSubjectCategoriesAndValues(subjectCategories, subjectCategoryValues);
+		resolveObjectCategoriesAndValues(objectCategories, objectCategoryValues);
+		
+		resolveSubjectAssignments(subjectAssignments);
+		resolveObjectAssignments(objectAssignments);
+		
+		/*
+		 * =======================================================================================
+		 */
 		
 		/*
 		 * events
@@ -67,7 +170,40 @@
 		var rootListeners = {
 				
 				'event:intraExtensionSubjectCreatedSuccess': $rootScope.$on('event:intraExtensionSubjectCreatedSuccess', intraExtensionSubjectCreatedSuccess),
-				'event:intraExtensionSubjectCreatedError': $rootScope.$on('event:intraExtensionSubjectCreatedError', intraExtensionSubjectCreatedError)
+				'event:intraExtensionSubjectCreatedError': $rootScope.$on('event:intraExtensionSubjectCreatedError', intraExtensionSubjectCreatedError),
+				
+				'event:intraExtensionSubjectCategoryCreatedSuccess': $rootScope.$on('event:intraExtensionSubjectCategoryCreatedSuccess', intraExtensionSubjectCategoryCreatedSuccess),
+				'event:intraExtensionSubjectCategoryCreatedError': $rootScope.$on('event:intraExtensionSubjectCategoryCreatedError', intraExtensionSubjectCategoryCreatedError),
+				
+				'event:intraExtensionSubjectCategoryValueCreatedSuccess': $rootScope.$on('event:intraExtensionSubjectCategoryValueCreatedSuccess', intraExtensionSubjectCategoryValueCreatedSuccess),
+				'event:intraExtensionSubjectCategoryValueCreatedError': $rootScope.$on('event:intraExtensionSubjectCategoryValueCreatedError', intraExtensionSubjectCategoryValueCreatedError),
+								
+				'event:intraExtensionSubjectDeletedSuccess': $rootScope.$on('event:intraExtensionSubjectDeletedSuccess', intraExtensionSubjectDeletedSuccess),
+				'event:intraExtensionSubjectDeletedError': $rootScope.$on('event:intraExtensionSubjectDeletedError', intraExtensionSubjectDeletedError),
+				
+				'event:intraExtensionSubjectCategoryDeletedSuccess': $rootScope.$on('event:intraExtensionSubjectCategoryDeletedSuccess', intraExtensionSubjectCategoryDeletedSuccess),
+				'event:intraExtensionSubjectCategoryDeletedError': $rootScope.$on('event:intraExtensionSubjectCategoryDeletedError', intraExtensionSubjectCategoryDeletedError),
+				
+				'event:intraExtensionSubjectCategoryValueDeletedSuccess': $rootScope.$on('event:intraExtensionSubjectCategoryValueDeletedSuccess', intraExtensionSubjectCategoryValueDeletedSuccess),
+				'event:intraExtensionSubjectCategoryValueDeletedError': $rootScope.$on('event:intraExtensionSubjectCategoryValueDeletedError', intraExtensionSubjectCategoryValueDeletedError),
+				
+				'event:intraExtensionObjectCreatedSuccess': $rootScope.$on('event:intraExtensionObjectCreatedSuccess', intraExtensionObjectCreatedSuccess),
+				'event:intraExtensionObjectCreatedError': $rootScope.$on('event:intraExtensionObjectCreatedError', intraExtensionObjectCreatedError),
+				
+				'event:intraExtensionObjectCategoryCreatedSuccess': $rootScope.$on('event:intraExtensionObjectCategoryCreatedSuccess', intraExtensionObjectCategoryCreatedSuccess),
+				'event:intraExtensionObjectCategoryCreatedError': $rootScope.$on('event:intraExtensionObjectCategoryCreatedError', intraExtensionObjectCategoryCreatedError),
+				
+				'event:intraExtensionObjectCategoryValueCreatedSuccess': $rootScope.$on('event:intraExtensionObjectCategoryValueCreatedSuccess', intraExtensionObjectCategoryValueCreatedSuccess),
+				'event:intraExtensionObjectCategoryValueCreatedError': $rootScope.$on('event:intraExtensionObjectCategoryValueCreatedError', intraExtensionObjectCategoryValueCreatedError),
+								
+				'event:intraExtensionObjectDeletedSuccess': $rootScope.$on('event:intraExtensionObjectDeletedSuccess', intraExtensionObjectDeletedSuccess),
+				'event:intraExtensionObjectDeletedError': $rootScope.$on('event:intraExtensionObjectDeletedError', intraExtensionObjectDeletedError),
+				
+				'event:intraExtensionObjectCategoryDeletedSuccess': $rootScope.$on('event:intraExtensionObjectCategoryDeletedSuccess', intraExtensionObjectCategoryDeletedSuccess),
+				'event:intraExtensionObjectCategoryDeletedError': $rootScope.$on('event:intraExtensionObjectCategoryDeletedError', intraExtensionObjectCategoryDeletedError),
+				
+				'event:intraExtensionObjectCategoryValueDeletedSuccess': $rootScope.$on('event:intraExtensionObjectCategoryValueDeletedSuccess', intraExtensionObjectCategoryValueDeletedSuccess),
+				'event:intraExtensionObjectCategoryValueDeletedError': $rootScope.$on('event:intraExtensionObjectCategoryValueDeletedError', intraExtensionObjectCategoryValueDeletedError),
 				
 		};
 		
@@ -76,7 +212,39 @@
 		}
 		
 		/*
+		 * =======================================================================================
+		 */
+		
+		/*
 		 * 
+		 */
+		
+		function getSubjectFromUuid(uuid) {
+			
+			return _(conf.subject.list).find(function(aSubject) {
+				return aSubject.uuid === uuid;
+			});
+			
+		};
+		
+		function getObjectFromUuid(uuid) {
+			
+			return _(conf.object.list).find(function(anObject) {
+				return anObject.uuid === uuid;
+			});
+			
+		};
+		
+		function setCurrentSubjectCategoryValue(value) {
+			conf.subjectCategoryValue.current = value;
+		};
+		
+		function setCurrentObjectCategoryValue(value) {
+			conf.objectCategoryValue.current = value;
+		};
+		
+		/*
+		 * resolve
 		 */
 		
 		function resolveSubjects(subjects) {
@@ -89,15 +257,17 @@
 			
 			return $q.all(promises).then(function(data) {
 				
-				conf.subject.subjects = _(data).map(function(aSubject){
+				conf.subject.list = _(data).map(function(aSubject){
 					return _.first(aSubject.users);
 				});
 				
-				conf.subject.subjects = _(conf.subject.subjects).filter(function(aSubject){
+				conf.subject.list = _(conf.subject.list).filter(function(aSubject){
 					return aSubject != null || aSubject != undefined;
 				});
 				
-				return conf.subject.subjects;
+				conf.subject.loading = false;
+				
+				return conf.subject.list;
 				
 			});
 			
@@ -113,82 +283,492 @@
 			
 			return $q.all(promises).then(function(data) {
 				
-				conf.object.objects = _(data).map(function(anObject){
+				conf.object.list = _(data).map(function(anObject){
 					return _.first(anObject.objects);
 				});
 				
-				conf.object.objects = _(conf.object.objects).filter(function(anObject){
+				conf.object.list = _(conf.object.list).filter(function(anObject){
 					return anObject != null || anObject != undefined;
 				});
 				
-				return conf.object.objects;
+				conf.object.loading = false;
+				
+				return conf.object.list;
 				
 			});
 			
 		};
 		
+		function resolveSubjectCategoriesAndValues(subjectCategories, subjectCategoryValues) {
+			
+			conf.subjectCategory.list = _(subjectCategories.subject_categories).map(function(aCategory) {
+				
+				var catValues = subjectCategoryValues.subject_category_values[aCategory];
+				
+				if(!catValues) {
+					catValues = [];
+				}
+				
+				return { name: aCategory, values: catValues };
+				
+			});
+			
+			conf.subjectCategory.loading = false;
+			
+			return conf.subjectCategory.list; 
+			
+		};
+		
+		function resolveObjectCategoriesAndValues(objectCategories, objectCategoryValues) {
+			
+			conf.objectCategory.list = _(objectCategories.object_categories).map(function(aCategory) {
+				
+				var catValues = objectCategoryValues.object_category_values[aCategory];
+				
+				if(!catValues) {
+					catValues = [];
+				}
+				
+				return { name: aCategory, values: catValues };
+				
+			});
+			
+			conf.objectCategory.loading = false;
+			
+			return conf.objectCategory.list; 
+			
+		};
+		
+		function resolveSubjectAssignments(subjectAssignments) {
+			
+			var assignments = subjectAssignments.subject_assignments;
+			var categories = _.keys(assignments);
+			
+			_(categories).each(function(aCategory) {
+				
+				var subjectUuids = _.keys(assignments[aCategory]);
+				
+				_(subjectUuids).each(function(aSubjectUuid) {
+					
+					var subject = conf.getSubject(aSubjectUuid);
+					
+					if(subject) {
+						
+						var values = subjectUuids[aSubjectUuid];
+						
+					}
+					
+				});
+				
+			});
+			
+		};
+		
+		function resolveObjectAssignments(objectAssignments) {
+			
+			
+			
+		};
+		
 		/*
-		 * 
+		 * =======================================================================================
 		 */
 		
-		function setCurrentSubject(subject) {
-			conf.subject.currentSubject = subject;
-		};
+		/*
+		 * add subject
+		 */
 
 		function showSubjectAddModal() {
-			conf.subject.add.modal.$scope.intraExtension = conf.intraExtension;
-			conf.subject.add.modal.$promise.then(conf.subject.add.modal.show);
+			
+			conf.action.subject.add.modal.$scope.intraExtension = conf.intraExtension;
+			
+			conf.action.subject.add.modal.$promise.then(conf.action.subject.add.modal.show);
+			
 		};
-		
-		function showSubjectDeleteModal() {
-			
-			if(conf.subject.currentSubject) {
-			
-				conf.subject.del.modal.$scope.intraExtension = conf.intraExtension;
-				conf.subject.del.modal.$scope.subject = conf.subject.currentSubject;
 				
-				conf.subject.del.modal.$promise.then(conf.subject.del.modal.show);
-			
-			}
-			
-		};
-		
 		function intraExtensionSubjectCreatedSuccess(event, subject) {
 			
-			conf.subject.subjects.push(subject);
-			conf.subject.selectedSubjects.push(subject);
+			conf.subject.list.push(subject);
+			conf.subject.selected = subject;
 			
-			conf.subject.add.modal.hide();
+			conf.action.subject.add.modal.hide();
 						
 		};
 		
 		function intraExtensionSubjectCreatedError(event, subject) {
-			conf.subject.add.modal.hide();			
+			conf.action.subject.add.modal.hide();			
 		};
 		
 		/*
-		 * 
+		 * delete subject
 		 */
-		
-		function setCurrentObject(object) {
-			conf.object.currentObject = object;
-		};
-		
-		function showObjectAddModal() {
-			conf.object.add.modal.$scope.intraExtension = conf.intraExtension;
-			conf.object.add.modal.$promise.then(conf.object.add.modal.show);			
-		};
-		
-		function showObjectDeleteModal() {
-			
-			if(conf.object.currentObject) {
-			
-				conf.object.del.modal.$scope.intraExtension = conf.intraExtension;
-				conf.object.del.modal.$scope.object = conf.object.currentObject;
 				
-				conf.object.del.modal.$promise.then(conf.object.del.modal.show);
+		function showSubjectDeleteModal() {
+			
+			if(conf.subject.selected) {
+			
+				conf.action.subject.del.modal.$scope.intraExtension = conf.intraExtension;
+				conf.action.subject.del.modal.$scope.subject = conf.subject.selected;
+				
+				conf.action.subject.del.modal.$promise.then(conf.action.subject.del.modal.show);
 			
 			}
+			
+		};
+		
+		function intraExtensionSubjectDeletedSuccess(event, subject) {
+			
+			conf.subject.list = _.chain(conf.subject.list).reject({uuid: subject.uuid}).value();
+			conf.subject.selected = null;
+			
+			conf.action.subject.del.modal.hide();
+			
+		};
+		
+		function intraExtensionSubjectDeletedError(event, subject) {
+			
+			conf.action.subject.del.modal.hide();
+			
+		};
+		
+		/*
+		 * add subject category
+		 */
+		
+		function resetSubjectCategoryValue() {
+			conf.subjectCategoryValue.selected = null;
+		};
+
+		function showSubjectCategoryAddModal() {
+
+			conf.action.subjectCategory.add.modal.$scope.intraExtension = conf.intraExtension;
+			conf.action.subjectCategory.add.modal.$promise.then(conf.action.subjectCategory.add.modal.show);
+			
+		};
+		
+		function intraExtensionSubjectCategoryCreatedSuccess(event, category) {
+			
+			conf.subjectCategory.list.push(category);
+			conf.subjectCategory.selected = category;
+			conf.subjectCategoryValue.reset();
+			
+			conf.action.subjectCategory.add.modal.hide();	
+			
+		};
+		
+		function intraExtensionSubjectCategoryCreatedError(event, category) {
+			conf.action.subjectCategory.add.modal.hide();				
+		};
+		
+		/*
+		 * delete subject category
+		 */
+		
+		function showSubjectCategoryDeleteModal() {
+			
+			if(conf.subjectCategory.selected) {
+				
+				conf.action.subjectCategory.del.modal.$scope.intraExtension = conf.intraExtension;
+				conf.action.subjectCategory.del.modal.$scope.category = conf.subjectCategory.selected;
+				
+				conf.action.subjectCategory.del.modal.$promise.then(conf.action.subjectCategory.del.modal.show);
+			
+			}
+			
+		};
+		
+		function intraExtensionSubjectCategoryDeletedSuccess(event, category) {
+			
+			conf.subjectCategory.list = _.chain(conf.subjectCategory.list).reject({name: category.name}).value();
+			conf.subjectCategory.selected = null;
+			conf.subjectCategoryValue.reset();
+			
+			conf.action.subjectCategory.del.modal.hide();
+			
+		};
+		
+		function intraExtensionSubjectCategoryDeletedError(event, category) {
+			
+			conf.action.subjectCategory.del.modal.hide();
+			
+		};
+		
+		/*
+		 * add subject category value
+		 */
+		
+		function showSubjectCategoryValueAddModal() {
+			
+			if(conf.subjectCategory.selected) {
+				
+				conf.action.subjectCategoryValue.add.modal.$scope.intraExtension = conf.intraExtension;
+				conf.action.subjectCategoryValue.add.modal.$scope.category = conf.subjectCategory.selected;
+				
+				conf.action.subjectCategoryValue.add.modal.$promise.then(conf.action.subjectCategoryValue.add.modal.show);
+				
+			}			
+			
+		};
+		
+		function intraExtensionSubjectCategoryValueCreatedSuccess(event, categoryAndValue) {
+			
+			var category = _(conf.subjectCategory.list).find(function(aCategory) {
+				return aCategory.name === categoryAndValue.category.name; 
+			});	
+			
+			category.values.push(categoryAndValue.value);
+			
+			conf.subjectCategoryValue.selected.push(categoryAndValue.value);
+			conf.subjectCategoryValue.current = categoryAndValue.value;
+			
+			conf.action.subjectCategoryValue.add.modal.hide();
+			
+		};
+		
+		function intraExtensionSubjectCategoryValueCreatedError(event, categoryAndValue) {
+			
+			conf.action.subjectCategoryValue.add.modal.hide();
+			
+		};
+		
+		/*
+		 * delete subject category value
+		 */
+		
+		function showSubjectCategoryValueDeleteModal() {
+			
+			if(conf.subjectCategoryValue.selected) {
+				
+				conf.action.subjectCategoryValue.del.modal.$scope.intraExtension = conf.intraExtension;
+				conf.action.subjectCategoryValue.del.modal.$scope.category = conf.subjectCategory.selected;
+				conf.action.subjectCategoryValue.del.modal.$scope.value = conf.subjectCategoryValue.current;
+				
+				conf.action.subjectCategoryValue.del.modal.$promise.then(conf.action.subjectCategoryValue.del.modal.show);
+				
+			}
+			
+		};
+		
+		function intraExtensionSubjectCategoryValueDeletedSuccess(event, categoryAndValue) {
+			
+			var category = _(conf.subjectCategory.list).find(function(aCategory) {
+				return aCategory.name === categoryAndValue.category.name; 
+			});	
+			
+			category.values = _.chain(category.values).without(categoryAndValue.value).value();
+			
+			conf.subjectCategoryValue.selected = null;
+			
+			conf.action.subjectCategoryValue.del.modal.hide();
+			
+		};
+		
+		function intraExtensionSubjectCategoryValueDeletedError(event, categoryAndValue) {
+			
+			conf.action.subjectCategoryValue.del.modal.hide();
+			
+		};
+		
+		/*
+		 * =======================================================================================
+		 */
+		
+		/*
+		 * add object
+		 */
+				
+		function showObjectAddModal() {
+			
+			conf.action.object.add.modal.$scope.intraExtension = conf.intraExtension;
+			
+			conf.action.object.add.modal.$promise.then(conf.action.object.add.modal.show);	
+			
+		};
+				
+		function intraExtensionObjectCreatedSuccess(event, object) {
+			
+			conf.object.list.push(object);
+			conf.object.selected = object;
+			
+			conf.action.object.add.modal.hide();
+			
+		};
+		
+		function intraExtensionObjectCreatedError() {
+			
+			conf.action.object.add.modal.hide();
+			
+		};
+		
+		/*
+		 * delete object
+		 */
+				
+		function showObjectDeleteModal() {
+			
+			if(conf.object.selected) {
+			
+				conf.action.object.del.modal.$scope.intraExtension = conf.intraExtension;
+				conf.action.object.del.modal.$scope.object = conf.object.selected;
+				
+				conf.action.object.del.modal.$promise.then(conf.action.object.del.modal.show);
+			
+			}
+			
+		};
+		
+		function intraExtensionObjectDeletedSuccess(event, object) {
+			
+			conf.object.list = _.chain(conf.object.list).reject({uuid: object.uuid}).value();
+			conf.object.selected = null;
+			
+			conf.action.object.del.modal.hide();
+			
+		};
+		
+		function intraExtensionObjectDeletedError(event, object) {
+			
+			conf.action.object.del.modal.hide();
+			
+		};
+		
+		/*
+		 * add object category
+		 */
+		
+		function resetObjectCategoryValue() {
+			conf.objectCategoryValue.selected = null;
+		};
+
+		function showObjectCategoryAddModal() {
+			
+			conf.action.objectCategory.add.modal.$scope.intraExtension = conf.intraExtension;
+			conf.action.objectCategory.add.modal.$promise.then(conf.action.objectCategory.add.modal.show);
+			
+		};
+		
+		function intraExtensionObjectCategoryCreatedSuccess(event, category) {
+			
+			conf.objectCategory.list.push(category);
+			conf.objectCategory.selected = category;
+			conf.objectCategoryValue.reset();
+			
+			conf.action.objectCategory.add.modal.hide();	
+			
+		};
+		
+		function intraExtensionObjectCategoryCreatedError(event, category) {
+			
+			conf.action.objectCategory.add.modal.hide();
+			
+		};
+		
+		/*
+		 * delete object category
+		 */
+		
+		function showObjectCategoryDeleteModal() {
+			
+			if(conf.objectCategory.selected) {
+				
+				conf.action.objectCategory.del.modal.$scope.intraExtension = conf.intraExtension;
+				conf.action.objectCategory.del.modal.$scope.category = conf.objectCategory.selected;
+				
+				conf.action.objectCategory.del.modal.$promise.then(conf.action.objectCategory.del.modal.show);
+			
+			}
+			
+		};
+		
+		function intraExtensionObjectCategoryDeletedSuccess(event, category) {
+			
+			conf.objectCategory.list = _.chain(conf.objectCategory.list).reject({name: category.name}).value();
+			conf.objectCategory.selected = null;
+			conf.objectCategoryValue.reset();
+			
+			conf.action.objectCategory.del.modal.hide();
+			
+		};
+		
+		function intraExtensionObjectCategoryDeletedError(event, category) {
+			
+			conf.action.objectCategory.del.modal.hide();
+			
+		};
+		
+		/*
+		 * add object category value
+		 */
+		
+		function showObjectCategoryValueAddModal() {
+			
+			if(conf.objectCategory.selected) {
+				
+				conf.action.objectCategoryValue.add.modal.$scope.intraExtension = conf.intraExtension;
+				conf.action.objectCategoryValue.add.modal.$scope.category = conf.objectCategory.selected;
+				
+				conf.action.objectCategoryValue.add.modal.$promise.then(conf.action.objectCategoryValue.add.modal.show);
+				
+			}		
+			
+		};
+		
+		function intraExtensionObjectCategoryValueCreatedSuccess(event, categoryAndValue) {
+			
+			var category = _(conf.objectCategory.list).find(function(aCategory) {
+				return aCategory.name === categoryAndValue.category.name; 
+			});	
+			
+			category.values.push(categoryAndValue.value);
+			
+			conf.objectCategoryValue.selected.push(categoryAndValue.value);
+			conf.objectCategoryValue.current = categoryAndValue.value;
+			
+			conf.action.objectCategoryValue.add.modal.hide();
+			
+		};
+		
+		function intraExtensionObjectCategoryValueCreatedError(event, categoryAndValue) {
+			
+			conf.action.objectCategoryValue.add.modal.hide();
+			
+		};
+		
+		/*
+		 * delete object category value
+		 */
+		
+		function showObjectCategoryValueDeleteModal() {
+			
+			if(conf.objectCategoryValue.selected) {
+				
+				conf.action.objectCategoryValue.del.modal.$scope.intraExtension = conf.intraExtension;
+				conf.action.objectCategoryValue.del.modal.$scope.category = conf.objectCategory.selected;
+				conf.action.objectCategoryValue.del.modal.$scope.value = conf.objectCategoryValue.current;
+				
+				conf.action.objectCategoryValue.del.modal.$promise.then(conf.action.objectCategoryValue.del.modal.show);
+				
+			}
+			
+		};
+		
+		function intraExtensionObjectCategoryValueDeletedSuccess(event, categoryAndValue) {
+			
+			var category = _(conf.objectCategory.list).find(function(aCategory) {
+				return aCategory.name === categoryAndValue.category.name; 
+			});	
+			
+			category.values = _.chain(category.values).without(categoryAndValue.value).value();
+			
+			conf.objectCategoryValue.selected = null;
+			
+			conf.action.objectCategoryValue.del.modal.hide();
+			
+		};
+		
+		function intraExtensionObjectCategoryValueDeletedError(event, categoryAndValue) {
+			
+			conf.action.objectCategoryValue.del.modal.hide();
 			
 		};
 		

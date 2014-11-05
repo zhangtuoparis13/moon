@@ -10,9 +10,9 @@
 		.module('moon')
 			.controller('TenantViewController', TenantViewController);
 	
-	TenantViewController.$inject = ['$q', '$scope', '$translate', 'tenantService'];
+	TenantViewController.$inject = ['$q', '$scope', '$translate', 'alertService', 'tenantService'];
 	
-	function TenantViewController($q, $scope, $translate, tenantService) {
+	function TenantViewController($q, $scope, $translate, alertService, tenantService) {
 		
 		var view = this;
 		
@@ -131,15 +131,15 @@
         	return view.roles.length > 0;
         };
         
-        function resolveRoles(tenant, subject) {
+        function resolveRoles(subject) {
         	
         	view.rolesLoading = true;
         	
         	view.roles = [];
         	view.roleAssignment = null;
         	
-        	var promises = { roles: tenantService.data.subjectRole.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}).$promise,
-        					 roleAssigment: tenantService.data.roleAssigment.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}).$promise };
+        	var promises = { roles: tenantService.data.subjectRole.get({project_uuid: view.tenant.uuid, user_uuid: subject.uuid}).$promise,
+        					 roleAssigment: tenantService.data.roleAssigment.get({project_uuid: view.tenant.uuid, user_uuid: subject.uuid}).$promise };
         	
         	$q.all(promises).then(resolveSuccess, resolveError);
         	
@@ -179,15 +179,15 @@
         	return view.groups.length > 0;
         };
         
-        function resolveGroups(tenant, subject) {
+        function resolveGroups(subject) {
         	
         	view.groupsLoading = true;
         	
         	view.groups = [];
         	view.groupAssignment = null;
         	        	
-        	var promises = { groups: tenantService.data.subjectGroup.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}).$promise, 
-        					 groupAssignment: tenantService.data.groupAssigment.get({project_uuid: tenant.uuid, user_uuid: subject.uuid}).$promise };
+        	var promises = { groups: tenantService.data.subjectGroup.get({project_uuid: view.tenant.uuid, user_uuid: subject.uuid}).$promise, 
+        					 groupAssignment: tenantService.data.groupAssigment.get({project_uuid: view.tenant.uuid, user_uuid: subject.uuid}).$promise };
         	
         	$q.all(promises).then(resolveSuccess, resolveError);
         	

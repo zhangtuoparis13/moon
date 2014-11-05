@@ -2,7 +2,8 @@
 	"moon": {
 	    "global": {
 	    	"applicationName": "Moon",
-	        "404": "Page not found"
+	        "404": "Page not found",
+	        "error": "A global error occurs: {{stacktrace}}"
 	    },
 	    "compatibility": {
 	    	"label": "Browsers compatibility",
@@ -235,9 +236,6 @@
 	    		},
 	    		"subject": {
 	    			"title": "Subjects",
-	    			"category": {
-	    				"title": "Categories"
-	    			},
 	    			"add": {
 	    				"title": "Add new Subject",
 	    				"form": {
@@ -278,13 +276,70 @@
 			    		},
 			    		"error": "Unable to delete Subject `{{subjectName}}`",
 			    		"success": "Subject `{{subjectName}}` successfully deleted"
+	    			},
+	    			"category": {
+	    				"title": "Categories",
+	    				"add": {
+		    				"title": "Add new Category",
+		    				"form": {
+			    				"name": "Name"
+							},
+							"action": {
+								"cancel": "Cancel",
+								"add": "Add Category"
+							},
+				    		"check": {
+				    			"name": {
+				    				"required": "Name is required"
+				    			}
+				    		},
+				    		"error": "Unable to add Subject Category `{{categoryName}}`",
+				    		"success": "Subject Category `{{categoryName}}` successfully added"
+		    			},
+		    			"remove": {
+		    				"title": "Delete Category",
+				    		"content": "Are you sure you want to delete `{{categoryName}}` subject category of `{{intraExtensionName}}` Intra Extension ?",
+				    		"action": {
+				    			"cancel": "Cancel",
+				    			"delete": "Delete"
+				    		},
+				    		"error": "Unable to delete Subject Category `{{categoryName}}`",
+				    		"success": "Subject Category `{{categoryName}}` successfully deleted"
+		    			}
+	    			},
+	    			"categoryValue": {
+	    				"title": "Values",
+	    				"add": {
+		    				"title": "Add new Value",
+		    				"form": {
+			    				"value": "Value"
+							},
+							"action": {
+								"cancel": "Cancel",
+								"add": "Add Value"
+							},
+				    		"check": {
+				    			"value": {
+				    				"required": "Value is required"
+				    			}
+				    		},
+				    		"error": "Unable to add Subject Category Value`{{valueName}}`",
+				    		"success": "Subject Category Value `{{valueName}}` successfully added"
+		    			},
+		    			"remove": {
+		    				"title": "Delete Value",
+				    		"content": "Are you sure you want to delete `{{valueName}}` subject category value of `{{intraExtensionName}}` Intra Extension ?",
+				    		"action": {
+				    			"cancel": "Cancel",
+				    			"delete": "Delete"
+				    		},
+				    		"error": "Unable to delete Subject Category Value `{{valueName}}`",
+				    		"success": "Subject Category Value `{{valueName}}` successfully deleted"
+		    			}
 	    			}
 	    		},
 	    		"object": {
 	    			"title": "Objects",
-	    			"category": {
-	    				"title": "Categories"
-	    			},
 	    			"add": {
 	    				"title": "Add new Object",
 	    				"form": {
@@ -319,6 +374,66 @@
 			    		},
 			    		"error": "Unable to delete Object `{{objectName}}`",
 			    		"success": "Object `{{objectName}}` successfully deleted"
+	    			},
+	    			"category": {
+	    				"title": "Categories",
+	    				"add": {
+		    				"title": "Add new Category",
+		    				"form": {
+			    				"name": "Name"
+							},
+							"action": {
+								"cancel": "Cancel",
+								"add": "Add Category"
+							},
+				    		"check": {
+				    			"name": {
+				    				"required": "Name is required"
+				    			}
+				    		},
+				    		"error": "Unable to add Object Category `{{categoryName}}`",
+				    		"success": "Object Category `{{categoryName}}` successfully added"
+		    			},
+		    			"remove": {
+		    				"title": "Delete Category",
+				    		"content": "Are you sure you want to delete `{{categoryName}}` object category of `{{intraExtensionName}}` Intra Extension ?",
+				    		"action": {
+				    			"cancel": "Cancel",
+				    			"delete": "Delete"
+				    		},
+				    		"error": "Unable to delete Object Category `{{categoryName}}`",
+				    		"success": "Object Category `{{categoryName}}` successfully deleted"
+		    			}
+	    			},
+	    			"categoryValue": {
+	    				"title": "Values",
+	    				"add": {
+		    				"title": "Add new Value",
+		    				"form": {
+			    				"value": "Value"
+							},
+							"action": {
+								"cancel": "Cancel",
+								"add": "Add Value"
+							},
+				    		"check": {
+				    			"value": {
+				    				"required": "Value is required"
+				    			}
+				    		},
+				    		"error": "Unable to add Object Category Value`{{valueName}}`",
+				    		"success": "Object Category Value `{{valueName}}` successfully added"
+		    			},
+		    			"remove": {
+		    				"title": "Delete Value",
+				    		"content": "Are you sure you want to delete `{{valueName}}` object category value of `{{intraExtensionName}}` Intra Extension ?",
+				    		"action": {
+				    			"cancel": "Cancel",
+				    			"delete": "Delete"
+				    		},
+				    		"error": "Unable to delete Object Category Value `{{valueName}}`",
+				    		"success": "Object Category Value `{{valueName}}` successfully deleted"
+		    			}
 	    			}
 	    		}    		
 	    	},

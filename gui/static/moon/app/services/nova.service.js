@@ -16,13 +16,17 @@
 	                                   	
         return {
             
-            image: $resource('./pip/nova/images', {}, {
-            	query: {method: 'GET', isArray: false}
-     	   	}),
+        	data: {
+        	
+	            image: $resource('./pip/nova/images', {}, {
+	            	query: {method: 'GET', isArray: false}
+	     	   	}),
+	     	   	
+	     	   	flavor: $resource('./pip/nova/flavors', {}, {
+	            	query: {method: 'GET', isArray: false}
+	     	   	})
      	   	
-     	   	flavor: $resource('./pip/nova/flavors', {}, {
-            	query: {method: 'GET', isArray: false}
-     	   	})
+        	}
         
         };
     

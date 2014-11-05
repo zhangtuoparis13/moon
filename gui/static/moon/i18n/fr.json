@@ -2,7 +2,8 @@
 	"moon": {
 	    "global": {
 	    	"applicationName": "Moon",
-	        "404": "Page non trouvée"
+	        "404": "Page non trouvée",
+	        "error": "Une erreur globale est survenue: {{stacktrace}}"
 	    },
 	    "compatibility": {
 	    	"label": "Compatibilité navigateurs Web",
@@ -235,9 +236,6 @@
 	    		},
 	    		"subject": {
 	    			"title": "Sujets",
-	    			"category": {
-	    				"title": "Catégories"
-	    			},
 	    			"add": {
 	    				"title": "Ajouter un nouveau Sujet",
 	    				"form": {
@@ -278,13 +276,70 @@
 			    		},
 			    		"error": "Impossible de supprimer le Sujet `{{subjectName}}`",
 			    		"success": "Le Sujet `{{subjectName}}` a été supprimé avec succès"
-			    	}
+			    	},
+			    	"category": {
+	    				"title": "Catégories",
+	    				"add": {
+		    				"title": "Ajouter une nouvelle Catégorie",
+		    				"form": {
+			    				"name": "Nom"
+							},
+							"action": {
+								"cancel": "Annuler",
+								"add": "Ajouter Catégorie"
+							},
+				    		"check": {
+				    			"name": {
+				    				"required": "Le nom est requis"
+				    			}
+				    		},
+				    		"error": "Impossible d'ajouter la Catégorie `{{categoryName}}`",
+				    		"success": "Catégorie `{{categoryName}}` ajoutée avec succès"
+		    			},
+		    			"remove": {
+		    				"title": "Supprimer une Catégorie",
+				    		"content": "Voulez-vous supprimer la Catégorie `{{categoryName}}` de l'Intra Extension `{{intraExtensionName}}` ?",
+				    		"action": {
+				    			"cancel": "Annuler",
+				    			"delete": "Supprimer"
+				    		},
+				    		"error": "Impossible de supprimer la Catégorie `{{categoryName}}`",
+				    		"success": "La Catégorie `{{categoryName}}` a été supprimée avec succès"
+		    			}
+	    			},
+	    			"categoryValue": {
+	    				"title": "Valeurs",
+	    				"add": {
+		    				"title": "Ajouter une nouvelle Valeur",
+		    				"form": {
+			    				"value": "Valeur"
+							},
+							"action": {
+								"cancel": "Annuler",
+								"add": "Ajouter Valeur"
+							},
+				    		"check": {
+				    			"value": {
+				    				"required": "La valeur est requise"
+				    			}
+				    		},
+				    		"error": "Impossible d'ajouter la Valeur `{{valueName}}`",
+				    		"success": "Valeur `{{valueName}}` ajoutée avec succès"
+		    			},
+		    			"remove": {
+		    				"title": "Supprimer une Valeur",
+				    		"content": "Voulez-vous supprimer la Valeur `{{valueName}}` de l'Intra Extension `{{intraExtensionName}}` ?",
+				    		"action": {
+				    			"cancel": "Annuler",
+				    			"delete": "Supprimer"
+				    		},
+				    		"error": "Impossible de supprimer la Valeur `{{valueName}}`",
+				    		"success": "La Valeur `{{valueName}}` a été supprimée avec succès"
+		    			}
+	    			}
 	    		},
 	    		"object": {
 	    			"title": "Objets",
-	    			"category": {
-	    				"title": "Catégories"
-	    			},
 	    			"add": {
 	    				"title": "Ajouter un nouvel Objet",
 	    				"form": {
@@ -319,7 +374,67 @@
 			    		},
 			    		"error": "Impossible de supprimer l'Objet `{{objectName}}`",
 			    		"success": "L'Objet `{{objectName}}` a été supprimé avec succès"
-			    	}
+			    	},
+			    	"category": {
+	    				"title": "Catégories",
+	    				"add": {
+		    				"title": "Ajouter une nouvelle Catégorie",
+		    				"form": {
+			    				"name": "Nom"
+							},
+							"action": {
+								"cancel": "Annuler",
+								"add": "Ajouter Catégorie"
+							},
+				    		"check": {
+				    			"name": {
+				    				"required": "Le nom est requis"
+				    			}
+				    		},
+				    		"error": "Impossible d'ajouter la Catégorie `{{categoryName}}`",
+				    		"success": "Catégorie `{{categoryName}}` ajoutée avec succès"
+		    			},
+		    			"remove": {
+		    				"title": "Supprimer une Catégorie",
+				    		"content": "Voulez-vous supprimer la Catégorie `{{categoryName}}` de l'Intra Extension `{{intraExtensionName}}` ?",
+				    		"action": {
+				    			"cancel": "Annuler",
+				    			"delete": "Supprimer"
+				    		},
+				    		"error": "Impossible de supprimer la Catégorie `{{categoryName}}`",
+				    		"success": "La Catégorie `{{categoryName}}` a été supprimée avec succès"
+		    			}
+	    			},
+	    			"categoryValue": {
+	    				"title": "Valeurs",
+	    				"add": {
+		    				"title": "Ajouter une nouvelle Valeur",
+		    				"form": {
+			    				"value": "Valeur"
+							},
+							"action": {
+								"cancel": "Annuler",
+								"add": "Ajouter Valeur"
+							},
+				    		"check": {
+				    			"value": {
+				    				"required": "La valeur est requise"
+				    			}
+				    		},
+				    		"error": "Impossible d'ajouter la Valeur `{{valueName}}`",
+				    		"success": "Valeur `{{valueName}}` ajoutée avec succès"
+		    			},
+		    			"remove": {
+		    				"title": "Supprimer une Valeur",
+				    		"content": "Voulez-vous supprimer la Valeur `{{valueName}}` de l'Intra Extension `{{intraExtensionName}}` ?",
+				    		"action": {
+				    			"cancel": "Annuler",
+				    			"delete": "Supprimer"
+				    		},
+				    		"error": "Impossible de supprimer la Valeur `{{valueName}}`",
+				    		"success": "La Valeur `{{valueName}}` a été supprimée avec succès"
+		    			}
+	    			}
 	    		}  
 	    	},
 	    	"rule": {

@@ -42,7 +42,7 @@
 			intraExtensionService.findAll().then(function(data) {
 				
 				map.intraExtensions = _(data).filter(function(intraExtension) {
-					return intraExtension.tenant_uuid == "";
+					return intraExtension.tenant_uuid == "" || intraExtension.tenant_uuid == null;
 				});
 				
 				map.intraExtensionsLoading = false;
@@ -53,7 +53,7 @@
 			
 		};
 		
-		function mapTenant(tenant, intraExtension) {
+		function mapTenant() {
 			
 			if(map.form.$invalid) {
 	        	
@@ -66,7 +66,7 @@
 	        	        	
         	} else {
         	
-        		var mapping = {tenant_uuid: tenant.uuid, intra_extension_uuid: intraExtension._id};
+        		var mapping = {tenant_uuid: map.tenant.uuid, intra_extension_uuid: map.selectedIntraExtension._id};
         		
 	        	tenantService.data.map.create(mapping, mapping, mapSuccess, mapError);
 	        		        		        	        	
@@ -74,24 +74,24 @@
 			
 			function mapSuccess(data) {
         		
-        		tenant.extensionUuid = intraExtension._id;
-        		tenant.intraExtension = intraExtension;
+				map.tenant.extensionUuid = map.selectedIntraExtension._id;
+				map.tenant.intraExtension = map.selectedIntraExtension;
         		
-        		$translate('moon.tenant.map.success', { tenantName: tenant.name, intraExtensionName: _.first(intraExtension.name) }).then(function (translatedValue) {
+        		$translate('moon.tenant.map.success', { tenantName: map.tenant.name, intraExtensionName: _.first(map.selectedIntraExtension.name) }).then(function (translatedValue) {
         			alertService.alertSuccess(translatedValue);
                 });	
         		
-        		$scope.$emit('event:tenantMappedSuccess', tenant);
+        		$scope.$emit('event:tenantMappedSuccess', map.tenant);
         		
         	};
         	
         	function mapError(response) {
         		
-        		$translate('moon.tenant.map.error', { tenantName: tenant.name, intraExtensionName: _.first(intraExtension.name) }).then(function (translatedValue) {
+        		$translate('moon.tenant.map.error', { tenantName: map.tenant.name, intraExtensionName: _.first(map.selectedIntraExtension.name) }).then(function (translatedValue) {
         			alertService.alertError(translatedValue);
                 });	
         		
-        		$scope.$emit('event:tenantMappedError', tenant);
+        		$scope.$emit('event:tenantMappedError', map.tenant);
         		
         	};
 			
