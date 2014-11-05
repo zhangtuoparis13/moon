@@ -199,6 +199,8 @@ def get_tenant_intra_extension_mapping():
 
 
 def pdp_authz(sub, obj, act, requesting_tenant_uuid=None, requested_tenant_uuid=None):
+    requesting_intra_extension_uuid = None
+    requested_intra_extension_uuid = None
     if requesting_tenant_uuid and requested_tenant_uuid:
         if requesting_tenant_uuid == requested_tenant_uuid:
             return intra_extensions.authz(sub, obj, act)
