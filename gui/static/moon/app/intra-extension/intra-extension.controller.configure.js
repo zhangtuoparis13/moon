@@ -56,16 +56,20 @@
 		
 		conf.intraExtension = intraExtension.intra_extensions;
 		conf.intraExtension.tenant = _.first(tenant.projects);
-		
+				
 		conf.subject = { loading: true, list: [], selected: null };
 		conf.subjectCategory = { loading: true, list: [], selected: null };
-		conf.subjectCategoryValue = { selected: null, reset: resetSubjectCategoryValue };
+		conf.subjectCategoryValue = { selected: null, current: null, setCurrent: setCurrentSubjectCategoryValue, reset: resetSubjectCategoryValue };
 		conf.subjectAssignment = { loading: true, list: [] };
+		
+		conf.getSubject = getSubjectFromUuid;
 		
 		conf.object = { loading: true, list: [], selected: null };
 		conf.objectCategory = { loading: true, list: [], selected: null };
-		conf.objectCategoryValue = { selected: null, reset: resetObjectCategoryValue };
+		conf.objectCategoryValue = { selected: null, current: null, setCurrent: setCurrentObjectCategoryValue, reset: resetObjectCategoryValue };
 		conf.objectAssignment = { loading: true, list: [] };
+		
+		conf.getObject = getObjectFromUuid;
 		
 		conf.action = {
 				subject: {
@@ -152,6 +156,9 @@
 		resolveSubjectCategoriesAndValues(subjectCategories, subjectCategoryValues);
 		resolveObjectCategoriesAndValues(objectCategories, objectCategoryValues);
 		
+		resolveSubjectAssignments(subjectAssignments);
+		resolveObjectAssignments(objectAssignments);
+		
 		/*
 		 * =======================================================================================
 		 */
@@ -207,6 +214,34 @@
 		/*
 		 * =======================================================================================
 		 */
+		
+		/*
+		 * 
+		 */
+		
+		function getSubjectFromUuid(uuid) {
+			
+			return _(conf.subject.list).find(function(aSubject) {
+				return aSubject.uuid === uuid;
+			});
+			
+		};
+		
+		function getObjectFromUuid(uuid) {
+			
+			return _(conf.object.list).find(function(anObject) {
+				return anObject.uuid === uuid;
+			});
+			
+		};
+		
+		function setCurrentSubjectCategoryValue(value) {
+			conf.subjectCategoryValue.current = value;
+		};
+		
+		function setCurrentObjectCategoryValue(value) {
+			conf.objectCategoryValue.current = value;
+		};
 		
 		/*
 		 * resolve
@@ -301,6 +336,37 @@
 			conf.objectCategory.loading = false;
 			
 			return conf.objectCategory.list; 
+			
+		};
+		
+		function resolveSubjectAssignments(subjectAssignments) {
+			
+			var assignments = subjectAssignments.subject_assignments;
+			var categories = _.keys(assignments);
+			
+			_(categories).each(function(aCategory) {
+				
+				var subjectUuids = _.keys(assignments[aCategory]);
+				
+				_(subjectUuids).each(function(aSubjectUuid) {
+					
+					var subject = conf.getSubject(aSubjectUuid);
+					
+					if(subject) {
+						
+						var values = subjectUuids[aSubjectUuid];
+						
+					}
+					
+				});
+				
+			});
+			
+		};
+		
+		function resolveObjectAssignments(objectAssignments) {
+			
+			
 			
 		};
 		
@@ -452,7 +518,8 @@
 			
 			category.values.push(categoryAndValue.value);
 			
-			conf.subjectCategoryValue.selected = categoryAndValue.value;
+			conf.subjectCategoryValue.selected.push(categoryAndValue.value);
+			conf.subjectCategoryValue.current = categoryAndValue.value;
 			
 			conf.action.subjectCategoryValue.add.modal.hide();
 			
@@ -474,7 +541,7 @@
 				
 				conf.action.subjectCategoryValue.del.modal.$scope.intraExtension = conf.intraExtension;
 				conf.action.subjectCategoryValue.del.modal.$scope.category = conf.subjectCategory.selected;
-				conf.action.subjectCategoryValue.del.modal.$scope.value = conf.subjectCategoryValue.selected;
+				conf.action.subjectCategoryValue.del.modal.$scope.value = conf.subjectCategoryValue.current;
 				
 				conf.action.subjectCategoryValue.del.modal.$promise.then(conf.action.subjectCategoryValue.del.modal.show);
 				
@@ -654,7 +721,8 @@
 			
 			category.values.push(categoryAndValue.value);
 			
-			conf.objectCategoryValue.selected = categoryAndValue.value;
+			conf.objectCategoryValue.selected.push(categoryAndValue.value);
+			conf.objectCategoryValue.current = categoryAndValue.value;
 			
 			conf.action.objectCategoryValue.add.modal.hide();
 			
@@ -676,7 +744,7 @@
 				
 				conf.action.objectCategoryValue.del.modal.$scope.intraExtension = conf.intraExtension;
 				conf.action.objectCategoryValue.del.modal.$scope.category = conf.objectCategory.selected;
-				conf.action.objectCategoryValue.del.modal.$scope.value = conf.objectCategoryValue.selected;
+				conf.action.objectCategoryValue.del.modal.$scope.value = conf.objectCategoryValue.current;
 				
 				conf.action.objectCategoryValue.del.modal.$promise.then(conf.action.objectCategoryValue.del.modal.show);
 				

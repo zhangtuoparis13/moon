@@ -78,12 +78,16 @@
 						
 							<div>
 						
-								<ui-select ng-model="conf.subjectCategoryValue.selected" name="subjectCategoryValue">
-									<ui-select-match placeholder="(None)" ng-bind="$select.selected"></ui-select-match>
-									<ui-select-choices repeat="value in conf.subjectCategory.selected.values">
-										<div ng-value="value" ng-bind="value"></div>
-									</ui-select-choices>
-								</ui-select>
+								<div>
+									<ui-select multiple theme="bootstrap" ng-model="conf.subjectCategoryValue.selected" ng-disabled="disabled" name="subjectCategoryValue">
+										<ui-select-match placeholder="(None)">
+											<span ng-click="conf.subjectCategoryValue.setCurrent($item)">{{$item}}</span>
+										</ui-select-match>
+										<ui-select-choices repeat="value in conf.subjectCategory.selected.values">
+											<div ng-bind="value" ng-value="value"></div>
+										</ui-select-choices>
+									</ui-select>
+								</div>
 							
 							</div>
 														
@@ -101,7 +105,19 @@
 					</div>
 					
 				</div>
+								
+			</div>
+			
+			<div class="panel panel-default top10">
+
+				<div class="panel-heading">
+					<label translate="">Assignments</label>
+				</div>
 				
+				<div class="panel-body">					
+				
+				</div>
+							
 			</div>
 			
 		</div>
@@ -179,8 +195,10 @@
 						<div class="row" ng-if="conf.objectCategory.selected">
 						
 							<div>
-								<ui-select ng-model="conf.objectCategoryValue.selected" name="objectCategoryValue">
-									<ui-select-match placeholder="(None)" ng-bind="$select.selected"></ui-select-match>
+								<ui-select multiple theme="bootstrap" ng-model="conf.objectCategoryValue.selected" ng-disabled="disabled" name="objectCategoryValue">
+									<ui-select-match placeholder="(None)">
+										<span ng-click="conf.objectCategoryValue.setCurrent($item)">{{$item}}</span>
+									</ui-select-match>
 									<ui-select-choices repeat="value in conf.objectCategory.selected.values">
 										<div ng-bind="value" ng-value="value"></div>
 									</ui-select-choices>
@@ -202,6 +220,20 @@
 									
 				</div>
 				
+			</div>
+			
+			<div class="panel panel-default top10">
+
+				<div class="panel-heading">
+					<label translate="">Assignments</label>
+				</div>
+				
+				<div class="panel-body">
+	
+					
+				
+				</div>
+							
 			</div>
 			
 		</div>
