@@ -14,7 +14,7 @@ MOON_SERVER_IP = {
 CREDENTIALS = {
     "login": "admin",
     "password": "P4ssw0rd",
-    "Cookie": "r3c6ur6a23k6j3vy0sl21y1ckitvblgu"
+    "Cookie": "i6l4ihmo5ti07au6jx09wsq0uievgews"
 }
 
 
@@ -126,6 +126,31 @@ class TestMRMInterface(unittest.TestCase):
         self.servers_1 = get_url("/json/intra-extensions/{}/objects".format(self.new_ext1_uuid))["objects"]
         self.users_2 = get_url("/json/intra-extensions/{}/subjects".format(self.new_ext2_uuid))["subjects"]
         self.servers_2 = get_url("/json/intra-extensions/{}/objects".format(self.new_ext2_uuid))["objects"]
+        #Add assignment for first user and first server
+        assign = get_url(
+            "/json/intra-extensions/{}/subject_assignments".format(self.new_ext1_uuid),
+            post_data={
+                "subject_id": self.users_1[0],
+                "category_id": "subject_security_level",
+                "value": "high"
+            }
+        )["subject_assignments"]
+        assign = get_url(
+            "/json/intra-extensions/{}/object_assignments".format(self.new_ext1_uuid),
+            post_data={
+                "subject_id": self.servers_1[0],
+                "category_id": "object_security_level",
+                "value": "medium"
+            }
+        )["object_assignments"]
+        assign = get_url(
+            "/json/intra-extensions/{}/object_assignments".format(self.new_ext1_uuid),
+            post_data={
+                "subject_id": self.servers_1[0],
+                "category_id": "action",
+                "value": "read"
+            }
+        )["object_assignments"]
 
     def tearDown(self):
         get_url("/json/intra-extensions/"+self.new_ext1_uuid+"/", method="DELETE")
