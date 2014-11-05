@@ -31,7 +31,7 @@ def mrm_authz(post_request):
     try:
         if post_request.method == 'POST':
             data = json.loads(post_request.read())
-            print("\033[42mrequest={}\033[m".format(data))
+            print("\033[32mrequest={}\033[m".format(data))
             if "key" in data:
                 crypt_key = hashlib.sha256()
                 crypt_key.update(data["key"])
@@ -59,5 +59,8 @@ def mrm_authz(post_request):
         if getattr(settings, "DEBUG"):
             authz_response["error"] = traceback.format_exc()
     finally:
-        print("\033[42mresponse={}\033[m".format(authz_response))
+        if authz_response["authz"] == "OK":
+            print("\033[43mresponse={}\033[m".format(authz_response))
+        else:
+            print("\033[41mresponse={}\033[m".format(authz_response))
         return HttpResponse(json.dumps(authz_response), content_type="application/json")
