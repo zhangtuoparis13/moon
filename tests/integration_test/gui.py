@@ -14,7 +14,7 @@ MOON_SERVER_IP = {
 CREDENTIALS = {
     "login": "admin",
     "password": "P4ssw0rd",
-    "Cookie": "fg4ef6hnksztfq5hflht1ge1efi4j5i2"
+    "Cookie": "r3c6ur6a23k6j3vy0sl21y1ckitvblgu"
 }
 
 
@@ -762,30 +762,30 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
             _data = get_url(
                 "/json/intra-extensions/"+ext+"/rules/",
                 post_data={
-                    "relation_super": {
-                        "sub_cat_value": {"subject_security_level": "high"},
-                        "obj_cat_value": {"object_security_level": "low", "action": "write"}
-                    }
+                    "sub_cat_value":
+                        {"relation_super": {"subject_security_level": "high"}},
+                    "obj_cat_value":
+                        {"relation_super": {"object_security_level": "low", "action": "write"}}
                 }
             )
             self.assertIsInstance(_data, dict)
             self.assertIn("rules", _data)
             self.assertIsInstance(_data["rules"], dict)
-            self.assertNotIn(_data["rules"], ["high", "write", "low"])
+            self.assertIn(["high", "low", "write"], _data["rules"]["relation_super"])
             _data = get_url(
                 "/json/intra-extensions/"+ext+"/rules/",
                 delete_data={
-                    "relation_super": {
-                        "sub_cat_value": {"subject_security_level": "high"},
-                        "obj_cat_value": {"object_security_level": "low", "action": "write"}
-                    }
+                    "sub_cat_value":
+                        {"relation_super": {"subject_security_level": "high"}},
+                    "obj_cat_value":
+                        {"relation_super": {"object_security_level": "low", "action": "write"}}
                 }
             )
             self.assertIsInstance(_data, dict)
             self.assertIn("rules", _data)
             self.assertIsInstance(_data["rules"], dict)
             self.assertIsInstance(_data["rules"]["relation_super"], list)
-            self.assertNotIn(_data["rules"]["relation_super"], ["high", "write", "low"])
+            self.assertNotIn(["high", "low", "write"], _data["rules"]["relation_super"])
 
 
 class TestAdminInterface_InterExtension(unittest.TestCase):
