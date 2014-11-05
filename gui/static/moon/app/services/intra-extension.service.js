@@ -135,6 +135,71 @@
 	   				
 	   			});
 	   			
+	   		},
+	   		
+	   		transform: {
+	   			
+	   			elementAssigment: {
+	   				
+	   				getUuidsFromRaw: function(elementAssignments) {
+	   					
+	   					var uuids = [];
+	   					
+	   					var elementsRaw = _.values(elementAssignments);
+	   					
+	   					_(elementsRaw).each(function(aRaw) {
+	   						uuids = uuids.concat(_.keys(aRaw));
+	   					});
+	   					
+	   					return uuids;
+	   					
+	   				},
+	   				
+	   				getElementFromUuid: function(elements, uuid) {
+	   					
+	   					return _(elements).find(function(anElement) {
+	   						return anElement.uuid === uuid;
+	   					});
+	   					
+	   				},
+	   				
+	   				getElementsFromRaw: function(elementAssignments, elements) {
+	   					
+	   					var _self = this;
+	   					var list = [];
+	   					
+	   					var uuids = this.getUuidsFromRaw(elementAssignments);
+	   					
+	   					_(uuids).each(function(aUuid) {
+	   						list.push(_self.getElementFromUuid(elements, aUuid));
+	   					});
+	   					
+	   					return _.compact(list);
+	   					
+	   				},
+	   				
+	   				getCategoriesFromRaw: function(elementAssignments, element) {
+	   					
+	   					var categories = [];
+	   					
+	   					var categoryNames = _.keys(elementAssignments);
+	   					
+	   					_(categoryNames).each(function(categoryName) {
+	   						
+	   						var categoryValues = elementAssignments[categoryName][element.uuid];
+	   						
+	   						if(categoryValues) {
+	   							categories.push({name: categoryName, values: categoryValues});
+	   						}
+	   						
+	   					});
+	   					
+	   					return categories;
+	   					
+	   				}
+	   				
+	   			}
+	   			
 	   		}
     	   	
 		};

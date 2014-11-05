@@ -61,16 +61,12 @@
 		conf.subjectCategory = { loading: true, list: [], selected: null };
 		conf.subjectCategoryValue = { selected: null, current: null, setCurrent: setCurrentSubjectCategoryValue, reset: resetSubjectCategoryValue };
 		conf.subjectAssignment = { loading: true, list: [] };
-		
-		conf.getSubject = getSubjectFromUuid;
-		
+				
 		conf.object = { loading: true, list: [], selected: null };
 		conf.objectCategory = { loading: true, list: [], selected: null };
 		conf.objectCategoryValue = { selected: null, current: null, setCurrent: setCurrentObjectCategoryValue, reset: resetObjectCategoryValue };
 		conf.objectAssignment = { loading: true, list: [] };
-		
-		conf.getObject = getObjectFromUuid;
-		
+				
 		conf.action = {
 				subject: {
 					add: {
@@ -150,15 +146,17 @@
 				}
 		};
 		
-		resolveSubjects(subjects);
-		resolveObjects(objects);
+		resolveSubjects(subjects).then(function(subjectList) {
+			resolveSubjectAssignments(subjectList, subjectAssignments);
+		});
+		
+		resolveObjects(objects, objectAssignments).then(function(objectList) {
+			resolveObjectAssignments(objectList, objectAssignments);
+		});
 		
 		resolveSubjectCategoriesAndValues(subjectCategories, subjectCategoryValues);
 		resolveObjectCategoriesAndValues(objectCategories, objectCategoryValues);
-		
-		resolveSubjectAssignments(subjectAssignments);
-		resolveObjectAssignments(objectAssignments);
-		
+				
 		/*
 		 * =======================================================================================
 		 */
@@ -219,22 +217,6 @@
 		 * 
 		 */
 		
-		function getSubjectFromUuid(uuid) {
-			
-			return _(conf.subject.list).find(function(aSubject) {
-				return aSubject.uuid === uuid;
-			});
-			
-		};
-		
-		function getObjectFromUuid(uuid) {
-			
-			return _(conf.object.list).find(function(anObject) {
-				return anObject.uuid === uuid;
-			});
-			
-		};
-		
 		function setCurrentSubjectCategoryValue(value) {
 			conf.subjectCategoryValue.current = value;
 		};
@@ -266,7 +248,7 @@
 				});
 				
 				conf.subject.loading = false;
-				
+								
 				return conf.subject.list;
 				
 			});
@@ -338,35 +320,42 @@
 			return conf.objectCategory.list; 
 			
 		};
-		
-		function resolveSubjectAssignments(subjectAssignments) {
+				
+		function resolveSubjectAssignments(subjects, subjectAssignments) {
 			
-			var assignments = subjectAssignments.subject_assignments;
-			var categories = _.keys(assignments);
+			var assignedSubjects = intraExtensionService.transform.elementAssigment.getElementsFromRaw(subjectAssignments.subject_assignments, subjects);
 			
-			_(categories).each(function(aCategory) {
+			conf.subjectAssignment.list = _(assignedSubjects).map(function(assignedSubject) {
 				
-				var subjectUuids = _.keys(assignments[aCategory]);
+				var assignment = {}
 				
-				_(subjectUuids).each(function(aSubjectUuid) {
-					
-					var subject = conf.getSubject(aSubjectUuid);
-					
-					if(subject) {
-						
-						var values = subjectUuids[aSubjectUuid];
-						
-					}
-					
-				});
+				assignment.subject = assignedSubject;
+				assignment.categories = intraExtensionService.transform.elementAssigment.getCategoriesFromRaw(subjectAssignments.subject_assignments, assignedSubject);
 				
+				return assignment;
+
 			});
+			
+			return conf.subjectAssignment.list;
 			
 		};
 		
-		function resolveObjectAssignments(objectAssignments) {
+		function resolveObjectAssignments(objects, objectAssignments) {
 			
+			var assignedObjects = intraExtensionService.transform.elementAssigment.getElementsFromRaw(objectAssignments.object_assignments, objects);
 			
+			conf.objectAssignment.list = _(assignedObjects).map(function(assignedObject) {
+				
+				var assignment = {}
+				
+				assignment.object = assignedObject;
+				assignment.categories = intraExtensionService.transform.elementAssigment.getCategoriesFromRaw(objectAssignments.object_assignments, assignedObject);
+				
+				return assignment;
+
+			});
+			
+			return conf.objectAssignment.list;
 			
 		};
 		
