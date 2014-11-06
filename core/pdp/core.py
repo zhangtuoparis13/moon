@@ -199,6 +199,8 @@ def get_tenant_intra_extension_mapping():
 
 
 def pdp_authz(sub, obj, act, requesting_tenant_uuid=None, requested_tenant_uuid=None):
+    requesting_intra_extension_uuid = None
+    requested_intra_extension_uuid = None
     if requesting_tenant_uuid and requested_tenant_uuid:
         if requesting_tenant_uuid == requested_tenant_uuid:
             return intra_extensions.authz(sub, obj, act)
@@ -211,10 +213,10 @@ def pdp_authz(sub, obj, act, requesting_tenant_uuid=None, requested_tenant_uuid=
                     requested_intra_extension_uuid = mapping["intra_extension_uuids"][0]
                 # TODO multiple intra_extensions for each tenant
             if requesting_intra_extension_uuid and requested_intra_extension_uuid:
-                inter_extensions.authz(requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act)
+                return inter_extensions.authz(requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act)
             else:
-                # raise Error unknow tenant uuid
-                pass
+                # raise Error unknown tenant uuid
+                return 'KO'
     else:
         return intra_extensions.authz(sub, obj, act)
 

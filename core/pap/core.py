@@ -111,12 +111,12 @@ class PAP:
         if self.super_extension.admin(user_id, "intra_extension", "create") == "OK":
             if extension_setting_name:
                 extension_setting_dir = self.policies[extension_setting_name]["dir"]
-        intra_ext_uuid = self.intra_extensions.install_intra_extension_from_json(extension_setting_dir, name=name)
-        self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_subject(self.__admin_uuid)
-        self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_subject_assignment(
-            "role", self.__admin_uuid, "admin"
-        )
-        return intra_ext_uuid
+            intra_ext_uuid = self.intra_extensions.install_intra_extension_from_json(extension_setting_dir, name=name)
+            self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_subject(self.__admin_uuid)
+            self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_subject_assignment(
+                "role", self.__admin_uuid, "admin"
+            )
+            return intra_ext_uuid
 
     @translate_uuid
     def list_mappings(self, user_id):

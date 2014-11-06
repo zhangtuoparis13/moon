@@ -6,5 +6,5 @@ admin.autodiscover()
 
 urlpatterns = patterns(
     'mrm.views',
-    url(r'mrm_authz', 'mrm_authz'),
+    url(r'authz', 'mrm_authz'),
 )
