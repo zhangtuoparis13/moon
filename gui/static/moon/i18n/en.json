@@ -452,6 +452,24 @@
 				    		"error": "Unable to delete Object Category Value `{{valueName}}`",
 				    		"success": "Object Category Value `{{valueName}}` successfully deleted"
 		    			}
+	    			},
+	    			"assignment": {
+	    				"title": "Object Assignments",
+	    				"action": {
+	    					"assign": "Assign",
+	    					"unassign": "Unassign"
+	    				},
+	    				"list": {
+	    					"notFound": "There is no assignments"
+						},
+						"add": {
+							"error": "Unable to assign Object `{{objectName}}` / Category `{{categoryName}}` / Value `{{valueName}}`",
+				    		"success": "Object `{{objectName}}` / Category `{{categoryName}}` / Value `{{valueName}}` assignment successfully done"
+						},
+						"remove": {
+							"error": "Unable to unassign Object `{{ObjectName}}` / Category `{{categoryName}}` / Value `{{valueName}}`",
+				    		"success": "Object `{{objectName}}` / Category `{{categoryName}}` / Value `{{valueName}}` unassignment successfully done"
+						}
 	    			}
 	    		}    		
 	    	},

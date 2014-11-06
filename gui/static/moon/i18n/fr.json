@@ -452,6 +452,24 @@
 				    		"error": "Impossible de supprimer la Valeur `{{valueName}}`",
 				    		"success": "La Valeur `{{valueName}}` a été supprimée avec succès"
 		    			}
+	    			},
+	    			"assignment": {
+	    				"title": "Affectation des Objets",
+	    				"action": {
+	    					"assign": "Affecter",
+	    					"unassign": "Désaffecter"
+	    				},
+	    				"list": {
+	    					"notFound": "Il n'existe aucune affectation"
+						},
+						"add": {
+							"error": "Impossible de réaliser l'affectation Objet `{{objectName}}` / Catégorie `{{categoryName}}` / Valeur `{{valueName}}`",
+				    		"success": "Affectation de Objet `{{objectName}}` / Catégorie `{{categoryName}}` / Valeur `{{valueName}}` réalisée avec succès"
+						},
+						"remove": {
+							"error": "Impossible de réaliser la désaffectation Objet `{{objectName}}` / Catégorie `{{categoryName}}` / Valeur `{{valueName}}`",
+				    		"success": "Désaffectation de Objet `{{objectName}}` / Catégorie `{{categoryName}}` / Valeur `{{valueName}}` réalisée avec succès"
+						}
 	    			}
 	    		}  
 	    	},

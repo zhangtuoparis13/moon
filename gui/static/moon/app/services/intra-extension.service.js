@@ -208,10 +208,10 @@
 	   		
 	   		assignment: {
 	   			
-	   			addAssignment: function(assignments, subject, category, value) {
+	   			addAssignment: function(assignments, element, category, value) {
 	   				
 	   				var currentAssignment = _(assignments).find(function(anAssignment) {
-	   					return anAssignment.subject.uuid === subject.uuid;
+	   					return anAssignment.element.uuid === element.uuid;
 	   				});
 	   				
 	   				if(currentAssignment) {
@@ -229,17 +229,17 @@
 	   					
 	   				}
 	   				else {
-	   					assignments.push({ subject: subject, categories: [{ name: category.name, values: [value] }]});
+	   					assignments.push({ element: element, categories: [{ name: category.name, values: [value] }]});
 	   				}
 	   				
 	   				return assignments;
 	   				
 	   			},
 	   			
-	   			removeAssignment: function(assignments, subject, category, value) {
+	   			removeAssignment: function(assignments, element, category, value) {
 	   				
 	   				var currentAssignment = _(assignments).find(function(anAssignment) {
-	   					return anAssignment.subject.uuid === subject.uuid;
+	   					return anAssignment.element.uuid === element.uuid;
 	   				});
 	   				
 	   				if(currentAssignment) {
@@ -263,7 +263,7 @@
 	   							if(_.size(currentAssignment.categories) == 0) {
 	   								
 	   								assignments = _(assignments).reject(function(anAssignment) {
-	   									return anAssignment.subject.uuid === subject.uuid;
+	   									return anAssignment.element.uuid === element.uuid;
 	   								});
 	   								
 	   							}
