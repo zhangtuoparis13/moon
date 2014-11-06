@@ -14,7 +14,7 @@ MOON_SERVER_IP = {
 CREDENTIALS = {
     "login": "admin",
     "password": "P4ssw0rd",
-    "Cookie": "r3c6ur6a23k6j3vy0sl21y1ckitvblgu"
+    "Cookie": "z6626bjfyjabpsuhw4i3vujq6cm1pyoo"
 }
 
 
@@ -554,12 +554,9 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
             self.assertIn("ultra-low2", _data["subject_assignments"]["subject_security_level"][user])
             #Delete the last assignment
             _data = get_url(
-                "/json/intra-extensions/"+ext+"/subject_assignments/",
-                delete_data={
-                    "category_id": "subject_security_level",
-                    "value": "ultra-low2",
-                    "subject_id": user
-                })
+                "/json/intra-extensions/"+ext+"/subject_assignments/"+user+"/subject_security_level/ultra-low2",
+                method="DELETE"
+            )
             self.assertIsInstance(_data, dict)
             self.assertIn("subject_assignments", _data)
             self.assertIsInstance(_data["subject_assignments"], dict)
@@ -673,12 +670,9 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
             self.assertIn("ultra-low2", _data["object_assignments"]["object_security_level"][obj])
             #Delete the last assignment
             _data = get_url(
-                "/json/intra-extensions/"+ext+"/object_assignments/",
-                delete_data={
-                    "category_id": "object_security_level",
-                    "value": "ultra-low2",
-                    "object_id": obj
-                })
+                "/json/intra-extensions/"+ext+"/object_assignments/"+obj+"/object_security_level/ultra-low2",
+                method="DELETE"
+            )
             self.assertIsInstance(_data, dict)
             self.assertIn("object_assignments", _data)
             self.assertIsInstance(_data["object_assignments"], dict)

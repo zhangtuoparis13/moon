@@ -334,7 +334,7 @@ def object_category_values(request, uuid=None, category_id=None, value=None):
 @login_required(login_url='/auth/login/')
 @save_auth
 @catch_error
-def subject_assignments(request, uuid=None):
+def subject_assignments(request, uuid=None, subject_id=None, category_id=None, value=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
@@ -346,14 +346,14 @@ def subject_assignments(request, uuid=None):
                 subject_id=filter_input(data["subject_id"]),
                 category_value=filter_input(data["value"]))
     elif request.META['REQUEST_METHOD'] == "DELETE":
-        data = json.loads(request.read())
-        if "category_id" in data and "subject_id" in data and "value" in data:
+        # data = json.loads(request.read())
+        if category_id and subject_id and value:
             pap.del_subject_assignment(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
-                category_id=filter_input(data["category_id"]),
-                subject_id=filter_input(data["subject_id"]),
-                category_value=filter_input(data["value"]))
+                category_id=filter_input(category_id),
+                subject_id=filter_input(subject_id),
+                category_value=filter_input(value))
     results = dict()
     for cat in pap.get_subject_categories(extension_uuid=uuid, user_uuid=request.session['user_id']):
         results[cat] = pap.get_subject_assignments(
@@ -368,7 +368,7 @@ def subject_assignments(request, uuid=None):
 @login_required(login_url='/auth/login/')
 @save_auth
 @catch_error
-def object_assignments(request, uuid=None):
+def object_assignments(request, uuid=None, object_id=None, category_id=None, value=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
@@ -380,14 +380,13 @@ def object_assignments(request, uuid=None):
                 object_id=filter_input(data["object_id"]),
                 category_value=filter_input(data["value"]))
     elif request.META['REQUEST_METHOD'] == "DELETE":
-        data = json.loads(request.read())
-        if "category_id" in data and "object_id" in data and "value" in data:
+        if category_id and object_id and value:
             pap.del_object_assignment(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
-                category_id=filter_input(data["category_id"]),
-                object_id=filter_input(data["object_id"]),
-                category_value=filter_input(data["value"]))
+                category_id=filter_input(category_id),
+                object_id=filter_input(object_id),
+                category_value=filter_input(value))
     results = dict()
     for cat in pap.get_object_categories(extension_uuid=uuid, user_uuid=request.session['user_id']):
         results[cat] = pap.get_object_assignments(
