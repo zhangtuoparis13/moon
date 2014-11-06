@@ -59,13 +59,13 @@
 				
 		conf.subject = { loading: true, list: [], selected: null };
 		conf.subjectCategory = { loading: true, list: [], selected: null };
-		conf.subjectCategoryValue = { selected: null, current: null, setCurrent: setCurrentSubjectCategoryValue, reset: resetSubjectCategoryValue };
-		conf.subjectAssignment = { loading: true, list: [] };
+		conf.subjectCategoryValue = { selected: null, setCurrent: setCurrentSubjectCategoryValue, reset: resetSubjectCategoryValue, hasValue: hasSubjectCategoryValue };
+		conf.subjectAssignment = { loading: true, list: [], hasAssignments: hasSubjectAssignments, canAssign: canMakeSubjectAssignment, assign: makeSubjectAssignment, addAssignment: addSubjectAssignment, unassign: makeSubjectUnassignment, removeAssignment: removeSubjectAssignment };
 				
 		conf.object = { loading: true, list: [], selected: null };
 		conf.objectCategory = { loading: true, list: [], selected: null };
-		conf.objectCategoryValue = { selected: null, current: null, setCurrent: setCurrentObjectCategoryValue, reset: resetObjectCategoryValue };
-		conf.objectAssignment = { loading: true, list: [] };
+		conf.objectCategoryValue = { selected: null, setCurrent: setCurrentObjectCategoryValue, reset: resetObjectCategoryValue, hasValue: hasObjectCategoryValue };
+		conf.objectAssignment = { loading: true, list: [], hasAssignments: hasObjectAssignments, canAssign: canMakeObjectAssignment, assign: makeObjectAssignment };
 				
 		conf.action = {
 				subject: {
@@ -225,6 +225,14 @@
 			conf.objectCategoryValue.current = value;
 		};
 		
+		function hasSubjectAssignments() {
+			return conf.subjectAssignment.list.length > 0;
+		};
+		
+		function hasObjectAssignments() {
+			return conf.objectAssignment.list.length > 0;
+		};
+		
 		/*
 		 * resolve
 		 */
@@ -336,6 +344,8 @@
 
 			});
 			
+			conf.subjectAssignment.loading = false;
+			
 			return conf.subjectAssignment.list;
 			
 		};
@@ -354,6 +364,8 @@
 				return assignment;
 
 			});
+			
+			conf.objectAssignment.loading = false;
 			
 			return conf.objectAssignment.list;
 			
@@ -507,8 +519,7 @@
 			
 			category.values.push(categoryAndValue.value);
 			
-			conf.subjectCategoryValue.selected.push(categoryAndValue.value);
-			conf.subjectCategoryValue.current = categoryAndValue.value;
+			conf.subjectCategoryValue.selected = categoryAndValue.value;
 			
 			conf.action.subjectCategoryValue.add.modal.hide();
 			
@@ -530,7 +541,7 @@
 				
 				conf.action.subjectCategoryValue.del.modal.$scope.intraExtension = conf.intraExtension;
 				conf.action.subjectCategoryValue.del.modal.$scope.category = conf.subjectCategory.selected;
-				conf.action.subjectCategoryValue.del.modal.$scope.value = conf.subjectCategoryValue.current;
+				conf.action.subjectCategoryValue.del.modal.$scope.value = conf.subjectCategoryValue.selected;
 				
 				conf.action.subjectCategoryValue.del.modal.$promise.then(conf.action.subjectCategoryValue.del.modal.show);
 				
@@ -557,6 +568,78 @@
 			conf.action.subjectCategoryValue.del.modal.hide();
 			
 		};
+		
+		/*
+		 * assignments
+		 */
+		
+		function hasSubjectCategoryValue() {
+			return conf.subjectCategoryValue.selected;			
+		};
+		
+		function canMakeSubjectAssignment() {
+			return conf.subject.selected && conf.subjectCategory.selected && conf.subjectCategoryValue.hasValue();
+		};
+		
+		function addSubjectAssignment(subject, category, value) {
+			return intraExtensionService.assignment.addAssignment(conf.subjectAssignment.list, subject, category, value);
+		};
+		
+		function makeSubjectAssignment() {
+							
+			var assignment = { subject_id: conf.subject.selected.uuid, category_id: conf.subjectCategory.selected.name, value: conf.subjectCategoryValue.selected };
+			
+			intraExtensionService.data.subject.assignment.create({ie_uuid: intraExtension.intra_extensions._id }, assignment, createSubjectAssignmentSuccess, createSubjectAssignmentError);
+				
+			function createSubjectAssignmentSuccess(data) {
+				
+				$translate('moon.intraExtension.configure.subject.assignment.add.success', { subjectName: conf.subject.selected.name, categoryName: conf.subjectCategory.selected.name, valueName: conf.subjectCategoryValue.selected }).then(function (translatedValue) {
+        			alertService.alertSuccess(translatedValue);
+                });	
+				
+				conf.subjectAssignment.addAssignment(conf.subject.selected, conf.subjectCategory.selected, conf.subjectCategoryValue.selected);
+				
+			};
+			
+			function createSubjectAssignmentError(reason) {
+				
+				$translate('moon.intraExtension.configure.subject.assignment.add.error', { subjectName: conf.subject.selected.name, categoryName: conf.subjectCategory.selected.name, valueName: conf.subjectCategoryValue.selected }).then(function (translatedValue) {
+        			alertService.alertSuccess(translatedValue);
+                });	
+				
+			};
+			
+		};
+		
+		function removeSubjectAssignment(subject, category, value) {
+			return intraExtensionService.assignment.removeAssignment(conf.subjectAssignment.list, subject, category, value);			
+		};
+		
+		function makeSubjectUnassignment(subject, category, value) {
+			 
+			var params = {ie_uuid: intraExtension.intra_extensions._id, subject_id: subject.uuid, category_id: category.name, value: value };
+			
+			intraExtensionService.data.subject.assignment.remove(params, {}, deleteSubjectAssignmentSuccess, deleteSubjectAssignmentError);
+				
+			function deleteSubjectAssignmentSuccess(data) {
+				
+				$translate('moon.intraExtension.configure.subject.assignment.remove.success', { subjectName: conf.subject.selected.name, categoryName: conf.subjectCategory.selected.name, valueName: conf.subjectCategoryValue.selected }).then(function (translatedValue) {
+        			alertService.alertSuccess(translatedValue);
+                });	
+				
+				conf.subjectAssignment.removeAssignment(subject, category, value);
+				
+			};
+			
+			function deleteSubjectAssignmentError(reason) {
+				
+				$translate('moon.intraExtension.configure.subject.assignment.remove.error', { subjectName: conf.subject.selected.name, categoryName: conf.subjectCategory.selected.name, valueName: conf.subjectCategoryValue.selected }).then(function (translatedValue) {
+        			alertService.alertSuccess(translatedValue);
+                });	
+				
+			};
+			 
+		};		  
 		
 		/*
 		 * =======================================================================================
@@ -710,8 +793,7 @@
 			
 			category.values.push(categoryAndValue.value);
 			
-			conf.objectCategoryValue.selected.push(categoryAndValue.value);
-			conf.objectCategoryValue.current = categoryAndValue.value;
+			conf.objectCategoryValue.selected = categoryAndValue.value;
 			
 			conf.action.objectCategoryValue.add.modal.hide();
 			
@@ -733,7 +815,7 @@
 				
 				conf.action.objectCategoryValue.del.modal.$scope.intraExtension = conf.intraExtension;
 				conf.action.objectCategoryValue.del.modal.$scope.category = conf.objectCategory.selected;
-				conf.action.objectCategoryValue.del.modal.$scope.value = conf.objectCategoryValue.current;
+				conf.action.objectCategoryValue.del.modal.$scope.value = conf.objectCategoryValue.selected;
 				
 				conf.action.objectCategoryValue.del.modal.$promise.then(conf.action.objectCategoryValue.del.modal.show);
 				
@@ -758,6 +840,25 @@
 		function intraExtensionObjectCategoryValueDeletedError(event, categoryAndValue) {
 			
 			conf.action.objectCategoryValue.del.modal.hide();
+			
+		};
+		
+		/*
+		 * assignment
+		 */
+		
+		function hasObjectCategoryValue() {
+			
+			
+		};
+		
+		function canMakeObjectAssignment() {
+			
+			
+		};
+		
+		function makeObjectAssignment() {
+			
 			
 		};
 		

@@ -54,8 +54,10 @@
 		    	   		remove: { method: 'DELETE' }
 		    	   	}),
 		    	   	
-		    	   	assignment: $resource('./json/intra-extensions/:ie_uuid/subject_assignments', {}, {
-		    	   		query: { method: 'GET', isArray: false }
+		    	   	assignment: $resource('./json/intra-extensions/:ie_uuid/subject_assignments/:subject_id/:category_id/:value', {}, {
+		    	   		query: { method: 'GET', isArray: false },
+		    	   		create: { method: 'POST' },
+		    	   		remove: { method: 'DELETE' }
 		    	   	})
 	    	   		
 	    	   	},
@@ -81,8 +83,10 @@
 		    	   		remove: { method: 'DELETE' }
 		    	   	}),		    	   	
 		    	   	
-		    	   	assignment: $resource('./json/intra-extensions/:ie_uuid/object_assignments', {}, {
-		    	   		query: { method: 'GET', isArray: false }
+		    	   	assignment: $resource('./json/intra-extensions/:ie_uuid/object_assignments/:object_id/:category_id/:value', {}, {
+		    	   		query: { method: 'GET', isArray: false },
+		    	   		create: { method: 'POST' },
+		    	   		remove: { method: 'DELETE' }
 		    	   	})
 	    	   		
 	    	   	}    	   	
@@ -151,7 +155,7 @@
 	   						uuids = uuids.concat(_.keys(aRaw));
 	   					});
 	   					
-	   					return uuids;
+	   					return _.uniq(uuids);
 	   					
 	   				},
 	   				
@@ -197,6 +201,64 @@
 	   					return categories;
 	   					
 	   				}
+	   				
+	   			}
+	   			
+	   		},
+	   		
+	   		assignment: {
+	   			
+	   			addAssignment: function(assignments, subject, category, value) {
+	   				
+	   				var currentAssignment = _(assignments).find(function(anAssignment) {
+	   					return anAssignment.subject.uuid === subject.uuid;
+	   				});
+	   				
+	   				if(currentAssignment) {
+	   					
+	   					var currentCategory = _(currentAssignment.categories).find(function(aCategory) {
+	   						return aCategory.name === category.name;
+	   					});
+	   					
+	   					if(currentCategory) {
+	   						currentCategory.values.push(value);
+	   					}
+	   					else {
+	   						currentAssignment.categories.push({ name: category.name, values: [value] });
+	   					}
+	   					
+	   				}
+	   				else {
+	   					assignments.push({ subject: subject, categories: [{ name: category.name, values: [value] }]});
+	   				}
+	   				
+	   				return assignments;
+	   				
+	   			},
+	   			
+	   			removeAssignment: function(assignments, subject, category, value) {
+	   				
+	   				var currentAssignment = _(assignments).find(function(anAssignment) {
+	   					return anAssignment.subject.uuid === subject.uuid;
+	   				});
+	   				
+	   				if(currentAssignment) {
+	   					
+	   					var currentCategory = _(currentAssignment.categories).find(function(aCategory) {
+	   						return aCategory.name === category.name;
+	   					});
+	   					
+	   					if(currentCategory) {
+	   						
+	   						currentCategory.values = _(currentCategory.values).reject(function(aValue) {
+	   							return aValue === value;
+	   						})
+	   						
+	   					}
+	   					
+	   				}
+	   				
+	   				return assignments;
 	   				
 	   			}
 	   			

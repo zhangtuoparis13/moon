@@ -41,8 +41,8 @@
 		    		"detail": "Consult",
 		    		"delete": "Delete",
 		    		"add": "Add Tenant",
-		    		"map": "map with an Intra Extension",
-		    		"unmap": "unmap"
+		    		"map": "Map with an Intra Extension",
+		    		"unmap": "Unmap"
 		    	},
 		    	"error": "Unable to retrieve Tenants"
 	    	},
@@ -336,6 +336,24 @@
 				    		"error": "Unable to delete Subject Category Value `{{valueName}}`",
 				    		"success": "Subject Category Value `{{valueName}}` successfully deleted"
 		    			}
+	    			},
+	    			"assignment": {
+	    				"title": "Subject Assignments",
+	    				"action": {
+	    					"assign": "Assign",
+	    					"unassign": "Unassign"
+	    				},
+	    				"list": {
+	    					"notFound": "There is no assignments"
+						},
+						"add": {
+							"error": "Unable to assign Subject `{{subjectName}}` / Category `{{categoryName}}` / Value `{{valueName}}`",
+				    		"success": "Subject `{{subjectName}}` / Category `{{categoryName}}` / Value `{{valueName}}` assignment successfully done"
+						},
+						"remove": {
+							"error": "Unable to unassign Subject `{{subjectName}}` / Category `{{categoryName}}` / Value `{{valueName}}`",
+				    		"success": "Subject `{{subjectName}}` / Category `{{categoryName}}` / Value `{{valueName}}` unassignment successfully done"
+						}
 	    			}
 	    		},
 	    		"object": {

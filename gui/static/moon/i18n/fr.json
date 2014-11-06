@@ -41,8 +41,8 @@
 		    		"detail": "Consulter",
 		    		"delete": "Supprimer",
 		    		"add": "Ajouter un Tenant",
-		    		"map": "associer à une Intra Extension",
-		    		"unmap": "dissocier"
+		    		"map": "Associer à une Intra Extension",
+		    		"unmap": "Dissocier"
 		    	},
 		    	"error": "Impossible de récupérer la liste des Tenants"
 	    	},
@@ -336,6 +336,24 @@
 				    		"error": "Impossible de supprimer la Valeur `{{valueName}}`",
 				    		"success": "La Valeur `{{valueName}}` a été supprimée avec succès"
 		    			}
+	    			},
+	    			"assignment": {
+	    				"title": "Affectation des Sujets",
+	    				"action": {
+	    					"assign": "Affecter",
+	    					"unassign": "Désaffecter"
+	    				},
+	    				"list": {
+	    					"notFound": "Il n'existe aucune affectation"
+						},
+						"add": {
+							"error": "Impossible de réaliser l'affectation Sujet `{{subjectName}}` / Catégorie `{{categoryName}}` / Valeur `{{valueName}}`",
+				    		"success": "Affectation de Sujet `{{subjectName}}` / Catégorie `{{categoryName}}` / Valeur `{{valueName}}` réalisée avec succès"
+						},
+						"remove": {
+							"error": "Impossible de réaliser la désaffectation Sujet `{{subjectName}}` / Catégorie `{{categoryName}}` / Valeur `{{valueName}}`",
+				    		"success": "Désaffectation de Sujet `{{subjectName}}` / Catégorie `{{categoryName}}` / Valeur `{{valueName}}` réalisée avec succès"
+						}
 	    			}
 	    		},
 	    		"object": {
