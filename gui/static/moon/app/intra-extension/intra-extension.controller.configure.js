@@ -597,7 +597,7 @@
         			alertService.alertSuccess(translatedValue);
                 });	
 				
-				conf.subjectAssignment.addAssignment(conf.subject.selected, conf.subjectCategory.selected, conf.subjectCategoryValue.selected);
+				conf.subjectAssignment.list = conf.subjectAssignment.addAssignment(conf.subject.selected, conf.subjectCategory.selected, conf.subjectCategoryValue.selected);
 				
 			};
 			
@@ -623,17 +623,17 @@
 				
 			function deleteSubjectAssignmentSuccess(data) {
 				
-				$translate('moon.intraExtension.configure.subject.assignment.remove.success', { subjectName: conf.subject.selected.name, categoryName: conf.subjectCategory.selected.name, valueName: conf.subjectCategoryValue.selected }).then(function (translatedValue) {
+				$translate('moon.intraExtension.configure.subject.assignment.remove.success', { subjectName: subject.name, categoryName: category.name, valueName: value }).then(function (translatedValue) {
         			alertService.alertSuccess(translatedValue);
                 });	
 				
-				conf.subjectAssignment.removeAssignment(subject, category, value);
+				conf.subjectAssignment.list = conf.subjectAssignment.removeAssignment(subject, category, value);
 				
 			};
 			
 			function deleteSubjectAssignmentError(reason) {
 				
-				$translate('moon.intraExtension.configure.subject.assignment.remove.error', { subjectName: conf.subject.selected.name, categoryName: conf.subjectCategory.selected.name, valueName: conf.subjectCategoryValue.selected }).then(function (translatedValue) {
+				$translate('moon.intraExtension.configure.subject.assignment.remove.error', { subjectName: subject.name, categoryName: category.name, valueName: value }).then(function (translatedValue) {
         			alertService.alertSuccess(translatedValue);
                 });	
 				

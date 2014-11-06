@@ -4,29 +4,27 @@
 		<h3 class="pull-left" translate="moon.intraExtension.configure.title" translate-values="{ intraExtensionName: conf.intraExtension.name[0] }">Configure</h3>
 	</div>
 	
-	<div class="panel panel-default">
+	<div class="panel-group">
 	
-		<div class="panel-heading">
+		<div class="panel panel-default">
 		
-			<div class="container">
+			<div class="panel-heading">
+			
 				<div class="row">
 					<div class="col-md-3"><label translate="moon.intraExtension.configure.subject.title">Subjects</label></div>
 					<div class="col-md-3 col-md-offset-1"><label translate="moon.intraExtension.configure.subject.category.title">Categories</label></div>
 					<div class="col-md-3 col-md-offset-1"><label translate="moon.intraExtension.configure.subject.categoryValue.title">Values</label></div>
 				</div>
+				
 			</div>
-			
-		</div>
-	
-		<div class="panel-body">
 		
-			<div class="container">
-					
+			<div class="panel-body">
+			
 				<div class="row">
 			
 					<div class="col-md-3">
 				
-						<div class="row">
+						<div>
 							<ui-select ng-model="conf.subject.selected" name="subject">
 								<ui-select-match placeholder="(None)" ng-bind="$select.selected.name"></ui-select-match>
 								<ui-select-choices repeat="subject in conf.subject.list">
@@ -37,7 +35,7 @@
 						
 						<img ng-if="conf.subject.loading" src="static/moon/img/ajax-loader.gif" />
 						
-						<div class="row top05">
+						<div>
 							<a href="" class="black" ng-click="conf.action.subject.add.showModal()">
 					        	<span class="glyphicon glyphicon-plus-sign"></span>
 							</a>
@@ -50,7 +48,7 @@
 									
 					<div class="col-md-3 col-md-offset-1">
 					
-						<div class="row">
+						<div>
 							<ui-select ng-model="conf.subjectCategory.selected" name="subjectCategory" ng-change="conf.subjectCategoryValue.reset()"> 
 								<ui-select-match placeholder="(None)" ng-bind="$select.selected.name"></ui-select-match>
 					           	<ui-select-choices repeat="category in conf.subjectCategory.list">
@@ -61,7 +59,7 @@
 						
 						<img ng-if="conf.subjectCategory.loading" src="static/moon/img/ajax-loader.gif" />
 						
-						<div class="row top05">
+						<div>
 							<a href="" class="black" ng-click="conf.action.subjectCategory.add.showModal()">
 					        	<span class="glyphicon glyphicon-plus-sign"></span>
 							</a>
@@ -91,7 +89,7 @@
 								
 								</div>
 															
-								<div class="top05">
+								<div>
 									<a href="" class="black" ng-click="conf.action.subjectCategoryValue.add.showModal()">
 							        	<span class="glyphicon glyphicon-plus-sign"></span>
 									</a>
@@ -118,58 +116,58 @@
 					</div>
 					
 				</div>
-								
+										
 			</div>
-						
-			<div class="panel panel-default top10">
-
-				<div class="panel-heading">
-					<label translate="moon.intraExtension.configure.subject.assignment.title">Assignments</label>
+			
+		</div>
+		
+		<div class="panel panel-default">
+	
+			<div class="panel-heading">
+				<label translate="moon.intraExtension.configure.subject.assignment.title">Assignments</label>
+			</div>
+			
+			<div class="panel-body">		
+			
+				<img ng-if="conf.subjectAssignment.loading" src="static/moon/img/ajax-loader.gif" />
+				
+				<div ng-if="!conf.subjectAssignment.loading && !conf.subjectAssignment.hasAssignments()">
+					<span translate="moon.intraExtension.configure.subject.assignment.list.notFound">No assignments</span>
 				</div>
+			
+				<div ng-if="!conf.subjectAssignment.loading && conf.subjectAssignment.hasAssignments()">
 				
-				<div class="panel-body">					
-				
-					<img ng-if="conf.subjectAssignment.loading" src="static/moon/img/ajax-loader.gif" />
+					<div class="row top10" ng-repeat="assignment in conf.subjectAssignment.list">
 					
-					<div ng-if="!conf.subjectAssignment.loading && !conf.subjectAssignment.hasAssignments()">
-						<span translate="moon.intraExtension.configure.subject.assignment.list.notFound">No assignments</span>
-					</div>
-					
-					<div ng-if="!conf.subjectAssignment.loading && conf.subjectAssignment.hasAssignments()">
-					
-						<div class="row top10" ng-repeat="assignment in conf.subjectAssignment.list">
+						<div class="col-md-4">
+							<span>{{assignment.subject.name}}</span>
+						</div>
 						
-							<div class="col-md-4">
-								<span>{{assignment.subject.name}}</span>
-							</div>
+						<div class="col-md-8">
+						
+							<div class="row top05" ng-repeat="category in assignment.categories">
 							
-							<div class="col-md-8">
-							
-								<div class="row top05" ng-repeat="category in assignment.categories">
+								<div class="col-md-5">
+									<span>{{category.name}}</span>
+								</div>
 								
-									<div class="col-md-5 col-md-offset-1">
-										<span>{{category.name}}</span>
-									</div>
+								<div class="col-md-6 col-md-offset-1">
+								
+									<div class="row" ng-repeat="value in category.values">
 									
-									<div class="col-md-5 col-md-offset-1">
-									
-										<div class="row" ng-repeat="value in category.values">
+										<div class="col-md-4">
+											<span>{{value}}</span>
+										</div>
 										
-											<div class="col-md-5">
-												<span>{{value}}</span>
-											</div>
-											
-											<div class="col-md-5 col-md-offset-1">
-												<a href="" ng-click="conf.subjectAssignment.unassign(assignment.subject, category, value)">
-													<span class="glyphicon glyphicon-transfer"></span> <em translate="moon.intraExtension.configure.subject.assignment.action.unassign">Unassign</em>
-												</a>
-											</div>
-										
+										<div class="col-md-6 col-md-offset-1">
+											<a href="" ng-click="conf.subjectAssignment.unassign(assignment.subject, category, value)">
+												<span class="glyphicon glyphicon-transfer"></span> <em translate="moon.intraExtension.configure.subject.assignment.action.unassign">Unassign</em>
+											</a>
 										</div>
 									
-										
-									
 									</div>
+								
+									
 								
 								</div>
 							
@@ -178,13 +176,13 @@
 						</div>
 					
 					</div>
-					
+				
 				</div>
-							
+
 			</div>
-			
+						
 		</div>
-		
+	
 	</div>
 	
 	<div class="panel panel-default top10">

@@ -254,6 +254,22 @@
 	   							return aValue === value;
 	   						})
 	   						
+	   						if(_.size(currentCategory.values) == 0) {
+	   							
+	   							currentAssignment.categories = _(currentAssignment.categories).reject(function(aCategory) {
+	   		   						return aCategory.name === currentCategory.name;
+	   		   					});
+	   							
+	   							if(_.size(currentAssignment.categories) == 0) {
+	   								
+	   								assignments = _(assignments).reject(function(anAssignment) {
+	   									return anAssignment.subject.uuid === subject.uuid;
+	   								});
+	   								
+	   							}
+	   							
+	   						}
+	   						
 	   					}
 	   					
 	   				}
