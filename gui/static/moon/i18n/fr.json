@@ -235,6 +235,7 @@
 	    			"back": "Liste des Intra Extensions"
 	    		},
 	    		"subject": {
+	    			"panelTitle": "Configuration des Sujets",
 	    			"title": "Sujets",
 	    			"add": {
 	    				"title": "Ajouter un nouveau Sujet",
@@ -357,6 +358,7 @@
 	    			}
 	    		},
 	    		"object": {
+	    			"panelTitle": "Configuration des Objets",
 	    			"title": "Objets",
 	    			"add": {
 	    				"title": "Ajouter un nouvel Objet",

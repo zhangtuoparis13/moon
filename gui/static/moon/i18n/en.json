@@ -235,6 +235,7 @@
 	    			"back": "Back to Intra Extensions"
 	    		},
 	    		"subject": {
+	    			"panelTitle": "Subjects configuration",
 	    			"title": "Subjects",
 	    			"add": {
 	    				"title": "Add new Subject",
@@ -357,6 +358,7 @@
 	    			}
 	    		},
 	    		"object": {
+	    			"panelTitle": "Objects configuration",
 	    			"title": "Objects",
 	    			"add": {
 	    				"title": "Add new Object",
