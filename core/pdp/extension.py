@@ -378,8 +378,27 @@ class Extension:
     def get_meta_rules(self):
         return self.metadata.get_meta_rule()
 
-    def get_rules(self):
-        return self.configuration.get_rules()
+    def _build_rule_from_list(self, relation, rule):
+        rule = list(rule)
+        _rule = dict()
+        _rule["sub_cat_value"] = dict()
+        _rule["obj_cat_value"] = dict()
+        if relation in self.metadata.get_meta_rule()["sub_meta_rules"]:
+            _rule["sub_cat_value"][relation] = dict()
+            _rule["obj_cat_value"][relation] = dict()
+            for s_category in self.metadata.get_meta_rule()["sub_meta_rules"][relation]["subject_categories"]:
+                _rule["sub_cat_value"][relation][s_category] = rule.pop(0)
+            for o_category in self.metadata.get_meta_rule()["sub_meta_rules"][relation]["object_categories"]:
+                _rule["obj_cat_value"][relation][o_category] = rule.pop(0)
+        return _rule
+
+    def get_rules(self, full=False):
+        if not full:
+            return self.configuration.get_rules()
+        rules = dict()
+        for key in self.configuration.get_rules():
+            rules[key] = map(lambda x: self._build_rule_from_list(key, x), self.configuration.get_rules()[key])
+        return rules
 
     def add_rule(self, sub_cat_value_dict, obj_cat_value_dict):
         for _relation in self.metadata.get_meta_rule()["sub_meta_rules"]:

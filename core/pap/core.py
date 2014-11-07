@@ -369,7 +369,7 @@ class PAP:
     def get_rules(self, extension_uuid, user_uuid):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "rules", "read") == "OK":
-                return self.intra_extensions[extension_uuid].intra_extension_authz.get_rules()
+                return self.intra_extensions[extension_uuid].intra_extension_authz.get_rules(full=True)
         return dict()
 
     def add_rule(self, extension_uuid, user_uuid, sub_cat_value, obj_cat_value):
