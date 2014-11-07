@@ -406,6 +406,17 @@ def object_assignments(request, uuid=None, object_id=None, category_id=None, val
 @login_required(login_url='/auth/login/')
 @save_auth
 @catch_error
+def meta_rules(request, uuid=None):
+    pap = get_pap()
+    return send_json(
+        {"meta_rules": pap.get_meta_rules(extension_uuid=uuid, user_uuid=request.session['user_id'])}
+    )
+
+
+@csrf_exempt
+@login_required(login_url='/auth/login/')
+@save_auth
+@catch_error
 def rules(request, uuid=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":

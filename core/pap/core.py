@@ -360,6 +360,12 @@ class PAP:
                     category_id, object_id, category_value
                 )
 
+    def get_meta_rules(self, extension_uuid, user_uuid):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "rules", "read") == "OK":
+                return self.intra_extensions[extension_uuid].intra_extension_authz.get_meta_rules()
+        return dict()
+
     def get_rules(self, extension_uuid, user_uuid):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "rules", "read") == "OK":

@@ -58,6 +58,8 @@ urlpatterns = patterns(
         'object_assignments'),
     url(r'^intra-extensions/(?P<uuid>[\w-]{32,36})/rules/?$',
         'rules'),
+    url(r'^intra-extensions/(?P<uuid>[\w-]{32,36})/meta_rules/?$',
+        'meta_rules'),
     # url(r'^intra-extensions/(?P<uuid>[\w-]{32,36})/rules/?$',
     #     'rules'),
     # url(r'^intra-extension/(?P<uuid>[\w-]{32,36})/rule/(?P<rule_id>[\w\_\-]{3,36})/?$',
