@@ -375,6 +375,9 @@ class Extension:
         else:
             return "[ERROR] Del Object Category Value: Object Category Value Unknown"
 
+    def get_meta_rules(self):
+        return self.metadata.get_meta_rule()
+
     def get_rules(self):
         return self.configuration.get_rules()
 
