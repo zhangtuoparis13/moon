@@ -421,6 +421,12 @@ class Extension:
                 return "[Error] Add Rule: Rule Exists"
             else:
                 self.configuration.get_rules()[_relation].append(_sub_rule)
+                return {
+                    sub_cat_value_dict.keys()[0]: ({
+                        "sub_cat_value": copy.deepcopy(sub_cat_value_dict),
+                        "obj_cat_value": copy.deepcopy(obj_cat_value_dict)
+                    }, )
+                }
         return self.configuration.get_rules()
 
     def del_rule(self, sub_cat_value_dict, obj_cat_value_dict):

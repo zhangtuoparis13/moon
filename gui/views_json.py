@@ -422,11 +422,14 @@ def rules(request, uuid=None):
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
         if "sub_cat_value" in data and "obj_cat_value" in data:
-            pap.add_rule(
+            rule = pap.add_rule(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
                 sub_cat_value=filter_input(data["sub_cat_value"]),
                 obj_cat_value=filter_input(data["obj_cat_value"]))
+            return send_json(
+                {"rules": rule}
+            )
     elif request.META['REQUEST_METHOD'] == "DELETE":
         data = json.loads(request.read())
         if "sub_cat_value" in data and "obj_cat_value" in data:
