@@ -89,7 +89,13 @@
 		    	   		remove: { method: 'DELETE' }
 		    	   	})
 	    	   		
-	    	   	}    	   	
+	    	   	},
+	    	   	
+	    	   	rule: $resource('./json/intra-extensions/:ie_uuid/rules', {}, {
+	     	   		query: { method: 'GET', isArray: false },
+	     	   		create: { method: 'POST' },
+	     	   		remove: { methode: 'DELETE' }
+	    	   	})
     	   	
 			},
 			
@@ -218,6 +224,39 @@
 	   							categories.push({name: categoryName, values: categoryValues});
 	   						}
 	   						
+	   					});
+	   					
+	   					return categories;
+	   					
+	   				}
+	   				
+	   			},
+	   			
+	   			rule: {
+	   				
+	   				getRulesFromRaw: function(rawRules) {
+	   					
+	   					var _self = this;
+	   						   					
+	   					var rules = _(rawRules.rules.relation_super).map(function(aRawRule) {
+	   						
+	   						var subject = _self.getCategoriesFromRaw(aRawRule.sub_cat_value.relation_super);
+	   						var object = _self.getCategoriesFromRaw(aRawRule.obj_cat_value.relation_super);
+	   							   						
+	   						return {subject: subject, object: object};
+	   						
+	   					});
+	   					
+	   					return rules;
+	   					
+	   				},
+	   				
+	   				getCategoriesFromRaw: function(rawElement) {
+	   					
+	   					var categoriesNames = _.keys(rawElement);
+	   					
+	   					var categories = _(categoriesNames).map(function(aCategoryName) {
+	   						return { name: aCategoryName, value: rawElement[aCategoryName] };
 	   					});
 	   					
 	   					return categories;
