@@ -137,7 +137,7 @@
 			
 				<div ng-if="!conf.subjectAssignment.loading && conf.subjectAssignment.hasAssignments()">
 				
-					<div class="top10" ng-repeat="assignment in conf.subjectAssignment.list | orderBy:assignment.subject.name:reverse">
+					<div ng-repeat="assignment in conf.subjectAssignment.list | orderBy:assignment.subject.name:reverse">
 					
 						<div class="col-md-4">
 							<span>{{assignment.element.name}}</span>
@@ -145,7 +145,7 @@
 						
 						<div class="col-md-8">
 						
-							<div class="row top05" ng-repeat="category in assignment.categories | orderBy:category.name:reverse">
+							<div class="row" ng-repeat="category in assignment.categories | orderBy:category.name:reverse">
 							
 								<div class="col-md-5">
 									<span>{{category.name}}</span>
@@ -310,7 +310,7 @@
 			
 				<div ng-if="!conf.objectAssignment.loading && conf.objectAssignment.hasAssignments()">
 				
-					<div class="top10" ng-repeat="assignment in conf.objectAssignment.list | orderBy:assignment.object.name:reverse">
+					<div ng-repeat="assignment in conf.objectAssignment.list | orderBy:assignment.object.name:reverse">
 					
 						<div class="col-md-4">
 							<span>{{assignment.element.name}}</span>
@@ -318,7 +318,7 @@
 						
 						<div class="col-md-8">
 						
-							<div class="row top05" ng-repeat="category in assignment.categories | orderBy:category.name:reverse">
+							<div class="row" ng-repeat="category in assignment.categories | orderBy:category.name:reverse">
 							
 								<div class="col-md-5">
 									<span>{{category.name}}</span>
