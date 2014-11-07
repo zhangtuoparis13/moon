@@ -143,13 +143,35 @@
 	   		
 	   		transform: {
 	   			
-	   			elementAssigment: {
+	   			category: {
 	   				
-	   				getUuidsFromRaw: function(elementAssignments) {
+	   				getCategoriesFromRaw: function(rawCategories, rawCategoriesValues) {
+	   					
+	   					var categories = _(rawCategories).map(function(aCategory) {
+	   						
+	   						var catValues = rawCategoriesValues[aCategory];
+	   						
+	   						if(!catValues) {
+	   							catValues = [];
+	   						}
+	   						
+	   						return { name: aCategory, values: catValues };
+	   						
+	   					});
+	   						   					
+	   					return categories; 
+	   					
+	   				}
+	   				
+	   			},
+	   			
+	   			assigment: {
+	   				
+	   				getUuidsFromRaw: function(rawElementAssignments) {
 	   					
 	   					var uuids = [];
 	   					
-	   					var elementsRaw = _.values(elementAssignments);
+	   					var elementsRaw = _.values(rawElementAssignments);
 	   					
 	   					_(elementsRaw).each(function(aRaw) {
 	   						uuids = uuids.concat(_.keys(aRaw));
@@ -159,38 +181,38 @@
 	   					
 	   				},
 	   				
-	   				getElementFromUuid: function(elements, uuid) {
+	   				getRawElementFromUuid: function(rawElements, uuid) {
 	   					
-	   					return _(elements).find(function(anElement) {
+	   					return _(rawElements).find(function(anElement) {
 	   						return anElement.uuid === uuid;
 	   					});
 	   					
 	   				},
 	   				
-	   				getElementsFromRaw: function(elementAssignments, elements) {
+	   				getElementsFromRaw: function(rawElementAssignments, rawElements) {
 	   					
 	   					var _self = this;
 	   					var list = [];
 	   					
-	   					var uuids = this.getUuidsFromRaw(elementAssignments);
+	   					var uuids = this.getUuidsFromRaw(rawElementAssignments);
 	   					
 	   					_(uuids).each(function(aUuid) {
-	   						list.push(_self.getElementFromUuid(elements, aUuid));
+	   						list.push(_self.getRawElementFromUuid(rawElements, aUuid));
 	   					});
 	   					
 	   					return _.compact(list);
 	   					
 	   				},
 	   				
-	   				getCategoriesFromRaw: function(elementAssignments, element) {
+	   				getCategoriesFromRaw: function(rawElementAssignments, rawElement) {
 	   					
 	   					var categories = [];
 	   					
-	   					var categoryNames = _.keys(elementAssignments);
+	   					var categoryNames = _.keys(rawElementAssignments);
 	   					
 	   					_(categoryNames).each(function(categoryName) {
 	   						
-	   						var categoryValues = elementAssignments[categoryName][element.uuid];
+	   						var categoryValues = rawElementAssignments[categoryName][rawElement.uuid];
 	   						
 	   						if(categoryValues) {
 	   							categories.push({name: categoryName, values: categoryValues});

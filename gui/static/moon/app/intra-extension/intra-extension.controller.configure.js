@@ -291,18 +291,7 @@
 		
 		function resolveSubjectCategoriesAndValues(subjectCategories, subjectCategoryValues) {
 			
-			conf.subjectCategory.list = _(subjectCategories.subject_categories).map(function(aCategory) {
-				
-				var catValues = subjectCategoryValues.subject_category_values[aCategory];
-				
-				if(!catValues) {
-					catValues = [];
-				}
-				
-				return { name: aCategory, values: catValues };
-				
-			});
-			
+			conf.subjectCategory.list = intraExtensionService.transform.category.getCategoriesFromRaw(subjectCategories.subject_categories,subjectCategoryValues.subject_category_values);
 			conf.subjectCategory.loading = false;
 			
 			return conf.subjectCategory.list; 
@@ -311,18 +300,7 @@
 		
 		function resolveObjectCategoriesAndValues(objectCategories, objectCategoryValues) {
 			
-			conf.objectCategory.list = _(objectCategories.object_categories).map(function(aCategory) {
-				
-				var catValues = objectCategoryValues.object_category_values[aCategory];
-				
-				if(!catValues) {
-					catValues = [];
-				}
-				
-				return { name: aCategory, values: catValues };
-				
-			});
-			
+			conf.objectCategory.list = intraExtensionService.transform.category.getCategoriesFromRaw(objectCategories.object_categories, objectCategoryValues.object_category_values);
 			conf.objectCategory.loading = false;
 			
 			return conf.objectCategory.list; 
@@ -331,14 +309,14 @@
 				
 		function resolveSubjectAssignments(subjects, subjectAssignments) {
 			
-			var assignedSubjects = intraExtensionService.transform.elementAssigment.getElementsFromRaw(subjectAssignments.subject_assignments, subjects);
+			var assignedSubjects = intraExtensionService.transform.assigment.getElementsFromRaw(subjectAssignments.subject_assignments, subjects);
 			
 			conf.subjectAssignment.list = _(assignedSubjects).map(function(assignedSubject) {
 				
 				var assignment = {}
 				
 				assignment.element = assignedSubject;
-				assignment.categories = intraExtensionService.transform.elementAssigment.getCategoriesFromRaw(subjectAssignments.subject_assignments, assignedSubject);
+				assignment.categories = intraExtensionService.transform.assigment.getCategoriesFromRaw(subjectAssignments.subject_assignments, assignedSubject);
 				
 				return assignment;
 
@@ -352,14 +330,14 @@
 		
 		function resolveObjectAssignments(objects, objectAssignments) {
 			
-			var assignedObjects = intraExtensionService.transform.elementAssigment.getElementsFromRaw(objectAssignments.object_assignments, objects);
+			var assignedObjects = intraExtensionService.transform.assigment.getElementsFromRaw(objectAssignments.object_assignments, objects);
 			
 			conf.objectAssignment.list = _(assignedObjects).map(function(assignedObject) {
 				
 				var assignment = {}
 				
 				assignment.element = assignedObject;
-				assignment.categories = intraExtensionService.transform.elementAssigment.getCategoriesFromRaw(objectAssignments.object_assignments, assignedObject);
+				assignment.categories = intraExtensionService.transform.assigment.getCategoriesFromRaw(objectAssignments.object_assignments, assignedObject);
 				
 				return assignment;
 
