@@ -54,8 +54,10 @@
 		    	   		remove: { method: 'DELETE' }
 		    	   	}),
 		    	   	
-		    	   	assignment: $resource('./json/intra-extensions/:ie_uuid/subject_assignments', {}, {
-		    	   		query: { method: 'GET', isArray: false }
+		    	   	assignment: $resource('./json/intra-extensions/:ie_uuid/subject_assignments/:subject_id/:category_id/:value', {}, {
+		    	   		query: { method: 'GET', isArray: false },
+		    	   		create: { method: 'POST' },
+		    	   		remove: { method: 'DELETE' }
 		    	   	})
 	    	   		
 	    	   	},
@@ -81,11 +83,19 @@
 		    	   		remove: { method: 'DELETE' }
 		    	   	}),		    	   	
 		    	   	
-		    	   	assignment: $resource('./json/intra-extensions/:ie_uuid/object_assignments', {}, {
-		    	   		query: { method: 'GET', isArray: false }
+		    	   	assignment: $resource('./json/intra-extensions/:ie_uuid/object_assignments/:object_id/:category_id/:value', {}, {
+		    	   		query: { method: 'GET', isArray: false },
+		    	   		create: { method: 'POST' },
+		    	   		remove: { method: 'DELETE' }
 		    	   	})
 	    	   		
-	    	   	}    	   	
+	    	   	},
+	    	   	
+	    	   	rule: $resource('./json/intra-extensions/:ie_uuid/rules', {}, {
+	     	   		query: { method: 'GET', isArray: false },
+	     	   		create: { method: 'POST' },
+	     	   		remove: { methode: 'DELETE' }
+	    	   	})
     	   	
 			},
 			
@@ -134,6 +144,200 @@
 	   				});
 	   				
 	   			});
+	   			
+	   		},
+	   		
+	   		transform: {
+	   			
+	   			category: {
+	   				
+	   				getCategoriesFromRaw: function(rawCategories, rawCategoriesValues) {
+	   					
+	   					var categories = _(rawCategories).map(function(aCategory) {
+	   						
+	   						var catValues = rawCategoriesValues[aCategory];
+	   						
+	   						if(!catValues) {
+	   							catValues = [];
+	   						}
+	   						
+	   						return { name: aCategory, values: catValues };
+	   						
+	   					});
+	   						   					
+	   					return categories; 
+	   					
+	   				}
+	   				
+	   			},
+	   			
+	   			assigment: {
+	   				
+	   				getUuidsFromRaw: function(rawElementAssignments) {
+	   					
+	   					var uuids = [];
+	   					
+	   					var elementsRaw = _.values(rawElementAssignments);
+	   					
+	   					_(elementsRaw).each(function(aRaw) {
+	   						uuids = uuids.concat(_.keys(aRaw));
+	   					});
+	   					
+	   					return _.uniq(uuids);
+	   					
+	   				},
+	   				
+	   				getRawElementFromUuid: function(rawElements, uuid) {
+	   					
+	   					return _(rawElements).find(function(anElement) {
+	   						return anElement.uuid === uuid;
+	   					});
+	   					
+	   				},
+	   				
+	   				getElementsFromRaw: function(rawElementAssignments, rawElements) {
+	   					
+	   					var _self = this;
+	   					var list = [];
+	   					
+	   					var uuids = this.getUuidsFromRaw(rawElementAssignments);
+	   					
+	   					_(uuids).each(function(aUuid) {
+	   						list.push(_self.getRawElementFromUuid(rawElements, aUuid));
+	   					});
+	   					
+	   					return _.compact(list);
+	   					
+	   				},
+	   				
+	   				getCategoriesFromRaw: function(rawElementAssignments, rawElement) {
+	   					
+	   					var categories = [];
+	   					
+	   					var categoryNames = _.keys(rawElementAssignments);
+	   					
+	   					_(categoryNames).each(function(categoryName) {
+	   						
+	   						var categoryValues = rawElementAssignments[categoryName][rawElement.uuid];
+	   						
+	   						if(categoryValues) {
+	   							categories.push({name: categoryName, values: categoryValues});
+	   						}
+	   						
+	   					});
+	   					
+	   					return categories;
+	   					
+	   				}
+	   				
+	   			},
+	   			
+	   			rule: {
+	   				
+	   				getRulesFromRaw: function(rawRules) {
+	   					
+	   					var _self = this;
+	   						   					
+	   					var rules = _(rawRules.rules.relation_super).map(function(aRawRule) {
+	   						
+	   						var subject = _self.getCategoriesFromRaw(aRawRule.sub_cat_value.relation_super);
+	   						var object = _self.getCategoriesFromRaw(aRawRule.obj_cat_value.relation_super);
+	   							   						
+	   						return {subject: subject, object: object};
+	   						
+	   					});
+	   					
+	   					return rules;
+	   					
+	   				},
+	   				
+	   				getCategoriesFromRaw: function(rawElement) {
+	   					
+	   					var categoriesNames = _.keys(rawElement);
+	   					
+	   					var categories = _(categoriesNames).map(function(aCategoryName) {
+	   						return { name: aCategoryName, value: rawElement[aCategoryName] };
+	   					});
+	   					
+	   					return categories;
+	   					
+	   				}
+	   				
+	   			}
+	   			
+	   		},
+	   		
+	   		assignment: {
+	   			
+	   			addAssignment: function(assignments, element, category, value) {
+	   				
+	   				var currentAssignment = _(assignments).find(function(anAssignment) {
+	   					return anAssignment.element.uuid === element.uuid;
+	   				});
+	   				
+	   				if(currentAssignment) {
+	   					
+	   					var currentCategory = _(currentAssignment.categories).find(function(aCategory) {
+	   						return aCategory.name === category.name;
+	   					});
+	   					
+	   					if(currentCategory) {
+	   						currentCategory.values.push(value);
+	   					}
+	   					else {
+	   						currentAssignment.categories.push({ name: category.name, values: [value] });
+	   					}
+	   					
+	   				}
+	   				else {
+	   					assignments.push({ element: element, categories: [{ name: category.name, values: [value] }]});
+	   				}
+	   				
+	   				return assignments;
+	   				
+	   			},
+	   			
+	   			removeAssignment: function(assignments, element, category, value) {
+	   				
+	   				var currentAssignment = _(assignments).find(function(anAssignment) {
+	   					return anAssignment.element.uuid === element.uuid;
+	   				});
+	   				
+	   				if(currentAssignment) {
+	   					
+	   					var currentCategory = _(currentAssignment.categories).find(function(aCategory) {
+	   						return aCategory.name === category.name;
+	   					});
+	   					
+	   					if(currentCategory) {
+	   						
+	   						currentCategory.values = _(currentCategory.values).reject(function(aValue) {
+	   							return aValue === value;
+	   						})
+	   						
+	   						if(_.size(currentCategory.values) == 0) {
+	   							
+	   							currentAssignment.categories = _(currentAssignment.categories).reject(function(aCategory) {
+	   		   						return aCategory.name === currentCategory.name;
+	   		   					});
+	   							
+	   							if(_.size(currentAssignment.categories) == 0) {
+	   								
+	   								assignments = _(assignments).reject(function(anAssignment) {
+	   									return anAssignment.element.uuid === element.uuid;
+	   								});
+	   								
+	   							}
+	   							
+	   						}
+	   						
+	   					}
+	   					
+	   				}
+	   				
+	   				return assignments;
+	   				
+	   			}
 	   			
 	   		}
     	   	

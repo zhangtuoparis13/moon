@@ -182,7 +182,12 @@
 				url: '/rule',
 				templateUrl: 'static/moon/app/intra-extension/intra-extension-rule.tpl.html',
 				controller: 'IntraExtensionRuleController',
-				controllerAs: 'rule'
+				controllerAs: 'rule',
+				resolve: {
+					rules: function($stateParams, intraExtensionService) {
+						return intraExtensionService.data.rule.query({ie_uuid: $stateParams.uuid}).$promise;
+					}
+				}
 			});
 		
 		return $stateProvider;

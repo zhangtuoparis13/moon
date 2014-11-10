@@ -41,8 +41,8 @@
 		    		"detail": "Consult",
 		    		"delete": "Delete",
 		    		"add": "Add Tenant",
-		    		"map": "map with an Intra Extension",
-		    		"unmap": "unmap"
+		    		"map": "Map with an Intra Extension",
+		    		"unmap": "Unmap"
 		    	},
 		    	"error": "Unable to retrieve Tenants"
 	    	},
@@ -235,6 +235,7 @@
 	    			"back": "Back to Intra Extensions"
 	    		},
 	    		"subject": {
+	    			"panelTitle": "Subjects configuration",
 	    			"title": "Subjects",
 	    			"add": {
 	    				"title": "Add new Subject",
@@ -336,9 +337,28 @@
 				    		"error": "Unable to delete Subject Category Value `{{valueName}}`",
 				    		"success": "Subject Category Value `{{valueName}}` successfully deleted"
 		    			}
+	    			},
+	    			"assignment": {
+	    				"title": "Subject Assignments",
+	    				"action": {
+	    					"assign": "Assign",
+	    					"unassign": "Unassign"
+	    				},
+	    				"list": {
+	    					"notFound": "There is no assignments"
+						},
+						"add": {
+							"error": "Unable to assign Subject `{{subjectName}}` / Category `{{categoryName}}` / Value `{{valueName}}`",
+				    		"success": "Subject `{{subjectName}}` / Category `{{categoryName}}` / Value `{{valueName}}` assignment successfully done"
+						},
+						"remove": {
+							"error": "Unable to unassign Subject `{{subjectName}}` / Category `{{categoryName}}` / Value `{{valueName}}`",
+				    		"success": "Subject `{{subjectName}}` / Category `{{categoryName}}` / Value `{{valueName}}` unassignment successfully done"
+						}
 	    			}
 	    		},
 	    		"object": {
+	    			"panelTitle": "Objects configuration",
 	    			"title": "Objects",
 	    			"add": {
 	    				"title": "Add new Object",
@@ -434,6 +454,24 @@
 				    		"error": "Unable to delete Object Category Value `{{valueName}}`",
 				    		"success": "Object Category Value `{{valueName}}` successfully deleted"
 		    			}
+	    			},
+	    			"assignment": {
+	    				"title": "Object Assignments",
+	    				"action": {
+	    					"assign": "Assign",
+	    					"unassign": "Unassign"
+	    				},
+	    				"list": {
+	    					"notFound": "There is no assignments"
+						},
+						"add": {
+							"error": "Unable to assign Object `{{objectName}}` / Category `{{categoryName}}` / Value `{{valueName}}`",
+				    		"success": "Object `{{objectName}}` / Category `{{categoryName}}` / Value `{{valueName}}` assignment successfully done"
+						},
+						"remove": {
+							"error": "Unable to unassign Object `{{ObjectName}}` / Category `{{categoryName}}` / Value `{{valueName}}`",
+				    		"success": "Object `{{objectName}}` / Category `{{categoryName}}` / Value `{{valueName}}` unassignment successfully done"
+						}
 	    			}
 	    		}    		
 	    	},
