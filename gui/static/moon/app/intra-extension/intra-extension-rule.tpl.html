@@ -1,13 +1,103 @@
 <div class="container">
 
 	<div class="row">
-		<h3 class="pull-left" translate="moon.intraExtension.rule.title" translate-values="{ intraExtensionName: intraExtension._id }">Configure</h3>
+		<h3 class="pull-left" translate="moon.intraExtension.rule.title" translate-values="{ intraExtensionName: list.intraExtension.name[0] }">Configure</h3>
+	</div>
+		
+	<div class="row">
+
+		<div class="table-responsive" role="table">
+		
+	        <table class="table table-striped table-hover" ng-table="list.table">
+	        
+	            <colgroup>
+	            	<col class="col-md-1" />
+	                <col class="col-md-3" />
+	                <col class="col-md-3" />
+	                <col class="col-md-1 col-md-offset-1" />
+	            </colgroup>
+	            
+	            <thead>
+	            
+	                <tr>
+	                
+	                	<th class="customTables"></th>
+	                
+	                	<th class="customTables">
+							<div translate="moon.intraExtension.rule.list.table.subject">Subjects</div>
+						</th>
+						
+						<th class="customTables">
+							<div translate="moon.intraExtension.rule.list.table.object">Objects</div>
+						</th>
+						
+						<th class="customTables">
+							<div translate="moon.intraExtension.rule.list.action.title">Actions</div>
+						</th>
+							                    
+	                </tr>
+	                
+	            </thead>
+	                        
+	            <tbody ng-if="!list.hasRules()">
+	            	<tr>
+	            		<td colspan="12"><span translate="moon.intraExtension.rule.list.table.notFound">There is no Rules</span></td>
+	            	</tr>
+	            </tbody>
+	            
+	            <tbody ng-if="list.hasRules()">
+	            
+		            <tr ng-repeat="rule in $data">
+		            	<td># {{$index}}</td>
+		                <td>
+		                	<dl class="dl-horizontal" ng-repeat="subject in rule.subjects">
+								<dt>{{subject.name}}</dt>
+								<dd>{{subject.value}}</dd>
+							</dl>
+		                </td>
+		                <td>
+		                	<dl class="dl-horizontal" ng-repeat="object in rule.objects">
+								<dt>{{object.name}}</dt>
+								<dd>{{object.value}}</dd>
+							</dl>
+		                </td>
+		                <td>
+			                <div class="btn-group" dropdown>
+			                        <button type="button" class="btn btn-default" translate="moon.intraExtension.rule.list.action.title">Actions</button>
+			                        <button type="button" class="btn btn-default dropdown-toggle">
+			                            <span class="caret"></span>
+			                            <span class="sr-only">Split Action button!</span>
+			                        </button>
+			                        <ul class="dropdown-menu" role="menu">
+			                            <!-- <li class="divider"></li> -->
+			                            <li>
+				                            <a href="" ng-click="list.del.showModal()">
+				                            	<span class="glyphicon glyphicon-trash"></span>
+				                            	<medium for="delete" class="control-label"  translate="moon.intraExtension.rule.list.action.delete">Delete</medium>
+				                            </a>
+			                            </li>
+			                       </ul>
+			               </div>
+		               </td>
+		               
+		            </tr>
+		            
+	            </tbody>
+	            
+	        </table>
+	        
+		</div>
+	
 	</div>
 		
 	<div class="row top10">
 		<a href="" ui-sref="moon.intraExtension.list" class="btn btn-default">
         	<span class="glyphicon glyphicon-transfer"></span>
             <span translate="moon.intraExtension.rule.action.back">Back to Intra Extensions</span>
+		</a>
+		<a href="" ng-click="list.add.showModal()" class="btn btn-default">
+           	<span class="glyphicon glyphicon-plus-sign"></span>
+			<span translate="moon.intraExtension.rule.list.action.add">Add Rule</span>
 		</a>
     </div>
 	

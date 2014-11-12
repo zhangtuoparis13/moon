@@ -477,6 +477,50 @@
 	    	},
 	    	"rule": {
 	    		"title": "Intra Extension `{{intraExtensionName}}` rules",
+	    		"list": {
+	    			"table": {
+		    			"subject": "Subjects",
+		    			"object": "Objects",
+		    			"notFound": "There is no Rules"
+	    			},
+	    			"action": {
+	    				"title": "Actions",
+	    				"add": "Add Rule",
+	    				"delete": "Delete Rule"
+	    			}
+	    		},
+	    		"add": {
+	    			"title": "Add new Rule",
+	    			"action": {
+	    				"create": "Create Rule",
+	    				"cancel": "Cancel"
+	    			},
+	    			"form": {
+	    				"subject": {
+	    					"subject": "Subjects",
+	    					"category": "Categories",
+	    					"categoryValue": "Values",
+	    					"action": {
+	    						"add": "Add",
+	    						"delete": "Delete"
+	    					}
+	    				},
+	    				"object": {
+	    					"object": "Objects",
+	    					"category": "Categories",
+	    					"categoryValue": "Values",
+	    					"action": {
+	    						"add": "Add",
+	    						"delete": "Delete"
+	    					}
+	    				}
+	    			},
+	    			"success": "Rule successfully created",
+	    			"error": "Unable to create Rule"
+	    		},
+	    		"delete": {
+	    			"title": "Delete Rule"
+	    		},
 	    		"action": {
 	    			"back": "Back to Intra Extensions"
 	    		}   		

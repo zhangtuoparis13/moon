@@ -243,7 +243,7 @@
 	   						var subject = _self.getCategoriesFromRaw(aRawRule.sub_cat_value.relation_super);
 	   						var object = _self.getCategoriesFromRaw(aRawRule.obj_cat_value.relation_super);
 	   							   						
-	   						return {subject: subject, object: object};
+	   						return {subjects: subject, objects: object};
 	   						
 	   					});
 	   					
