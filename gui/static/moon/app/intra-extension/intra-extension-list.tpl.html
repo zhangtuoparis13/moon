@@ -1,134 +1,138 @@
 
-<div>
-	<form class="form-inline pull-right">
-	    <div class="form-group">
-	        <div>
-	            <input id="searchIntraExtension" data-ng-model="list.search.query" type="text" class="form-control" placeholder="{{'moon.intraExtension.list.search.placeholder' | translate}}" />
-	        </div>
-	    </div>
-	    <div class="form-group">
-	        <div>
-	            <button type="submit" class="btn btn-danger" data-ng-click="list.search.reset()" translate="moon.intraExtension.list.search.reset">Reset</button>
-	        </div>
-	    </div>
-	</form>
-</div>
+<div class="container">
 
-<div>&nbsp;</div>
-<div>&nbsp;</div>
-<div>&nbsp;</div>
-
-<div class="row">
-
-	<div class="table-responsive" role="table">
+	<div>
+		<form class="form-inline pull-right">
+		    <div class="form-group">
+		        <div>
+		            <input id="searchIntraExtension" data-ng-model="list.search.query" type="text" class="form-control" placeholder="{{'moon.intraExtension.list.search.placeholder' | translate}}" />
+		        </div>
+		    </div>
+		    <div class="form-group">
+		        <div>
+		            <button type="submit" class="btn btn-danger" data-ng-click="list.search.reset()" translate="moon.intraExtension.list.search.reset">Reset</button>
+		        </div>
+		    </div>
+		</form>
+	</div>
 	
-        <table class="table table-striped table-hover" ng-table="list.table">
-        
-            <colgroup>
-                <col class="col-md-4" />
-                <col class="col-md-2" />
-                <col class="col-md-2" />
-                <col class="col-md-1" />
-            </colgroup>
-            
-            <thead>
-            
-                <tr>
-                
-                	<th class="customTables sortable"
-						ng-class="{ 'sort-asc': list.table.isSortBy('_id', 'asc'), 'sort-desc': list.table.isSortBy('_id', 'desc') }"
-						ng-click="list.table.sorting('_id', list.table.isSortBy('_id', 'asc') ? 'desc' : 'asc')">
-							<div translate="moon.intraExtension.list.table.name">Name</div>
-					</th>
-					
-					<th class="customTables sortable" 
-						ng-class="{ 'sort-asc': list.table.isSortBy('authz.metadata.model', 'asc'), 'sort-desc': list.table.isSortBy('authz.metadata.model', 'desc') }"
-						ng-click="list.table.sorting('authz.metadata.model', list.table.isSortBy('authz.metadata.model', 'asc') ? 'desc' : 'asc')"">
-						<div translate="moon.intraExtension.list.table.policy">Policy</div>
-					</th>
-					
-					<th class="customTables">
-						<div translate="moon.intraExtension.list.table.tenant">Tenants</div>
-					</th>
-                					
-                    <th class="customTables">
-						<div translate="moon.intraExtension.list.action.title">Actions</div>
-					</th>
-                    
-                </tr>
-                
-            </thead>
-                        
-            <tbody ng-if="!list.hasIntraExtensions()">
-            	<tr>
-            		<td colspan="12"><span translate="moon.intraExtension.list.table.notFound">There is no Intra Extensions</span></td>
-            	</tr>
-            </tbody>
-            
-            <tbody ng-if="list.hasIntraExtensions()">
-            
-	            <tr ng-repeat="intraExtension in $data | filter:list.search.find | orderBy:sort:reverse">
-	                <td ng-bind="list.getIntraExtensionName(intraExtension)"></td>
-	                <td>{{intraExtension.authz.metadata.model}}</td>
-					<td>
-						<div ng-if="list.hasMappedTenant(intraExtension)">
-	                	
-	                		<div ng-if="intraExtension.tenant == null">
-		                		<img src="static/moon/img/ajax-loader.gif" /> <em translate="moon.intraExtension.list.table.loading.tenant">Loading Tenant</em>
-	                		</div>
-	                	
-	                		<div ng-if="intraExtension.tenant != null">
-		                		{{intraExtension.tenant.name}}
-	                		</div>
-	                		
-	                	</div>
-					</td>
-	                <td>
-		                <div class="btn-group" dropdown>
-		                        <button type="button" class="btn btn-default" translate="moon.intraExtension.list.action.title">Actions</button>
-		                        <button type="button" class="btn btn-default dropdown-toggle">
-		                            <span class="caret"></span>
-		                            <span class="sr-only">Split Action button!</span>
-		                        </button>
-		                        <ul class="dropdown-menu" role="menu">
-		                        	<li ng-if="list.hasMappedTenant(intraExtension)">
-			                            <a href="" ui-sref="moon.intraExtension.edit.configuration({uuid: intraExtension._id})">
-			                            	<span class="glyphicon glyphicon-cog"></span>
-			                            	<medium for="rule" class="control-label"  translate="moon.intraExtension.list.action.configure">Configure</medium>
-			                            </a>
-		                            </li>
-									<li>
-			                            <a href="" ui-sref="moon.intraExtension.edit.rule({uuid: intraExtension._id})">
-			                            	<span class="glyphicon glyphicon-list-alt"></span>
-			                            	<medium for="rule" class="control-label"  translate="moon.intraExtension.list.action.rule">Rules</medium>
-			                            </a>
-		                            </li>
-		                            <li class="divider"></li>
-		                            <li>
-			                            <a href="" ng-click="list.del.showModal(intraExtension)">
-			                            	<span class="glyphicon glyphicon-trash"></span>
-			                            	<medium for="delete" class="control-label"  translate="moon.intraExtension.list.action.delete">Delete</medium>
-			                            </a>
-		                            </li>
-		                       </ul>
-		               </div>
-	               </td>
-	               
-	            </tr>
+	<div>&nbsp;</div>
+	<div>&nbsp;</div>
+	<div>&nbsp;</div>
+	
+	<div class="row">
+	
+		<div class="table-responsive" role="table">
+		
+	        <table class="table table-striped table-hover" ng-table="list.table">
+	        
+	            <colgroup>
+	                <col class="col-md-4" />
+	                <col class="col-md-2" />
+	                <col class="col-md-2" />
+	                <col class="col-md-1" />
+	            </colgroup>
 	            
-            </tbody>
-            
-        </table>
-        
+	            <thead>
+	            
+	                <tr>
+	                
+	                	<th class="customTables sortable"
+							ng-class="{ 'sort-asc': list.table.isSortBy('_id', 'asc'), 'sort-desc': list.table.isSortBy('_id', 'desc') }"
+							ng-click="list.table.sorting('_id', list.table.isSortBy('_id', 'asc') ? 'desc' : 'asc')">
+								<div translate="moon.intraExtension.list.table.name">Name</div>
+						</th>
+						
+						<th class="customTables sortable" 
+							ng-class="{ 'sort-asc': list.table.isSortBy('authz.metadata.model', 'asc'), 'sort-desc': list.table.isSortBy('authz.metadata.model', 'desc') }"
+							ng-click="list.table.sorting('authz.metadata.model', list.table.isSortBy('authz.metadata.model', 'asc') ? 'desc' : 'asc')">
+							<div translate="moon.intraExtension.list.table.policy">Policy</div>
+						</th>
+						
+						<th class="customTables">
+							<div translate="moon.intraExtension.list.table.tenant">Tenants</div>
+						</th>
+	                					
+	                    <th class="customTables">
+							<div translate="moon.intraExtension.list.action.title">Actions</div>
+						</th>
+	                    
+	                </tr>
+	                
+	            </thead>
+	                        
+	            <tbody ng-if="!list.hasIntraExtensions()">
+	            	<tr>
+	            		<td colspan="12"><span translate="moon.intraExtension.list.table.notFound">There is no Intra Extensions</span></td>
+	            	</tr>
+	            </tbody>
+	            
+	            <tbody ng-if="list.hasIntraExtensions()">
+	            
+		            <tr ng-repeat="intraExtension in $data | filter:list.search.find | orderBy:sort:reverse">
+		                <td ng-bind="list.getIntraExtensionName(intraExtension)"></td>
+		                <td>{{intraExtension.authz.metadata.model}}</td>
+						<td>
+							<div ng-if="list.hasMappedTenant(intraExtension)">
+		                	
+		                		<div ng-if="intraExtension.tenant == null">
+			                		<img src="static/moon/img/ajax-loader.gif" /> <em translate="moon.intraExtension.list.table.loading.tenant">Loading Tenant</em>
+		                		</div>
+		                	
+		                		<div ng-if="intraExtension.tenant != null">
+			                		{{intraExtension.tenant.name}}
+		                		</div>
+		                		
+		                	</div>
+						</td>
+		                <td>
+			                <div class="btn-group" dropdown>
+			                        <button type="button" class="btn btn-default" translate="moon.intraExtension.list.action.title">Actions</button>
+			                        <button type="button" class="btn btn-default dropdown-toggle">
+			                            <span class="caret"></span>
+			                            <span class="sr-only">Split Action button!</span>
+			                        </button>
+			                        <ul class="dropdown-menu" role="menu">
+			                        	<li ng-if="list.hasMappedTenant(intraExtension)">
+				                            <a href="" ui-sref="moon.intraExtension.edit.configuration({uuid: intraExtension._id})">
+				                            	<span class="glyphicon glyphicon-cog"></span>
+				                            	<medium for="rule" class="control-label"  translate="moon.intraExtension.list.action.configure">Configure</medium>
+				                            </a>
+			                            </li>
+										<li>
+				                            <a href="" ui-sref="moon.intraExtension.edit.rule({uuid: intraExtension._id})">
+				                            	<span class="glyphicon glyphicon-list-alt"></span>
+				                            	<medium for="rule" class="control-label"  translate="moon.intraExtension.list.action.rule">Rules</medium>
+				                            </a>
+			                            </li>
+			                            <li class="divider"></li>
+			                            <li>
+				                            <a href="" ng-click="list.del.showModal(intraExtension)">
+				                            	<span class="glyphicon glyphicon-trash"></span>
+				                            	<medium for="delete" class="control-label"  translate="moon.intraExtension.list.action.delete">Delete</medium>
+				                            </a>
+			                            </li>
+			                       </ul>
+			               </div>
+		               </td>
+		               
+		            </tr>
+		            
+	            </tbody>
+	            
+	        </table>
+	        
+		</div>
+	
+	   	<div class="container">
+			<div class="form-inline form-group">
+	           	<a href="" ng-click="list.add.showModal()" class="btn btn-default">
+	            	<span class="glyphicon glyphicon-plus-sign"></span>
+	                <span translate="moon.intraExtension.list.action.add">Add Intra Extensions</span>
+				</a>
+			</div>
+	    </div>
+	    
 	</div>
 
-   	<div class="container">
-		<div class="form-inline form-group">
-           	<a href="" ng-click="list.add.showModal()" class="btn btn-default">
-            	<span class="glyphicon glyphicon-plus-sign"></span>
-                <span translate="moon.intraExtension.list.action.add">Add Intra Extensions</span>
-			</a>
-		</div>
-    </div>
-    
 </div>

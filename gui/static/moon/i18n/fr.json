@@ -477,6 +477,57 @@
 	    	},
 	    	"rule": {
 	    		"title": "Règles de l'Intra Extension `{{intraExtensionName}}`",
+	    		"list": {
+	    			"table": {
+		    			"subject": "Sujets",
+		    			"object": "Objects",
+		    			"notFound": "Il n'existe aucune règle"
+	    			},
+	    			"action": {
+	    				"title": "Actions",
+	    				"add": "Ajouter une règle",
+	    				"delete": "Supprimer une règle"
+	    			}
+	    		},
+	    		"add": {
+	    			"title": "Ajouter une nouvelle Règle",
+	    			"action": {
+	    				"create": "Créer la Règle",
+	    				"cancel": "Annuler"
+	    			},
+	    			"form": {
+	    				"subject": {
+	    					"subject": "Sujets",
+	    					"category": "Catégories",
+	    					"categoryValue": "Valeur",
+	    					"action": {
+	    						"add": "Ajouter",
+	    						"delete": "Supprimer"
+	    					}
+	    				},
+	    				"object": {
+	    					"object": "Objets",
+	    					"category": "Catégories",
+	    					"categoryValue": "Valeurs",
+	    					"action": {
+	    						"add": "Ajouter",
+	    						"delete": "Supprimer"
+	    					}
+	    				}
+	    			},
+	    			"success": "La règle a été créée avec succès",
+	    			"error": "Impossible de créer la règle"
+	    		},
+	    		"delete": {
+	    			"title": "Supprime une Règle",
+	    			"content": "Voulez-vous supprimer la Valeur règle `{{ruleJson}}` de l'Intra Extension `{{intraExtensionName}}` ?",
+	    			"action": {
+	    				"delete": "Supprimer la Règle",
+	    				"cancel": "Annuler"
+	    			},
+					"error": "Impossible de supprimer la règle `{{ruleJson}}`",
+				    "success": "La règle `{{ruleJson}}` a été supprimée avec succès"
+	    		},
 	    		"action": {
 	    			"back": "Liste des Intra Extensions"
 	    		}  
