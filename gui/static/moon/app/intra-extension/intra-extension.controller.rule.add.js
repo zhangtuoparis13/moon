@@ -38,7 +38,7 @@
 		
 		add.hasRelation = hasRelation;
 		
-		add.rule = { subjects: { categories: [] }, objects: { categories: [] } };
+		add.rule = { subjects: [], objects: [] };
 		
 		add.canCreateRule = canCreateRule;
 		add.create = createRelation;
@@ -68,11 +68,11 @@
 			var catName = add.subjectCategory.selected.name;
 			var catValue = add.subjectCategoryValue.selected;
 			
-			if(!add.hasRelation(add.rule.subjects.categories, catName, catValue)) {
-				add.rule.subjects.categories.push({name: catName, value: catValue});
+			if(!add.hasRelation(add.rule.subjects, catName, catValue)) {
+				add.rule.subjects.push({name: catName, value: catValue});
 			}
 			
-			return add.rule.subjects.categories;
+			return add.rule.subjects;
 			
 		};
 		
@@ -82,16 +82,16 @@
 		
 		function deleteSubjectRelation(relation) {
 			
-			add.rule.subjects.categories = _(add.rule.subjects.categories).reject(function(aRelation) {
+			add.rule.subjects = _(add.rule.subjects).reject(function(aRelation) {
 				return aRelation.name === relation.name;
 			});
 			
-			return add.rule.subjects.categories;
+			return add.rule.subjects;
 			
 		};
 		
 		function hasSubjectRelations() {
-			return add.rule.subjects.categories.length > 0;
+			return add.rule.subjects.length > 0;
 		}
 		
 		/*
@@ -107,11 +107,11 @@
 			var catName = add.objectCategory.selected.name;
 			var catValue = add.objectCategoryValue.selected;
 			
-			if(!add.hasRelation(add.rule.objects.categories, catName, catValue)) {	
-				add.rule.objects.categories.push({name: catName, value: catValue});
+			if(!add.hasRelation(add.rule.objects, catName, catValue)) {	
+				add.rule.objects.push({name: catName, value: catValue});
 			}
 			
-			return add.rule.objects.categories;
+			return add.rule.objects;
 			
 		};
 		
@@ -121,16 +121,16 @@
 		
 		function deleteObjectRelation(relation) {
 			
-			add.rule.objects.categories = _(add.rule.objects.categories).reject(function(aRelation) {
+			add.rule.objects = _(add.rule.objects).reject(function(aRelation) {
 				return aRelation.name === relation.name;
 			});
 			
-			return add.rule.objects.categories;
+			return add.rule.objects;
 			
 		};
 		
 		function hasObjectRelations() {
-			return add.rule.objects.categories.length > 0;
+			return add.rule.objects.length > 0;
 		};
 		
 		/*
@@ -145,11 +145,11 @@
 			
 			var rule = { sub_cat_value: { relation_super: {} }, obj_cat_value: { relation_super: {} } };
 			
-			_(add.rule.subjects.categories).each(function(aRelation) {
+			_(add.rule.subjects).each(function(aRelation) {
 				rule.sub_cat_value.relation_super[aRelation.name] = aRelation.value;
 			});
 			
-			_(add.rule.objects.categories).each(function(aRelation) {
+			_(add.rule.objects).each(function(aRelation) {
 				rule.obj_cat_value.relation_super[aRelation.name] = aRelation.value;
 			});
 			

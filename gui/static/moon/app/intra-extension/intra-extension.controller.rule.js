@@ -186,6 +186,8 @@
                 
         function ruleCreatedSuccess(event, rule) {
         	
+        	rule.id = _.uniqueId('rule_');
+        	
         	list.rules.push(rule);
         	list.refreshRules();
 			

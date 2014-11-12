@@ -75,7 +75,7 @@
 						
 						<ul class="list-group" ng-if="add.hasSubjectRelations()">
 						
-							<li class="list-group-item" ng-repeat="relation in add.rule.subjects.categories">
+							<li class="list-group-item" ng-repeat="relation in add.rule.subjects">
 								<div class="row">
 									<div class="col-md-5">{{relation.name}}</div>
 									<div class="col-md-5 col-md-offset-1">
@@ -163,7 +163,7 @@
 						
 						<ul class="list-group" ng-if="add.hasObjectRelations()">
 						
-							<li class="list-group-item" ng-repeat="relation in add.rule.objects.categories">
+							<li class="list-group-item" ng-repeat="relation in add.rule.objects">
 								<div class="row">
 									<div class="col-md-5">{{relation.name}}</div>
 									<div class="col-md-5 col-md-offset-1">
