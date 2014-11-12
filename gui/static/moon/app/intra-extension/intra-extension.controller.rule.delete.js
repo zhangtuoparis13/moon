@@ -43,6 +43,7 @@
 			
 			// intraExtensionService.data.rule.remove({ie_uuid: del.intraExtension._id}, rule, deleteSuccess, deleteError);
 			
+			// FIXME: do not send a body in a DELETE request
 			$http({url: './json/intra-extensions/' + del.intraExtension._id + '/rules', method: 'DELETE', data: rule}).then(deleteSuccess, deleteError);
 			
 			function deleteSuccess(data) {
