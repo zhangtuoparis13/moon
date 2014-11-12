@@ -823,12 +823,10 @@ class TestAdminInterface_InterExtension(unittest.TestCase):
                 self.tenant_demo = tenant["uuid"]
         #Create mapping between extensions and tenants
         mapping = get_url(
-            "/json/super-extensions/".format(
-                self.tenant_admin,
-                self.new_ext1_uuid),
+            "/json/super-extensions/",
             post_data={
                 "tenant_uuid": self.tenant_admin,
-                "intra_extension_uuid": self.new_ext2_uuid
+                "intra_extension_uuid": self.new_ext1_uuid
             }
         )
         mapping = get_url(
