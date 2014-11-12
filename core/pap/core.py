@@ -116,6 +116,16 @@ class PAP:
             self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_subject_assignment(
                 "role", self.__admin_uuid, "admin"
             )
+            self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_object("servers")
+            self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_object_assignment(
+                "id", "servers", "servers"
+            )
+            self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_object_assignment(
+                "action", "read", "servers"
+            )
+            self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_object_assignment(
+                "action", "create", "servers"
+            )
             return intra_ext_uuid
 
     @translate_uuid
