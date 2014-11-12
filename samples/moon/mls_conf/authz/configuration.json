@@ -5,7 +5,7 @@
 
     "object_category_values": {
         "object_security_level": ["high", "medium", "low"],
-        "action": ["read", "write","execute"]
+        "action": ["read", "write", "create", "os-start", "os-stop"]
     },
 
     "rules": {

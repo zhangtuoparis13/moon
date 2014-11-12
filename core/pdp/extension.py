@@ -410,6 +410,29 @@ class Extension:
                 else:
                     return "[Error] Add Rule: Subject Category Value Unknown"
 
+            #BUG: when adding a new category in rules despite it was previously adding
+            # data = {
+            #     "sub_cat_value":
+            #         {"relation_super":
+            #              {"subject_security_level": "high", "AMH_CAT": "AMH_VAL"}
+            #         },
+            #     "obj_cat_value":
+            #         {"relation_super":
+            #              {"object_security_level": "medium"}
+            #         }
+            # }
+            # traceback = """
+            # Traceback (most recent call last):
+            #   File "/moon/gui/views_json.py", line 20, in wrapped
+            #     result = function(*args, **kwargs)
+            #   File "/moon/gui/views_json.py", line 429, in rules
+            #     obj_cat_value=filter_input(data["obj_cat_value"]))
+            #   File "/usr/local/lib/python2.7/dist-packages/moon/core/pap/core.py", line 380, in add_rule
+            #     obj_cat_value)
+            #   File "/usr/local/lib/python2.7/dist-packages/moon/core/pdp/extension.py", line 414, in add_rule
+            #     if obj_cat_value_dict[_relation][sub_object_category] \
+            # KeyError: u'action'
+            # """
             for sub_object_category in self.metadata.get_meta_rule()["sub_meta_rules"][_relation]["object_categories"]:
                 if obj_cat_value_dict[_relation][sub_object_category] \
                         in self.configuration.get_object_category_values()[sub_object_category]:
