@@ -94,7 +94,7 @@
 	    	   	rule: $resource('./json/intra-extensions/:ie_uuid/rules', {}, {
 	     	   		query: { method: 'GET', isArray: false },
 	     	   		create: { method: 'POST' },
-	     	   		remove: { methode: 'DELETE' }
+	     	   		remove: { method: 'DELETE' }
 	    	   	})
     	   	
 			},
@@ -243,7 +243,7 @@
 	   						var subject = _self.getCategoriesFromRaw(aRawRule.sub_cat_value.relation_super);
 	   						var object = _self.getCategoriesFromRaw(aRawRule.obj_cat_value.relation_super);
 	   							   						
-	   						return {subjects: subject, objects: object};
+	   						return {id: _.uniqueId('rule_'), subjects: subject, objects: object};
 	   						
 	   					});
 	   					

@@ -519,7 +519,14 @@
 	    			"error": "Unable to create Rule"
 	    		},
 	    		"delete": {
-	    			"title": "Delete Rule"
+	    			"title": "Delete Rule",
+	    			"content": "Are you sure you want to delete rule `{{ruleJson}}` of `{{intraExtensionName}}` Intra Extension ?",
+	    			"action": {
+	    				"delete": "Delete Rule",
+	    				"cancel": "Cancel"
+	    			},
+					"error": "Unable to delete Rule `{{ruleJson}}`",
+				    "success": "Rule `{{ruleJson}}` successfully deleted"
 	    		},
 	    		"action": {
 	    			"back": "Back to Intra Extensions"

@@ -210,9 +210,12 @@
         };
         
         function ruleDeletedSuccess(event, rule) {
-        	        	
-        	// TODO
-        	list.refreshTenants();
+        	
+        	list.rules = _(list.rules).reject(function(aRule) {
+        		return aRule.id === rule.id;
+        	});
+        	
+        	list.refreshRules();
 			
 			list.del.modal.hide();
         	

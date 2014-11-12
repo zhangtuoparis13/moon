@@ -519,7 +519,14 @@
 	    			"error": "Impossible de créer la règle"
 	    		},
 	    		"delete": {
-	    			"title": "Delete Rule"
+	    			"title": "Supprime une Règle",
+	    			"content": "Voulez-vous supprimer la Valeur règle `{{ruleJson}}` de l'Intra Extension `{{intraExtensionName}}` ?",
+	    			"action": {
+	    				"delete": "Supprimer la Règle",
+	    				"cancel": "Annuler"
+	    			},
+					"error": "Impossible de supprimer la règle `{{ruleJson}}`",
+				    "success": "La règle `{{ruleJson}}` a été supprimée avec succès"
 	    		},
 	    		"action": {
 	    			"back": "Liste des Intra Extensions"
