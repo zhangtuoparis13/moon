@@ -4,12 +4,12 @@
     },
 
     "object_category_values": {
-        "object_security_level": [],
-        "action": ["read", "write","execute"]
+        "id": [],
+        "action": ["read", "write", "create", "os-start", "os-stop"]
     },
 
     "rules": {
-        "relation_super":[
+        "permission":[
         ]
     }
 }
