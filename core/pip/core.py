@@ -365,7 +365,7 @@ class PIP:
                 continue
             yield t
 
-    def add_tenant(self, tenant):
+    def add_tenant(self, tenant, user=None):
         """Add a new tenant
 
         :param tenant: dictionary describing the tenant
@@ -388,6 +388,15 @@ class PIP:
             description=tenant["description"],
             enabled=tenant["enabled"]
         )
+        roles = self.get_roles(project_uuid=tenant.id)
+        if user:
+            for _role in roles:
+                if _role["value"] in ("admin", "member", "_Member_"):
+                    self.add_users_roles_assignment(
+                        project_uuid=tenant.id,
+                        user_uuid=user,
+                        role_uuid=_role["uuid"]
+                    )
         return tenant.id
 
     def del_tenant(self, tenant_uuid):
