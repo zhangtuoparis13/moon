@@ -73,7 +73,7 @@ class IntraExtensions:
     def authz_for_tenant(self, tenant_uuid, sub, obj, act):
         for uuid in self.__installed_intra_extensions.keys():
             if self.__installed_intra_extensions[uuid].get_tenant_uuid() == tenant_uuid:
-                if self.__installed_intra_extensions[tenant_uuid].authz(sub, obj, act) == 'OK':
+                if self.__installed_intra_extensions[uuid].authz(sub, obj, act) == 'OK':
                     return 'OK'
                 else:
                     return 'KO'
