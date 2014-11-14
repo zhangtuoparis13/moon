@@ -60,6 +60,8 @@ def mrm_authz(post_request):
             authz_response["error"] = traceback.format_exc()
     finally:
         if authz_response["authz"] == "OK":
+            print("\033[42mresponse={}\033[m".format(authz_response))
+        elif authz_response["authz"] == "NoExtension":
             print("\033[43mresponse={}\033[m".format(authz_response))
         else:
             print("\033[41mresponse={}\033[m".format(authz_response))

@@ -70,6 +70,16 @@ class IntraExtensions:
                 return 'OK'
         return 'KO'
 
+    def authz_for_tenant(self, tenant_uuid, sub, obj, act):
+        for uuid in self.__installed_intra_extensions.keys():
+            if self.__installed_intra_extensions[uuid].get_tenant_uuid() == tenant_uuid:
+                if self.__installed_intra_extensions[tenant_uuid].authz(sub, obj, act) == 'OK':
+                    return 'OK'
+                else:
+                    return 'KO'
+        else:
+            return 'NoExtension'
+
     def admin(self, sub, obj, act):
         for _intra_extension in self.__installed_intra_extensions.values():
             if _intra_extension.admin(sub, obj, act) == 'OK':
@@ -203,7 +213,7 @@ def pdp_authz(sub, obj, act, requesting_tenant_uuid=None, requested_tenant_uuid=
     requested_intra_extension_uuid = None
     if requesting_tenant_uuid and requested_tenant_uuid:
         if requesting_tenant_uuid == requested_tenant_uuid:
-            return intra_extensions.authz(sub, obj, act)
+            return intra_extensions.authz_for_tenant(requesting_tenant_uuid, sub, obj, act)
         else:
             mapping_list = tenant_intra_extension_mapping.list_mappings()
             for mapping in mapping_list:
@@ -213,10 +223,10 @@ def pdp_authz(sub, obj, act, requesting_tenant_uuid=None, requested_tenant_uuid=
                     requested_intra_extension_uuid = mapping["intra_extension_uuids"][0]
                 # TODO multiple intra_extensions for each tenant
             if requesting_intra_extension_uuid and requested_intra_extension_uuid:
-                return inter_extensions.authz(requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act)
+                inter_extensions.authz(requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act)
             else:
-                # raise Error unknown tenant uuid
-                return 'KO'
+                # raise Error unknow tenant uuid
+                pass
     else:
         return intra_extensions.authz(sub, obj, act)
 
