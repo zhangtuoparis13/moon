@@ -10,9 +10,9 @@
 		.module('moon')
 			.controller('TenantMapController', TenantMapController);
 	
-	TenantMapController.$inject = ['$scope', '$translate', 'alertService', 'tenantService', 'intraExtensionService'];
+	TenantMapController.$inject = ['$scope', '$translate', 'alertService', 'formService', 'tenantService', 'intraExtensionService'];
 	
-	function TenantMapController($scope, $translate, alertService, tenantService, intraExtensionService) {
+	function TenantMapController($scope, $translate, alertService, formService, tenantService, intraExtensionService) {
 
 		var map = this;
 		
@@ -55,15 +55,10 @@
 		
 		function mapTenant() {
 			
-			if(map.form.$invalid) {
-	        	
-	        	if(map.form.intraExtension.$pristine &&map.form.intraExtension.$invalid) {
-	    			
-	        		map.form.intraExtension.$dirty = true;
-	        		map.form.intraExtension.$setValidity('required', false);
-	    			
-	    		} 
-	        	        	
+			if(!formService.isValid(map.form)) {
+        		
+        		formService.checkFieldsValidity(map.form);
+        	        	
         	} else {
         	
         		var mapping = {tenant_uuid: map.tenant.uuid, intra_extension_uuid: map.selectedIntraExtension._id};

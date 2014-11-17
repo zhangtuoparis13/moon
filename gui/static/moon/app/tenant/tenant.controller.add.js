@@ -10,9 +10,9 @@
 		.module('moon')
 			.controller('TenantAddController', TenantAddController);
 	
-	TenantAddController.$inject = ['$scope', '$translate', 'alertService', 'tenantService'];
+	TenantAddController.$inject = ['$scope', '$translate', 'alertService', 'formService', 'tenantService'];
 	
-	function TenantAddController($scope, $translate, alertService, tenantService) {
+	function TenantAddController($scope, $translate, alertService, formService, tenantService) {
 		
 		var add = this;
 		
@@ -30,22 +30,10 @@
 		
 		function createTenant() {
         	
-        	if(add.form.$invalid) {
-        	
-	        	if(add.form.name.$pristine && add.form.name.$invalid) {
-	    			
-	        		add.form.name.$dirty = true;
-	        		add.form.name.$setValidity('required', false);
-	    			
-	    		} 
-	        	
-	        	if(add.form.domain.$pristine && add.form.domain.$invalid) {
-	    			
-	        		add.form.domain.$dirty = true;
-	        		add.form.domain.$setValidity('required', false);
-	    			
-	    		}
-        	
+        	if(!formService.isValid(add.form)) {
+        		
+        		formService.checkFieldsValidity(add.form);
+        	        	
         	} else {
         	
 	        	tenantService.data.tenant.create({}, add.tenant, createSuccess, createError);
