@@ -10,9 +10,9 @@
 		.module('moon')
 			.controller('TenantAddController', TenantAddController);
 	
-	TenantAddController.$inject = ['$scope', '$translate', 'alertService', 'formService', 'tenantService'];
+	TenantAddController.$inject = ['$scope', '$translate', 'alertService', 'formService', 'tenantService', 'DEFAULT_CST'];
 	
-	function TenantAddController($scope, $translate, alertService, formService, tenantService) {
+	function TenantAddController($scope, $translate, alertService, formService, tenantService, DEFAULT_CST) {
 		
 		var add = this;
 		
@@ -21,7 +21,7 @@
 		 */
 		
 		add.form = {};
-		add.tenant = { name: null, description: null, enabled: true, domain: 'Default'};
+		add.tenant = { name: null, description: null, enabled: true, domain: DEFAULT_CST.DOMAIN.DEFAULT };
 		add.create= createTenant;
 		
 		/*

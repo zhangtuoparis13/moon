@@ -10,9 +10,9 @@
 		.module('moon')
 			.controller('IntraExtensionRuleController', IntraExtensionRuleController);
 	
-	IntraExtensionRuleController.$inject = ['$rootScope', '$scope', '$modal', '$translate', '$filter', 'ngTableParams', 'alertService', 'intraExtensionService', 'intraExtension', 'subjectCategories', 'subjectCategoryValues', 'objectCategories', 'objectCategoryValues', 'rules'];
+	IntraExtensionRuleController.$inject = ['$rootScope', '$scope', '$modal', '$translate', '$filter', 'ngTableParams', 'alertService', 'intraExtensionService', 'intraExtension', 'subjectCategories', 'subjectCategoryValues', 'objectCategories', 'objectCategoryValues', 'rules', 'hasMLSPolicy', 'hasRBACPolicy', 'INTRA_EXTENSION_CST'];
 	
-	function IntraExtensionRuleController($rootScope, $scope, $modal, $translate, $filter, ngTableParams, alertService, intraExtensionService, intraExtension, subjectCategories, subjectCategoryValues, objectCategories, objectCategoryValues, rules) {
+	function IntraExtensionRuleController($rootScope, $scope, $modal, $translate, $filter, ngTableParams, alertService, intraExtensionService, intraExtension, subjectCategories, subjectCategoryValues, objectCategories, objectCategoryValues, rules, hasMLSPolicy, hasRBACPolicy, INTRA_EXTENSION_CST) {
 		
 		var list = this;
 		
@@ -59,7 +59,9 @@
 			// --- rule definition
 			// { subjects: { categories: [{name: '', values: ''}] }, objects: { categories: [{name: '', values: ''}] } }
 			
-			list.rules = intraExtensionService.transform.rule.getRulesFromRaw(rules);
+			var metaRule = 
+			
+			list.rules = intraExtensionService.transform.rule.getRulesFromRaw(rules, hasRBACPolicy);
 			list.loading = false;
 			
 			return list.rules;
@@ -176,6 +178,7 @@
 		function showAddModal() {
 			
 			list.add.modal.$scope.intraExtension = list.intraExtension;
+			list.add.modal.$scope.hasRBACPolicy = hasRBACPolicy;
 						
 			list.add.modal.$scope.subjectCategory = list.subjectCategory;
 			list.add.modal.$scope.objectCategory = list.objectCategory;
@@ -186,7 +189,7 @@
                 
         function ruleCreatedSuccess(event, rule) {
         	
-        	rule.id = _.uniqueId('rule_');
+        	rule.id = _.uniqueId(INTRA_EXTENSION_CST.RULE.ID_PREFIX);
         	
         	list.rules.push(rule);
         	list.refreshRules();
@@ -206,7 +209,9 @@
         function showDeleteModal(rule) {
         	
         	list.del.modal.$scope.intraExtension = list.intraExtension;
+			list.del.modal.$scope.hasRBACPolicy = hasRBACPolicy;
         	list.del.modal.$scope.rule = rule;
+        	
         	list.del.modal.$promise.then(list.del.modal.show);
         	
         };

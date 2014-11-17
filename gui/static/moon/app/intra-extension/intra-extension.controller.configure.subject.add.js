@@ -10,9 +10,9 @@
 		.module('moon')
 			.controller('IntraExtensionConfigurationAddSubjectController', IntraExtensionConfigurationAddSubjectController);
 	
-	IntraExtensionConfigurationAddSubjectController.$inject = ['$scope', '$translate', 'alertService', 'formService', 'intraExtensionService'];
+	IntraExtensionConfigurationAddSubjectController.$inject = ['$scope', '$translate', 'alertService', 'formService', 'intraExtensionService', 'DEFAULT_CST'];
 	
-	function IntraExtensionConfigurationAddSubjectController($scope, $translate, alertService, formService, intraExtensionService) {
+	function IntraExtensionConfigurationAddSubjectController($scope, $translate, alertService, formService, intraExtensionService, DEFAULT_CST) {
 		
 		var add = this;
 		
@@ -22,7 +22,7 @@
 		
 		add.form = {};
 		add.intraExtension = $scope.intraExtension;
-		add.subject = { name: '', domain: 'Default', enabled: true, project: add.intraExtension.tenant.uuid, password: '', description: '' };
+		add.subject = { name: '', domain: DEFAULT_CST.DOMAIN.DEFAULT, enabled: true, project: add.intraExtension.tenant.uuid, password: '', description: '' };
 		
 		add.create = addSubject;
 		
