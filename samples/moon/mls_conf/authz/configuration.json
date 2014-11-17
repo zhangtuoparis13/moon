@@ -5,14 +5,20 @@
 
     "object_category_values": {
         "object_security_level": ["high", "medium", "low"],
-        "action": ["read", "write", "create", "os-start", "os-stop"]
+        "action": ["read", "write", "create", "os-start", "os-stop", "pause", "unpause"]
     },
 
     "rules": {
         "relation_super":[
             ["high", "medium", "read"],
             ["high", "low", "read"],
-            ["medium", "low", "read"]
+            ["medium", "low", "read"],
+            ["high", "medium", "pause"],
+            ["high", "medium", "unpause"],
+            ["high", "medium", "os-start"],
+            ["high", "medium", "os-stop"],
+            ["high", "medium", "create"],
+            ["high", "medium", "write"]
         ]
     }
 }
