@@ -118,6 +118,13 @@ hr {
 .top25 { margin-top: 2.5em; }
 .top30 { margin-top: 3.0em; }
 
+.left05 { margin-left: 0.5em }
+.left10 { margin-left: 1.0em }
+.left15 { margin-left: 1.5em }
+.left20 { margin-left: 2.0em }
+.left25 { margin-left: 2.5em }
+.left30 { margin-left: 3.0em }
+
 .black {
 	color: #333
 }
