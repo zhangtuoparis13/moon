@@ -10,9 +10,9 @@
 		.module('moon')
 			.controller('IntraExtensionConfigurationAddSubjectController', IntraExtensionConfigurationAddSubjectController);
 	
-	IntraExtensionConfigurationAddSubjectController.$inject = ['$scope', '$translate', 'alertService', 'intraExtensionService'];
+	IntraExtensionConfigurationAddSubjectController.$inject = ['$scope', '$translate', 'alertService', 'formService', 'intraExtensionService', 'DEFAULT_CST'];
 	
-	function IntraExtensionConfigurationAddSubjectController($scope, $translate, alertService, intraExtensionService) {
+	function IntraExtensionConfigurationAddSubjectController($scope, $translate, alertService, formService, intraExtensionService, DEFAULT_CST) {
 		
 		var add = this;
 		
@@ -22,7 +22,7 @@
 		
 		add.form = {};
 		add.intraExtension = $scope.intraExtension;
-		add.subject = { name: '', domain: 'Default', enabled: true, project: add.intraExtension.tenant.uuid, password: '', description: '' };
+		add.subject = { name: '', domain: DEFAULT_CST.DOMAIN.DEFAULT, enabled: true, project: add.intraExtension.tenant.uuid, password: '', description: '' };
 		
 		add.create = addSubject;
 		
@@ -32,29 +32,10 @@
 		
 		function addSubject() {
 			
-			if(add.form.$invalid) {
-            	
-	        	if(add.form.name.$pristine && add.form.name.$invalid) {
-	    			
-	        		add.form.name.$dirty = true;
-	        		add.form.name.$setValidity('required', false);
-	    			
-	    		} 
-	        	
-	        	if(add.form.domain.$pristine && add.form.domain.$invalid) {
-	    			
-	        		add.form.domain.$dirty = true;
-	        		add.form.domain.$setValidity('required', false);
-	    			
-	    		}
-
-				if(add.form.password.$pristine && add.form.password.$invalid) {
-					
-					add.form.password.$dirty = true;
-					add.form.password.$setValidity('required', false);
-					
-				}
-        	
+			if(formService.isInvalid(add.form)) {
+        		
+        		formService.checkFieldsValidity(add.form);
+        	        	
         	} else {
         		
         		intraExtensionService.data.subject.subject.create({ie_uuid: add.intraExtension._id}, add.subject, createSuccess, createError);

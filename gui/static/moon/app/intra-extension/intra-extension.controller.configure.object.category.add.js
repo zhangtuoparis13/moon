@@ -10,9 +10,9 @@
 		.module('moon')
 			.controller('IntraExtensionConfigurationAddObjectCategoryController', IntraExtensionConfigurationAddObjectCategoryController);
 	
-	IntraExtensionConfigurationAddObjectCategoryController.$inject = ['$scope', '$translate', 'alertService', 'intraExtensionService'];
+	IntraExtensionConfigurationAddObjectCategoryController.$inject = ['$scope', '$translate', 'alertService', 'formService', 'intraExtensionService'];
 	
-	function IntraExtensionConfigurationAddObjectCategoryController($scope, $translate, alertService, intraExtensionService) {
+	function IntraExtensionConfigurationAddObjectCategoryController($scope, $translate, alertService, formService, intraExtensionService) {
 		
 		var add = this;
 		
@@ -32,15 +32,10 @@
 		
 		function addCategory() {
 			
-			if(add.form.$invalid) {
-            	
-	        	if(add.form.name.$pristine && add.form.name.$invalid) {
-	    			
-	        		add.form.name.$dirty = true;
-	        		add.form.name.$setValidity('required', false);
-	    			
-	    		}
-        	
+			if(formService.isInvalid(add.form)) {
+        		
+        		formService.checkFieldsValidity(add.form);
+        	        	
         	} else {
         		
         		intraExtensionService.data.object.category.create({ie_uuid: add.intraExtension._id}, {category_id: add.category.name}, createSuccess, createError);

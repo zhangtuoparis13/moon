@@ -10,9 +10,9 @@
 		.module('moon')
 				.factory('intraExtensionService', intraExtensionService);
 	
-	intraExtensionService.$inject = ['$q', '$resource'];
+	intraExtensionService.$inject = ['$q', '$resource', 'INTRA_EXTENSION_CST'];
 	
-	function intraExtensionService($q, $resource) {
+	function intraExtensionService($q, $resource, INTRA_EXTENSION_CST) {
 		
 		return {
 			
@@ -147,6 +147,14 @@
 	   			
 	   		},
 	   		
+	   		hasMLSPolicy: function(intraExtension) {
+				return intraExtension.intra_extensions.authz.metadata.model === INTRA_EXTENSION_CST.POLICY.MLS.NAME;
+			},
+				
+			hasRBACPolicy: function(intraExtension) {
+				return intraExtension.intra_extensions.authz.metadata.model === INTRA_EXTENSION_CST.POLICY.RBAC.NAME;
+			},
+	   		
 	   		transform: {
 	   			
 	   			category: {
@@ -233,17 +241,30 @@
 	   			},
 	   			
 	   			rule: {
+	   					   				
+	   				getMetaRule: function(hasRBACPolicy) {
+	   					
+	   					var metaRule = INTRA_EXTENSION_CST.POLICY.MLS.META_RULE;
+	   					
+	   					if(hasRBACPolicy) {
+	   						metaRule = INTRA_EXTENSION_CST.POLICY.RBAC.META_RULE;
+	   					}
+	   					
+	   					return metaRule;
+	   					
+	   				},
 	   				
-	   				getRulesFromRaw: function(rawRules) {
+	   				getRulesFromRaw: function(rawRules, hasRBACPolicy) {
+	   						   					
+	   					var metaRule = this.getMetaRule(hasRBACPolicy);
 	   					
 	   					var _self = this;
-	   						   					
-	   					var rules = _(rawRules.rules.relation_super).map(function(aRawRule) {
+	   					var rules = _(rawRules.rules[metaRule]).map(function(aRawRule) {
 	   						
-	   						var subject = _self.getCategoriesFromRaw(aRawRule.sub_cat_value.relation_super);
-	   						var object = _self.getCategoriesFromRaw(aRawRule.obj_cat_value.relation_super);
+	   						var subject = _self.getCategoriesFromRaw(aRawRule.sub_cat_value[metaRule]);
+	   						var object = _self.getCategoriesFromRaw(aRawRule.obj_cat_value[metaRule]);
 	   							   						
-	   						return {id: _.uniqueId('rule_'), subjects: subject, objects: object};
+	   						return {id: _.uniqueId(INTRA_EXTENSION_CST.RULE.ID_PREFIX), subjects: subject, objects: object};
 	   						
 	   					});
 	   					

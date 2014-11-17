@@ -186,6 +186,12 @@
 				resolve: {
 					rules: function($stateParams, intraExtensionService) {
 						return intraExtensionService.data.rule.query({ie_uuid: $stateParams.uuid}).$promise;
+					},
+					hasMLSPolicy: function(intraExtensionService, intraExtension) {
+						return intraExtensionService.hasMLSPolicy(intraExtension);
+					},
+					hasRBACPolicy: function(intraExtensionService, intraExtension) {
+						return intraExtensionService.hasRBACPolicy(intraExtension);
 					}
 				}
 			});

@@ -10,9 +10,9 @@
 		.module('moon')
 			.controller('IntraExtensionConfigurationAddObjectController', IntraExtensionConfigurationAddObjectController);
 	
-	IntraExtensionConfigurationAddObjectController.$inject = ['$scope', '$translate', 'alertService', 'intraExtensionService', 'novaService'];
+	IntraExtensionConfigurationAddObjectController.$inject = ['$scope', '$translate', 'alertService', 'formService', 'intraExtensionService', 'novaService'];
 	
-	function IntraExtensionConfigurationAddObjectController($scope, $translate, alertService, intraExtensionService, novaService) {
+	function IntraExtensionConfigurationAddObjectController($scope, $translate, alertService, formService, intraExtensionService, novaService) {
 		
 		var add = this;
 		
@@ -71,29 +71,10 @@
 		
 		function addObject() {
 			
-			if(add.form.$invalid) {
-            	
-	        	if(add.form.name.$pristine && add.form.name.$invalid) {
-	    			
-	        		add.form.name.$dirty = true;
-	        		add.form.name.$setValidity('required', false);
-	    			
-	    		} 
-	        	
-	        	if(add.form.image.$pristine && add.form.image.$invalid) {
-	    			
-	        		add.form.image.$dirty = true;
-	        		add.form.image.$setValidity('required', false);
-	    			
-	    		}
-	        	
-	        	if(add.form.flavor.$pristine && add.form.flavor.$invalid) {
-	    			
-	        		add.form.flavor.$dirty = true;
-	        		add.form.flavor.$setValidity('required', false);
-	    			
-	    		}
-
+			if(formService.isInvalid(add.form)) {
+        		
+        		formService.checkFieldsValidity(add.form);
+        	        	
         	} else {
         		
         		var payload = { name: add.object.name, image_name: add.object.image.name, flavor_name: add.object.flavor.name };
