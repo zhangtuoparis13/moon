@@ -13,12 +13,12 @@
 	function formService() {
 		
 		return {
-			isValid: isValid,
+			isInvalid: isInvalid,
 			checkFieldsValidity: checkFieldsValidity	
 		};
 		
-		function isValid(form) {
-			return !form.$invalid;
+		function isInvalid(form) {
+			return form.$invalid;
 		};
 		
 		function checkFieldsValidity(form) {

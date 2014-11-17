@@ -30,7 +30,7 @@
 		
 		function createTenant() {
         	
-        	if(!formService.isValid(add.form)) {
+        	if(formService.isInvalid(add.form)) {
         		
         		formService.checkFieldsValidity(add.form);
         	        	

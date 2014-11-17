@@ -55,7 +55,7 @@
 		
 		function mapTenant() {
 			
-			if(!formService.isValid(map.form)) {
+			if(formService.isInvalid(map.form)) {
         		
         		formService.checkFieldsValidity(map.form);
         	        	
