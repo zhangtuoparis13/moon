@@ -15,13 +15,17 @@
 	        <span class="pull-right">
 	            <a href="" ng-click="header.changeLocale('fr', $event)"><img src="static/moon/img/arrow-link.gif" alt="fr_" />fr</a>
 	            <a href="" ng-click="header.changeLocale('en', $event)"><img src="static/moon/img/arrow-link.gif" alt="en_" />en</a>
+	            <a href="./auth/logout/" ng-click="" class="left30">
+	            	<span class="glyphicon glyphicon-log-out"></span>
+	            	<span translate="moon.logout.title">Logout</span>
+	            </a>
 	        </span>
         </div>
                 
     </div>
     
     <div class="row">
-    	<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="alert.close()">{{alert.msg}}</alert>
+    	<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button': true}"></toaster-container>
     </div>
 
     <div class="row">

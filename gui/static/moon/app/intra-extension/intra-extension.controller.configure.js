@@ -27,7 +27,8 @@
 	                                                 'objects', 
 	                                                 'objectCategories', 
 	                                                 'objectCategoryValues', 
-	                                                 'objectAssignments'];
+	                                                 'objectAssignments',
+	                                                 'INTRA_EXTENSION_CST'];
 	
 	function IntraExtensionConfigurationController($q, 
 												   $rootScope, 
@@ -46,7 +47,8 @@
 												   objects, 
 												   objectCategories, 
 												   objectCategoryValues, 
-												   objectAssignments) {
+												   objectAssignments,
+												   INTRA_EXTENSION_CST) {
 		
 		var conf = this;
 		
@@ -282,6 +284,10 @@
 				});
 				
 				conf.object.loading = false;
+				
+				// specific case for SERVERS object
+				conf.object.list.push(INTRA_EXTENSION_CST.OBJECT.SERVERS);
+				//
 				
 				return conf.object.list;
 				

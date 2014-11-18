@@ -16,6 +16,9 @@
 	    	"intraExtension": "Intra Extensions",
 	    	"interExtension": "Inter Extensions"
 	    },
+	    "logout": {
+	    	"title": "Logout"
+	    },
 	    "tenant": {
 	    	"title": "Tenants",
 	    	"list": {

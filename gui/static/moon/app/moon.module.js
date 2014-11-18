@@ -18,7 +18,8 @@
 	                     'ngAnimate',
 	                     'mgcrea.ngStrap',
 	                     'NgSwitchery',
-	                     'ui.select'])
+	                     'ui.select',
+	                     'toaster'])
 	
 	                     .config(configurer)
 	                     .run(runner);
