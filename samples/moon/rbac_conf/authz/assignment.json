@@ -1,10 +1,12 @@
 {
     "subject_category_assignments": {
         "role":{
+            "__uuid_of_admin__": ["admin"]
         }
     },
     "object_category_assignments": {
         "id": {
+            "servers": ["servers"]
         },
         "action": {
         }

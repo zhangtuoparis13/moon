@@ -112,20 +112,51 @@ class PAP:
             if extension_setting_name:
                 extension_setting_dir = self.policies[extension_setting_name]["dir"]
             intra_ext_uuid = self.intra_extensions.install_intra_extension_from_json(extension_setting_dir, name=name)
+            #Add the real UUID of admin in admin extension
             self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_subject(self.__admin_uuid)
             self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_subject_assignment(
                 "role", self.__admin_uuid, "admin"
             )
-            self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_object("servers")
-            self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_object_assignment(
-                "id", "servers", "servers"
-            )
-            self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_object_assignment(
-                "action", "read", "servers"
-            )
-            self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_object_assignment(
-                "action", "create", "servers"
-            )
+            #Change "__uuid_of_admin__" into the real UUID od admin
+            str_lookup = "__uuid_of_admin__"
+            #Modify subjects
+            for subject in self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_subjects():
+                if subject == str_lookup:
+                    self.intra_extensions[intra_ext_uuid].intra_extension_authz.add_subject(self.__admin_uuid)
+                    break
+            #Modify subject assignments
+            for cat in self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_subject_categories():
+                assignments = dict(self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_subject_assignments(cat))
+                for key in assignments:
+                    if str_lookup == key:
+                        for value in assignments[str_lookup]:
+                            print self.intra_extensions[intra_ext_uuid].intra_extension_authz.add_subject_assignment(
+                                cat,
+                                self.__admin_uuid,
+                                value
+                            )
+                            print self.intra_extensions[intra_ext_uuid].intra_extension_authz.del_subject_assignment(
+                                cat,
+                                str_lookup,
+                                value
+                            )
+            #Modify object assignments
+            for cat in self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_object_categories():
+                assignments = dict(self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_object_assignments(cat))
+                for key in assignments:
+                    if str_lookup == key:
+                        for value in assignments[str_lookup]:
+                            print self.intra_extensions[intra_ext_uuid].intra_extension_authz.add_object_assignment(
+                                cat,
+                                self.__admin_uuid,
+                                value
+                            )
+                            print self.intra_extensions[intra_ext_uuid].intra_extension_authz.del_object_assignment(
+                                cat,
+                                str_lookup,
+                                value
+                            )
+            self.intra_extensions[intra_ext_uuid].intra_extension_authz.del_subject(str_lookup)
             return intra_ext_uuid
 
     @translate_uuid
