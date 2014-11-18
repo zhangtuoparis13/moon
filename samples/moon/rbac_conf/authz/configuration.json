@@ -5,7 +5,7 @@
 
     "object_category_values": {
         "id": [],
-        "action": ["read", "write", "create", "os-start", "os-stop"]
+        "action": ["read", "write", "create", "os-start", "os-stop", "pause", "unpause"]
     },
 
     "rules": {
