@@ -24,6 +24,16 @@
 						META_RULE: 'relation_super'
 					}
 				},
+				OBJECT: {
+					SERVERS: {
+						category: "object",
+						description: "",
+						enabled: true,
+						name: "servers",
+						tenant: null,
+						uuid: "servers"
+					}
+				},
 				RULE: {
 					ID_PREFIX: 'rule_'
 				}
