@@ -25,7 +25,7 @@
     </div>
     
     <div class="row">
-    	<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="alert.close()">{{alert.msg}}</alert>
+    	<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button': true}"></toaster-container>
     </div>
 
     <div class="row">
