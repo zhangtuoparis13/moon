@@ -34,6 +34,7 @@ apt-get install -y --force-yes \
     python-pygraphviz \
     mongodb-server \
     nodejs \
+    git \
     npm
 
 #apt-get install swi-prolog
@@ -50,6 +51,11 @@ pip install pymongo
 pip install oslo.config
 
 # installing dependencies for gui
+update-alternatives --install /usr/bin/node node  /usr/bin/nodejs 20
+npm config set registry="http://registry.npmjs.org/"
+npm config set strict-ssl false
+npm config set https-proxy ${http_proxy}
+npm config set proxy ${https_proxy}
 npm install bower -g
 cd /moon/gui/
 bower install
