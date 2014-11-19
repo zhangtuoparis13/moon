@@ -28,8 +28,9 @@ class PIP:
             ncreds = get_nova_creds()
             self.nclient = nova_client.Client("1.1", **ncreds)
 
-    def set_creds_for_tenant(self, tenant_name="admin", tenant_uuid=None):
-        tenant = self.get_tenants(name=tenant_name, uuid=tenant_uuid).next()
+    def set_creds_for_tenant(self, tenant=None, tenant_name="admin", tenant_uuid=None):
+        if not tenant:
+            tenant = self.get_tenants(name=tenant_name, uuid=tenant_uuid).next()
         from keystoneclient.v3 import client as keystone_client
         kcreds = get_keystone_creds()
         #WORKAROUND: if in version 2.0, Keystone connection doesn't work
@@ -117,12 +118,19 @@ class PIP:
     def get_objects(self, tenant=None, object_uuid=None):
         s = dict()
         #TODO: need to send the token in parameter of all functions in PIP
+        print("pip.get_objects tenant={}, object_uuid={}".format(tenant, object_uuid))
         if tenant:
-            __tenant = self.get_tenants(uuid=tenant)
-            if __tenant:
-                self.set_creds_for_tenant(tenant_name=__tenant.next()["name"])
-            else:
-                self.set_creds_for_tenant(tenant_name=tenant)
+            try:
+                __tenant = self.get_tenants(uuid=tenant).next()
+                self.set_creds_for_tenant(tenant=__tenant)
+            except StopIteration:
+                __tenant = self.get_tenants(name=tenant).next()
+                self.set_creds_for_tenant(tenant=__tenant)
+            # if __tenant:
+            #     print("\ttenant defined {}".format(__tenant))
+            #     self.set_creds_for_tenant(tenant_name=__tenant.next()["name"])
+            # else:
+            #     self.set_creds_for_tenant(tenant_name=tenant)
         for server in self.nclient.servers.list():
             o = dict()
             o["name"] = server.name
