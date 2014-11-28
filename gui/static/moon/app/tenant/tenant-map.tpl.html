@@ -1,0 +1,59 @@
+<div ng-controller="TenantMapController as map" class="modal" tabindex="-1" role="modalMappingTenant">
+
+	<div class="modal-dialog">
+
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<button type="button" class="close" ng-click="$hide()">&times;</button>
+				<h4 class="modal-title" translate="moon.tenant.map.title" translate-values="{tenantName: map.tenant.name}"></h4>
+			</div>
+			
+			<div class="modal-body">
+				
+				<form class="form-horizontal" role="form" name="map.form">
+				
+					<div class="form-group" ng-class="{'has-error': map.form.intraExtension.$dirty && (map.form.intraExtension.$invalid || !map.selectedIntraExtension)}">
+		            
+		                <label class="col-sm-3 control-label" translate="moon.tenant.map.form.intraExtension">Intra Extension</label>
+		                
+		                <div class="col-sm-6">
+		                
+		                    <ui-select ng-model="map.selectedIntraExtension" name="intraExtension" required> 
+		                    	<ui-select-match placeholder="(None)" ng-bind="$select.selected.name[0]"></ui-select-match>
+		                    	<ui-select-choices repeat="intraExtension in map.intraExtensions">
+		                    		<div ng-bind="intraExtension.name[0]" ng-value="intraExtension"></div>
+	             				</ui-select-choices>
+		                    </ui-select>
+		                    
+		                    <img ng-if="map.intraExtensionsLoading" src="static/moon/img/ajax-loader.gif" />
+		                    		                    
+		                    <div class="help-block" ng-show="map.form.intraExtension.$dirty && (map.form.intraExtension.$invalid || !map.selectedIntraExtension)">
+		                    	<small class="error" ng-show="map.form.intraExtension.$error.required" translate="moon.tenant.map.check.intraExtension.required">Intra Extension is required</small>
+		                    </div>
+		                    
+		                </div>
+		                
+		            </div>
+		            
+				</form>
+				
+			</div>
+			
+			<div class="modal-footer">
+				<div class="btn-toolbar" style="float: right;">
+					<a href="" ng-click="$hide()" class="btn btn-default">
+		                <span translate="moon.tenant.map.action.cancel">Cancel</span>
+					</a>					
+					<a href="" ng-click="map.map()" class="btn btn-warning">
+		            	<span class="glyphicon glyphicon-link"></span>
+		                <span translate="moon.tenant.map.action.map">Map</span>
+					</a>
+				</div>
+			</div>
+			
+		</div>
+		
+	</div>
+	
+</div>

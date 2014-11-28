@@ -97,3 +97,9 @@ Session.vim
 tests/vagrant/.vagrant/
 tests/vagrant/.vagrant/machines/default/virtualbox/id
 ruan.note
+
+## Eclipse
+.project
+
+## Bower dependencies
+vendor

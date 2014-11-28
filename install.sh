@@ -21,7 +21,9 @@ apt-get install -y --force-yes \
     graphviz \
     python-sqlalchemy \
     python-pygraphviz \
-    mongodb-server
+    mongodb-server \
+    libxslt1-dev \
+    zlib1g-dev
 
 pip install django_openstack_auth
 pip install python-keystoneclient

@@ -1,0 +1,380 @@
+<div class="container">
+	
+	<div class="row">
+		<h3 class="pull-left" translate="moon.intraExtension.configure.title" translate-values="{ intraExtensionName: conf.intraExtension.name[0] }">Configure</h3>
+	</div>
+	
+	<div class="row">
+		<h4 class="pull-left" translate="moon.intraExtension.configure.subject.panelTitle">Subjects configuration</h4>
+	</div>
+	
+	<div class="panel-group">
+	
+		<div class="panel panel-default">
+		
+			<div class="panel-heading">
+			
+				<div class="row">
+					<div class="col-md-3"><label translate="moon.intraExtension.configure.subject.title">Subjects</label></div>
+					<div class="col-md-3 col-md-offset-1"><label translate="moon.intraExtension.configure.subject.category.title">Categories</label></div>
+					<div class="col-md-3 col-md-offset-1"><label translate="moon.intraExtension.configure.subject.categoryValue.title">Values</label></div>
+				</div>
+				
+			</div>
+		
+			<div class="panel-body">
+						
+				<div class="col-md-3">
+			
+					<div>
+						<ui-select ng-model="conf.subject.selected" name="subject">
+							<ui-select-match placeholder="(None)" ng-bind="$select.selected.name"></ui-select-match>
+							<ui-select-choices repeat="subject in conf.subject.list">
+								<div ng-bind="subject.name" ng-value="subject"></div>
+							</ui-select-choices>
+						</ui-select>
+					</div>
+					
+					<img ng-if="conf.subject.loading" src="static/moon/img/ajax-loader.gif" />
+					
+					<div>
+						<a href="" class="black" ng-click="conf.action.subject.add.showModal()">
+				        	<span class="glyphicon glyphicon-plus-sign"></span>
+						</a>
+						<a href="" class="black" ng-click="conf.action.subject.del.showModal()">
+				        	<span class="glyphicon glyphicon-minus-sign"></span>
+						</a>
+					</div>
+				
+				</div>
+								
+				<div class="col-md-3 col-md-offset-1">
+				
+					<div>
+						<ui-select ng-model="conf.subjectCategory.selected" name="subjectCategory" ng-change="conf.subjectCategoryValue.reset()"> 
+							<ui-select-match placeholder="(None)" ng-bind="$select.selected.name"></ui-select-match>
+				           	<ui-select-choices repeat="category in conf.subjectCategory.list">
+				           		<div ng-bind="category.name" ng-value="category"></div>
+			   				</ui-select-choices>
+						</ui-select>
+					</div>
+					
+					<img ng-if="conf.subjectCategory.loading" src="static/moon/img/ajax-loader.gif" />
+					
+					<div>
+						<a href="" class="black" ng-click="conf.action.subjectCategory.add.showModal()">
+				        	<span class="glyphicon glyphicon-plus-sign"></span>
+						</a>
+						<a href="" class="black" ng-click="conf.action.subjectCategory.del.showModal()">
+				        	<span class="glyphicon glyphicon-minus-sign"></span>
+						</a>
+					</div>
+											
+				</div>
+				
+				<div class="col-md-3 col-md-offset-1">
+				
+					<div class="row" ng-if="conf.subjectCategory.selected">
+					
+						<div class="col-md-7">
+					
+							<div>
+						
+								<div>
+									<ui-select ng-model="conf.subjectCategoryValue.selected" ng-disabled="disabled" name="subjectCategoryValue">
+										<ui-select-match placeholder="(None)" ng-bind="$select.selected"></ui-select-match>
+										<ui-select-choices repeat="value in conf.subjectCategory.selected.values">
+											<div ng-bind="value" ng-value="value"></div>
+										</ui-select-choices>
+									</ui-select>
+								</div>
+							
+							</div>
+														
+							<div>
+								<a href="" class="black" ng-click="conf.action.subjectCategoryValue.add.showModal()">
+						        	<span class="glyphicon glyphicon-plus-sign"></span>
+								</a>
+								<a href="" class="black" ng-click="conf.action.subjectCategoryValue.del.showModal()">
+						        	<span class="glyphicon glyphicon-minus-sign"></span>
+								</a>
+							</div>
+										
+						</div>
+					
+						<div class="col-md-4 col-md-offset-1">
+						
+							<div>
+								<a href="" ng-click="conf.subjectAssignment.assign()" class="btn btn-warning" ng-disabled="!conf.subjectAssignment.canAssign()">
+					            	<span class="glyphicon glyphicon-link"></span>
+					                <span translate="moon.intraExtension.configure.subject.assignment.action.assign">Assign</span>
+								</a>
+							</div>
+					
+						</div>
+						
+					</div>
+				
+				</div>
+										
+			</div>
+			
+		</div>
+		
+		<div class="panel panel-default">
+	
+			<div class="panel-heading">
+				<label translate="moon.intraExtension.configure.subject.assignment.title">Assignments</label>
+			</div>
+			
+			<div class="panel-body">		
+			
+				<img ng-if="conf.subjectAssignment.loading" src="static/moon/img/ajax-loader.gif" />
+				
+				<div ng-if="!conf.subjectAssignment.loading && !conf.subjectAssignment.hasAssignments()">
+					<span translate="moon.intraExtension.configure.subject.assignment.list.notFound">No assignments</span>
+				</div>
+			
+				<div ng-if="!conf.subjectAssignment.loading && conf.subjectAssignment.hasAssignments()">
+				
+					<div ng-repeat="assignment in conf.subjectAssignment.list | orderBy:assignment.subject.name:reverse">
+										
+						<div class="col-md-4">
+							<span>{{assignment.element.name}}</span>
+						</div>
+						
+						<div class="col-md-8">
+						
+							<div class="row" ng-repeat="category in assignment.categories | orderBy:category.name:reverse">
+														
+								<div class="col-md-5">
+									<span>{{category.name}}</span>
+								</div>
+								
+								<div class="col-md-6 col-md-offset-1">
+								
+									<div class="row" ng-repeat="value in category.values | orderBy:value:reverse">
+																		
+										<div class="col-md-4">
+											<span>{{value}}</span>
+										</div>
+										
+										<div class="col-md-6 col-md-offset-1">
+											<a href="" ng-click="conf.subjectAssignment.unassign(assignment.element, category, value)">
+												<span class="glyphicon glyphicon-transfer"></span> <em translate="moon.intraExtension.configure.subject.assignment.action.unassign">Unassign</em>
+											</a>
+										</div>
+										
+										<div class="col-md-12 divider" ng-if="!$last"></div>
+									
+									</div>									
+								
+								</div>
+								
+								<div class="col-md-12 divider" ng-if="!$last"></div>
+							
+							</div>
+							
+						</div>
+						
+						<div class="col-md-12 divider" ng-if="!$last"></div>
+					
+					</div>
+				
+				</div>
+
+			</div>
+						
+		</div>
+	
+	</div>
+	
+	<div class="row">
+		<h4 class="pull-left" translate="moon.intraExtension.configure.object.panelTitle">Objects configuration</h4>
+	</div>
+	
+	<div class="panel-group">
+	
+		<div class="panel panel-default">
+		
+			<div class="panel-heading">
+				<div class="row">
+					<div class="col-md-3"><label translate="moon.intraExtension.configure.object.title">Object</label></div>
+					<div class="col-md-3 col-md-offset-1"><label translate="moon.intraExtension.configure.object.category.title">Category</label></div>
+					<div class="col-md-3 col-md-offset-1"><label translate="moon.intraExtension.configure.object.categoryValue.title">Values</label></div>
+				</div>
+			</div>
+		
+			<div class="panel-body">
+							
+				<div class="col-md-3">
+			
+					<div>
+						<ui-select ng-model="conf.object.selected" name="object">
+							<ui-select-match placeholder="(None)" ng-bind="$select.selected.name"></ui-select-match>
+							<ui-select-choices repeat="object in conf.object.list">
+								<div ng-value="object" ng-bind="object.name"></div>
+							</ui-select-choices>
+						</ui-select>
+					</div>
+					
+					<img ng-if="conf.object.loading" src="static/moon/img/ajax-loader.gif" />
+					
+					<div>
+						<a href="" class="black" ng-click="conf.action.object.add.showModal()">
+				        	<span class="glyphicon glyphicon-plus-sign"></span>
+						</a>
+						<a href="" class="black" ng-click="conf.action.object.del.showModal()">
+				        	<span class="glyphicon glyphicon-minus-sign"></span>
+						</a>
+					</div>
+				
+				</div>
+				
+				<div class="col-md-3 col-md-offset-1">
+				
+					<div>
+						<ui-select ng-model="conf.objectCategory.selected" name="objectCategory" ng-change="conf.objectCategoryValue.reset()"> 
+							<ui-select-match placeholder="(None)" ng-bind="$select.selected.name"></ui-select-match>
+				           	<ui-select-choices repeat="category in conf.objectCategory.list">
+				           		<div ng-bind="category.name" ng-value="category"></div>
+				   				</ui-select-choices>
+						</ui-select>
+					</div>
+					
+					<img ng-if="conf.objectCategory.loading" src="static/moon/img/ajax-loader.gif" />
+					
+					<div>
+						<a href="" class="black" ng-click="conf.action.objectCategory.add.showModal()">
+				        	<span class="glyphicon glyphicon-plus-sign"></span>
+						</a>
+						<a href="" class="black" ng-click="conf.action.objectCategory.del.showModal()">
+				        	<span class="glyphicon glyphicon-minus-sign"></span>
+						</a>
+					</div>
+							
+				</div>
+				
+				<div class="col-md-3 col-md-offset-1">
+				
+					<div ng-if="conf.objectCategory.selected">
+					
+						<div class="col-md-7">
+						
+							<div>
+								<ui-select ng-model="conf.objectCategoryValue.selected" ng-disabled="disabled" name="objectCategoryValue">
+									<ui-select-match placeholder="(None)" ng-bind="$select.selected"></ui-select-match>
+									<ui-select-choices repeat="value in conf.objectCategory.selected.values">
+										<div ng-bind="value" ng-value="value"></div>
+									</ui-select-choices>
+								</ui-select>
+							</div>
+														
+							<div>
+								<a href="" class="black" ng-click="conf.action.objectCategoryValue.add.showModal()">
+						        	<span class="glyphicon glyphicon-plus-sign"></span>
+								</a>
+								<a href="" class="black" ng-click="conf.action.objectCategoryValue.del.showModal()">
+						        	<span class="glyphicon glyphicon-minus-sign"></span>
+								</a>
+							</div>
+							
+						</div>
+						
+						<div class="col-md-4 col-md-offset-1">
+						
+							<div>
+								<a href="" ng-click="conf.objectAssignment.assign()" class="btn btn-warning" ng-disabled="!conf.objectAssignment.canAssign()">
+					            	<span class="glyphicon glyphicon-link"></span>
+					                <span translate="moon.intraExtension.configure.object.assignment.action.assign">Assign</span>
+								</a>
+							</div>
+					
+						</div>
+						
+					</div>
+														
+				</div>
+													
+			</div>
+			
+		</div>
+		
+		<div class="panel panel-default">
+	
+			<div class="panel-heading">
+				<label translate="moon.intraExtension.configure.object.assignment.title">Assignments</label>
+			</div>
+			
+			<div class="panel-body">		
+			
+				<img ng-if="conf.objectAssignment.loading" src="static/moon/img/ajax-loader.gif" />
+				
+				<div ng-if="!conf.objectAssignment.loading && !conf.objectAssignment.hasAssignments()">
+					<span translate="moon.intraExtension.configure.object.assignment.list.notFound">No assignments</span>
+				</div>
+			
+				<div ng-if="!conf.objectAssignment.loading && conf.objectAssignment.hasAssignments()">
+				
+					<div ng-repeat="assignment in conf.objectAssignment.list | orderBy:assignment.object.name:reverse">
+					
+						<div class="col-md-4">
+							<span>{{assignment.element.name}}</span>
+						</div>
+						
+						<div class="col-md-8">
+						
+							<div class="row" ng-repeat="category in assignment.categories | orderBy:category.name:reverse">
+							
+								<div class="col-md-5">
+									<span>{{category.name}}</span>
+								</div>
+								
+								<div class="col-md-6 col-md-offset-1">
+								
+									<div class="row" ng-repeat="value in category.values | orderBy:value:reverse">
+									
+										<div class="col-md-4">
+											<span>{{value}}</span>
+										</div>
+										
+										<div class="col-md-6 col-md-offset-1">
+											<a href="" ng-click="conf.objectAssignment.unassign(assignment.element, category, value)">
+												<span class="glyphicon glyphicon-transfer"></span> <em translate="moon.intraExtension.configure.object.assignment.action.unassign">Unassign</em>
+											</a>
+										</div>
+										
+										<div class="col-md-12 divider" ng-if="!$last"></div>
+									
+									</div>									
+								
+								</div>
+								
+								<div class="col-md-12 divider" ng-if="!$last"></div>
+							
+							</div>
+						
+						</div>
+						
+						<div class="col-md-12 divider" ng-if="!$last"></div>
+					
+					</div>
+				
+				</div>
+
+			</div>
+						
+		</div>
+	
+	</div>
+	
+	<div class="container">
+		<div class="row top05">
+			<a href="" ui-sref="moon.intraExtension.list" class="btn btn-default">
+	        	<span class="glyphicon glyphicon-transfer"></span>
+	            <span translate="moon.intraExtension.configure.action.back">Back to Intra Extensions</span>
+			</a>
+	    </div>
+    </div>
+	
+</div>

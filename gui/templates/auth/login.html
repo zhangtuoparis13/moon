@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html>
+    
+    <head>
+    
+        <title>Moon Login</title>
+        
+        {% load staticfiles %}
+        
+        <link rel="stylesheet" href="../../static/moon/vendor/bootstrap/dist/css/bootstrap.css">
+        <link rel="stylesheet" href="../../static/moon/styles/main.css">
+        
+    </head>
+    
+    <body>
+    
+    	<div class="container">
+            
+            <div class="banner">
+
+			    <div class="row">
+			    
+					<div class="col-md-3 sub-banner">
+			            <img src="../../static/moon/img/logo-orange.gif" alt="Orange" />
+			            <img src="../../static/moon/img/logo-openstack.png" alt="OpenStack" />
+			        </div>
+			        
+			        <div class="col-md-6 center-block">
+			            <h1>Moon: a User-centric Security Management System for OpenStack</h1>
+			        </div>
+			    			                
+			    </div>
+			    			
+			</div>            
+            
+        </div>
+    
+    	<div class="container">
+    	                
+			<div class="row">
+	                		                
+				<form class="form-horizontal" role="form" name="loginform" action="." method="POST">
+		     
+					<h2>Put your OpenStack credentials</h2>
+					    				    	
+			        <input type="hidden" name='csrfmiddlewaretoken' value="{{ csrf_token }}"/>
+		         	<input type="hidden" name='auth_url' value="{{ auth_url }}"/>
+		         
+		         	{% verbatim %}
+		         
+		         	<div class="form-group">
+		         		<label class="col-sm-5 control-label" for="id_username">User Name</label>
+		         		<div class="col-sm-3">
+		         			<input autofocus="autofocus" id="id_username" name="username" type="text" class="form-control"  />
+		         		</div>
+		         	</div>
+		         	
+					<div class="form-group">
+						<input id="id_region" name="region" type="hidden" value="http://openstackserver:5000/v3" />
+						<label  class="col-sm-5 control-label" for="id_password">Password</label>
+						<div class="col-sm-3">
+							<input id="id_password" name="password" type="password" class="form-control" />
+						</div>					
+					</div>         
+		         
+		         	<div class="form-group">
+			         	<div class="col-sm-3 col-sm-offset-5">
+				        	<button class="btn btn-warning" type="submit">
+				        		<span class="glyphicon glyphicon-log-in"></span>
+				        		<span class="left05">Authenticate</span>
+				        	</button>
+				        </div>
+			        </div>
+			        
+			       {% endverbatim %}
+			         
+				</form>
+							
+			</div>
+		
+		</div>
+			       
+    </body>
+    
+</html>

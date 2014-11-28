@@ -1,0 +1,22 @@
+{
+    "subject_category_values": {
+        "role": ["admin"]
+    },
+
+    "object_category_values": {
+        "id": ["servers"],
+        "action": ["read", "write", "create", "os-start", "os-stop", "pause", "unpause"]
+    },
+
+    "rules": {
+        "permission":[
+            ["admin", "servers", "read"],
+            ["admin", "servers", "write"],
+            ["admin", "servers", "create"],
+            ["admin", "servers", "os-start"],
+            ["admin", "servers", "os-stop"],
+            ["admin", "servers", "pause"],
+            ["admin", "servers", "unpause"]
+        ]
+    }
+}

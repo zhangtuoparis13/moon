@@ -2,67 +2,86 @@
 import os
 import sys
 import argparse
-from moon.core.pap import get_pap
-import logging
-from moon.log_repository import get_log_manager
-from moon.core.pdp.authz import toggle_init_flag
+from moon.tools.log import get_sys_logger
 
-LOG_LEVEL = logging.INFO
-LOGS = get_log_manager()
+sys_logger = get_sys_logger()
 
-FORMAT = "%(name)s-%(levelname)s %(message)s\033[1;m"
-logging.basicConfig(format=FORMAT, level=LOG_LEVEL)
-logging.addLevelName(logging.INFO, "\033[1;32m%s" % logging.getLevelName(logging.INFO))
-logging.addLevelName(logging.WARNING, "\033[1;31m%s" % logging.getLevelName(logging.WARNING))
-logging.addLevelName(logging.ERROR, "\033[1;41m%s" % logging.getLevelName(logging.ERROR))
+
+def start_django(args):
+    from django.core.management import execute_from_command_line
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "moon.settings")
+    try:
+        execute_from_command_line(args)
+    except:
+        import traceback
+        print(traceback.print_exc())
+
+
+def init_django():
+    from django.contrib.auth.management.commands import changepassword
+    from django.db.utils import IntegrityError
+    from django.core.management import call_command
+    try:
+        call_command('createsuperuser', interactive=False, username="superuser", email="xx@xx.net")
+        command = changepassword.Command()
+        command._get_pass = lambda *args: 'password'
+        command.execute("superuser")
+    except IntegrityError:
+        pass
+    call_command(" ".join(d_args[1:]), interactive=False)
+
+
+def find_admin_uuid():
+    pap = get_pap()
+    from moon.core.pip import get_pip
+    pip = get_pip()
+    kusers = pip.get_subjects()
+    admin_user = None
+    for user in kusers:
+        if user["name"] == "admin":
+            admin_user = user
+            break
+    if not admin_user:
+        sys_logger.warning("Cannot find admin user in Keystone.")
+        return
+    pap.set_admin_uuid(admin_user["uuid"])
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("djangoargs", nargs='*', help="Set Django specific arguments")
     parser.add_argument("--dbdrop", action='store_true', help="Delete local DBs")
-    parser.add_argument("--keystone_sync", "--sync", action='store_true', help="Synchronize local DBs with Keystone DB")
-    parser.add_argument("--run", action='store_true', help="Create local DBs and populate them")
-    # parser.add_argument("--username", "-u", type=str, help="Username for Keystone remote database")
-    # parser.add_argument("--userpass", "-p", type=str, help="Password for Keystone remote database")
-    # parser.add_argument("--unittest", action='store_true', help="Execute tests")
-    # parser.add_argument("--testonly", action='store_true', help="Check for Keystone connection and "
-    #                                                             "show what it would do.")
-    args = parser.parse_args()
+    parser.add_argument("--sync", help="Synchronize local DBs with 'json' or 'database'")
+    parser.add_argument("--policies", help="Set a directory containing policies")
+    parser.add_argument("--init", help="Initialize the django database")
+    parser.add_argument("--run", action='store_true', help="Run the server")
 
+    args = parser.parse_args()
+    from moon.core.pap import get_pap
     pap = get_pap()
 
+    find_admin_uuid()
+
+    if args.init:
+        init_django()
+    if args.policies:
+        pap.set_policies(args.policies)
     if args.dbdrop:
         pap.delete_tables()
-    elif args.run:
-        LOGS.write("Starting application")
-        if args.keystone_sync:
-            toggle_init_flag()
-            pap.sync_db_with_keystone()
-            toggle_init_flag()
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "moon.gi.settings")
-        d_args = [sys.argv[0]]
-        d_args.extend(args.djangoargs[1:]) 
-        if "syncdb" in d_args:
-            from django.contrib.auth.management.commands import changepassword
-            from django.db.utils import IntegrityError
-            from django.core.management import call_command
-            try:
-                call_command('createsuperuser', interactive=False, username="superuser", email="xx@xx.net")
-                command = changepassword.Command()
-                command._get_pass = lambda *args: 'password'
-                command.execute("superuser")
-            except IntegrityError:
-                pass
-            call_command(" ".join(d_args[1:]), interactive=False)
+    elif args.sync:
+        if args.sync == "db":
+            pap.add_from_db()
         else:
-            from django.core.management import execute_from_command_line
-            execute_from_command_line(d_args)
-    elif args.keystone_sync:
-        toggle_init_flag()
-        pap.sync_db_with_keystone()
-        toggle_init_flag()
-    # elif args.test:
-    #     sys.argv.remove("--test")
-    #     # TODO: add tests
+            for dirname in args.sync.split(","):
+                pap.add_from_json(dirname.strip())
+        sys_logger.info("Starting application")
+        d_args = [sys.argv[0]]
+        d_args.extend(args.djangoargs)
+        start_django(d_args)
+    elif args.run:
+        sys_logger.info("Starting application")
+        d_args = [sys.argv[0]]
+        d_args.extend(args.djangoargs)
+        start_django(d_args)
     else:
         parser.print_usage()

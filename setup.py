@@ -15,7 +15,7 @@ setup(
     license='Apache License, Version 2.0',
     long_description=open('README.md').read(),
     test_suite="tests",
-    package_dir={'moon': './'},
+    package_dir={'moon': '../'},
     install_requires=['django_openstack_auth', 'python-keystoneclient', 'python-novaclient', 'pymongo'],
 )
 

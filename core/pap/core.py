@@ -1,400 +1,494 @@
 """
 """
-import logging
 import os
 import json
-from uuid import uuid4
-from moon import settings
-from moon.core.pdp import get_inter_extentions, get_intra_extentions
+from moon.core.pdp import get_intra_extensions
+from moon.core.pdp import get_inter_extensions
+from moon.core.pdp import get_super_extension
+from moon.core.pdp import get_tenant_intra_extension_mapping
 from moon.core.pip import get_pip
+from moon.tools.log import get_sys_logger
+from moon.core.pdp import pdp_admin
 
-logger = logging.getLogger("moon.pap")
+sys_logger = get_sys_logger()
+
+
+def translate_uuid(function):
+    def wrapped(*args, **kwargs):
+        if "user_id" in kwargs:
+            try:
+                user = get_pip().get_subjects("admin", kwargs["user_id"]).next()
+                kwargs["user_id"] = user["name"]
+            except StopIteration:
+                pass
+        else:
+            try:
+                user = get_pip().get_subjects("admin", args[1]).next()
+                args[1] = user["name"]
+            except StopIteration:
+                pass
+        result = function(*args, **kwargs)
+        return result
+    return wrapped
 
 
 class PAP:
 
     def __init__(self):
-        self.intra_pdps = get_intra_extentions()
-        self.inter_pdps = get_inter_extentions()
-        self.tenants = get_inter_extentions().tenants
+        self.intra_extensions = get_intra_extensions()
+        self.inter_extensions = get_inter_extensions()
+        # self.tenants = get_inter_extensions().tenants
+        self.super_extension = get_super_extension()
+        self.tenant_intra_extension_mapping = get_tenant_intra_extension_mapping()
+        self.policies = dict()
+        self.__admin_uuid = None
 
-    def get_intra_extensions(self, uuid=None, tenant_uuid=None, tenant_name=None, **kwargs):
-        if not uuid and not tenant_uuid:
-            return self.intra_pdps.get()
-        elif uuid and uuid in self.intra_pdps.keys():
-            return self.intra_pdps.get(uuid=uuid)
-        elif tenant_uuid:
-            for ext in self.intra_pdps.get():
-                if ext.get_tenant()["uuid"] == tenant_uuid:
-                    return ext
-        elif tenant_name:
-            for ext in self.intra_pdps.get():
-                if ext.get_tenant()["name"] == tenant_name:
-                    return ext
+    def set_policies(self, dirname):
+        import glob
+        for node in glob.glob(os.path.join(dirname, "*")):
+            if os.path.isdir(os.path.join(node, "admin")) and \
+               os.path.isdir(os.path.join(node, "admin")):
+                append = False
+                for json_file in ("assignment.json", "metadata.json", "configuration.json", "perimeter.json"):
+                    if os.path.join(node, "admin", json_file) in glob.glob(os.path.join(node, "admin", "*")) and \
+                       os.path.join(node, "authz", json_file) in glob.glob(os.path.join(node, "authz", "*")):
+                        append = True
+                    else:
+                        append = False
+                        break
+                if append:
+                    policy_name = os.path.basename(node.strip("/"))
+                    self.policies[policy_name] = dict()
+                    self.policies[policy_name]["dir"] = node
+                    self.policies[policy_name]["admin"] = dict()
+                    self.policies[policy_name]["authz"] = dict()
+                    self.policies[policy_name]["admin"]["assignment"] = json.loads(
+                        file(os.path.join(node, "admin", "assignment.json")).read())
+                    self.policies[policy_name]["admin"]["metadata"] = json.loads(
+                        file(os.path.join(node, "admin", "metadata.json")).read())
+                    self.policies[policy_name]["admin"]["configuration"] = json.loads(
+                        file(os.path.join(node, "admin", "configuration.json")).read())
+                    self.policies[policy_name]["admin"]["perimeter"] = json.loads(
+                        file(os.path.join(node, "admin", "perimeter.json")).read())
+                    self.policies[policy_name]["authz"]["assignment"] = json.loads(
+                        file(os.path.join(node, "admin", "assignment.json")).read())
+                    self.policies[policy_name]["authz"]["metadata"] = json.loads(
+                        file(os.path.join(node, "admin", "metadata.json")).read())
+                    self.policies[policy_name]["authz"]["configuration"] = json.loads(
+                        file(os.path.join(node, "admin", "configuration.json")).read())
+                    self.policies[policy_name]["authz"]["perimeter"] = json.loads(
+                        file(os.path.join(node, "admin", "perimeter.json")).read())
+
+    def get_policies(self):
+        return self.policies
+
+    def set_admin_uuid(self, uuid):
+        self.__admin_uuid = uuid
+
+    ###########################################
+    # Misc functions for Super-Extension
+    ###########################################
+
+    def get_tenants(self):
+        pip = get_pip()
+        return pip.get_tenants()
+
+    @translate_uuid
+    def get_intra_extensions(self, user_id, uuid=None):
+        if self.super_extension.admin(user_id, "intra_extension", "list") == "OK":
+            if not uuid:
+                return self.intra_extensions.values()
+            elif uuid and uuid in self.intra_extensions.keys():
+                return self.intra_extensions[uuid]
+
+    @translate_uuid
+    def install_intra_extension_from_json(
+            self,
+            user_id,
+            extension_setting_name=None,
+            extension_setting_dir=None,
+            name="Intra_Extension"):
+        if self.super_extension.admin(user_id, "intra_extension", "create") == "OK":
+            if extension_setting_name:
+                extension_setting_dir = self.policies[extension_setting_name]["dir"]
+            intra_ext_uuid = self.intra_extensions.install_intra_extension_from_json(extension_setting_dir, name=name)
+            #Add the real UUID of admin in admin extension
+            self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_subject(self.__admin_uuid)
+            self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_subject_assignment(
+                "role", self.__admin_uuid, "admin"
+            )
+            #Change "__uuid_of_admin__" into the real UUID od admin
+            str_lookup = "__uuid_of_admin__"
+            #Modify subjects
+            for subject in self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_subjects():
+                if subject == str_lookup:
+                    self.intra_extensions[intra_ext_uuid].intra_extension_authz.add_subject(self.__admin_uuid)
+                    break
+            #Modify subject assignments
+            for cat in self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_subject_categories():
+                assignments = dict(self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_subject_assignments(cat))
+                for key in assignments:
+                    if str_lookup == key:
+                        for value in assignments[str_lookup]:
+                            print self.intra_extensions[intra_ext_uuid].intra_extension_authz.add_subject_assignment(
+                                cat,
+                                self.__admin_uuid,
+                                value
+                            )
+                            print self.intra_extensions[intra_ext_uuid].intra_extension_authz.del_subject_assignment(
+                                cat,
+                                str_lookup,
+                                value
+                            )
+            #Modify object assignments
+            for cat in self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_object_categories():
+                assignments = dict(self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_object_assignments(cat))
+                for key in assignments:
+                    if str_lookup == key:
+                        for value in assignments[str_lookup]:
+                            print self.intra_extensions[intra_ext_uuid].intra_extension_authz.add_object_assignment(
+                                cat,
+                                self.__admin_uuid,
+                                value
+                            )
+                            print self.intra_extensions[intra_ext_uuid].intra_extension_authz.del_object_assignment(
+                                cat,
+                                str_lookup,
+                                value
+                            )
+            self.intra_extensions[intra_ext_uuid].intra_extension_authz.del_subject(str_lookup)
+            return intra_ext_uuid
+
+    @translate_uuid
+    def list_mappings(self, user_id):
+        if self.super_extension.admin(user_id, "mapping", "list") == "OK":
+            return self.tenant_intra_extension_mapping.list_mappings()
+
+    @translate_uuid
+    def create_mapping(self, user_id, tenant_uuid, intra_extension_uuid):
+        if self.super_extension.admin(user_id, "mapping", "create") == "OK":
+            return self.tenant_intra_extension_mapping.create_mapping(tenant_uuid, intra_extension_uuid)
+
+    @translate_uuid
+    def destroy_mapping(self, user_id, tenant_uuid, intra_extension_uuid):
+        if self.super_extension.admin(user_id, "mapping", "destroy") == "OK":
+            return self.tenant_intra_extension_mapping.destroy_mapping(tenant_uuid, intra_extension_uuid)
+
+    @translate_uuid
+    def delegate_privilege(self, user_id, delegator_id, genre, privilege):
+        if self.super_extension.admin(user_id, genre, "delegate") == "OK":
+            return self.super_extension.delegate(delegator_id, genre, privilege)
+
+    @translate_uuid
+    def delete_intra_extension(self, user_id, intra_extension_uuid):
+        if self.super_extension.admin(user_id, "intra_extension", "destroy") == "OK":
+            return self.intra_extensions.delete_intra_extension(intra_extension_uuid)
+
+    ##########################################
+    # Specific functions for Keystone and Nova
+    ##########################################
 
     @staticmethod
-    def get_tenants(name=None):
-        return get_pip().get_tenants(name=name)
+    def get_tenants(name=None, uuid=None):
+        return get_pip().get_tenants(name=name, uuid=uuid)
 
-    def get_users(self, extension_uuid=None, uuid=None, name=None, tenant_uuid=None):
-        if tenant_uuid:
-            try:
-                ext = self.intra_pdps.get(attributes={"tenant.uuid": tenant_uuid})[0]
-            except IndexError:
-                return []
-            return self.intra_pdps.get(ext.get_uuid())[0].get_subjects(uuid=uuid, name=name)
-        else:
-            return self.intra_pdps.get(extension_uuid)[0].get_subjects(uuid=uuid, name=name)
+    ##################################################
+    # Specific functions for Intra-Extension interface
+    ##################################################
 
-    def get_objects(self, extension_uuid=None, uuid=None, name=None, tenant_uuid=None):
-        if tenant_uuid:
-            try:
-                ext = self.intra_pdps.get(attributes={"tenant.uuid": tenant_uuid})[0]
-                return ext.get_objects(uuid=uuid, name=name)
-            except IndexError:
-                return []
-        else:
-            return self.intra_pdps.get(extension_uuid)[0].get_object(uuid=uuid, name=name)
+    def get_subjects(self, extension_uuid, user_uuid):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "read") == "OK":
+                k_subjects = get_pip().get_subjects()
+                for sbj in k_subjects:
+                    if sbj["uuid"] not in self.intra_extensions[extension_uuid].intra_extension_authz.get_subjects():
+                        #Can abort because the user (user_uuid) may not have the rights to do that
+                        if self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "write") == "OK":
+                            self.intra_extensions[extension_uuid].intra_extension_authz.add_subject(sbj["uuid"])
+                return self.intra_extensions[extension_uuid].intra_extension_authz.get_subjects()
+        return list()
 
-    def get_roles(self, extension_uuid=None, uuid=None, name=None):
-        return self.intra_pdps.get(uuid=extension_uuid)[0].get_subject_attributes(uuid=uuid, name=name, category="role")
+    def add_subject(self, extension_uuid, user_uuid, subject):
+        """Add a new subject (ie user)
 
-    def get_groups(self, extension_uuid=None, uuid=None, name=None):
-        return self.intra_pdps.get(uuid=extension_uuid)[0].get_subject_attributes(uuid=uuid, name=name, category="group")
+        :param extension_uuid: intra_extension UUID
+        :param user_uuid: user who request the action
+        :param subject: subject to be added
+        :return: subject UUID
 
-    def get_object_attributes(self, extension_uuid=None, uuid=None, name=None, category=None):
-        return self.intra_pdps.get(uuid=extension_uuid)[0].get_object_attributes(uuid=uuid, value=name, category=category)
-
-    def get_subject_attributes(self, extension_uuid=None, uuid=None, name=None, category=None):
-        return self.intra_pdps.get(uuid=extension_uuid)[0].get_subject_attributes(uuid=uuid, value=name, category=category)
-
-    def get_tenant(self, tenant_uuid=None, tenant_name=None):
-        if not tenant_uuid and not tenant_name:
-            return self.inter_pdps.list()
-        else:
-            return self.inter_pdps.get(uuid=tenant_uuid, name=tenant_name)
-
-    def get_inter_extensions(self, uuid=None):
-        return self.inter_pdps.get(uuid=uuid)
-
-    def add_inter_extension(self,
-                            requesting=None,
-                            requested=None,
-                            connexion_type=None,
-                            requesting_subjects=None,
-                            requested_objects=None):
-        """Add a new Inter Tenant Extension
-
-        :param requesting: UUID of the requesting tenant
-        :param requested: UUID of the requested tenant
-        :param connexion_type: connexion_type of the connection ("trust", "coordinate", ...)
-        :param requesting_subjects: list of subjects for rule creation
-        :param requested_objects: list of objects for rule creation
-        :return: new extension
-
-        Methodology:
-        - Add tenant assignment
-        - Add virtual entity object vent1 in requesting tenant
-        - Add relation (in o_attrs_assignment) from vent1 to o_attrs.virtual_entity in requesting tenant
-        - Add virtual entity subject vent2 in requested tenant
-        - Add relation (in o_attrs_assignment) from vent2 to o_attrs.virtual_entity in requested tenant
-        - Add rule from one or more subjects to vent1 in requesting tenant
-        - Add rule from one or more objects to vent2 in requested tenant
+        the subject must a dictionary:
+        {
+            "name": "username",
+            'domain': "Default",
+            'enabled': True,
+            'project': "admin",
+            'password': "password",
+            'description': "user description"
+        }
         """
-        #Add tenant assignment
-        assignment = self.inter_pdps.add_tenant_assignment(
-            requested=requested,
-            requesting=requesting,
-            type=connexion_type,
-        )
-        requesting_extension = self.get_intra_extensions(tenant_uuid=requesting)
-        requested_extension = self.get_intra_extensions(tenant_uuid=requested)
-        #Get the Virtual entity created during the creation of "assignment"
-        vent = self.get_virtual_entity(uuid=assignment.category)[0]
-        requesting_extension.requesting_vent_create(vent, requesting_subjects)
-        requested_extension.requested_vent_create(vent, requested_objects)
-        return assignment
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "write") == "OK":
+                subject_id = get_pip().add_subject(subject)
+                self.intra_extensions[extension_uuid].intra_extension_authz.add_subject(subject_id)
+                return subject_id
 
-    def add_subject_attributes(
+    def del_subject(self, extension_uuid, user_uuid, subject_id):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "write") == "OK":
+                get_pip().del_subject(subject_id)
+                self.intra_extensions[extension_uuid].intra_extension_authz.del_subject(subject_id)
+                #TODO need to check if the subject is not in other tables like assignment
+
+    def get_objects(self, extension_uuid, user_uuid):
+        if extension_uuid in self.intra_extensions.values():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "read") == "OK":
+                servers = get_pip().get_objects(tenant=self.intra_extensions[extension_uuid].get_tenant_uuid())
+                for server in servers:
+                    if server["uuid"] not in self.intra_extensions[extension_uuid].intra_extension_authz.get_objects():
+                        #Can abort because the user (user_uuid) may not have the rights to do that
+                        if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "write") == "OK":
+                            self.intra_extensions[extension_uuid].intra_extension_authz.add_object(server["uuid"])
+                return self.intra_extensions[extension_uuid].intra_extension_authz.get_objects()
+        return list()
+
+    def add_object(self, extension_uuid, user_uuid, object):
+        """Add a new virtual machine
+
+        :param extension_uuid: intra_extension UUID
+        :param user_uuid: user who request the action
+        :param object: VM to be added
+        :return: the VM UUID
+
+        object must be a dictionary:
+        {
+            "name": "what ever you want",
+            "image_name": "Cirros3.2",
+            "flavor_name": "m1.tiny"
+        }
+        """
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "write") == "OK":
+                tenant = self.intra_extensions[extension_uuid].get_tenant_uuid()
+                if not tenant:
+                    return
+                object_id = get_pip().add_object(
+                    name=object["name"],
+                    image_name=object["image_name"],
+                    flavor_name=object["flavor_name"],
+                    tenant=tenant
+                )
+                if object_id:
+                    self.intra_extensions[extension_uuid].intra_extension_authz.add_object(object_id)
+                    return object_id
+
+    def del_object(self, extension_uuid, user_uuid, object_id):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "write") == "OK":
+                tenant = self.intra_extensions[extension_uuid].get_tenant_uuid()
+                if not tenant:
+                    return
+                get_pip().del_object(object_id, tenant=tenant)
+                self.intra_extensions[extension_uuid].intra_extension_authz.del_object(object_id)
+                #TODO need to check if the subject is not in other tables like assignment
+
+    def get_subject_categories(self, extension_uuid, user_uuid):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_categories", "read") == "OK":
+                return self.intra_extensions[extension_uuid].intra_extension_authz.get_subject_categories()
+        return list()
+
+    def add_subject_category(self, extension_uuid, user_uuid, category_id):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_categories", "write") == "OK":
+                return self.intra_extensions[extension_uuid].intra_extension_authz.add_subject_category(category_id)
+
+    def del_subject_category(self, extension_uuid, user_uuid, category_id):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_categories", "write") == "OK":
+                self.intra_extensions[extension_uuid].intra_extension_authz.del_subject_category(category_id)
+
+    def get_object_categories(self, extension_uuid, user_uuid):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "object_categories", "read") == "OK":
+                return self.intra_extensions[extension_uuid].intra_extension_authz.get_object_categories()
+        return list()
+
+    def add_object_category(self, extension_uuid, user_uuid, category_id):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "object_categories", "write") == "OK":
+                return self.intra_extensions[extension_uuid].intra_extension_authz.add_object_category(category_id)
+
+    def del_object_category(self, extension_uuid, user_uuid, category_id):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "object_categories", "write") == "OK":
+                self.intra_extensions[extension_uuid].intra_extension_authz.del_object_category(category_id)
+
+    def get_subject_category_values(self, extension_uuid, user_uuid, category_id):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_category_values", "read") == "OK":
+                return self.intra_extensions[extension_uuid].intra_extension_authz.get_subject_category_values(category_id)
+        return list()
+
+    def add_subject_category_value(self, extension_uuid, user_uuid, category_id, category_value):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_category_values", "write") == "OK":
+                return self.intra_extensions[extension_uuid].intra_extension_authz.add_subject_category_value(
+                    category_id,
+                    category_value)
+
+    def del_subject_category_value(self, extension_uuid, user_uuid, category_id, category_value):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_category_values", "write") == "OK":
+                self.intra_extensions[extension_uuid].intra_extension_authz.del_subject_category_value(category_id, category_value)
+                #TODO need to check if the value is not in other tables like assignment
+
+    def get_object_category_values(self, extension_uuid, user_uuid, category_id):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "object_category_values", "read") == "OK":
+                return self.intra_extensions[extension_uuid].intra_extension_authz.get_object_category_values(category_id)
+        return list()
+
+    def add_object_category_value(self, extension_uuid, user_uuid, category_id, category_value):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "object_category_values", "write") == "OK":
+                return self.intra_extensions[extension_uuid].intra_extension_authz.add_object_category_value(
+                    category_id,
+                    category_value)
+
+    def del_object_category_value(self, extension_uuid, user_uuid, category_id, category_value):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "object_category_values", "write") == "OK":
+                self.intra_extensions[extension_uuid].intra_extension_authz.del_object_category_value(category_id, category_value)
+                #TODO need to check if the value is not in other tables like assignment
+
+    def get_subject_assignments(self, extension_uuid, user_uuid, category_id):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_category_assignments", "read") == "OK":
+                return self.intra_extensions[extension_uuid].intra_extension_authz.get_subject_assignments(category_id)
+        return list()
+
+    def add_subject_assignment(self, extension_uuid, user_uuid, category_id, subject_id, category_value):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_category_assignments", "write") == "OK":
+                return self.intra_extensions[extension_uuid].intra_extension_authz.add_subject_assignment(
+                    category_id, subject_id, category_value
+                )
+
+    def del_subject_assignment(self, extension_uuid, user_uuid, category_id, subject_id, category_value):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "subject_category_assignments", "write") == "OK":
+                self.intra_extensions[extension_uuid].intra_extension_authz.del_subject_assignment(
+                    category_id, subject_id, category_value
+                )
+
+    def get_object_assignments(self, extension_uuid, user_uuid, category_id):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "object_category_assignments", "read") == "OK":
+                return self.intra_extensions[extension_uuid].intra_extension_authz.get_object_assignments(category_id)
+        return list()
+
+    def add_object_assignment(self, extension_uuid, user_uuid, category_id, object_id, category_value):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "object_category_assignments", "write") == "OK":
+                return self.intra_extensions[extension_uuid].intra_extension_authz.add_object_assignment(
+                    category_id, object_id, category_value
+                )
+
+    def del_object_assignment(self, extension_uuid, user_uuid, category_id, object_id, category_value):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "object_category_assignments", "write") == "OK":
+                self.intra_extensions[extension_uuid].intra_extension_authz.del_object_assignment(
+                    category_id, object_id, category_value
+                )
+
+    def get_meta_rules(self, extension_uuid, user_uuid):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "rules", "read") == "OK":
+                return self.intra_extensions[extension_uuid].intra_extension_authz.get_meta_rules()
+        return dict()
+
+    def get_rules(self, extension_uuid, user_uuid):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "rules", "read") == "OK":
+                return self.intra_extensions[extension_uuid].intra_extension_authz.get_rules(full=True)
+        return dict()
+
+    def add_rule(self, extension_uuid, user_uuid, sub_cat_value, obj_cat_value):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "rules", "write") == "OK":
+                return self.intra_extensions[extension_uuid].intra_extension_authz.add_rule(
+                    sub_cat_value,
+                    obj_cat_value)
+
+    def del_rule(self, extension_uuid, user_uuid, sub_cat_value, obj_cat_value):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "rules", "write") == "OK":
+                self.intra_extensions[extension_uuid].intra_extension_authz.del_rule(sub_cat_value, obj_cat_value)
+
+    ########################################
+    # Specific functions for Intra-Extension
+    ########################################
+
+    def add_from_json(self, json_directory):
+        return get_intra_extensions().install_intra_extension_from_json(json_directory)
+
+    def add_from_db(self):
+        get_intra_extensions().install_intra_extension_from_db()
+
+    #########################################
+    # Specific functions for Inter Extensions
+    #########################################
+
+    @translate_uuid
+    def get_installed_inter_extensions(self, user_id, extension_uuid):
+        if self.super_extension.admin(user_id, "inter_extension", "list") == "OK":
+            for inter_ext in self.inter_extensions.get_installed_inter_extensions().values():
+                if extension_uuid and extension_uuid == inter_ext.get_uuid():
+                    yield inter_ext
+                elif not extension_uuid:
+                    yield inter_ext
+
+    @translate_uuid
+    def create_collaboration(
             self,
-            uuid=None,
-            extension_uuid=None,
-            tenant_uuid=None,
-            attributes=[],
-            category="role",
-            description=""):
-        if tenant_uuid and type(tenant_uuid) not in (list, tuple):
-            tenant_uuid = [tenant_uuid, ]
-        for _uuid in tenant_uuid:
-            ext = self.get_intra_extensions(uuid=extension_uuid, tenant_uuid=_uuid)
-            if type(attributes) not in (list, tuple):
-                attributes = [attributes, ]
-            for attribute in attributes:
-                ext.add_subject_attribute(
-                    uuid=uuid,
-                    value=attribute,
-                    category=category,
-                    description=description)
-
-    def add_object_attributes(
-            self,
-            extension_uuid=None,
-            tenant_uuid=None,
-            attributes=[],
-            category="type",
-            description=""):
-        ext = self.get_intra_extensions(uuid=extension_uuid, tenant_uuid=tenant_uuid)
-        if type(attributes) not in (list, tuple):
-            attributes = [attributes, ]
-        for attribute in attributes:
-            ext.add_object_attribute(
-                value=attribute,
-                category=category,
-                description=description)
-
-    def delete_subject_attributes(
-            self,
-            extension_uuid=None,
-            tenant_uuid=None,
-            attributes=[]):
-        ext = self.get_intra_extensions(uuid=extension_uuid, tenant_uuid=tenant_uuid)[0]
-        if type(attributes) not in (list, tuple):
-            attributes = [attributes, ]
-        for attribute in attributes:
-            ext.delete_subject_attributes(uuid=attribute)
-
-    def delete_object_attributes(
-            self,
-            extension_uuid=None,
-            tenant_uuid=None,
-            attributes=[]):
-        ext = self.get_intra_extensions(uuid=extension_uuid, tenant_uuid=tenant_uuid)
-        if type(attributes) not in (list, tuple):
-            attributes = [attributes, ]
-        for attribute in attributes:
-            ext.delete_object_attributes(uuid=attribute)
-
-    def get_virtual_entity(self, uuid=None, name=None):
-        return self.inter_pdps.get_virtual_entity(uuid=uuid, name=name)
-
-    def delete_inter_extension(self, uuid):
-        ext = self.inter_pdps.get(uuid=uuid)[0]
-        vent_uuid = ext.get_vent()
-        self.intra_pdps.delete_rules(s_attrs=vent_uuid, o_attrs=vent_uuid)
-        try:
-            self.intra_pdps.delete_attributes_from_vent(uuid=vent_uuid)
-        except:
-            import sys
-            print(sys.exc_info())
-        self.inter_pdps.delete(uuid=uuid)
-
-    def update_from_json(self, existing_extension=None, tenant=None, json_data=None):
-        #TODO: wrong method: when updating we must not re-create the extension
-        # because a bug appears on the internal authz system when extension.__subjects is empty
-        # see intra_extensions.py line 757 and 771
-        pip = get_pip()
-        json_data["tenant"] = {"uuid": tenant["uuid"], "name": tenant["name"]}
-        subjects = list(pip.get_subjects(tenant=tenant))
-        subjects_uuid = map(lambda x: x["uuid"], subjects)
-        for sbj in existing_extension.get_subject():
-            if sbj["uuid"] not in subjects_uuid:
-                subjects.append(sbj)
-        json_data["perimeter"]["subjects"] = subjects
-        objects = list(pip.get_objects(tenant=tenant))
-        objects_uuid = map(lambda x: x["uuid"], objects)
-        for obj in existing_extension.get_object():
-            if obj["uuid"] not in objects_uuid:
-                objects.append(obj)
-        json_data["perimeter"]["objects"] = objects
-        s_attr = []
-        s_attr_assign = []
-        if "role" in list(json_data["configuration"]["metadata"]["subject"]):
-            roles = list(pip.get_roles(tenant=tenant))
-            roles_uuid = map(lambda x: x["uuid"], roles)
-            for role in existing_extension.get_subject_attributes(category="role"):
-                if role["uuid"] not in roles_uuid:
-                    roles.append(role)
-            s_attr.extend(roles)
-            s_attr_assign.extend(list(pip.get_users_roles_assignment(tenant_uuid=tenant["uuid"])))
-            s_attr_assign.extend(list(pip.get_users_roles_assignment(
-                tenant_uuid=tenant["uuid"],
-                users=json_data["perimeter"]["subjects"])))
-        if "group" in list(json_data["configuration"]["metadata"]["subject"]):
-            groups = list(pip.get_groups(tenant=tenant))
-            groups_uuid = map(lambda x: x["uuid"], groups)
-            for group in existing_extension.get_subject_attributes(category="group"):
-                if group["uuid"] not in groups_uuid:
-                    groups.append(group)
-            s_attr.extend(groups)
-            s_attr_assign.extend(list(pip.get_users_groups_assignment(tenant_uuid=tenant["uuid"])))
-        json_data["profiles"]["s_attr"] = s_attr
-        s_attr_assign_objects = map(lambda x: x["subject"], s_attr_assign)
-        for relation in existing_extension.get_subject_attributes_relation():
-            if relation["subject"] not in s_attr_assign_objects:
-                s_attr_assign.append(relation)
-        json_data["profiles"]["s_attr_assign"] = s_attr_assign
-        json_data["profiles"]["o_attr"] = existing_extension.get_object_attributes()
-        o_attr_assign_objects = map(lambda x: x["object"], json_data["profiles"]["o_attr_assign"])
-        o_attr_assign = json_data["profiles"]["o_attr_assign"]
-        for relation in existing_extension.get_object_attributes_relation():
-            if relation["object"] not in o_attr_assign_objects:
-                o_attr_assign.append(relation)
-        json_data["profiles"]["o_attr_assign"] = o_attr_assign
-        if "rules" not in json_data["configuration"].keys():
-                json_data["configuration"]["rules"] = []
-        rules = json_data["configuration"]["rules"]
-        rules_names = map(lambda x: x["name"], json_data["configuration"]["rules"])
-        for rule in existing_extension.get_rules():
-            if rule["name"] not in rules_names:
-                rules.append(rule)
-        json_data["configuration"]["rules"] = rules
-        return json_data
-
-    def new_intra_extension(self, tenant, test_only=False, json_data=None):
-        pip = get_pip()
-        existing_extension = get_intra_extentions().get(attributes={"tenant.uuid": tenant["uuid"]})
-        if not json_data:
-            filename = getattr(settings, "DEFAULT_EXTENSION_TABLE")
-            #TODO: deals with errors in json file
-            json_data = json.loads(file(filename).read())
-        if existing_extension:
-            json_data["uuid"] = existing_extension[0].get_uuid()
-            json_data = self.update_from_json(
-                existing_extension=existing_extension[0],
-                tenant=tenant,
-                json_data=json_data)
-        else:
-            json_data["uuid"] = str(uuid4()).replace("-", "")
-            json_data["tenant"] = {"uuid": tenant["uuid"], "name": tenant["name"]}
-            json_data["perimeter"]["subjects"] = list(pip.get_subjects(tenant=tenant))
-            json_data["perimeter"]["objects"] = list(pip.get_objects(tenant=tenant))
-            attributes = list(json_data["configuration"]["metadata"]["subject"])
-            s_attr = json_data["profiles"]["s_attr"]
-            s_attr_assign = []
-            #TODO: we don't know in advance the number of subject attributes
-            if "role" in attributes:
-                roles = list(pip.get_roles(tenant=tenant))
-                s_attr.extend(roles)
-                s_attr_assign.extend(list(pip.get_users_roles_assignment(
-                    tenant_uuid=tenant["uuid"],
-                    users=json_data["perimeter"]["subjects"])))
-                attributes.remove("role")
-            if "group" in attributes:
-                groups = list(pip.get_groups(tenant=tenant))
-                s_attr.extend(groups)
-                s_attr_assign.extend(list(pip.get_users_groups_assignment(
-                    tenant_uuid=tenant["uuid"],
-                    users=json_data["perimeter"]["subjects"])))
-                attributes.remove("group")
-            json_data["profiles"]["s_attr"] = s_attr
-            json_data["profiles"]["s_attr_assign"] = s_attr_assign
-            # o_attr_assign = json_data["profiles"]["o_attr_assign"]
-            # json_data["profiles"]["o_attr_assign"] = o_attr_assign
-            if "rules" not in json_data["configuration"].keys():
-                json_data["configuration"]["rules"] = []
-            if len(attributes) > 0:
-                logger.warning("All attributes have not been parsed in configuration.metadata.subject {} (in {})".format(
-                    attributes,
-                    json_data["configuration"]["protocol"]
-                ))
-        if not test_only:
-            get_intra_extentions().new_from_json(json_data=json_data)
-
-    def sync_db_with_keystone(self, tenant_uuid=None):
-        pip = get_pip()
-        logs = ""
-        json_data = None
-        pip.set_creds_for_tenant()
-        for tenant in self.get_tenants():
-            #TODO: if new tenant
-            #       -> need to add a new intra extension
-            #       -> need to add a new inter extension with a new vent
-            #TODO: if not new tenant -> need to synchronize users, roles, ...
-            # extension = get_intra_dd().sync_extension(
-            #     tenant_uuid=tenant["uuid"],
-            #     users=self.get_subjects(client),
-            #     roles=self.get_roles(client),
-            #     groups=self.get_groups(client))
-            if tenant_uuid and not tenant_uuid == tenant["uuid"]:
-                continue
-            SYNC_CONF_FILENAME = getattr(settings, "SYNC_CONF_FILENAME", None)
-            sync = json.loads(open(SYNC_CONF_FILENAME).read())
-            if SYNC_CONF_FILENAME:
-                if tenant["name"] not in map(lambda x: x["name"], sync["tenants"]):
-                    logs += "Tenant {} not in configuration file -> KO".format(tenant["name"])
-                    continue
-                for conf in sync["tenants"]:
-                    if conf["name"] == tenant["name"]:
-                        if not os.path.isfile(conf["extension_conf"]):
-                            raise Exception("Unable to find configuration file {}".format(conf["extension_conf"]))
-                        json_data = json.loads(file(conf["extension_conf"]).read())
-            logger.info("Syncing tenant {}".format(tenant["name"]))
-            logs += "Syncing {}".format(tenant["name"])
-            try:
-                pip.set_creds_for_tenant(tenant["name"])
-            except pip.Unauthorized:
-                logger.warning("Cannot authenticate in tenant {}".format(tenant["name"]))
-                logs += " KO (Cannot authenticate in tenant)\n"
-                continue
-            get_inter_extentions().add_tenant(
-                name=tenant["name"],
-                description=tenant["description"],
-                enabled=tenant["enabled"],
-                domain=tenant["domain"],
-                uuid=tenant["uuid"]
+            user_id,
+            requesting_intra_extension_uuid,
+            requested_intra_extension_uuid,
+            genre,
+            sub_list,
+            obj_list,
+            act):
+        #TODO use pdp_admin
+        if self.super_extension.admin(
+                user_id,
+                "inter_extension",
+                "create") == "OK":
+            result = self.inter_extensions.create_collaboration(
+                requesting_intra_extension_uuid=requesting_intra_extension_uuid,
+                requested_intra_extension_uuid=requested_intra_extension_uuid,
+                genre=genre,
+                sub_list=sub_list,
+                obj_list=obj_list,
+                act=act
             )
-            try:
-                self.new_intra_extension(tenant=tenant, json_data=json_data)
-                logs += " OK\n"
-            except pip.Forbidden:
-                logger.warning("Cannot list users in tenant {}".format(tenant["name"]))
-                logs += " KO (Cannot list users in tenant)\n"
-                continue
-        return logs
+            return result
+        return None, None
+
+    @translate_uuid
+    def destroy_collaboration(self, user_id, inter_extension_uuid, vent_uuid, genre):
+        if self.super_extension.admin(user_id, "inter_extension", "destroy") == "OK":
+            self.inter_extensions.destroy_collaboration(
+                genre=genre,
+                inter_extension_uuid=inter_extension_uuid,
+                vent_uuid=vent_uuid)
+
+    ###########################################
+    # Misc functions for Intra/Inter-Extensions
+    ###########################################
 
     def delete_tables(self):
-        get_intra_extentions().delete_tables()
-        get_inter_extentions().delete_tables()
-
-    def create_roles(self, name=None, description="", tenants=[]):
-        krole = None
-        if name and len(name) > 0:
-            krole = get_pip().create_roles(name=name, description=description)
-        if krole:
-            for uuid in tenants:
-                self.add_subject_attributes(
-                    uuid=krole.id,
-                    tenant_uuid=uuid,
-                    attributes=name,
-                    category="role",
-                    description=description)
-        return krole
-
-    def delete_roles(self, uuid=None, tenants=[]):
-        message = ""
-        if tenants and type(tenants) not in (list, tuple):
-            tenants = [tenants, ]
-        if len(tenants) == 0:
-            tenants = get_pip().get_tenants()
-        if uuid and len(uuid) > 0:
-            for tenant in tenants:
-                if type(tenant) in (unicode, str):
-                    tenant = list(get_pip().get_tenants(uuid=tenant))[0]
-                role = None
-                try:
-                    role = list(get_pip().get_roles(uuid=uuid, tenant=tenant))[0]
-                except IndexError:
-                    # Role may have been already deleted
-                    continue
-                if not role:
-                    return "Unknown role {}".format(uuid)
-                #Check if role is not a mandatory role for OpenStack
-                if role["value"] not in ("admin", "_member_", "Member", "heat_stack_user", "service", "heat_stack_owner"):
-                    message = get_pip().delete_roles(uuid)
-                    for ext in get_intra_extentions().values():
-                        self.delete_subject_attributes(extension_uuid=ext.uuid, attributes=[uuid, ])
-        return message
-
+        self.intra_extensions.delete_tables()
+        self.inter_extensions.delete_tables()
 
 pap = PAP()
 

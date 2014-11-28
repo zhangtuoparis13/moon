@@ -1,0 +1,92 @@
+{
+    "perimeter":{
+        "subjects": ["user1", "user2"], 
+        "objects": [
+            "subjects",
+            "objects",
+            "subject_category_values",
+            "object_category_values",
+            "rules",
+            "subject_category_assignments",
+            "object_category_assignments"
+        ]
+    },
+    "assignment": {
+        "subject_category_assignments": {
+            "role": {
+                "user2": ["dev"],
+                "user1": ["admin"]
+            }
+        },
+        "object_category_assignments": {
+            "action": {
+                "subject_category_values": [],
+                "rules": [],
+                "object_category_values": [],
+                "object_category_assignments": [],
+                "subject_category_assignments": [],
+                "objects": [],
+                "subjects": []
+            },
+            "object_id": {
+                "subject_category_values": ["subject_category_values"],
+                "rules": ["rules"],
+                "object_category_values": ["object_category_values"],
+                "object_category_assignments": ["object_category_assignments"],
+                "subject_category_assignments": ["subject_category_assignments"],
+                "objects": ["objects"],
+                "subjects": ["subjects"]
+            }
+        }
+    },
+    "configuration": {
+        "rules": [
+            ["admin", "subjects", "read"],
+            ["admin", "objects", "read"],
+            ["admin", "subject_category_values", "read"],
+            ["admin", "object_category_values", "read"],
+            ["admin", "rules", "read"],
+            ["admin", "subject_category_assignments", "read"],
+            ["admin", "object_category_assignments", "read"],
+            ["admin", "subjects", "write"],
+            ["admin", "objects", "write"],
+            ["admin", "subject_category_values", "write"],
+            ["admin", "object_category_values", "write"],
+            ["admin", "rules", "write"],
+            ["admin", "subject_category_assignments", "write"],
+            ["admin", "object_category_assignments", "write"],
+            ["dev", "subjects", "read"],
+            ["dev", "objects", "read"],
+            ["dev", "subject_category_values", "read"],
+            ["dev", "object_category_values", "read"],
+            ["dev", "rules", "read"],
+            ["dev", "subject_category_assignments", "read"],
+            ["dev", "object_category_assignments", "read"]
+        ],
+        "object_category_values": {
+            "action": ["read", "write", "execute"],
+            "object_id": ["subjects", "objects", "subject_category_values", "object_category_values", "rules", "subject_category_assignments", "object_category_assignments"]},
+        "subject_category_values": {
+            "role": ["admin", "dev"]
+        }
+    },
+    "metadata": {
+        "meta_rule": {
+            "sub_meta_rules": [
+                {
+                    "relation": "permission",
+                    "subject_categories": ["role"],
+                    "object_categories": ["object_id", "action"]
+                }
+            ],
+            "aggregation": "and_true_aggregation"
+        },
+        "name": "RBAC_metadata",
+        "subject_categories": ["role"],
+        "model": "RBAC",
+        "type": "admin",
+        "object_categories": ["object_id", "action"],
+        "description": ""
+    }
+}
+

@@ -1,374 +1,221 @@
-from uuid import uuid4, UUID
-try:
-    from django.utils.safestring import mark_safe
-except ImportError:
-    mark_safe = str
-import logging
-from moon.inter_extension_manager import get_dispatcher
-
-logger = logging.getLogger(__name__)
+from uuid import uuid4
+from moon.tools.sync_db import InterExtensionSyncer
 
 
 class VirtualEntity:
+    def __init__(self):
+        self.__uuid = str(uuid4())
+        self.__requesting_subject_list = list()
+        self.__requesting_subject_category_value_dict = dict()  # {cat_id, created_value}
+        self.__requesting_object_category_value_dict = dict()  # {cat_id, created_value}
+        self.__requesting_rule_alist = list()
+        self.__requested_object_list = list()
+        self.__requested_subject_category_value_dict = dict()  # {cat_id, created_value}
+        self.__requested_object_category_value_dict = dict()  # {cat_id, created_value}
+        self.__requested_rule_alist = list()
+        self.__action = ''
 
-    def __init__(self, name, uuid=None):
-        self.name = name
-        self.dispatcher = get_dispatcher()
-        self.type = "virtual_entity"
-        if not uuid:
-            self.uuid = str(uuid4()).replace("-", "")
-        else:
-            self.uuid = str(uuid).replace("-", "")
+    def set_subjects_objects_action(self, sub_list, obj_list, act):
+        self.__requesting_subject_list = sub_list
+        self.__requested_object_list = obj_list
+        self.__action = act
 
-    def sync(self):
-        post = dict()
-        post["name"] = self.name
-        post["uuid"] = self.uuid
-        post["type"] = self.type
-        self.dispatcher.add(attributes=post)
+    def set_category_values_and_rule(self, requesting_cat_value_dict, requested_cat_value_dict):
+        self.__requesting_subject_category_value_dict = requesting_cat_value_dict["subject_category_value_dict"]
+        self.__requesting_object_category_value_dict = requesting_cat_value_dict["object_category_value_dict"]
+        self.__requesting_rule_alist = requesting_cat_value_dict["rule"]
+        self.__requested_subject_category_value_dict = requested_cat_value_dict["subject_category_value_dict"]
+        self.__requested_object_category_value_dict = requested_cat_value_dict["object_category_value_dict"]
+        self.__requested_rule_alist = requesting_cat_value_dict["rule"]
 
-    def __repr__(self):
-        return "Virtual Entity {}".format(self.name)
+    def get_uuid(self):
+        return self.__uuid
 
+    def get_requesting_subject_list(self):
+        return self.__requesting_subject_list
 
-class Tenant:
+    def get_requesting_subject_category_value_dict(self):
+        return self.__requesting_subject_category_value_dict
 
-    def __init__(
-            self,
-            name="",
-            description="",
-            enabled=True,
-            domain="Default",
-            uuid=None):
-        self.name = name
-        self.description = description
-        self.enabled = enabled
-        self.domain = domain
-        self.type = "tenant"
-        if uuid and type(uuid) in (str, unicode):
-            self.uuid = uuid
-        elif uuid and type(uuid) is UUID:
-            self.uuid = str(uuid)
-        else:
-            self.uuid = str(uuid4()).replace("-", "")
-        self.dispatcher = get_dispatcher()
+    def get_requesting_object_category_value_dict(self):
+        return self.__requesting_object_category_value_dict
 
-    def create(self,
-               name="",
-               domain="",
-               description="",
-               enabled=True):
-        """
-        Create the tenant in Moon database and Keystone database
-        """
-        #TODO: add the creation process
-        # ktenant = self.kclient.projects.create(
-        #     name=name,
-        #     domain=domain,
-        #     description=description,
-        #     enabled=enabled
-        # )
-        # mtenant = Tenant(
-        #     name=name,
-        #     domain=domain,
-        #     uuid=ktenant.id,
-        #     description=description,
-        #     enabled=enabled
-        # )
-        # driver.set_tenant(mtenant)
-        # # TODO: check if Keystone creation was successful
-        # logger.info("Add tenant {}".format(str(mtenant)))
-        # self.tenants[mtenant.uuid] = mtenant
-        return None
+    def get_requesting_rule_alist(self):
+        return self.__requesting_rule_alist
 
-    def sync(self):
-        post = dict()
-        post["name"] = self.name
-        post["uuid"] = self.uuid
-        post["description"] = self.description
-        post["enabled"] = self.enabled
-        post["domain"] = self.domain
-        post["type"] = self.type
-        self.dispatcher.add(attributes=post)
+    def get_requested_object_list(self):
+        return self.__requested_object_list
 
-    def __repr__(self):
-        return "{} ({}) enabled: {}".format(self.name, self.uuid, self.enabled)
+    def get_requested_subject_category_value_dict(self):
+        return self.__requested_subject_category_value_dict
+
+    def get_requested_object_category_value_dict(self):
+        return self.__requested_object_category_value_dict
+
+    def get_requested_rule_alist(self):
+        return self.__requested_rule_alist
+
+    def get_action(self):
+        return self.__action
+
+    def get_data_dict(self):
+        _dict = dict()
+        _dict['uuid'] = self.__uuid
+        _dict['requesting_subject_list'] = self.__requesting_subject_list
+        _dict['requesting_subject_category_value_dict'] = self.__requesting_subject_category_value_dict
+        _dict['requesting_object_category_value_dict'] = self.__requesting_object_category_value_dict
+        _dict['requesting_rule_alist'] = self.__requesting_rule_alist
+        _dict['requested_object_list'] = self.__requested_object_list
+        _dict['requested_subject_category_value_dict'] = self.__requested_subject_category_value_dict
+        _dict['requested_object_category_value_dict'] = self.__requested_object_category_value_dict
+        _dict['requested_rule_alist'] = self.__requested_rule_alist
+        _dict['action'] = self.__action
+        return _dict
 
 
 class InterExtension:
+    def __init__(self, requesting_intra_extension, requested_intra_extension):
+        self.requesting_intra_extension = requesting_intra_extension
+        self.requested_intra_extension = requested_intra_extension
+        self.__uuid = str(uuid4())
+        self.__vents = dict()
+        self.__vents["trust"] = list()
+        self.__vents["coordinate"] = list()
+        self.__syncer = InterExtensionSyncer()
 
-    def __init__(
-            self,
-            name="",
-            uuid=None,
-            requesting_tenant=None,
-            requested_tenant=None,
-            requesting_tenant_name=None,
-            requested_tenant_name=None,
-            connection_type=None,
-            category=None,
-            description=""
-    ):
-        """ Create a relation between 2 tenants
-        :param name: str: name of the relation
-        :param uuid: str: uuid of the relation
-        :param requesting_tenant: dict: source tenant of the relation (where subject is)
-        :param requested_tenant: dict: destination tenant of the relation (where the object is)
-        :param connection_type: str: type of connection (example trust, coordinate, ...)
-        :param category: str: link to the Virtual entity
-        :return: the extension
-        """
-        self.name = name
-        if uuid and type(uuid) in (str, unicode):
-            self.uuid = uuid.replace("-", "")
-        elif uuid and type(uuid) is UUID:
-            self.uuid = str(uuid).replace("-", "")
+    def authz(self, sub, obj, act):
+        for _vent in self.__vents["trust"]:
+            if self.requesting_intra_extension.authz(sub, _vent.get_uuid(), act) == "OK" and \
+                    self.requested_intra_extension.authz(_vent.get_uuid(), obj, act) == "OK":
+                return "OK"
+        return "KO"
+
+    def admin(self, sub, obj, act):
+        for _vent in self.__vents["coordinate"]:
+            if self.requesting_intra_extension.admin(sub, _vent.get_uuid(), act) == "OK" and \
+                    self.requested_intra_extension.admin(_vent.get_uuid(), obj, act) == "OK":
+                return "OK"
+        return "KO"
+
+    def check_requesters(self, requesting_intra_extension_uuid, requested_intra_extension_uuid):
+        if requesting_intra_extension_uuid is self.requesting_intra_extension.get_uuid() \
+                and requested_intra_extension_uuid is self.requested_intra_extension.get_uuid():
+            return True
         else:
-            self.uuid = str(uuid4()).replace("-", "")
-        self.requesting_tenant = requesting_tenant
-        self.requested_tenant = requested_tenant
-        self.connection_type = connection_type
-        self.category = category
-        self.type = "assignment"
-        self.description = description
-        if requesting_tenant_name:
-            self.requesting_tenant_name = requesting_tenant_name
-        else:
-            self.requesting_tenant_name = requesting_tenant
-        if requested_tenant_name:
-            self.requested_tenant_name = requested_tenant_name
-        else:
-            self.requested_tenant_name = requested_tenant
-        self.dispatcher = get_dispatcher()
+            return False
 
-    # def delete(self, vent, requesting_ext, requested_ext):
-    #     requesting_ext.delete_attributes_from_vent(vent=self.category)
-    #     requested_ext.delete_attributes_from_vent(vent=self.category)
+    def create_collaboration(self, genre, sub_list, obj_list, act):
+        for _ve in self.__vents[genre]:
+            if _ve.get_subjects() is sub_list and _ve.get_objects is obj_list and _ve.get_action() is act:
+                return "[InterExtension Error] Create Collaboration: vEnt Exists"
 
-    def get_vent(self):
-        return self.category
+        _vent = VirtualEntity()
+        _vent.set_subjects_objects_action(sub_list, obj_list, act)
 
-    def sync(self):
-        post = dict()
-        post['uuid'] = str(self.uuid)
-        if type(self.requesting_tenant) in (str, unicode):
-            post['requesting'] = self.requesting_tenant
-        else:
-            post['requesting'] = self.requesting_tenant["uuid"]
-        if type(self.requested_tenant) in (str, unicode):
-            post['requested'] = self.requested_tenant
-        else:
-            post['requested'] = self.requested_tenant["uuid"]
-        post['connection_type'] = self.connection_type
-        post['category'] = self.category
-        post['type'] = self.type
-        post['name'] = self.name
-        post['description'] = self.description
-        self.dispatcher.add(attributes=post)
+        _requesting_cat_value_dict = self.requesting_intra_extension.create_requesting_collaboration(
+            genre, _vent.get_requesting_subject_list(), _vent.get_uuid(), _vent.get_action())
+        _requested_cat_value_dict = self.requested_intra_extension.create_requested_collaboration(
+            genre, _vent.get_uuid(), _vent.get_requested_object_list(), _vent.get_action())
 
-    def __repr__(self):
-        return "Extension {} ({}) ({} -> {}: {}/{})".format(
-            self.name,
-            self.uuid,
-            self.requesting_tenant_name,
-            self.requested_tenant_name,
-            self.connection_type,
-            self.category)
+        _vent.set_category_values_and_rule(_requesting_cat_value_dict, _requested_cat_value_dict)
+        self.__vents[genre].append(_vent)
+        return _vent.get_uuid()
 
-    def html(self):
-        return mark_safe("<b>Extension</b> {} <br/>"
-                         "{} -> {}<br/>connection type: {} <br/>vent: {}".format(
-            self.name,
-            self.requesting_tenant_name,
-            self.requested_tenant_name,
-            self.connection_type,
-            self.category
-        ))
+    def destroy_collaboration(self, genre, vent_uuid):
+        _vent = None
+        for _tmp_vent in self.__vents[genre]:
+            if _tmp_vent.get_uuid() == vent_uuid:
+                _vent = _tmp_vent
+                break
+        if _vent is None:
+            return "[InterExtension ERROR] Destroy Collaboration: No Success"
 
-
-class InterExtensions:
-
-    def __init__(self):
-        self.dispatcher = get_dispatcher()
-        self.extensions = {}
-        #TODO: put tenants outside
-        self.tenants = {}
-        self.virtual_entities = {}
-        #FIXME: when using the link named "sync" in the interface after a drop database,
-        # the InterExtensions is initialized twice
-        for tenant in self.dispatcher.list(type="tenant"):
-            t = Tenant(
-                uuid=tenant["uuid"],
-                name=tenant["name"],
-                description=tenant["description"],
-                enabled=tenant["enabled"],
-                domain=tenant["domain"]
-            )
-            t.sync()
-            self.tenants[tenant["uuid"]] = t
-        for ext in self.dispatcher.list(type="assignment"):
-            e = InterExtension(
-                uuid=ext["uuid"],
-                name=ext["name"],
-                requesting_tenant=ext["requesting"],
-                requesting_tenant_name=self.tenants[ext["requesting"]].name,
-                requested_tenant=ext["requested"],
-                requested_tenant_name=self.tenants[ext["requested"]].name,
-                connection_type=ext["connection_type"],
-                category=ext["category"]
-            )
-            e.sync()
-            self.extensions[ext["uuid"]] = e
-        for vent in self.dispatcher.list(type="virtual_entity"):
-            v = VirtualEntity(
-                uuid=vent["uuid"],
-                name=vent["name"],
-            )
-            v.sync()
-            self.virtual_entities[vent["uuid"]] = v
-
-    def __getitem__(self, item):
-        return self.extensions[item]
-
-    def list(self, type="tenants"):
-        if type == "tenants":
-            return self.tenants.values()
-        else:
-            return self.extensions.values()
-
-    def get(self, uuid=None, name=None, attributes=dict()):
-        """
-        :param uuid: uuid of the tenant or extension
-        :param name: name of the tenant or extension
-        :param attributes: other attributes to look for
-        :return: a list of tenants or extensions
-        """
-        if not uuid and not name and not attributes:
-            return self.extensions.values()
-        elif uuid:
-            try:
-                return [self.extensions[uuid], ]
-            except KeyError:
-                try:
-                    return [self.tenants[uuid], ]
-                except KeyError:
-                    return []
-        elif name:
-            for ext in self.extensions.values():
-                if ext.name == name:
-                    return [ext, ]
-        else:
-            uuids = map(lambda x: x["uuid"], tuple(self.dispatcher.get(attributes=attributes)))
-            exts = []
-            for uuid in uuids:
-                try:
-                    exts.append(self.extensions[uuid])
-                except KeyError:
-                    exts.append(self.tenants[uuid])
-            return exts
-
-    def get_virtual_entity(self, uuid=None, name=None):
-        if not uuid and not name:
-            return self.virtual_entities.values()
-        elif uuid:
-            return [self.virtual_entities[uuid], ]
-        else:
-            for vent in self.virtual_entities:
-                if vent.name == name:
-                    return [vent, ]
-
-    def delete_virtual_entity(self, uuid=None):
-        if uuid in self.virtual_entities:
-            self.virtual_entities.pop(uuid)
-
-    def delete(self, uuid):
-        # delete rules where the virtual entity is present
-        # self.extensions[uuid].delete(vent=self.extensions[uuid]["category"])
-        # delete the virtual entity
-        self.delete_virtual_entity(uuid=uuid)
-        # delete the extension itself
-        try:
-            self.extensions.pop(uuid)
-        except KeyError:
-            self.tenants.pop(uuid)
-        return self.dispatcher.delete(uuid=uuid)
-
-    def delete_tables(self):
-        logger.warning("Dropping Inter Extension Database")
-        self.extensions = dict()
-        self.tenants = dict()
-        return self.dispatcher.drop()
-
-    def add_tenant(
-            self,
-            attributes={},
-            name="",
-            description="",
-            enabled=True,
-            domain="",
-            uuid=None):
-        if not uuid:
-            uuid = str(uuid4()).replace("-", "")
-        answer = self.dispatcher.add_tenant(
-            attributes=attributes,
-            name=name,
-            description=description,
-            enabled=enabled,
-            domain=domain,
-            uuid=uuid)
-        if "err" in answer and answer["err"]:
-            raise Exception("Error add tenant in DB ({})".format(answer["err"]))
-        tenant = self.dispatcher.get({"uuid": uuid})
-        if len(tenant) > 1:
-            raise Exception("Error in UUID attribution, multiple tenant have the same UUID ({})".format(uuid))
-        tenant = tenant[0]
-        self.tenants[tenant["uuid"]] = Tenant(
-            name=tenant["name"],
-            description=tenant["description"],
-            enabled=tenant["enabled"],
-            domain=tenant["domain"],
-            uuid=tenant["uuid"]
+        self.requesting_intra_extension.destroy_requesting_collaboration(
+            genre,
+            _vent.get_requesting_subject_list(),
+            _vent.get_uuid(),
+            _vent.get_requesting_subject_category_value_dict(),
+            _vent.get_requesting_object_category_value_dict()
         )
-        self.tenants[tenant["uuid"]].sync()
-        return self.tenants[tenant["uuid"]]
 
-    def add_tenant_assignment(
-            self,
-            attributes={},
-            requesting=None,
-            requested=None,
-            type=None,
-            category=None,
-            uuid=None):
-        if not uuid:
-            uuid = str(uuid4()).replace("-", "")
-        if not category:
-            #FIXME vent can have the same name with this method
-            vent = VirtualEntity(requesting+"->"+requested)
-            vent.sync()
-            self.virtual_entities[vent.uuid] = vent
-            category = vent.uuid
-        assignment = self.dispatcher.add_tenant_assignment(
-            attributes=attributes,
-            requesting=requesting,
-            requested=requested,
-            type=type,
-            category=category,
-            uuid=uuid)
-        self.extensions[assignment] = InterExtension(
-            requesting_tenant=requesting,
-            requesting_tenant_name=self.tenants[requesting].name,
-            requested_tenant=requested,
-            requested_tenant_name=self.tenants[requested].name,
-            connection_type=type,
-            category=category,
-            uuid=uuid
+        self.requested_intra_extension.destroy_requested_collaboration(
+            genre,
+            _vent.get_uuid(),
+            _vent.get_requested_object_list(),
+            _vent.get_requested_subject_category_value_dict(),
+            _vent.get_requested_object_category_value_dict()
         )
-        self.extensions[assignment].sync()
-        return self.extensions[assignment]
 
-inter_extentions = InterExtensions()
+        self.__vents[genre].remove(_vent)
+        return "[InterExtension] Destroy Collaboration: OK"
 
+    def delegate(self, delegator_uuid, privilege):
+        self.requesting_intra_extension.intra_extension_admin.add_subject(delegator_uuid)
+        self.requested_intra_extension.intra_extension_admin.add_subject(delegator_uuid)
+        if privilege == "list":
+            _requesting_add = self.requesting_intra_extension.intra_extension_admin.add_subject_assignment(
+                "role",
+                delegator_uuid,
+                "inter_extension_user")
+            _requested_add = self.requested_intra_extension.intra_extension_admin.add_subject_assignment(
+                "role",
+                delegator_uuid,
+                "inter_extension_user")
+            if "ERROR" in _requesting_add or "ERROR" in _requested_add:
+                return "[InterExtension ERROR]" + _requesting_add + " " + _requested_add
+            else:
+                return "[InterExtension] Delegate: Add Inter_Extension_User Privilege"
+        elif privilege == "create" or privilege == "destroy":
+            _requesting_add = self.requesting_intra_extension.intra_extension_admin.add_subject_assignment(
+                "role",
+                delegator_uuid,
+                "inter_extension_admin")
+            _requested_add = self.requested_intra_extension.intra_extension_admin.add_subject_assignment(
+                "role",
+                delegator_uuid,
+                "inter_extension_admin")
+            if "ERROR" in _requesting_add or "ERROR" in _requested_add:
+                return "[InterExtension ERROR] " + \
+                       _requesting_add + " " + \
+                       _requested_add
+            else:
+                return "[InterExtension] Delegate: Add Inter_Extension_Admin Privilege"
+        elif privilege == "delegate":
+            _requesting_add = self.requesting_intra_extension.intra_extension_admin.add_subject_assignment(
+                "role",
+                delegator_uuid,
+                "inter_extension_admin")
+            _requested_add = self.requested_intra_extension.intra_extension_admin.add_subject_assignment(
+                "role",
+                delegator_uuid,
+                "inter_extension_admin")
+            if "ERROR" in _requesting_add or "ERROR" in _requested_add:
+                return "[InterExtension ERROR] " + _requesting_add + " " + _requested_add
+            else:
+                return "[InterExtension] Delegate: Add Inter_Extension_Root Privilege"
+        else:
+            return "[InterExtension Error] Collaboration Delegate Unknown Privilege"
 
-def get_inter_extentions():
-    return inter_extentions
+    def get_uuid(self):
+        return self.__uuid
+
+    def get_vent_data_dict(self, vent_uuid):
+        if self.__vents["trust"][vent_uuid]:
+            return self.__vents["trust"][vent_uuid].get_data_dict()
+        elif self.__vents["coordinate"][vent_uuid]:
+            return self.__vents["coordinate"][vent_uuid].get_data_dict()
+        else:
+            return False
+
+    def get_vents(self):
+        return self.__vents
+
+    def get_data(self):
+        data = dict()
+        data["uuid"] = str(self.__uuid)
+        data["requesting_intra_extension"] = self.requesting_intra_extension.get_data()
+        data["requested_intra_extension"] = self.requested_intra_extension.get_data()
+        data["vents"] = dict()
+        data["vents"]["trust"] = map(lambda x: x.get_data_dict(), self.__vents["trust"])
+        data["vents"]["coordinate"] = map(lambda x: x.get_data_dict(), self.__vents["coordinate"])
+        return data

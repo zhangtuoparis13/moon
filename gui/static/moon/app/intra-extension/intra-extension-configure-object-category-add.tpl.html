@@ -1,0 +1,51 @@
+<div ng-controller="IntraExtensionConfigurationAddObjectCategoryController as add" class="modal" tabindex="-1" role="modalAddObjectCategoryIntraExtension">
+
+	<div class="modal-dialog">
+
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<button type="button" class="close" ng-click="$hide()">&times;</button>
+				<h4 class="modal-title" translate="moon.intraExtension.configure.object.category.add.title">Add new Category</h4>
+			</div>
+			
+			<div class="modal-body">
+				
+				<form class="form-horizontal" role="form" name="add.form">
+				
+					<div class="form-group" ng-class="{'has-error': add.form.name.$invalid && add.form.name.$dirty}">
+					
+		                <label for="name" class="col-sm-3 control-label" translate="moon.intraExtension.configure.object.category.add.form.name">Name</label>
+		            
+		                <div class="col-sm-6">
+		            
+		                    <input name="name" class="form-control" type="text" data-ng-model="add.category.name" required />
+		                                        
+		                    <div class="help-block" ng-show="add.form.name.$dirty && add.form.name.$invalid">
+		                    	<small class="error" ng-show="add.form.name.$error.required" translate="moon.intraExtension.configure.object.category.add.check.name.required">Name is required</small>
+		                    </div>
+		                    
+		                </div>
+		            </div>
+		            		            
+				</form>
+				
+			</div>
+			
+			<div class="modal-footer">
+				<div class="btn-toolbar" style="float: right;">
+					<a href="" ng-click="$hide()" class="btn btn-default">
+		                <span translate="moon.intraExtension.configure.object.category.add.action.cancel">Cancel</span>
+					</a>					
+					<a href="" ng-click="add.create()" class="btn btn-warning">
+		            	<span class="glyphicon glyphicon-plus"></span>
+		                <span translate="moon.intraExtension.configure.object.category.add.action.add">Add Category</span>
+					</a>
+				</div>
+			</div>
+			
+		</div>
+		
+	</div>
+	
+</div>

@@ -1,0 +1,18 @@
+{
+    "subjects": [
+        "user1",
+        "user2",
+        "504de31b636c43bbb7c2dd1b76ee6cca"
+    ],
+    "objects": [
+        "subjects",
+        "objects",
+        "subject_categories",
+        "object_categories",
+        "subject_category_values",
+        "object_category_values",
+        "rules",
+        "subject_category_assignments",
+        "object_category_assignments"
+    ]
+}

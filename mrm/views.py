@@ -1,81 +1,68 @@
-# from django.shortcuts import render
-from django.views.decorators.csrf import csrf_protect, csrf_exempt
 import json
 from django.http import HttpResponse
-from moon.core.pdp import get_intra_extentions
-from moon.log_repository import get_log_manager
+from moon.core.pdp import pdp_authz
 import hashlib
 from moon import settings
-from moon.core.pdp.authz import toggle_readonly_flag
-# from moon.core.pap.core import PAP
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
-import logging
-
-logger = logging.getLogger(__name__)
-LOGS = get_log_manager()
 
 # TODO: this must be authenticated/secured!!!
 # TODO: this must be CSRF protected!!!
-@csrf_exempt
-def tenants(request, id=None):
-    response_data = {"auth": False}
-    try:
-        if request.method == 'POST':
-            # print("\033[32m"+str(request.POST)+"\033[m")
-            logger.info("request: " + request.POST["RAW_PATH_INFO"])
-            crypt_key = hashlib.sha256()
-            if "key" in request.POST:
-                crypt_key.update(request.POST["key"])
-                crypt_key.update(getattr(settings, "CNX_PASSWORD"))
-                response_data["key"] = crypt_key.hexdigest()
-            # print(pap.tenants.json())
-            # response_data = json.dumps(pap.tenants.json())
-            # try:
-            toggle_readonly_flag()
-            manager = get_intra_extentions()
-            authz = manager.authz(
-                subject=request.POST["Subject"],
-                action=request.POST["Action"],
-                object_name=request.POST["Object"],
-                object_type=request.POST["ObjectType"],
-                object_tenant=request.POST["Object_Tenant"],
-                subject_tenant=request.POST["Subject_Tenant"]
-            )
-            toggle_readonly_flag()
-            tenant = request.POST.get("Subject_Tenant", "None")
-            args = {
-                "tname": authz["tenant_name"],
-                "authz": authz["auth"],
-                "subject": request.POST["Subject"],
-                "action": request.POST["Action"],
-                "object": request.POST["Object"],
-                "objecttype": request.POST["ObjectType"],
-                "message": authz["message"],
-            }
-            if authz["auth"] == True:
-                log = "{color}Authorized{endcolor} in tenant {tname} " \
-                      "for ({subject} - {action} - {objecttype}/{object}) \n{message}"
-                print(log.format(color="\033[33m", endcolor="\033[m", **args))
-                # LOGS.write(line=log.format(color="", endcolor="", **args))
-                LOGS.write(authz)
-            elif not authz["auth"]:
-                log = "{color}Unauthorized{endcolor} in tenant {tname} " \
-                      "for ({subject} - {action} - {objecttype}/{object}) \n{message}"
-                print(log.format(color="\033[41m", endcolor="\033[m", **args))
-                # LOGS.write(line=log.format(color="", endcolor="", **args))
-                LOGS.write(authz)
-            else:
-                # print("\t\033[41m" + tenant_name + "/" + str(authz) + " for (" + "\033[m")
-                log = "{color}Out of Scope{endcolor} in tenant {tname} " \
-                      "for ({subject} - {action} - {objecttype}/{object}) \n{message}"
-                print(log.format(color="\033[42m", endcolor="\033[m", **args))
-                # LOGS.write(line=log.format(color="", endcolor="", **args))
-                LOGS.write(authz)
 
-            response_data["auth"] = authz
+
+@csrf_exempt
+def mrm_authz(post_request):
+    """
+    post_request = {
+        'requesting_tenant': requesting_tenant_uuid,
+        'requested_tenant': requested_tenant_uuid,
+        'subject': subject_uuid,
+        'object': object_uuid,
+        'action', action,
+        'key': key
+    }
+    authz_response = {
+        'authz': "OK"/"KO",
+        'key': key
+    }
+    """
+
+    authz_response = {"authz": "KO"}
+    try:
+        if post_request.method == 'POST':
+            data = json.loads(post_request.read())
+            print("\033[32mrequest={}\033[m".format(data))
+            if "key" in data:
+                crypt_key = hashlib.sha256()
+                crypt_key.update(data["key"])
+                crypt_key.update(getattr(settings, "CNX_PASSWORD"))
+                authz_response["key"] = crypt_key.hexdigest()
+            if "requesting_tenant" in data and "requested_tenant" in data:
+                authz_response["authz"] = pdp_authz(
+                    data["subject"],
+                    data["object"],
+                    data["action"],
+                    data["requesting_tenant"],
+                    data["requested_tenant"]
+                )
+            else:
+                authz_response["authz"] = pdp_authz(
+                    data["subject"],
+                    data["object"],
+                    data["action"]
+                )
     except:
         import sys
         import traceback
         print(sys.exc_info())
         print(traceback.print_exc())
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
+        if getattr(settings, "DEBUG"):
+            authz_response["error"] = traceback.format_exc()
+    finally:
+        if authz_response["authz"] == "OK":
+            print("\033[42mresponse={}\033[m".format(authz_response))
+        elif authz_response["authz"] == "NoExtension":
+            print("\033[43mresponse={}\033[m".format(authz_response))
+        else:
+            print("\033[41mresponse={}\033[m".format(authz_response))
+        return HttpResponse(json.dumps(authz_response), content_type="application/json")

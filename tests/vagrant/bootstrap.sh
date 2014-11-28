@@ -1,20 +1,21 @@
 #!/usr/bin/env bash
 
-MySQLPASSWD="P4ssw0rd"
-OPENSTACK_SERVER="192.168.119.113"
+MySQLPASSWD="nomoresecrete"
+OPENSTACK_SERVER="<set an IP here>"
 
 #if necessary, set a proxy
-export http_proxy="http://vis:visiteur@www-cache.aql.fr:3128";
-export https_proxy="http://vis:visiteur@www-cache.aql.fr:3128";
-export no_proxy="127.0.0.1"
+#export http_proxy="http://login:pass@proxy:3128";
+#export https_proxy="http://login:pass@proxy:3128";
+#export no_proxy="127.0.0.1"
 
 apt-get update
-apt-get install -y language-pack-fr
-export LANGUAGE=fr_FR
-export LANG=fr_FR.UTF-8
-export LC_ALL=fr_FR.UTF-8
-locale-gen fr_FR.UTF-8
-dpkg-reconfigure locales
+#if you need other language
+#apt-get install -y language-pack-fr
+#export LANGUAGE=fr_FR
+#export LANG=fr_FR.UTF-8
+#export LC_ALL=fr_FR.UTF-8
+#locale-gen fr_FR.UTF-8
+#dpkg-reconfigure locales
 
 echo "mysql-server-5.5 mysql-server/root_password password ${MySQLPASSWD}
 mysql-server-5.5 mysql-server/root_password seen true
@@ -32,7 +33,10 @@ apt-get install -y --force-yes \
     graphviz \
     python-sqlalchemy \
     python-pygraphviz \
-    mongodb-server
+    mongodb-server \
+    nodejs \
+    git \
+    npm
 
 #apt-get install swi-prolog
 #cd /tmp
@@ -46,6 +50,17 @@ pip install python-keystoneclient
 pip install python-novaclient
 pip install pymongo
 pip install oslo.config
+
+# installing dependencies for gui
+update-alternatives --install /usr/bin/node node  /usr/bin/nodejs 20
+npm config set registry="http://registry.npmjs.org/"
+npm config set strict-ssl false
+npm config set https-proxy ${http_proxy}
+npm config set proxy ${https_proxy}
+npm install bower -g
+echo you must install all javascript librairies with 
+echo cd /moon/gui/
+echo bower install
 
 #Hack to simplify the installation and development process
 ln -s /moon/ /usr/local/lib/python2.7/dist-packages/moon
@@ -76,4 +91,6 @@ EOF
 
 echo -e "\n$OPENSTACK_SERVER openstackserver" >> /etc/hosts
 
-#python -m moon.moon_server --run "syncdb"
+echo Before running the server you must execute :
+echo python -m moon.moon_server --run "syncdb"
+

@@ -1,0 +1,14 @@
+{
+    "subjects": [
+        {
+            "name": "user1",
+            "uuid": "subject_user1"
+        }
+    ],
+    "objects": [
+        {
+            "name": "vm1",
+            "uuid": "vm_uuid1"
+        }
+    ]
+}
