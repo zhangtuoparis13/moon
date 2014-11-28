@@ -1,0 +1,2714 @@
+{
+    "attributes": [
+        "tenant_id", 
+        "volume_id", 
+        "volume_type_id", 
+        "snapshot_id", 
+        "qos_id", 
+        "user_id", 
+        "alias", 
+        "server_id", 
+        "key", 
+        "network_label", 
+        "flavor_id", 
+        "image_id", 
+        "key_id", 
+        "id", 
+        "aggregate_id", 
+        "attachment_id", 
+        "fixed_ip", 
+        "domain", 
+        "name", 
+        "ip", 
+        "host_name", 
+        "hypervisor_hostname", 
+        "action_id", 
+        "keypair_name", 
+        "security_group_rule_id", 
+        "security_group_id", 
+        "ServerGroup_id", 
+        "flavor_extra_spec_key", 
+        "hypervisor_id", 
+        "request_id", 
+        "datetime", 
+        "class_id", 
+        "accountId", 
+        "instanceId", 
+        "databaseName", 
+        "flavorId", 
+        "service_id", 
+        "endpoint_id", 
+        "domain_id", 
+        "group_id", 
+        "role_id", 
+        "project_id", 
+        "credential_id", 
+        "policy_id", 
+        "consumer_id", 
+        "access_token_id", 
+        "tokenId", 
+        "tenantId", 
+        "userId", 
+        "roleId",
+        "serviceId",
+        "endpointId",
+        "endpointTemplateId",
+        "type",
+        "groupId",
+        "tag",
+        "member_id",
+        "owner_id",
+        "owner",
+        "network_id",
+        "subnet_id",
+        "port_id",
+        "rules_security_groups_id",
+        "router_id",
+        "floatingip_id",
+        "metering_label_id",
+        "metering_label_rule_id",
+        "vip_id",
+        "health_monitor_id",
+        "pool_id",
+        "account",
+        "container",
+        "object",
+        "stack_name",
+        "stack_id",
+        "resource_name",
+        "type_name",
+        "event_id",
+        "config_id",
+        "deployment_id",
+        "alarm_id",
+        "meter_name",
+        "resource_id"
+    ],
+    "objects": [
+        [
+            "tenant", 
+            "project"
+        ], 
+        "cloudpipe", 
+        "user", 
+        "interface", 
+        "aggregate", 
+        "agent", 
+        "quota", 
+        "limit", 
+        "image", 
+        "key", 
+        "flavor", 
+        "server", 
+        "network", 
+        "metadata", 
+        "volume", 
+        "token", 
+        "association", 
+        "extension", 
+        "event", 
+        "software", 
+        "resource", 
+        "container", 
+        "monitor", 
+        "metering-label", 
+        "router", 
+        [
+            "floating-ip", 
+            "floatingip"
+        ], 
+        "subnet", 
+        "member", 
+        "tag", 
+        "group", 
+        "template", 
+        "endpoint", 
+        "service", 
+        "domain", 
+        "region", 
+        "extension", 
+        "policy", 
+        "consumer", 
+        "credentials", 
+        "database", 
+        "action", 
+        "hypervisor", 
+        "host", 
+        "migration", 
+        "keypair", 
+        "alarm", 
+        "pool", 
+        "vips", 
+        "port", 
+        "role", 
+        "meter", 
+        "assignment", 
+        "instance", 
+        [
+            "audit-log", 
+            "audit", 
+            "log"
+        ], 
+        "cell"
+    ], 
+    "data": [
+        {
+            "action": "read",
+            "object": "servers",
+            "method": "GET",
+            "name": "/{tenant_id}/servers/detail",
+            "desc": "Gets details for all servers."
+        },
+        {
+            "action": "read",
+            "object": "servers",
+            "method": "GET",
+            "name": "/{tenant_id}/servers/{server_id}",
+            "desc": "Gets details for a specified server."
+        },
+        {
+            "action": "write",
+            "object": "server",
+            "method": "POST",
+            "name": "/{tenant_id}/servers/{server_id}",
+            "desc": "Add a server."
+        },
+        {
+            "action": "create",
+            "object": "servers",
+            "method": "POST",
+            "name": "/{tenant_id}/servers",
+            "desc": "Add a server."
+        },
+        {
+            "action": "delete",
+            "object": "server",
+            "method": "DELETE",
+            "name": "/{tenant_id}/servers/{server_id}",
+            "desc": "Delete a server."
+        },
+        {
+            "action": "write",
+            "object": "action",
+            "method": "POST",
+            "name": "/{tenant_id}/servers/{server_id}/action",
+            "desc": "Changes the password for a server. Specify the changePassword"
+        },
+        {
+            "action": "read",
+            "object": "",
+            "method": "GET",
+            "name": "/",
+            "desc": "Lists information about all Block Storage API versions."
+        },
+        {
+            "action": "read",
+            "object": "",
+            "method": "GET",
+            "name": "/",
+            "desc": "Shows details for Block Storage API v2."
+        },
+        {
+            "action": "read",
+            "object": "extension",
+            "method": "GET",
+            "name": "/{tenant_id}/extensions",
+            "desc": "Lists Block Storage API extensions."
+        },
+        {
+            "action": "write",
+            "object": "volume",
+            "method": "POST",
+            "name": "/{tenant_id}/volumes",
+            "desc": "Creates a volume."
+        },
+        {
+            "action": "read",
+            "object": "volume",
+            "method": "GET",
+            "name": "/{tenant_id}/volumes/detail",
+            "desc": "Lists detailed information for all Block Storage volumes that the tenant who submits the request can access."
+        },
+        {
+            "action": "read",
+            "object": "volume",
+            "method": "GET",
+            "name": "/{tenant_id}/volumes/{volume_id}",
+            "desc": "Shows information about a specified volume."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/types",
+            "desc": "Lists volume types."
+        },
+        {
+            "action": "read",
+            "object": "volume",
+            "method": "GET",
+            "name": "/{tenant_id}/types/{volume_type_id}",
+            "desc": "Shows information about a specified volume type."
+        },
+        {
+            "action": "write",
+            "object": "tenant",
+            "method": "POST",
+            "name": "/{tenant_id}/snapshots",
+            "desc": "Creates a snapshot, which is a point-in-time copy of a volume. You can create a volume from the snapshot."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/snapshots/detail",
+            "desc": "Lists detailed information for all Block Storage snapshots that the tenant who submits the request can access."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/snapshots/{snapshot_id}",
+            "desc": "Shows information for a specified snapshot."
+        },
+        {
+            "action": "read",
+            "object": "metadata",
+            "method": "GET",
+            "name": "/{tenant_id}/snapshots/{snapshot_id}/metadata",
+            "desc": "Shows the metadata for a specified snapshot."
+        },
+        {
+            "action": "write",
+            "object": "tenant",
+            "method": "POST",
+            "name": "/{tenant_id}/qos_specs",
+            "desc": "Creates a QoS specification."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/qos_specs/{qos_id}",
+            "desc": "Shows details for a specified QoS specification."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/qos_specs/{qos_id}/associate",
+            "desc": "Associates a QoS specification with a specified volume type."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/qos_specs/{qos_id}/disassociate",
+            "desc": "Disassociates a QoS specification from a specified volume type."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/qos_specs/{qos_id}/disassociate_all",
+            "desc": "Disassociates a specified QoS specification from all associations."
+        },
+        {
+            "action": "read",
+            "object": "association",
+            "method": "GET",
+            "name": "/{tenant_id}/qos_specs/{qos_id}/associations",
+            "desc": "Gets all associations for a specified QoS specification."
+        },
+        {
+            "action": "read",
+            "object": "quota",
+            "method": "GET",
+            "name": "/{tenant_id}/os_quota_sets/{tenant_id}",
+            "desc": "Shows quotas for a tenant."
+        },
+        {
+            "action": "read",
+            "object": "quota",
+            "method": "GET",
+            "name": "/{tenant_id}/os_quota_sets/defaults",
+            "desc": "Gets default quotas for a tenant."
+        },
+        {
+            "action": "read",
+            "object": "quota",
+            "method": "GET",
+            "name": "/{tenant_id}/os_quota_sets/{tenant_id}/{user_id}",
+            "desc": "Enables an admin user to show quotas for a specified tenant and user."
+        },
+        {
+            "action": "read",
+            "object": "quota",
+            "method": "GET",
+            "name": "/{tenant_id}/os_quota_sets/{tenant_id}/detail/{user_id}",
+            "desc": "Shows details for quotas for a specified tenant and user."
+        },
+        {
+            "action": "read",
+            "object": "limit",
+            "method": "GET",
+            "name": "/{tenant_id}/limits",
+            "desc": "Shows absolute limits for a tenant."
+        },
+        {
+            "action": "read",
+            "object": "",
+            "method": "GET",
+            "name": "/",
+            "desc": "Shows details for Block Storage API v1."
+        },
+        {
+            "action": "write",
+            "object": "volume",
+            "method": "POST",
+            "name": "/{tenant_id}/volumes",
+            "desc": "Creates a volume."
+        },
+        {
+            "action": "read",
+            "object": "volume",
+            "method": "GET",
+            "name": "/{tenant_id}/volumes/detail",
+            "desc": "Lists details for volume entities."
+        },
+        {
+            "action": "read",
+            "object": "volume",
+            "method": "GET",
+            "name": "/{tenant_id}/volumes/{volume_id}",
+            "desc": "Shows information about a specified volume."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/types",
+            "desc": "Request a list of volume types."
+        },
+        {
+            "action": "read",
+            "object": "volume",
+            "method": "GET",
+            "name": "/{tenant_id}/types/{volume_type_id}",
+            "desc": "Shows information about a specified volume type."
+        },
+        {
+            "action": "write",
+            "object": "tenant",
+            "method": "POST",
+            "name": "/{tenant_id}/snapshots",
+            "desc": "Creates a snapshot."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/snapshots/detail",
+            "desc": "Lists details for snapshot entities."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/snapshots/{snapshot_id}",
+            "desc": "Shows information about a specified snapshot."
+        },
+        {
+            "action": "read",
+            "object": "metadata",
+            "method": "GET",
+            "name": "/{tenant_id}/snapshots/{snapshot_id}/metadata",
+            "desc": "Shows the metadata for a specified snapshot."
+        },
+        {
+            "action": "read",
+            "object": "extension",
+            "method": "GET",
+            "name": "/{tenant_id}/extensions/{alias}",
+            "desc": "Gets details about the specified extension."
+        },
+        {
+            "action": "read",
+            "object": "servers",
+            "method": "GET",
+            "name": "/{tenant_id}/servers",
+            "desc": "Lists IDs, names, and links for all servers."
+        },
+        {
+            "action": "read",
+            "object": "servers",
+            "method": "GET",
+            "name": "/{tenant_id}/servers/detail",
+            "desc": "Lists details for all servers."
+        },
+        {
+            "action": "read",
+            "object": "metadata",
+            "method": "GET",
+            "name": "/{tenant_id}/servers/{server_id}/metadata",
+            "desc": "Shows metadata for a specified server."
+        },
+        {
+            "action": "read",
+            "object": "metadata",
+            "method": "GET",
+            "name": "/{tenant_id}/servers/{server_id}/metadata/{key}",
+            "desc": "Shows details for a metadata item by key for a specified server."
+        },
+        {
+            "action": "read",
+            "object": "server",
+            "method": "GET",
+            "name": "/{tenant_id}/servers/{server_id}/ips",
+            "desc": "Lists networks and addresses for a specified tenant and server."
+        },
+        {
+            "action": "read",
+            "object": "network",
+            "method": "GET",
+            "name": "/{tenant_id}/servers/{server_id}/ips/{network_label}",
+            "desc": "Lists addresses for a specified tenant, server, and network."
+        },
+        {
+            "action": "read",
+            "object": "flavor",
+            "method": "GET",
+            "name": "/flavors",
+            "desc": "Lists IDs, names, and links for available flavors."
+        },
+        {
+            "action": "read",
+            "object": "flavor",
+            "method": "GET",
+            "name": "/flavors/detail",
+            "desc": "Lists all details for available flavors."
+        },
+        {
+            "action": "read",
+            "object": "flavor",
+            "method": "GET",
+            "name": "/flavors/{flavor_id}",
+            "desc": "Gets details for a specified flavor."
+        },
+        {
+            "action": "read",
+            "object": "image",
+            "method": "GET",
+            "name": "/images",
+            "desc": "Lists IDs, names, and links for available images."
+        },
+        {
+            "action": "read",
+            "object": "image",
+            "method": "GET",
+            "name": "/images/detail",
+            "desc": "Lists all details for available images."
+        },
+        {
+            "action": "read",
+            "object": "image",
+            "method": "GET",
+            "name": "/images/{image_id}",
+            "desc": "Gets details for a specified image."
+        },
+        {
+            "action": "read",
+            "object": "metadata",
+            "method": "GET",
+            "name": "/images/{image_id}/metadata",
+            "desc": "Shows metadata for a specified image."
+        },
+        {
+            "action": "read",
+            "object": "metadata",
+            "method": "GET",
+            "name": "/images/{image_id}/metadata/{key}",
+            "desc": "Shows details for a metadata item by key for a specified image."
+        },
+        {
+            "action": "read",
+            "object": "server",
+            "method": "GET",
+            "name": "/{tenant_id}/servers/{server_id}/diagnostics",
+            "desc": "Gets basic usage data for a specified server."
+        },
+        {
+            "action": "read",
+            "object": "flavor",
+            "method": "GET",
+            "name": "/{tenant_id}/flavors",
+            "desc": "Lists flavors and includes the access type, which is public or private."
+        },
+        {
+            "action": "read",
+            "object": "flavor",
+            "method": "GET",
+            "name": "/{tenant_id}/flavors/{flavor_id}",
+            "desc": "Gets the flavor access type, which is public or private."
+        },
+        {
+            "action": "read",
+            "object": "flavor",
+            "method": "GET",
+            "name": "/{tenant_id}/flavors/{flavor_id}/os_flavor_access",
+            "desc": "Lists tenants with access to the specified private flavor."
+        },
+        {
+            "action": "write",
+            "object": "action",
+            "method": "POST",
+            "name": "/{tenant_id}/flavors/{flavor_id}/action",
+            "desc": "Gives a specified tenant access to the specified private flavor."
+        },
+        {
+            "action": "read",
+            "object": "flavor",
+            "method": "GET",
+            "name": "/{tenant_id}/flavors/detail",
+            "desc": "Lists available flavors. Includes the OS-FLV-DISABLED:disabled"
+        },
+        {
+            "action": "read",
+            "object": "flavor",
+            "method": "GET",
+            "name": "/{tenant_id}/flavors/{flavor_id}/os_extra_specs",
+            "desc": "Lists the extra-specs or keys for the specified flavor."
+        },
+        {
+            "action": "read",
+            "object": "flavor",
+            "method": "GET",
+            "name": "/{tenant_id}/flavors/{flavor_id}/os_extra_specs/{key_id}",
+            "desc": "Gets the value of the specified key."
+        },
+        {
+            "action": "read",
+            "object": "image",
+            "method": "GET",
+            "name": "/{tenant_id}/images/detail",
+            "desc": "Lists details for available images. Includes the image size."
+        },
+        {
+            "action": "read",
+            "object": "image",
+            "method": "GET",
+            "name": "/{tenant_id}/images/{image_id}",
+            "desc": "Gets details for a specified image. Includes the image size."
+        },
+        {
+            "action": "read",
+            "object": "limit",
+            "method": "GET",
+            "name": "/{tenant_id}/limits/{tenant_id}",
+            "desc": "Enables administrators to get absolute and rate limit information, including information about currently used absolute limits, for a specified customer tenant ID."
+        },
+        {
+            "action": "read",
+            "object": "agent",
+            "method": "GET",
+            "name": "/{tenant_id}/os_agents",
+            "desc": "Lists all agent builds."
+        },
+        {
+            "action": "put",
+            "object": "agent",
+            "method": "PUT",
+            "name": "/{tenant_id}/os_agents/{id}",
+            "desc": "Updates an agent build."
+        },
+        {
+            "action": "read",
+            "object": "aggregate",
+            "method": "GET",
+            "name": "/{tenant_id}/os_aggregates",
+            "desc": "Lists all aggregates."
+        },
+        {
+            "action": "write",
+            "object": "aggregate",
+            "method": "DELETE",
+            "name": "/{tenant_id}/os_aggregates/{aggregate_id}",
+            "desc": "Deletes an aggregate."
+        },
+        {
+            "action": "write",
+            "object": "action",
+            "method": "POST",
+            "name": "/{tenant_id}/os_aggregates/{aggregate_id}/action",
+            "desc": "Sets metadata for an aggregate."
+        },
+        {
+            "action": "write",
+            "object": "server",
+            "method": "POST",
+            "name": "/{tenant_id}/servers/{server_id}/os_attach_interfaces",
+            "desc": "Creates and uses a port interface to attach the port to a server instance."
+        },
+        {
+            "action": "read",
+            "object": "server",
+            "method": "GET",
+            "name": "/{tenant_id}/servers/{server_id}/os_attach_interfaces/{attachment_id}",
+            "desc": "Shows information about a specified port interface."
+        },
+        {
+            "action": "write",
+            "object": "tenant",
+            "method": "POST",
+            "name": "/{tenant_id}/os_certificates",
+            "desc": "Creates a root certificate."
+        },
+        {
+            "action": "read",
+            "object": "cloudpipe",
+            "method": "GET",
+            "name": "/{tenant_id}/os_cloudpipe",
+            "desc": "Lists cloudpipes."
+        },
+        {
+            "action": "write",
+            "object": "cloudpipe",
+            "method": "POST",
+            "name": "/{tenant_id}/os_cloudpipe/configure_project",
+            "desc": "Updates the virtual private network (VPN) IP address and port for a specified cloudpipe instance."
+        },
+        {
+            "action": "write",
+            "object": "action",
+            "method": "POST",
+            "name": "/{tenant_id}/os_coverage/action",
+            "desc": "Generates a coverage report."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/os_fixed_ips/{fixed_ip}",
+            "desc": "Shows information for a specified fixed IP address."
+        },
+        {
+            "action": "write",
+            "object": "action",
+            "method": "POST",
+            "name": "/{tenant_id}/os_fixed_ips/{fixed_ip}/action",
+            "desc": "Reserves or releases a fixed IP."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/os_floating_ip_dns",
+            "desc": "Lists registered DNS domains published by the DNS drivers."
+        },
+        {
+            "action": "put",
+            "object": "domain",
+            "method": "PUT",
+            "name": "/{tenant_id}/os_floating_ip_dns/{domain}",
+            "desc": "Creates or updates a DNS domain."
+        },
+        {
+            "action": "put",
+            "object": "domain",
+            "method": "PUT",
+            "name": "/{tenant_id}/os_floating_ip_dns/{domain}/entries/{name}",
+            "desc": "Creates or updates a DNS entry."
+        },
+        {
+            "action": "read",
+            "object": "domain",
+            "method": "GET",
+            "name": "/{tenant_id}/os_floating_ip_dns/{domain}/entries/{ip}",
+            "desc": "Lists DNS entries for a specified domain and IP."
+        },
+        {
+            "action": "read",
+            "object": "pool",
+            "method": "GET",
+            "name": "/{tenant_id}/os_floating_ip_pools",
+            "desc": "Lists floating IP pools."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/os_floating_ips",
+            "desc": "Lists floating IP addresses associated with the tenant or account."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/os_floating_ips/{id}",
+            "desc": "Shows information for a specified floating IP address."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/os_floating_ips_bulk",
+            "desc": "Lists all floating IPs."
+        },
+        {
+            "action": "write",
+            "object": "tenant",
+            "method": "POST",
+            "name": "/{tenant_id}/os_floating_ips_bulk/delete",
+            "desc": "Bulk-deletes floating IPs."
+        },
+        {
+            "action": "read",
+            "object": "host",
+            "method": "GET",
+            "name": "/{tenant_id}/os_floating_ips_bulk/{host_name}",
+            "desc": "Lists all floating IPs for a specified host."
+        },
+        {
+            "action": "read",
+            "object": "host",
+            "method": "GET",
+            "name": "/{tenant_id}/os_hosts",
+            "desc": "Lists hosts."
+        },
+        {
+            "action": "read",
+            "object": "host",
+            "method": "GET",
+            "name": "/{tenant_id}/os_hosts/{host_name}",
+            "desc": "Shows information for a specified host."
+        },
+        {
+            "action": "read",
+            "object": "host",
+            "method": "GET",
+            "name": "/{tenant_id}/os_hosts/{host_name}/startup",
+            "desc": "Starts a host."
+        },
+        {
+            "action": "read",
+            "object": "host",
+            "method": "GET",
+            "name": "/{tenant_id}/os_hosts/{host_name}/shutdown",
+            "desc": "Shuts down a host."
+        },
+        {
+            "action": "read",
+            "object": "host",
+            "method": "GET",
+            "name": "/{tenant_id}/os_hosts/{host_name}/reboot",
+            "desc": "Reboots a host."
+        },
+        {
+            "action": "read",
+            "object": "hypervisor",
+            "method": "GET",
+            "name": "/{tenant_id}/os_hypervisors",
+            "desc": "Lists hypervisors information for each server obtained through the hypervisor-specific API, such as libvirt or XenAPI."
+        },
+        {
+            "action": "read",
+            "object": "hypervisor",
+            "method": "GET",
+            "name": "/{tenant_id}/os_hypervisors/detail",
+            "desc": "Shows information for a specified hypervisor. Typically configured as an admin-only extension by using policy.json"
+        },
+        {
+            "action": "read",
+            "object": "hypervisor",
+            "method": "GET",
+            "name": "/{tenant_id}/os_hypervisors/statistics",
+            "desc": "Shows hypervisor statistics over all compute nodes."
+        },
+        {
+            "action": "read",
+            "object": "host",
+            "method": "GET",
+            "name": "/{tenant_id}/os_hypervisors/{hypervisor_hostname}",
+            "desc": "Shows the up time for a specified hypervisor."
+        },
+        {
+            "action": "read",
+            "object": "host",
+            "method": "GET",
+            "name": "/{tenant_id}/os_hypervisors/{hypervisor_hostname}/servers",
+            "desc": "Lists instances that belong to specific hypervisors."
+        },
+        {
+            "action": "read",
+            "object": "instance",
+            "method": "GET",
+            "name": "/{tenant_id}/servers/{server_id}/os_instance_actions",
+            "desc": "Lists available actions for a specified server. Deployers set permissions for this request in the policy.json"
+        },
+        {
+            "action": "read",
+            "object": "instance",
+            "method": "GET",
+            "name": "/{tenant_id}/servers/{server_id}/os_instance_actions/{action_id}",
+            "desc": "Gets details for a specified action for a specified server instance. Deployers set permissions for this request in the policy.json"
+        },
+        {
+            "action": "read",
+            "object": "keypair",
+            "method": "GET",
+            "name": "/{tenant_id}/os_keypairs",
+            "desc": "Lists keypairs that are associated with the account."
+        },
+        {
+            "action": "write",
+            "object": "keypair",
+            "method": "DELETE",
+            "name": "/{tenant_id}/os_keypairs/{keypair_name}",
+            "desc": "Deletes a keypair."
+        },
+        {
+            "action": "read",
+            "object": "migration",
+            "method": "GET",
+            "name": "/{tenant_id}/os_migrations",
+            "desc": "Enables an administrative user to fetch in-progress migrations for a region or specified cell in a region."
+        },
+        {
+            "action": "write",
+            "object": "tenant",
+            "method": "POST",
+            "name": "/{tenant_id}",
+            "desc": "Creates a network."
+        },
+        {
+            "action": "read",
+            "object": "network",
+            "method": "GET",
+            "name": "/{tenant_id}/os_networks",
+            "desc": "Lists networks that are available to the tenant."
+        },
+        {
+            "action": "write",
+            "object": "network",
+            "method": "POST",
+            "name": "/{tenant_id}/os_networks/add",
+            "desc": "Adds a specified network to a project."
+        },
+        {
+            "action": "read",
+            "object": "network",
+            "method": "GET",
+            "name": "/{tenant_id}/os_networks/{id}",
+            "desc": "Shows information for a specified network."
+        },
+        {
+            "action": "write",
+            "object": "action",
+            "method": "POST",
+            "name": "/{tenant_id}/os_networks/{id}/action",
+            "desc": "Associates a specified network with a host."
+        },
+        {
+            "action": "read",
+            "object": "group",
+            "method": "GET",
+            "name": "/{tenant_id}/os_security_group_rules",
+            "desc": "Lists default security group rules."
+        },
+        {
+            "action": "read",
+            "object": "group",
+            "method": "GET",
+            "name": "/{tenant_id}/os_security_group_rules/{security_group_rule_id}",
+            "desc": "Shows information for a specified security group rule."
+        },
+        {
+            "action": "read",
+            "object": "group",
+            "method": "GET",
+            "name": "/{tenant_id}/os_security_groups",
+            "desc": "Lists security groups."
+        },
+        {
+            "action": "read",
+            "object": "group",
+            "method": "GET",
+            "name": "/{tenant_id}/os_security_groups/servers/{server_id}/os_security_groups",
+            "desc": "Lists security groups for a specified server."
+        },
+        {
+            "action": "read",
+            "object": "group",
+            "method": "GET",
+            "name": "/{tenant_id}/os_security_groups/{security_group_id}",
+            "desc": "Shows information for a specified security group."
+        },
+        {
+            "action": "read",
+            "object": "group",
+            "method": "GET",
+            "name": "/{tenant_id}/os_server_groups",
+            "desc": "Lists server groups."
+        },
+        {
+            "action": "read",
+            "object": "group",
+            "method": "GET",
+            "name": "/{tenant_id}/os_server_groups/{ServerGroup_id}",
+            "desc": "Shows details for a specified server group."
+        },
+        {
+            "action": "read",
+            "object": "server",
+            "method": "GET",
+            "name": "/servers/{server_id}/os_server_password",
+            "desc": "Gets the administrative password for a specified server."
+        },
+        {
+            "action": "read",
+            "object": "service",
+            "method": "GET",
+            "name": "/{tenant_id}/os_services",
+            "desc": "Lists running services."
+        },
+        {
+            "action": "put",
+            "object": "service",
+            "method": "PUT",
+            "name": "/{tenant_id}/os_services/enable",
+            "desc": "Enables scheduling for a service."
+        },
+        {
+            "action": "put",
+            "object": "service",
+            "method": "PUT",
+            "name": "/{tenant_id}/os_services/disable",
+            "desc": "Disables scheduling for a service."
+        },
+        {
+            "action": "put",
+            "object": "audit-log",
+            "method": "PUT",
+            "name": "/{tenant_id}/os_services/disable_log_reason",
+            "desc": "Logs information to the service table about why a service was disabled."
+        },
+        {
+            "action": "read",
+            "object": "service",
+            "method": "GET",
+            "name": "/{tenant_id}/os_services/detail",
+            "desc": "Lists disabled services. If information exists, includes reasons why services were disabled."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/os_simple_tenant_usage",
+            "desc": "Lists usage information for all tenants."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/os_simple_tenant_usage/{tenant_id}",
+            "desc": "Gets usage information for a tenant."
+        },
+        {
+            "action": "read",
+            "object": "server",
+            "method": "GET",
+            "name": "/{tenant_id}/servers/{server_id}/os_virtual_interfaces",
+            "desc": "Lists the virtual interfaces for a specified instance."
+        },
+        {
+            "action": "read",
+            "object": "volume",
+            "method": "GET",
+            "name": "/{tenant_id}/os_volumes",
+            "desc": "Lists the volumes associated with the account."
+        },
+        {
+            "action": "read",
+            "object": "volume",
+            "method": "GET",
+            "name": "/{tenant_id}/os_volumes/detail",
+            "desc": "Lists details for a specified volume."
+        },
+        {
+            "action": "write",
+            "object": "volume",
+            "method": "POST",
+            "name": "/{tenant_id}/os_volumes/{volume_id}",
+            "desc": "Creates a volume."
+        },
+        {
+            "action": "read",
+            "object": "volume",
+            "method": "GET",
+            "name": "/{tenant_id}/os_volume_types",
+            "desc": "Lists volume types."
+        },
+        {
+            "action": "read",
+            "object": "volume",
+            "method": "GET",
+            "name": "/{tenant_id}/os_volume_types/{volume_type_id}",
+            "desc": "Shows information for a specified volume type."
+        },
+        {
+            "action": "write",
+            "object": "tenant",
+            "method": "POST",
+            "name": "/{tenant_id}/os_snapshots",
+            "desc": "Creates a snapshot."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/os_snapshots/detail",
+            "desc": "Lists details for a specified snapshot."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/os_snapshots/{snapshot_id}",
+            "desc": "Shows information for a specified snapshot."
+        },
+        {
+            "action": "write",
+            "object": "volume",
+            "method": "POST",
+            "name": "/{tenant_id}/servers/{server_id}/os_volume_attachments",
+            "desc": "Attaches a volume to the specified server."
+        },
+        {
+            "action": "read",
+            "object": "volume",
+            "method": "GET",
+            "name": "/{tenant_id}/servers/{server_id}/os_volume_attachments/{attachment_id}",
+            "desc": "Shows details for the specified volume attachment."
+        },
+        {
+            "action": "read",
+            "object": "server",
+            "method": "GET",
+            "name": "/{tenant_id}/servers/{server_id}/detail",
+            "desc": "Lists details for all servers including the configuration drive extended attribute."
+        },
+        {
+            "action": "read",
+            "object": "server",
+            "method": "GET",
+            "name": "/servers",
+            "desc": "Lists detailed extended server attribute information for all servers."
+        },
+        {
+            "action": "read",
+            "object": "server",
+            "method": "GET",
+            "name": "/servers/{server_id}",
+            "desc": "Shows extended server attributes for a specified server."
+        },
+        {
+            "action": "read",
+            "object": "",
+            "method": "GET",
+            "name": "/",
+            "desc": "Shows details for Compute API v3."
+        },
+        {
+            "action": "write",
+            "object": "action",
+            "method": "POST",
+            "name": "/servers/{server_id}/action/{server_id}/action",
+            "desc": "Backs up a server instance."
+        },
+        {
+            "action": "write",
+            "object": "agent",
+            "method": "POST",
+            "name": "/os_agents",
+            "desc": "Creates an agent build."
+        },
+        {
+            "action": "put",
+            "object": "agent",
+            "method": "PUT",
+            "name": "/os_agents/{id}",
+            "desc": "Updates an agent build."
+        },
+        {
+            "action": "write",
+            "object": "aggregate",
+            "method": "POST",
+            "name": "/os_aggregates",
+            "desc": "Creates an aggregate, given its name and availability zone."
+        },
+        {
+            "action": "read",
+            "object": "aggregate",
+            "method": "GET",
+            "name": "/os_aggregates/{aggregate_id}",
+            "desc": "Shows the details of an aggregate, hosts and metadata included."
+        },
+        {
+            "action": "write",
+            "object": "action",
+            "method": "POST",
+            "name": "/os_aggregates/{aggregate_id}/action",
+            "desc": "Adds a host to the specified aggregate."
+        },
+        {
+            "action": "read",
+            "object": "cell",
+            "method": "GET",
+            "name": "/os_cells",
+            "desc": "Lists cells."
+        },
+        {
+            "action": "read",
+            "object": "cell",
+            "method": "GET",
+            "name": "/os_cells/cell3",
+            "desc": "Shows data for a specified cell."
+        },
+        {
+            "action": "read",
+            "object": "cell",
+            "method": "GET",
+            "name": "/os_cells/nova/capacities",
+            "desc": "Shows capacities for a specified cell."
+        },
+        {
+            "action": "write",
+            "object": "",
+            "method": "POST",
+            "name": "/os_certificates",
+            "desc": "Creates a certificate."
+        },
+        {
+            "action": "read",
+            "object": "",
+            "method": "GET",
+            "name": "/os_certificates/root",
+            "desc": "Shows details for a specified certificate."
+        },
+        {
+            "action": "read",
+            "object": "server",
+            "method": "GET",
+            "name": "/servers/{server_id}",
+            "desc": "Shows details for a specified server."
+        },
+        {
+            "action": "read",
+            "object": "servers",
+            "method": "GET",
+            "name": "/servers/detail",
+            "desc": "Lists server details for a specified user."
+        },
+        {
+            "action": "write",
+            "object": "action",
+            "method": "POST",
+            "name": "/servers/{server_id}/action",
+            "desc": "Force deletes an instance before deferred cleanup."
+        },
+        {
+            "action": "read",
+            "object": "server",
+            "method": "GET",
+            "name": "/servers",
+            "desc": "Shows details for a specified server."
+        },
+        {
+            "action": "read",
+            "object": "servers",
+            "method": "GET",
+            "name": "/servers/details",
+            "desc": "Lists server details for a specified user."
+        },
+        {
+            "action": "write",
+            "object": "flavor",
+            "method": "POST",
+            "name": "/flavors",
+            "desc": "Adds access attribute to the flavor create response."
+        },
+        {
+            "action": "read",
+            "object": "flavor",
+            "method": "GET",
+            "name": "/flavors/detail",
+            "desc": "Extends flavor detail to add access attribute to the response of flavor detail."
+        },
+        {
+            "action": "read",
+            "object": "flavor",
+            "method": "GET",
+            "name": "/flavors/1",
+            "desc": "Extends flavor show to add access attribute to the flavor show response."
+        },
+        {
+            "action": "write",
+            "object": "action",
+            "method": "POST",
+            "name": "/flavors/10/action",
+            "desc": "Adds flavor access for tenant."
+        },
+        {
+            "action": "read",
+            "object": "flavor",
+            "method": "GET",
+            "name": "/flavors/10/os_flavor_access",
+            "desc": "Returns access list by flavor id."
+        },
+        {
+            "action": "write",
+            "object": "flavor",
+            "method": "POST",
+            "name": "/flavors/{flavor_id}/flavor_extra_specs",
+            "desc": "Creates and updates flavor extra specs."
+        },
+        {
+            "action": "read",
+            "object": "flavor",
+            "method": "GET",
+            "name": "/flavors/{flavor_id}/flavor_extra_specs/{flavor_extra_spec_key}",
+            "desc": "Shows an extra spec for specified flavor by the key."
+        },
+        {
+            "action": "write",
+            "object": "flavor",
+            "method": "DELETE",
+            "name": "/flavors/{flavor_id}",
+            "desc": "Deletes a flavor."
+        },
+        {
+            "action": "read",
+            "object": "host",
+            "method": "GET",
+            "name": "/os_hosts",
+            "desc": "Lists hosts."
+        },
+        {
+            "action": "put",
+            "object": "host",
+            "method": "PUT",
+            "name": "/os_hosts/{host_name}",
+            "desc": "Enables or puts a host in maintenance mode."
+        },
+        {
+            "action": "read",
+            "object": "host",
+            "method": "GET",
+            "name": "/os_hosts/{host_name}/reboot",
+            "desc": "Reboots a host."
+        },
+        {
+            "action": "read",
+            "object": "host",
+            "method": "GET",
+            "name": "/os_hosts/{host_name}/shutdown",
+            "desc": "Shuts down a host."
+        },
+        {
+            "action": "read",
+            "object": "host",
+            "method": "GET",
+            "name": "/os_hosts/{host_name}/startup",
+            "desc": "Starts a host."
+        },
+        {
+            "action": "read",
+            "object": "hypervisor",
+            "method": "GET",
+            "name": "/os_hypervisors",
+            "desc": "Lists hypervisors."
+        },
+        {
+            "action": "read",
+            "object": "hypervisor",
+            "method": "GET",
+            "name": "/os_hypervisors/statistics",
+            "desc": "Shows statistics for all hypervisors."
+        },
+        {
+            "action": "read",
+            "object": "hypervisor",
+            "method": "GET",
+            "name": "/os_hypervisors/search",
+            "desc": "Searches hypervisors by specified host name."
+        },
+        {
+            "action": "read",
+            "object": "hypervisor",
+            "method": "GET",
+            "name": "/os_hypervisors/{hypervisor_id}",
+            "desc": "Shows details for a specified hypervisor."
+        },
+        {
+            "action": "read",
+            "object": "hypervisor",
+            "method": "GET",
+            "name": "/os_hypervisors/{hypervisor_id}/uptime",
+            "desc": "Shows the uptime for a specified hypervisor."
+        },
+        {
+            "action": "read",
+            "object": "hypervisor",
+            "method": "GET",
+            "name": "/os_hypervisors/{hypervisor_id}/servers",
+            "desc": "Lists servers that run on a specified hypervisor."
+        },
+        {
+            "action": "read",
+            "object": "instance",
+            "method": "GET",
+            "name": "/servers/{server_id}/os_instance_actions",
+            "desc": "Lists actions for a specified instance."
+        },
+        {
+            "action": "read",
+            "object": "instance",
+            "method": "GET",
+            "name": "/servers/{server_id}/os_instance_actions/{request_id}",
+            "desc": "Shows information about a specified instance action."
+        },
+        {
+            "action": "read",
+            "object": "audit-log",
+            "method": "GET",
+            "name": "/os_instance_usage_audit_log",
+            "desc": "Lists usage audits for a specified instance."
+        },
+        {
+            "action": "read",
+            "object": "audit-log",
+            "method": "GET",
+            "name": "/os_instance_usage_audit_log/{datetime}",
+            "desc": "Lists instance usage audits that occurred before a specified time."
+        },
+        {
+            "action": "read",
+            "object": "limit",
+            "method": "GET",
+            "name": "/limits",
+            "desc": "Show global and rate limit information."
+        },
+        {
+            "action": "read",
+            "object": "migration",
+            "method": "GET",
+            "name": "/os_migrations",
+            "desc": "Lists in-progress migrations."
+        },
+        {
+            "action": "write",
+            "object": "action",
+            "method": "POST",
+            "name": "/servers/action",
+            "desc": "Adds an IP to a specified network on an instance."
+        },
+        {
+            "action": "read",
+            "object": "quota",
+            "method": "GET",
+            "name": "/os_quota_class_sets/{class_id}",
+            "desc": "Shows the quota for a specified class."
+        },
+        {
+            "action": "write",
+            "object": "quota",
+            "method": "DELETE",
+            "name": "/os_quota_sets/{tenant_id}",
+            "desc": "Deletes a quota for tenant."
+        },
+        {
+            "action": "read",
+            "object": "quota",
+            "method": "GET",
+            "name": "/os_quota_sets/{tenant_id}/defaults",
+            "desc": "Shows default quotas for tenant."
+        },
+        {
+            "action": "put",
+            "object": "quota",
+            "method": "PUT",
+            "name": "/os_quota_sets/{tenant_id}/",
+            "desc": "Updates quota for user."
+        },
+        {
+            "action": "write",
+            "object": "action",
+            "method": "POST",
+            "name": "/servers/{server_id}/actions",
+            "desc": "Gets text console output."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/os_simple_tenant_usage",
+            "desc": "Lists usage information for all tenants."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/os_simple_tenant_usage/{tenant_id}",
+            "desc": "Shows usage details for a specified tenant."
+        },
+        {
+            "action": "read",
+            "object": "",
+            "method": "GET",
+            "name": "/",
+            "desc": "Shows details for the Database Service API v1.0."
+        },
+        {
+            "action": "write",
+            "object": "instance",
+            "method": "POST",
+            "name": "/{accountId}/instances",
+            "desc": "Creates a database instance."
+        },
+        {
+            "action": "read",
+            "object": "instance",
+            "method": "GET",
+            "name": "/{accountId}/instances/{instanceId}",
+            "desc": "Shows database instance details."
+        },
+        {
+            "action": "write",
+            "object": "instance",
+            "method": "POST",
+            "name": "/{accountId}/instances/{instanceId}/root",
+            "desc": "Enables the root user for a specified database instance and returns the root password."
+        },
+        {
+            "action": "write",
+            "object": "instance",
+            "method": "POST",
+            "name": "/{accountId}/instances/{instanceId}/action",
+            "desc": "Restarts the database service on an instance."
+        },
+        {
+            "action": "write",
+            "object": "instance",
+            "method": "POST",
+            "name": "/{accountId}/instances/{instanceId}/databases",
+            "desc": "Creates a database within a specified instance."
+        },
+        {
+            "action": "write",
+            "object": "instance",
+            "method": "DELETE",
+            "name": "/{accountId}/instances/{instanceId}/databases/{databaseName}",
+            "desc": "Deletes a specified database."
+        },
+        {
+            "action": "write",
+            "object": "instance",
+            "method": "POST",
+            "name": "/{accountId}/instances/{instanceId}/users",
+            "desc": "Creates a user for a specified database instance."
+        },
+        {
+            "action": "write",
+            "object": "instance",
+            "method": "DELETE",
+            "name": "/{accountId}/instances/{instanceId}/users/{name}",
+            "desc": "Deletes a specified user for a specified database instance."
+        },
+        {
+            "action": "read",
+            "object": "flavor",
+            "method": "GET",
+            "name": "/{accountId}/flavors",
+            "desc": "Lists information for all available flavors."
+        },
+        {
+            "action": "read",
+            "object": "flavor",
+            "method": "GET",
+            "name": "/{accountId}/flavors/{flavorId}",
+            "desc": "Shows flavor details."
+        },
+        {
+            "action": "write",
+            "object": "token",
+            "method": "POST",
+            "name": "/auth/tokens",
+            "desc": "Authenticates and generates a token."
+        },
+        {
+            "action": "write",
+            "object": "service",
+            "method": "POST",
+            "name": "/services",
+            "desc": "Adds a service."
+        },
+        {
+            "action": "read",
+            "object": "service",
+            "method": "GET",
+            "name": "/services/{service_id}",
+            "desc": "Shows details for a specified service."
+        },
+        {
+            "action": "write",
+            "object": "endpoint",
+            "method": "POST",
+            "name": "/endpoints",
+            "desc": "Adds an endpoint."
+        },
+        {
+            "action": "patch",
+            "object": "endpoint",
+            "method": "PATCH",
+            "name": "/endpoints/{endpoint_id}",
+            "desc": "Updates a specified endpoint."
+        },
+        {
+            "action": "write",
+            "object": "domain",
+            "method": "POST",
+            "name": "/domains",
+            "desc": "Adds a domain."
+        },
+        {
+            "action": "read",
+            "object": "domain",
+            "method": "GET",
+            "name": "/domains/{domain_id}",
+            "desc": "Shows details for a specified domain."
+        },
+        {
+            "action": "read",
+            "object": "role",
+            "method": "GET",
+            "name": "/domains/{domain_id}/users/{user_id}/roles",
+            "desc": "Lists roles for a user on a domain."
+        },
+        {
+            "action": "read",
+            "object": "role",
+            "method": "GET",
+            "name": "/domains/{domain_id}/groups/{group_id}/roles",
+            "desc": "Lists roles for a specified domain group."
+        },
+        {
+            "action": "put",
+            "object": "role",
+            "method": "PUT",
+            "name": "/domains/{domain_id}/groups/{group_id}/roles/{role_id}",
+            "desc": "Grants a specified role to a specified domain group."
+        },
+        {
+            "action": "write",
+            "object": "tenant",
+            "method": "POST",
+            "name": "/projects",
+            "desc": "Adds a project."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/projects/{project_id}",
+            "desc": "Shows details for a specified project."
+        },
+        {
+            "action": "put",
+            "object": "role",
+            "method": "PUT",
+            "name": "/projects/{project_id}/users/{user_id}/roles/{role_id}",
+            "desc": "Grants a role to a user on a project."
+        },
+        {
+            "action": "read",
+            "object": "role",
+            "method": "GET",
+            "name": "/projects/{project_id}/groups/{group_id}/roles",
+            "desc": "Lists roles for a project group."
+        },
+        {
+            "action": "read",
+            "object": "user",
+            "method": "GET",
+            "name": "/users/{user_id}",
+            "desc": "Shows details for a specified user."
+        },
+        {
+            "action": "read",
+            "object": "group",
+            "method": "GET",
+            "name": "/users/{user_id}/groups",
+            "desc": "Lists groups for a specified user."
+        },
+        {
+            "action": "read",
+            "object": "user",
+            "method": "GET",
+            "name": "/users/{user_id}/projects",
+            "desc": "List projects for a specified user."
+        },
+        {
+            "action": "read",
+            "object": "role",
+            "method": "GET",
+            "name": "/users/{user_id}/roles",
+            "desc": "Lists roles for a specified user."
+        },
+        {
+            "action": "write",
+            "object": "group",
+            "method": "POST",
+            "name": "/groups",
+            "desc": "Adds a group."
+        },
+        {
+            "action": "read",
+            "object": "group",
+            "method": "GET",
+            "name": "/groups/{group_id}",
+            "desc": "Shows details for a specified group."
+        },
+        {
+            "action": "read",
+            "object": "group",
+            "method": "GET",
+            "name": "/groups/{group_id}/users",
+            "desc": "Lists the users in a specified group."
+        },
+        {
+            "action": "put",
+            "object": "group",
+            "method": "PUT",
+            "name": "/groups/{group_id}/users/{user_id}",
+            "desc": "Adds a user to a specified group."
+        },
+        {
+            "action": "write",
+            "object": "credentials",
+            "method": "POST",
+            "name": "/credentials",
+            "desc": "Adds a credential."
+        },
+        {
+            "action": "read",
+            "object": "credentials",
+            "method": "GET",
+            "name": "/credentials/{credential_id}",
+            "desc": "Shows details for a specified credential."
+        },
+        {
+            "action": "write",
+            "object": "role",
+            "method": "POST",
+            "name": "/roles",
+            "desc": "Adds a role."
+        },
+        {
+            "action": "put",
+            "object": "role",
+            "method": "PUT",
+            "name": "/domains/{domain_id}/users/{user_id}/roles/{role_id}",
+            "desc": "Grants a role to a specified domain user."
+        },
+        {
+            "action": "read",
+            "object": "assignment",
+            "method": "GET",
+            "name": "/role_assignments",
+            "desc": "Lists role assignments."
+        },
+        {
+            "action": "write",
+            "object": "",
+            "method": "POST",
+            "name": "/policies",
+            "desc": "Adds a policy."
+        },
+        {
+            "action": "read",
+            "object": "policy",
+            "method": "GET",
+            "name": "/policies/{policy_id}",
+            "desc": "Shows details for a specified policy."
+        },
+        {
+            "action": "write",
+            "object": "consumer",
+            "method": "POST",
+            "name": "/OS_OAUTH1/consumers",
+            "desc": "Enables a user to create a consumer."
+        },
+        {
+            "action": "read",
+            "object": "consumer",
+            "method": "GET",
+            "name": "/OS_OAUTH1/consumers/{consumer_id}",
+            "desc": "Shows information for a specified consumer."
+        },
+        {
+            "action": "write",
+            "object": "token",
+            "method": "POST",
+            "name": "/OS_OAUTH1/access_token",
+            "desc": "Enables a consumer to create an access token by exchanging a request token for an access token."
+        },
+        {
+            "action": "read",
+            "object": "token",
+            "method": "GET",
+            "name": "/OS_OAUTH1/users/{user_id}/access_tokens",
+            "desc": "Lists authorized access tokens."
+        },
+        {
+            "action": "read",
+            "object": "token",
+            "method": "GET",
+            "name": "/OS_OAUTH1/users/{user_id}/access_tokens/{access_token_id}",
+            "desc": "Gets an authorized access token."
+        },
+        {
+            "action": "read",
+            "object": "role",
+            "method": "GET",
+            "name": "/OS_OAUTH1/users/{user_id}/access_tokens/{access_token_id}/roles",
+            "desc": "Lists associated roles for a specified access token."
+        },
+        {
+            "action": "read",
+            "object": "role",
+            "method": "GET",
+            "name": "/OS_OAUTH1/users/{user_id}/access_tokens/{access_token_id}/roles/{role_id}",
+            "desc": "Gets information about a specified role for a specified access token."
+        },
+        {
+            "action": "read",
+            "object": "",
+            "method": "GET",
+            "name": "/v",
+            "desc": "Shows details for the Identity API v2.0."
+        },
+        {
+            "action": "read",
+            "object": "extension",
+            "method": "GET",
+            "name": "/extensions",
+            "desc": "Lists available extensions."
+        },
+        {
+            "action": "read",
+            "object": "extension",
+            "method": "GET",
+            "name": "/extensions/{alias}",
+            "desc": "Gets detailed information for a specified extension."
+        },
+        {
+            "action": "write",
+            "object": "token",
+            "method": "POST",
+            "name": "/tokens",
+            "desc": "Authenticates and generates a token."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/tenants",
+            "desc": "Lists tenants to which the specified token has access."
+        },
+        {
+            "action": "read",
+            "object": "token",
+            "method": "GET",
+            "name": "/tokens/{tokenId}",
+            "desc": "Validates a token and confirms that it belongs to a specified tenant."
+        },
+        {
+            "action": "write",
+            "object": "token",
+            "method": "DELETE",
+            "name": "/tokens/{tokenId}",
+            "desc": "Deletes a token."
+        },
+        {
+            "action": "read",
+            "object": "endpoint",
+            "method": "GET",
+            "name": "/tokens/{tokenId}/endpoints",
+            "desc": "Lists the endpoints associated with a specified token."
+        },
+        {
+            "action": "read",
+            "object": "user",
+            "method": "GET",
+            "name": "/users/",
+            "desc": "Gets detailed information about a specified user by user name."
+        },
+        {
+            "action": "read",
+            "object": "user",
+            "method": "GET",
+            "name": "/users/{user_id}",
+            "desc": "Gets detailed information about a specified user by user ID."
+        },
+        {
+            "action": "read",
+            "object": "role",
+            "method": "GET",
+            "name": "/users/{user_id}/roles",
+            "desc": "Lists global roles for a specified user. Excludes tenant roles."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/tenants/{tenantId}",
+            "desc": "Gets detailed information about a specified tenant by ID."
+        },
+        {
+            "action": "read",
+            "object": "role",
+            "method": "GET",
+            "name": "/tenants/{tenantId}/users/{userId}/roles",
+            "desc": "Lists roles for a specified user on a specified tenant. Excludes global roles."
+        },
+        {
+            "action": "read",
+            "object": "user",
+            "method": "GET",
+            "name": "/users",
+            "desc": "Lists users."
+        },
+        {
+            "action": "put",
+            "object": "user",
+            "method": "PUT",
+            "name": "/users/{userId}",
+            "desc": "Updates a user."
+        },
+        {
+            "action": "read",
+            "object": "role",
+            "method": "GET",
+            "name": "/users/{userId}/roles",
+            "desc": "Lists global roles for a specified user."
+        },
+        {
+            "action": "put",
+            "object": "role",
+            "method": "PUT",
+            "name": "/users/{userId}/roles/OS_KSADM/{roleId}",
+            "desc": "Adds a specific global role to a user."
+        },
+        {
+            "action": "read",
+            "object": "user",
+            "method": "GET",
+            "name": "/tenants/{tenantId}/users",
+            "desc": "Lists all users for a tenant."
+        },
+        {
+            "action": "put",
+            "object": "role",
+            "method": "PUT",
+            "name": "/tenants/{tenantId}/users/{userId}/roles/OS_KSADM/{roleId}",
+            "desc": "Adds a specified role to a user for a tenant."
+        },
+        {
+            "action": "read",
+            "object": "role",
+            "method": "GET",
+            "name": "/OS_KSADM/roles",
+            "desc": "Gets a role by name."
+        },
+        {
+            "action": "read",
+            "object": "role",
+            "method": "GET",
+            "name": "/OS_KSADM/roles/",
+            "desc": "Lists roles."
+        },
+        {
+            "action": "read",
+            "object": "role",
+            "method": "GET",
+            "name": "/OS_KSADM/roles/{roleId}",
+            "desc": "Gets information for a specified role."
+        },
+        {
+            "action": "read",
+            "object": "service",
+            "method": "GET",
+            "name": "/OS_KSADM/services",
+            "desc": "Lists services."
+        },
+        {
+            "action": "read",
+            "object": "service",
+            "method": "GET",
+            "name": "/OS_KSADM/services/",
+            "desc": "Gets a service by name."
+        },
+        {
+            "action": "read",
+            "object": "service",
+            "method": "GET",
+            "name": "/OS_KSADM/services/{serviceId}",
+            "desc": "Gets a service."
+        },
+        {
+            "action": "read",
+            "object": "audit-log",
+            "method": "GET",
+            "name": "/tenants/{tenantId}/OS_KSCATALOG/endpoints",
+            "desc": "Lists endpoints for a tenant."
+        },
+        {
+            "action": "read",
+            "object": "audit-log",
+            "method": "GET",
+            "name": "/tenants/{tenantId}/OS_KSCATALOG/endpoints/{endpointId}",
+            "desc": "Gets endpoint for a tenant."
+        },
+        {
+            "action": "read",
+            "object": "audit-log",
+            "method": "GET",
+            "name": "/OS_KSCATALOG/endpointTemplates",
+            "desc": "Lists endpoint templates."
+        },
+        {
+            "action": "read",
+            "object": "audit-log",
+            "method": "GET",
+            "name": "/OS_KSCATALOG/endpointTemplates/{endpointTemplateId}",
+            "desc": "Gets endpoint templates."
+        },
+        {
+            "action": "read",
+            "object": "credentials",
+            "method": "GET",
+            "name": "/users/{userId}/OS_KSADM/credentials",
+            "desc": "Lists credentials."
+        },
+        {
+            "action": "read",
+            "object": "credentials",
+            "method": "GET",
+            "name": "/users/{userId}/OS_KSADM/credentials/OS_KSEC2:ec2Credentials",
+            "desc": "Gets user credentials."
+        },
+        {
+            "action": "read",
+            "object": "credentials",
+            "method": "GET",
+            "name": "/users/{userId}/OS_KSADM/credentials/OS_KSEC2:ec2Credentials/{type}",
+            "desc": "Lists credentials by type."
+        },
+        {
+            "action": "read",
+            "object": "credentials",
+            "method": "GET",
+            "name": "/users/{userId}/OS_OS_KSS3/credentials",
+            "desc": "Lists credentials."
+        },
+        {
+            "action": "read",
+            "object": "credentials",
+            "method": "GET",
+            "name": "/users/{userId}/OS_OS_KSS3/credentials/s3credentials",
+            "desc": "Gets user credentials."
+        },
+        {
+            "action": "read",
+            "object": "credentials",
+            "method": "GET",
+            "name": "/users/{userId}/OS_OS_KSS3/credentials/s3credentials/{type}",
+            "desc": "Lists credentials by type."
+        },
+        {
+            "action": "read",
+            "object": "token",
+            "method": "GET",
+            "name": "/OS_KSVALIDATE/token/validate",
+            "desc": "Checks that a token is valid and that it belongs to a specified tenant and service IDs. Returns the permissions for a particular client."
+        },
+        {
+            "action": "read",
+            "object": "endpoint",
+            "method": "GET",
+            "name": "/OS_KSVALIDATE/token/endpoints",
+            "desc": "Lists endpoints associated with a specific token."
+        },
+        {
+            "action": "read",
+            "object": "group",
+            "method": "GET",
+            "name": "/RAX_GRPADM/groups",
+            "desc": "Lists groups."
+        },
+        {
+            "action": "read",
+            "object": "group",
+            "method": "GET",
+            "name": "/RAX_GRPADM/groups/{groupId}",
+            "desc": "Gets information for a group by ID."
+        },
+        {
+            "action": "read",
+            "object": "group",
+            "method": "GET",
+            "name": "/RAX_GRPADM/groups/{groupId}/users",
+            "desc": "Lists users for a group."
+        },
+        {
+            "action": "put",
+            "object": "group",
+            "method": "PUT",
+            "name": "/RAX_GRPADM/groups/{groupId}/users/{userId}",
+            "desc": "Adds a user to a group."
+        },
+        {
+            "action": "read",
+            "object": "user",
+            "method": "GET",
+            "name": "/users/{userId}/RAX_KSGRP",
+            "desc": "Lists groups for a user."
+        },
+        {
+            "action": "write",
+            "object": "credentials",
+            "method": "POST",
+            "name": "/users/{userId}/OS_RAX_KSKEY/credentials",
+            "desc": "Adds a credential to a user."
+        },
+        {
+            "action": "read",
+            "object": "credentials",
+            "method": "GET",
+            "name": "/users/{userId}/OS_RAX_KSKEY/credentials/",
+            "desc": "Lists credentials."
+        },
+        {
+            "action": "write",
+            "object": "credentials",
+            "method": "POST",
+            "name": "/users/{userId}/OS_RAX_KSKEY/credentials/RAX_KSKEY:apiKeyCredentials",
+            "desc": "Updates credentials."
+        },
+        {
+            "action": "read",
+            "object": "user",
+            "method": "GET",
+            "name": "/users/{userId}/RAX_KSQA/secretqa",
+            "desc": "Gets a secret question and answer for a specified user."
+        },
+        {
+            "action": "put",
+            "object": "image",
+            "method": "PUT",
+            "name": "/images/{image_id}/file",
+            "desc": "Uploads binary image data. (Since Image API v2.0.)"
+        },
+        {
+            "action": "put",
+            "object": "tag",
+            "method": "PUT",
+            "name": "/images/{image_id}/tags/{tag}",
+            "desc": "Adds a specified tag to a specified image. (Since Image API v2.0.)"
+        },
+        {
+            "action": "write",
+            "object": "member",
+            "method": "POST",
+            "name": "/images/{image_id}/members",
+            "desc": "Adds a specified tenant ID as an image member. (Since Image API v2.1.)"
+        },
+        {
+            "action": "read",
+            "object": "member",
+            "method": "GET",
+            "name": "/images/{image_id}/members/{member_id}",
+            "desc": "Shows image member details."
+        },
+        {
+            "action": "read",
+            "object": "image",
+            "method": "GET",
+            "name": "/schemas/images",
+            "desc": "Gets a json-schema document that represents an images entity. (Since Images v2.0.)"
+        },
+        {
+            "action": "read",
+            "object": "image",
+            "method": "GET",
+            "name": "/schemas/image",
+            "desc": "Gets a json-schema document that represents an image entity. (Since Images v2.0.)"
+        },
+        {
+            "action": "read",
+            "object": "member",
+            "method": "GET",
+            "name": "/schemas/members",
+            "desc": "Gets a json-schema document that represents an image members entity. (Since Images v2.1.)"
+        },
+        {
+            "action": "read",
+            "object": "member",
+            "method": "GET",
+            "name": "/schemas/member",
+            "desc": "Gets a json-schema document that represents an image member entity. (Since Images v2.1.)"
+        },
+        {
+            "action": "write",
+            "object": "image",
+            "method": "POST",
+            "name": "/images",
+            "desc": "Registers a virtual machine (VM) image."
+        },
+        {
+            "action": "read",
+            "object": "image",
+            "method": "GET",
+            "name": "/images/detail",
+            "desc": "Lists details for available images."
+        },
+        {
+            "action": "read",
+            "object": "image",
+            "method": "GET",
+            "name": "/images/{image_id}",
+            "desc": "Returns the image details as headers and the image binary in the body of the response."
+        },
+        {
+            "action": "put",
+            "object": "member",
+            "method": "PUT",
+            "name": "/images/{image_id}/members",
+            "desc": "Replaces a membership list for an image."
+        },
+        {
+            "action": "put",
+            "object": "member",
+            "method": "PUT",
+            "name": "/images/{image_id}/members/{owner_id}",
+            "desc": "Adds a member to an image."
+        },
+        {
+            "action": "read",
+            "object": "image",
+            "method": "GET",
+            "name": "/shared_images/{owner}",
+            "desc": "Lists the VM images shared with a specified owner. The owner ID is the tenant ID."
+        },
+        {
+            "action": "read",
+            "object": "network",
+            "method": "GET",
+            "name": "/networks",
+            "desc": "Lists networks to which the specified tenant has access."
+        },
+        {
+            "action": "read",
+            "object": "network",
+            "method": "GET",
+            "name": "/networks/{network_id}",
+            "desc": "Shows information for a specified network."
+        },
+        {
+            "action": "read",
+            "object": "subnet",
+            "method": "GET",
+            "name": "/subnets",
+            "desc": "Lists subnets to which the specified tenant has access."
+        },
+        {
+            "action": "read",
+            "object": "subnet",
+            "method": "GET",
+            "name": "/subnets/{subnet_id}",
+            "desc": "Shows information for a specified subnet."
+        },
+        {
+            "action": "read",
+            "object": "port",
+            "method": "GET",
+            "name": "/ports",
+            "desc": "Lists ports to which the tenant has access."
+        },
+        {
+            "action": "read",
+            "object": "port",
+            "method": "GET",
+            "name": "/ports/{port_id}",
+            "desc": "Shows information for a specified port."
+        },
+        {
+            "action": "read",
+            "object": "quota",
+            "method": "GET",
+            "name": "/quotas",
+            "desc": "Lists quotas for tenants who have non-default quota values."
+        },
+        {
+            "action": "read",
+            "object": "quota",
+            "method": "GET",
+            "name": "/quotas/{tenant_id}",
+            "desc": "Shows quotas for a specified tenant."
+        },
+        {
+            "action": "read",
+            "object": "group",
+            "method": "GET",
+            "name": "/security_groups",
+            "desc": "Lists all OpenStack Networking security groups to which the specified tenant has access."
+        },
+        {
+            "action": "read",
+            "object": "group",
+            "method": "GET",
+            "name": "/security_groups/{security_group_id}",
+            "desc": "Shows information for a specified security group."
+        },
+        {
+            "action": "read",
+            "object": "group",
+            "method": "GET",
+            "name": "/security_group_rules",
+            "desc": "Lists a summary of all OpenStack Networking security group rules that the specified tenant can access."
+        },
+        {
+            "action": "read",
+            "object": "group",
+            "method": "GET",
+            "name": "/security_group_rules/{rules_security_groups_id}",
+            "desc": "Shows detailed information for a specified security group rule."
+        },
+        {
+            "action": "read",
+            "object": "router",
+            "method": "GET",
+            "name": "/routers",
+            "desc": "Lists logical routers that are accessible to the tenant who submits the request."
+        },
+        {
+            "action": "read",
+            "object": "router",
+            "method": "GET",
+            "name": "/routers/{router_id}",
+            "desc": "Shows details for a specified router."
+        },
+        {
+            "action": "put",
+            "object": "router",
+            "method": "PUT",
+            "name": "/routers/{router_id}/add_router_interface",
+            "desc": "Adds an internal interface to a logical router."
+        },
+        {
+            "action": "put",
+            "object": "router",
+            "method": "PUT",
+            "name": "/routers/remove_router_interface",
+            "desc": "Removes an internal interface from a logical router."
+        },
+        {
+            "action": "write",
+            "object": "floating-ip",
+            "method": "POST",
+            "name": "/floatingips",
+            "desc": "Creates a floating IP, and, if you specify port information, associates the floating IP with an internal port."
+        },
+        {
+            "action": "read",
+            "object": "floating-ip",
+            "method": "GET",
+            "name": "/floatingips/{floatingip_id}",
+            "desc": "Shows details for a specified floating IP."
+        },
+        {
+            "action": "read",
+            "object": "meter",
+            "method": "GET",
+            "name": "/metering_labels",
+            "desc": "Lists all l3 metering labels that belong to the specified tenant."
+        },
+        {
+            "action": "read",
+            "object": "meter",
+            "method": "GET",
+            "name": "/metering_labels/{metering_label_id}",
+            "desc": "Shows informations for a specified metering label."
+        },
+        {
+            "action": "read",
+            "object": "meter",
+            "method": "GET",
+            "name": "/metering_label_rules",
+            "desc": "Lists a summary of all l3 metering label rules belonging to the specified tenant."
+        },
+        {
+            "action": "read",
+            "object": "meter",
+            "method": "GET",
+            "name": "/metering_label_rules/{metering_label_rule_id}",
+            "desc": "Shows detailed informations for a specified metering label rule."
+        },
+        {
+            "action": "read",
+            "object": "vips",
+            "method": "GET",
+            "name": "/lb/vips",
+            "desc": "Lists VIPs."
+        },
+        {
+            "action": "read",
+            "object": "vips",
+            "method": "GET",
+            "name": "/lb/vips/{vip_id}",
+            "desc": "Shows details for a specified VIP."
+        },
+        {
+            "action": "read",
+            "object": "monitor",
+            "method": "GET",
+            "name": "/lb/healthmonitors",
+            "desc": "Lists health monitors."
+        },
+        {
+            "action": "read",
+            "object": "monitor",
+            "method": "GET",
+            "name": "/lb/healthmonitors/{health_monitor_id}",
+            "desc": "Shows details for a specified health monitor."
+        },
+        {
+            "action": "read",
+            "object": "pool",
+            "method": "GET",
+            "name": "/lb/pools",
+            "desc": "Lists pools."
+        },
+        {
+            "action": "read",
+            "object": "pool",
+            "method": "GET",
+            "name": "/lb/pools/{pool_id}",
+            "desc": "Shows details for a specified pool."
+        },
+        {
+            "action": "write",
+            "object": "pool",
+            "method": "POST",
+            "name": "/lb/pools/{pool_id}/health_monitors",
+            "desc": "Associates a health monitor with a specified pool."
+        },
+        {
+            "action": "write",
+            "object": "pool",
+            "method": "DELETE",
+            "name": "/lb/pools/{pool_id}/health_monitors/{health_monitor_id}",
+            "desc": "Disassociates a specified health monitor from a pool."
+        },
+        {
+            "action": "read",
+            "object": "member",
+            "method": "GET",
+            "name": "/lb/members",
+            "desc": "Lists members."
+        },
+        {
+            "action": "read",
+            "object": "member",
+            "method": "GET",
+            "name": "/lb/members/{member_id}",
+            "desc": "Shows details for a specified member."
+        },
+        {
+            "action": "read",
+            "object": "",
+            "method": "GET",
+            "name": "/{account}",
+            "desc": "Shows details for a specified account and lists containers, sorted by name, in the account."
+        },
+        {
+            "action": "read",
+            "object": "container",
+            "method": "GET",
+            "name": "/{account}/{container}",
+            "desc": "Shows details for a specified container and lists objects, sorted by name, in the container."
+        },
+        {
+            "action": "read",
+            "object": "container",
+            "method": "GET",
+            "name": "/{account}/{container}/{object}",
+            "desc": "Downloads the object content and gets the object metadata."
+        },
+        {
+            "action": "write",
+            "object": "tenant",
+            "method": "POST",
+            "name": "/{tenant_id}/stacks",
+            "desc": "Creates a stack."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/stacks/{stack_name}",
+            "desc": "Finds the canonical URL for a specified stack."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/stacks/{stack_name}/{stack_id}",
+            "desc": "Shows details for a specified stack."
+        },
+        {
+            "action": "write",
+            "object": "tenant",
+            "method": "POST",
+            "name": "/{tenant_id}/stacks/preview",
+            "desc": "Previews a stack."
+        },
+        {
+            "action": "write",
+            "object": "tenant",
+            "method": "DELETE",
+            "name": "/{tenant_id}/stacks/{stack_name}/{stack_id}/abandon",
+            "desc": "Deletes a specified stack but leaves its resources intact, and returns data describing the stack and its resources."
+        },
+        {
+            "action": "write",
+            "object": "action",
+            "method": "POST",
+            "name": "/{tenant_id}/stacks/{stack_name}/{stack_id}/actions",
+            "desc": "Suspends a stack."
+        },
+        {
+            "action": "read",
+            "object": "resource",
+            "method": "GET",
+            "name": "/{tenant_id}/stacks/{stack_name}/resources",
+            "desc": "Finds the canonical URL for the resource list of a specified stack."
+        },
+        {
+            "action": "read",
+            "object": "resource",
+            "method": "GET",
+            "name": "/{tenant_id}/stacks/{stack_name}/{stack_id}/resources",
+            "desc": "Lists resources in a stack."
+        },
+        {
+            "action": "read",
+            "object": "resource",
+            "method": "GET",
+            "name": "/{tenant_id}/stacks/{stack_name}/{stack_id}/resources/{resource_name}",
+            "desc": "Shows data for a specified resource."
+        },
+        {
+            "action": "read",
+            "object": "resource",
+            "method": "GET",
+            "name": "/{tenant_id}/stacks/{stack_name}/{stack_id}/resources/{resource_name}/metadata",
+            "desc": "Shows metadata for a specified resource."
+        },
+        {
+            "action": "read",
+            "object": "resource",
+            "method": "GET",
+            "name": "/{tenant_id}/resource_types",
+            "desc": "Lists the supported template resource types."
+        },
+        {
+            "action": "read",
+            "object": "resource",
+            "method": "GET",
+            "name": "/{tenant_id}/resource_types/{type_name}",
+            "desc": "Shows the interface schema for a specified resource type."
+        },
+        {
+            "action": "read",
+            "object": "template",
+            "method": "GET",
+            "name": "/{tenant_id}/resource_types/{type_name}/template",
+            "desc": "Shows the template representation for a specified resource type."
+        },
+        {
+            "action": "read",
+            "object": "event",
+            "method": "GET",
+            "name": "/{tenant_id}/stacks/{stack_name}/events",
+            "desc": "Finds the canonical URL for the event list of a specified stack."
+        },
+        {
+            "action": "read",
+            "object": "event",
+            "method": "GET",
+            "name": "/{tenant_id}/stacks/{stack_name}/{stack_id}/events",
+            "desc": "Lists events for a specified stack."
+        },
+        {
+            "action": "read",
+            "object": "resource",
+            "method": "GET",
+            "name": "/{tenant_id}/stacks/{stack_name}/{stack_id}/resources/{resource_name}/events",
+            "desc": "Lists events for a specified stack resource."
+        },
+        {
+            "action": "read",
+            "object": "resource",
+            "method": "GET",
+            "name": "/{tenant_id}/stacks/{stack_name}/{stack_id}/resources/{resource_name}/events/{event_id}",
+            "desc": "Shows details for a specified event."
+        },
+        {
+            "action": "read",
+            "object": "template",
+            "method": "GET",
+            "name": "/{tenant_id}/stacks/{stack_name}/{stack_id}/template",
+            "desc": "Gets a template for a specified stack."
+        },
+        {
+            "action": "write",
+            "object": "tenant",
+            "method": "POST",
+            "name": "/{tenant_id}/validate",
+            "desc": "Validates a specified template."
+        },
+        {
+            "action": "read",
+            "object": "tenant",
+            "method": "GET",
+            "name": "/{tenant_id}/build_info",
+            "desc": "Shows build information for a heat deployment."
+        },
+        {
+            "action": "write",
+            "object": "software",
+            "method": "POST",
+            "name": "/{tenant_id}/software_configs",
+            "desc": "Creates a software configuration."
+        },
+        {
+            "action": "read",
+            "object": "software",
+            "method": "GET",
+            "name": "/{tenant_id}/software_configs/{config_id}",
+            "desc": "Shows details for a software configuration."
+        },
+        {
+            "action": "read",
+            "object": "software",
+            "method": "GET",
+            "name": "/{tenant_id}/software_deployments",
+            "desc": "Lists all available software deployments."
+        },
+        {
+            "action": "read",
+            "object": "software",
+            "method": "GET",
+            "name": "/{tenant_id}/software_deployments/metadata/{server_id}",
+            "desc": "Shows the deployment configuration metadata for a specified server."
+        },
+        {
+            "action": "read",
+            "object": "software",
+            "method": "GET",
+            "name": "/{tenant_id}/software_deployments/{deployment_id}",
+            "desc": "Shows details for a specified software deployment."
+        },
+        {
+            "action": "read",
+            "object": "alarm",
+            "method": "GET",
+            "name": "/alarms",
+            "desc": "Lists alarms, based on the specified query."
+        },
+        {
+            "action": "read",
+            "object": "alarm",
+            "method": "GET",
+            "name": "/alarms/{alarm_id}",
+            "desc": "Shows information for a specified alarm."
+        },
+        {
+            "action": "put",
+            "object": "alarm",
+            "method": "PUT",
+            "name": "/alarms/{alarm_id}/state",
+            "desc": "Sets the state of a specified alarm."
+        },
+        {
+            "action": "read",
+            "object": "alarm",
+            "method": "GET",
+            "name": "/alarms/{alarm_id}/history",
+            "desc": "Assembles the history for a specified alarm."
+        },
+        {
+            "action": "read",
+            "object": "meter",
+            "method": "GET",
+            "name": "/meters",
+            "desc": "Lists meters, based on the data recorded so far."
+        },
+        {
+            "action": "read",
+            "object": "meter",
+            "method": "GET",
+            "name": "/meters/{meter_name}",
+            "desc": "Gets samples for a specified meter."
+        },
+        {
+            "action": "read",
+            "object": "meter",
+            "method": "GET",
+            "name": "/meters/{meter_name}/statistics",
+            "desc": "Computes the statistics of the samples in a specified time range."
+        },
+        {
+            "action": "read",
+            "object": "resource",
+            "method": "GET",
+            "name": "/resources",
+            "desc": "Lists definitions for all resources."
+        },
+        {
+            "action": "read",
+            "object": "resource",
+            "method": "GET",
+            "name": "/resources/{resource_id}",
+            "desc": "Gets details for a specified resource."
+        },
+        {
+            "action": "write",
+            "desc": "set a token.",
+            "object": "token",
+            "method": "POST",
+            "name": "/tokens"
+        }
+    ], 
+    "actions": [
+        "read", 
+        "put", 
+        "trace", 
+        "write", 
+        "head", 
+        "patch", 
+        "options", 
+        "connect"
+    ]
+}
