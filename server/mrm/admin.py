@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from mrm.models import PdP
-from mrm.models import PaP
+from server.mrm.models import PdP
+from server.mrm.models import PaP
 
 
 admin.site.register(PdP)

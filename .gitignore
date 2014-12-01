@@ -103,3 +103,6 @@ ruan.note
 
 ## Bower dependencies
 vendor
+
+## Backup director
+.bak/
