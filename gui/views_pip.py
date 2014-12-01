@@ -20,7 +20,7 @@ def projects(request, project_uuid=None):
         for key in ("name", "description", "enabled", "domain"):
             if key not in data.keys():
                 return HttpResponse(json.dumps({"projects": list(pip.get_tenants(uuid=project_uuid))}))
-        pip.add_tenant(data)
+        pip.add_tenant(tenant=data, user=request.session['user_id'])
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pip.del_tenant(project_uuid)
     return HttpResponse(json.dumps({"projects": list(pip.get_tenants(uuid=project_uuid))}))

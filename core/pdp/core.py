@@ -71,13 +71,14 @@ class IntraExtensions:
         return 'KO'
 
     def authz_for_tenant(self, tenant_uuid, sub, obj, act):
-        if tenant_uuid in self.__installed_intra_extensions.keys():
-            if self.__installed_intra_extensions[tenant_uuid].authz(sub, obj, act) == 'OK':
-                return 'OK'
+        for uuid in self.__installed_intra_extensions.keys():
+            if self.__installed_intra_extensions[uuid].get_tenant_uuid() == tenant_uuid:
+                if self.__installed_intra_extensions[uuid].authz(sub, obj, act) == 'OK':
+                    return 'OK'
+                else:
+                    return 'KO'
             else:
-                return 'KO'
-        else:
-            return 'NoExtension'
+                return 'NoExtension'
 
     def admin(self, sub, obj, act):
         for _intra_extension in self.__installed_intra_extensions.values():
@@ -103,7 +104,9 @@ class IntraExtensions:
         self.__installed_intra_extensions[intra_extension.get_uuid()] = intra_extension
 
     def delete_intra_extension(self, intra_extension_uuid):
-        self.__installed_intra_extensions.pop(intra_extension_uuid)
+        if intra_extension_uuid not in self.__installed_intra_extensions.keys():
+            return "Error {} not found in installed intra_extensions".format(intra_extension_uuid)
+        return self.__installed_intra_extensions.pop(intra_extension_uuid)
 
     def get_intra_extensions_from_db(self):  # TODO test
         return self.__syncer.get_intra_extensions_from_db()
@@ -206,9 +209,11 @@ def get_tenant_intra_extension_mapping():
 
 """
 def pdp_authz(sub, obj, act, requesting_tenant_uuid=None, requested_tenant_uuid=None):
+    requesting_intra_extension_uuid = None
+    requested_intra_extension_uuid = None
     if requesting_tenant_uuid and requested_tenant_uuid:
         if requesting_tenant_uuid == requested_tenant_uuid:
-            return intra_extensions.authz(sub, obj, act)
+            return intra_extensions.authz_for_tenant(requesting_tenant_uuid, sub, obj, act)
         else:
             mapping_list = tenant_intra_extension_mapping.list_mappings()
             for mapping in mapping_list:

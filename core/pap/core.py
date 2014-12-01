@@ -15,7 +15,6 @@ sys_logger = get_sys_logger()
 
 def translate_uuid(function):
     def wrapped(*args, **kwargs):
-        print(args, kwargs)
         if "user_id" in kwargs:
             try:
                 user = get_pip().get_subjects("admin", kwargs["user_id"]).next()
@@ -112,7 +111,53 @@ class PAP:
         if self.super_extension.admin(user_id, "intra_extension", "create") == "OK":
             if extension_setting_name:
                 extension_setting_dir = self.policies[extension_setting_name]["dir"]
-            return self.intra_extensions.install_intra_extension_from_json(extension_setting_dir, name=name)
+            intra_ext_uuid = self.intra_extensions.install_intra_extension_from_json(extension_setting_dir, name=name)
+            #Add the real UUID of admin in admin extension
+            self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_subject(self.__admin_uuid)
+            self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_subject_assignment(
+                "role", self.__admin_uuid, "admin"
+            )
+            #Change "__uuid_of_admin__" into the real UUID od admin
+            str_lookup = "__uuid_of_admin__"
+            #Modify subjects
+            for subject in self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_subjects():
+                if subject == str_lookup:
+                    self.intra_extensions[intra_ext_uuid].intra_extension_authz.add_subject(self.__admin_uuid)
+                    break
+            #Modify subject assignments
+            for cat in self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_subject_categories():
+                assignments = dict(self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_subject_assignments(cat))
+                for key in assignments:
+                    if str_lookup == key:
+                        for value in assignments[str_lookup]:
+                            print self.intra_extensions[intra_ext_uuid].intra_extension_authz.add_subject_assignment(
+                                cat,
+                                self.__admin_uuid,
+                                value
+                            )
+                            print self.intra_extensions[intra_ext_uuid].intra_extension_authz.del_subject_assignment(
+                                cat,
+                                str_lookup,
+                                value
+                            )
+            #Modify object assignments
+            for cat in self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_object_categories():
+                assignments = dict(self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_object_assignments(cat))
+                for key in assignments:
+                    if str_lookup == key:
+                        for value in assignments[str_lookup]:
+                            print self.intra_extensions[intra_ext_uuid].intra_extension_authz.add_object_assignment(
+                                cat,
+                                self.__admin_uuid,
+                                value
+                            )
+                            print self.intra_extensions[intra_ext_uuid].intra_extension_authz.del_object_assignment(
+                                cat,
+                                str_lookup,
+                                value
+                            )
+            self.intra_extensions[intra_ext_uuid].intra_extension_authz.del_subject(str_lookup)
+            return intra_ext_uuid
 
     @translate_uuid
     def list_mappings(self, user_id):
@@ -136,8 +181,8 @@ class PAP:
 
     @translate_uuid
     def delete_intra_extension(self, user_id, intra_extension_uuid):
-        if self.super_extension.admin(user_id, "intra_extension", "create") == "OK":
-            self.intra_extensions.delete_intra_extension(intra_extension_uuid)
+        if self.super_extension.admin(user_id, "intra_extension", "destroy") == "OK":
+            return self.intra_extensions.delete_intra_extension(intra_extension_uuid)
 
     ##########################################
     # Specific functions for Keystone and Nova
@@ -223,10 +268,14 @@ class PAP:
         """
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "write") == "OK":
+                tenant = self.intra_extensions[extension_uuid].get_tenant_uuid()
+                if not tenant:
+                    return
                 object_id = get_pip().add_object(
                     name=object["name"],
                     image_name=object["image_name"],
-                    flavor_name=object["flavor_name"]
+                    flavor_name=object["flavor_name"],
+                    tenant=tenant
                 )
                 if object_id:
                     self.intra_extensions[extension_uuid].intra_extension_authz.add_object(object_id)
@@ -235,7 +284,10 @@ class PAP:
     def del_object(self, extension_uuid, user_uuid, object_id):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "write") == "OK":
-                get_pip().del_object(object_id)
+                tenant = self.intra_extensions[extension_uuid].get_tenant_uuid()
+                if not tenant:
+                    return
+                get_pip().del_object(object_id, tenant=tenant)
                 self.intra_extensions[extension_uuid].intra_extension_authz.del_object(object_id)
                 #TODO need to check if the subject is not in other tables like assignment
 
@@ -349,10 +401,16 @@ class PAP:
                     category_id, object_id, category_value
                 )
 
+    def get_meta_rules(self, extension_uuid, user_uuid):
+        if extension_uuid in self.intra_extensions.keys():
+            if self.intra_extensions[extension_uuid].admin(user_uuid, "rules", "read") == "OK":
+                return self.intra_extensions[extension_uuid].intra_extension_authz.get_meta_rules()
+        return dict()
+
     def get_rules(self, extension_uuid, user_uuid):
         if extension_uuid in self.intra_extensions.keys():
             if self.intra_extensions[extension_uuid].admin(user_uuid, "rules", "read") == "OK":
-                return self.intra_extensions[extension_uuid].intra_extension_authz.get_rules()
+                return self.intra_extensions[extension_uuid].intra_extension_authz.get_rules(full=True)
         return dict()
 
     def add_rule(self, extension_uuid, user_uuid, sub_cat_value, obj_cat_value):

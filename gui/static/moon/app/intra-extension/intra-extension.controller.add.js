@@ -10,9 +10,9 @@
 		.module('moon')
 			.controller('IntraExtensionAddController', IntraExtensionAddController);
 	
-	IntraExtensionAddController.$inject = ['$scope', '$translate', 'alertService', 'intraExtensionService'];
+	IntraExtensionAddController.$inject = ['$scope', '$translate', 'alertService', 'formService', 'intraExtensionService'];
 	
-	function IntraExtensionAddController($scope, $translate, alertService, intraExtensionService) {
+	function IntraExtensionAddController($scope, $translate, alertService, formService, intraExtensionService) {
 		
 		var add = this;
 		
@@ -49,22 +49,10 @@
                 
         function createIntraExtension(intraExtension) {
         	
-        	if(add.form.$invalid || add.selectedPolicy == null) {
-        	
-	        	if(add.form.name.$pristine && add.form.name.$invalid) {
-	    			
-	        		add.form.name.$dirty = true;
-	        		add.form.name.$setValidity('required', false);
-	    			
-	    		} 
-	        	
-	        	if(add.form.policy.$pristine && (add.form.policy.$invalid || add.selectedPolicy == null)) {
-	    			
-	        		add.form.policy.$dirty = true;
-	        		add.form.policy.$setValidity('required', false);
-	    			
-	    		}
-        	
+        	if(formService.isInvalid(add.form)) {
+        		
+        		formService.checkFieldsValidity(add.form);
+        	        	
         	} else {
         	        		        		
         		intraExtensionService.data.intraExtension.create({}, { name: intraExtension.name, policymodel: $scope.add.selectedPolicy }, createSuccess, createError);

@@ -4,12 +4,37 @@ from django.contrib.auth.decorators import login_required
 import json
 from django.http import HttpResponse
 from moon.core.pap import get_pap
+from moon.core.pip import get_pip
 from moon.gui.views import save_auth
+from moon import settings
 import re
 
 
 logger = logging.getLogger("moon.django")
 # LOGS = get_log_manager()
+
+
+def catch_error(function):
+    def wrapped(*args, **kwargs):
+        try:
+            result = function(*args, **kwargs)
+            return result
+        except:
+            import traceback
+            stacktrace = traceback.format_exc()
+            print(stacktrace)
+            if getattr(settings, "DEBUG"):
+                return send_error(
+                    code=500,
+                    message="Error in {} ({})".format(function.__name__, stacktrace.splitlines()[-1]),
+                    stacktrace=stacktrace
+                )
+            else:
+                return send_error(
+                    code=500,
+                    message="Error in {} ({})".format(function.__name__, stacktrace.splitlines()[-1]),
+                )
+    return wrapped
 
 
 def filter_input(data):
@@ -19,14 +44,30 @@ def filter_input(data):
     return data
 
 
-def send_json(data):
+def send_json(data, code=200):
     try:
         # print(pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id']))
-        return HttpResponse(json.dumps(data))
+        # print("send_json", data)
+        for key in data.keys():
+            if data[key] in (str, unicode):
+                if "<!DOCTYPE html>" in data[key]:
+                    print("\033[41mAn error occured\033[m")
+                    print(data[key])
+        return HttpResponse(json.dumps(data), status=code)
     except:
         import traceback
         print(traceback.print_exc())
-        return HttpResponse(json.dumps({}))
+        return HttpResponse(json.dumps({}), status=500)
+
+
+def send_error(code=500, message="", stacktrace=""):
+    return send_json(
+        {
+            "code": code,
+            "message": message,
+            "stacktrace": stacktrace
+        },
+        code=code)
 
 ##########################################################
 # Functions for getting information about intra-extensions
@@ -36,6 +77,7 @@ def send_json(data):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def intra_extensions(request, uuid=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
@@ -50,7 +92,9 @@ def intra_extensions(request, uuid=None):
                     pap.get_intra_extensions(user_id=request.session['user_id'])[uuid].get_data()
             })
     elif request.META['REQUEST_METHOD'] == "DELETE":
-        pap.delete_intra_extension(user_id=request.session['user_id'], intra_extension_uuid=uuid)
+        result = pap.delete_intra_extension(user_id=request.session['user_id'], intra_extension_uuid=uuid)
+        if result is dict and "error" in result:
+            return send_error(code=500, message=result)
     elif uuid:
         extension = pap.get_intra_extensions(user_id=request.session['user_id'])[uuid]
         return send_json({"intra_extensions": extension.get_data()})
@@ -62,6 +106,7 @@ def intra_extensions(request, uuid=None):
 
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def tenant(request, uuid=None):
     pap = get_pap()
     extension = pap.get_intra_extensions()[uuid]
@@ -70,6 +115,7 @@ def tenant(request, uuid=None):
 
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def policies(request):
     pap = get_pap()
     return send_json({"policies": pap.get_policies()})
@@ -83,6 +129,7 @@ def policies(request):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def subjects(request, uuid=None, subject_id=None):
     """
     Retrieve information about subjects from Moon server
@@ -91,13 +138,14 @@ def subjects(request, uuid=None, subject_id=None):
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
         if "name" in data and "password" in data:
-            uuid = pap.add_subject(
+            subject_uuid = pap.add_subject(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
                 subject=data)
-            return send_json({"subjects": list(
-                pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id'])[uuid]
-            )})
+            if subject_uuid in pap.get_subjects(extension_uuid=uuid, user_uuid=request.session['user_id']):
+                return send_json({"subjects": (subject_uuid, )})
+            else:
+                return send_json({"subjects": list(), "error": subject_uuid + " not found in Moon Database."})
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_subject(
             extension_uuid=uuid,
@@ -116,6 +164,7 @@ def subjects(request, uuid=None, subject_id=None):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def objects(request, uuid=None, object_id=None):
     """
     Retrieve information about objects from Moon server
@@ -123,17 +172,22 @@ def objects(request, uuid=None, object_id=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
-        if "object" in data:
-            uuid = pap.add_object(
+        if "name" in data and "image_name" in data and "flavor_name" in data:
+            object_uuid = pap.add_object(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
-                object=data["object"])
-            if uuid:
-                return send_json({
-                    "objects": pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id'])[uuid]
-                })
+                object=data)
+            if object_uuid:
+                if object_uuid in pap.get_objects(extension_uuid=uuid, user_uuid=request.session['user_id']):
+                    return send_json({
+                        "objects": (object_uuid, )
+                    })
+                else:
+                    return send_json({"objects": list(), "error": object_uuid + " not found in Moon Database."})
             else:
-                return send_json({"objects": list()})
+                return send_json({"objects": list(), "error": "Error in creating {}.".format(data["object"])})
+        else:
+            return send_error(code=500, message="Data in body are inconsistent")
     elif request.META['REQUEST_METHOD'] == "DELETE":
         pap.del_object(
             extension_uuid=uuid,
@@ -152,12 +206,13 @@ def objects(request, uuid=None, object_id=None):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def subject_categories(request, uuid=None, category_id=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
         if "category_id" in data:
-            uuid = pap.add_subject_category(
+            pap.add_subject_category(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
                 category_id=filter_input(data["category_id"]))
@@ -178,6 +233,7 @@ def subject_categories(request, uuid=None, category_id=None):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def object_categories(request, uuid=None, category_id=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
@@ -205,6 +261,7 @@ def object_categories(request, uuid=None, category_id=None):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def subject_category_values(request, uuid=None, category_id=None, value=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
@@ -240,6 +297,7 @@ def subject_category_values(request, uuid=None, category_id=None, value=None):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def object_category_values(request, uuid=None, category_id=None, value=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
@@ -275,7 +333,8 @@ def object_category_values(request, uuid=None, category_id=None, value=None):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
-def subject_assignments(request, uuid=None, category_id=None, subject_id=None, value=None):
+@catch_error
+def subject_assignments(request, uuid=None, subject_id=None, category_id=None, value=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
@@ -287,12 +346,14 @@ def subject_assignments(request, uuid=None, category_id=None, subject_id=None, v
                 subject_id=filter_input(data["subject_id"]),
                 category_value=filter_input(data["value"]))
     elif request.META['REQUEST_METHOD'] == "DELETE":
-        pap.del_subject_assignment(
-            extension_uuid=uuid,
-            user_uuid=request.session['user_id'],
-            category_id=filter_input(category_id),
-            subject_id=filter_input(subject_id),
-            category_value=filter_input(value))
+        # data = json.loads(request.read())
+        if category_id and subject_id and value:
+            pap.del_subject_assignment(
+                extension_uuid=uuid,
+                user_uuid=request.session['user_id'],
+                category_id=filter_input(category_id),
+                subject_id=filter_input(subject_id),
+                category_value=filter_input(value))
     results = dict()
     for cat in pap.get_subject_categories(extension_uuid=uuid, user_uuid=request.session['user_id']):
         results[cat] = pap.get_subject_assignments(
@@ -306,7 +367,8 @@ def subject_assignments(request, uuid=None, category_id=None, subject_id=None, v
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
-def object_assignments(request, uuid=None, category_id=None, object_id=None, value=None):
+@catch_error
+def object_assignments(request, uuid=None, object_id=None, category_id=None, value=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
@@ -318,12 +380,13 @@ def object_assignments(request, uuid=None, category_id=None, object_id=None, val
                 object_id=filter_input(data["object_id"]),
                 category_value=filter_input(data["value"]))
     elif request.META['REQUEST_METHOD'] == "DELETE":
-        pap.del_object_assignment(
-            extension_uuid=uuid,
-            user_uuid=request.session['user_id'],
-            category_id=filter_input(category_id),
-            object_id=filter_input(object_id),
-            category_value=filter_input(value))
+        if category_id and object_id and value:
+            pap.del_object_assignment(
+                extension_uuid=uuid,
+                user_uuid=request.session['user_id'],
+                category_id=filter_input(category_id),
+                object_id=filter_input(object_id),
+                category_value=filter_input(value))
     results = dict()
     for cat in pap.get_object_categories(extension_uuid=uuid, user_uuid=request.session['user_id']):
         results[cat] = pap.get_object_assignments(
@@ -342,16 +405,31 @@ def object_assignments(request, uuid=None, category_id=None, object_id=None, val
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
+def meta_rules(request, uuid=None):
+    pap = get_pap()
+    return send_json(
+        {"meta_rules": pap.get_meta_rules(extension_uuid=uuid, user_uuid=request.session['user_id'])}
+    )
+
+
+@csrf_exempt
+@login_required(login_url='/auth/login/')
+@save_auth
+@catch_error
 def rules(request, uuid=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
         if "sub_cat_value" in data and "obj_cat_value" in data:
-            pap.add_rule(
+            rule = pap.add_rule(
                 extension_uuid=uuid,
                 user_uuid=request.session['user_id'],
                 sub_cat_value=filter_input(data["sub_cat_value"]),
                 obj_cat_value=filter_input(data["obj_cat_value"]))
+            return send_json(
+                {"rules": rule}
+            )
     elif request.META['REQUEST_METHOD'] == "DELETE":
         data = json.loads(request.read())
         if "sub_cat_value" in data and "obj_cat_value" in data:
@@ -376,6 +454,7 @@ def rules(request, uuid=None):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def inter_extensions(request, uuid=None):
     pap = get_pap()
     if request.META['REQUEST_METHOD'] == "POST":
@@ -438,19 +517,25 @@ def inter_extensions(request, uuid=None):
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
+@catch_error
 def super_extensions(request, tenant_uuid=None, intra_extension_uuid=None):
     pap = get_pap()
+    result = ""
     if request.META['REQUEST_METHOD'] == "POST":
         data = json.loads(request.read())
-        pap.create_mapping(
+        result = pap.create_mapping(
             user_id=request.session['user_id'],
             tenant_uuid=data["tenant_uuid"],
             intra_extension_uuid=data["intra_extension_uuid"])
+        if "error" not in result:
+            result = ""
     elif request.META['REQUEST_METHOD'] == "DELETE":
-        pap.destroy_mapping(
+        print("#####################################################")
+        print("destroy_mapping", pap.destroy_mapping(
             user_id=request.session['user_id'],
             tenant_uuid=filter_input(tenant_uuid),
-            intra_extension_uuid=filter_input(intra_extension_uuid))
-    return send_json({"super_extensions": list(
-        pap.list_mappings(user_id=request.session['user_id'])
-    )})
+            intra_extension_uuid=filter_input(intra_extension_uuid)))
+    return send_json({
+        "super_extensions": list(pap.list_mappings(user_id=request.session['user_id'])),
+        "error": result
+    })

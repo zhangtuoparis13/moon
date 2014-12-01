@@ -34,9 +34,16 @@
 		            
 		                <div class="col-sm-6">
 		                
-		                    <input name="image" type="text" class="form-control" required data-ng-model="add.object.image" required />
-		                                        
-		                    <div class="help-block" ng-show="add.form.image.$dirty && add.form.image.$invalid">
+		                    <ui-select ng-model="add.object.image" name="image" required> 
+		                    	<ui-select-match placeholder="(None)" ng-bind="$select.selected.name"></ui-select-match>
+		                    	<ui-select-choices repeat="image in add.images">
+		                    		<div ng-bind="image.name" ng-value="image"></div>
+	             				</ui-select-choices>
+		                    </ui-select>
+		                    
+		                    <img ng-if="add.imagesLoading" src="static/moon/img/ajax-loader.gif" />
+		                    		                    
+		                    <div class="help-block" ng-show="add.form.image.$dirty && (add.form.image.$invalid || !add.object.image)">
 		                    	<small class="error" ng-show="add.form.image.$error.required" translate="moon.intraExtension.configure.object.add.check.image.required">Image is required</small>
 		                    </div>
 		                    
@@ -50,9 +57,16 @@
 		                
 		                <div class="col-sm-6">
 		                
-		                    <input name="flavor" class="form-control" type="text" data-ng-model="add.object.flavor" required />
+		                    <ui-select ng-model="add.object.flavor" name="flavor" required> 
+		                    	<ui-select-match placeholder="(None)" ng-bind="$select.selected.name"></ui-select-match>
+		                    	<ui-select-choices repeat="flavor in add.flavors">
+		                    		<div ng-bind="flavor.name" ng-value="flavor"></div>
+	             				</ui-select-choices>
+		                    </ui-select>
 		                    
-		                    <div class="help-block" ng-show="add.form.flavor.$dirty && add.form.flavor.$invalid">
+		                    <img ng-if="add.flavorsLoading" src="static/moon/img/ajax-loader.gif" />
+		                    		                    
+		                    <div class="help-block" ng-show="add.form.flavor.$dirty && (add.form.flavor.$invalid || !add.object.flavor)">
 		                    	<small class="error" ng-show="add.form.flavor.$error.required" translate="moon.intraExtension.configure.object.add.check.flavor.required">Flavor is required</small>
 		                    </div>
 		                    
@@ -69,7 +83,7 @@
 					<a href="" ng-click="$hide()" class="btn btn-default">
 		                <span translate="moon.intraExtension.configure.object.add.action.cancel">Cancel</span>
 					</a>					
-					<a href="" ng-click="add.create(add.intraExtension, add.object)" class="btn btn-warning">
+					<a href="" ng-click="add.create()" class="btn btn-warning">
 		            	<span class="glyphicon glyphicon-plus"></span>
 		                <span translate="moon.intraExtension.configure.object.add.action.add">Add Subject</span>
 					</a>

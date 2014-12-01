@@ -8,21 +8,14 @@
 	
 	angular
 		.module('moon')
-				.factory('alertService', alertService)
+				.factory('alertService', alertService);
 	
-	alertService.$inject = ['$rootScope', '$timeout'];
+	alertService.$inject = ['$rootScope', '$timeout', 'toaster'];
 	
-	function alertService($rootScope, $timeout) {
-				
-        $rootScope.alerts = [];
-		
+	function alertService($rootScope, $timeout, toaster) {
+						
 		var service = {
-				
-				addAlert: addAlert,
-			
-				closeAlert: closeAlert,
-				closeAlertIdx: closeAlertIdx,
-			
+							
 				alertError: alertError,
 				alertSuccess: alertSuccess,
 				alertInfo: alertInfo				
@@ -30,45 +23,17 @@
 			};
         
         return service;
-                
-        function closeAlert(alert) {
-            return this.closeAlertIdx($rootScope.alerts.indexOf(alert));
-        };
-        
-        function closeAlertIdx(index) {
-            return $rootScope.alerts.splice(index, 1);
-        };
-        
-        function addAlert(type, msg, timeout) {
-        	
-    		var _self = this;
-			
-	        $rootScope.alerts.push({
-	            type: type,
-	            msg: msg,
-	            close: function() {
-	                return _self.closeAlert(this);
-	            }
-	        });
-	
-	        if (timeout) {
-	            $timeout(function(){
-	            	_self.closeAlert(this);
-	            }, timeout);
-	        }
-	        
-	    };
-        
+                        
         function alertError(msg){
-        	this.addAlert("danger", msg, 7000);
+        	toaster.pop('error', null, msg, 5000);
         };
         
         function alertSuccess(msg){
-        	this.addAlert("success", msg, 7000);
+        	toaster.pop('success', null, msg, 5000);
         };
         
         function alertInfo(msg){
-        	this.addAlert("info", msg, 7000);
+        	toaster.pop('note', null, msg, 5000);
         };
 		
 	};

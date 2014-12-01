@@ -1,6 +1,8 @@
 {
     "subjects": [
+        "__uuid_of_admin__"
     ],
     "objects": [
+        "servers"
     ]
 }

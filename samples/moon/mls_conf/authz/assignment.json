@@ -1,10 +1,12 @@
 {
     "subject_category_assignments": {
         "subject_security_level":{
+            "__uuid_of_admin__": ["high"]
         }
     },
     "object_category_assignments": {
         "object_security_level": {
+            "servers": ["low"]
         },
         "action": {
         }

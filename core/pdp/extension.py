@@ -302,10 +302,14 @@ class Extension:
             return "[ERROR] Add Subject Category: Subject Category Exists"
         else:
             self.get_subject_categories().append(category_id)
+            self.configuration.get_subject_category_values()[category_id] = list()
+            self.assignment.get_subject_category_assignments()[category_id] = dict()
             return self.get_subject_categories()
 
     def del_subject_category(self, category_id):
         if category_id in self.get_subject_categories():
+            self.configuration.get_subject_category_values().pop(category_id)
+            self.assignment.get_subject_category_assignments().pop(category_id)
             self.get_subject_categories().remove(category_id)
             return self.get_subject_categories()
         else:
@@ -319,10 +323,14 @@ class Extension:
             return "[ERROR] Add Object Category: Object Category Exists"
         else:
             self.get_object_categories().append(category_id)
+            self.configuration.get_object_category_values()[category_id] = list()
+            self.assignment.get_object_category_assignments()[category_id] = dict()
             return self.get_object_categories()
 
     def del_object_category(self, category_id):
         if category_id in self.get_object_categories():
+            self.configuration.get_object_category_values().pop(category_id)
+            self.assignment.get_object_category_assignments().pop(category_id)
             self.get_object_categories().remove(category_id)
             return self.get_object_categories()
         else:
@@ -367,8 +375,30 @@ class Extension:
         else:
             return "[ERROR] Del Object Category Value: Object Category Value Unknown"
 
-    def get_rules(self):
-        return self.configuration.get_rules()
+    def get_meta_rules(self):
+        return self.metadata.get_meta_rule()
+
+    def _build_rule_from_list(self, relation, rule):
+        rule = list(rule)
+        _rule = dict()
+        _rule["sub_cat_value"] = dict()
+        _rule["obj_cat_value"] = dict()
+        if relation in self.metadata.get_meta_rule()["sub_meta_rules"]:
+            _rule["sub_cat_value"][relation] = dict()
+            _rule["obj_cat_value"][relation] = dict()
+            for s_category in self.metadata.get_meta_rule()["sub_meta_rules"][relation]["subject_categories"]:
+                _rule["sub_cat_value"][relation][s_category] = rule.pop(0)
+            for o_category in self.metadata.get_meta_rule()["sub_meta_rules"][relation]["object_categories"]:
+                _rule["obj_cat_value"][relation][o_category] = rule.pop(0)
+        return _rule
+
+    def get_rules(self, full=False):
+        if not full:
+            return self.configuration.get_rules()
+        rules = dict()
+        for key in self.configuration.get_rules():
+            rules[key] = map(lambda x: self._build_rule_from_list(key, x), self.configuration.get_rules()[key])
+        return rules
 
     def add_rule(self, sub_cat_value_dict, obj_cat_value_dict):
         for _relation in self.metadata.get_meta_rule()["sub_meta_rules"]:
@@ -380,6 +410,29 @@ class Extension:
                 else:
                     return "[Error] Add Rule: Subject Category Value Unknown"
 
+            #BUG: when adding a new category in rules despite it was previously adding
+            # data = {
+            #     "sub_cat_value":
+            #         {"relation_super":
+            #              {"subject_security_level": "high", "AMH_CAT": "AMH_VAL"}
+            #         },
+            #     "obj_cat_value":
+            #         {"relation_super":
+            #              {"object_security_level": "medium"}
+            #         }
+            # }
+            # traceback = """
+            # Traceback (most recent call last):
+            #   File "/moon/gui/views_json.py", line 20, in wrapped
+            #     result = function(*args, **kwargs)
+            #   File "/moon/gui/views_json.py", line 429, in rules
+            #     obj_cat_value=filter_input(data["obj_cat_value"]))
+            #   File "/usr/local/lib/python2.7/dist-packages/moon/core/pap/core.py", line 380, in add_rule
+            #     obj_cat_value)
+            #   File "/usr/local/lib/python2.7/dist-packages/moon/core/pdp/extension.py", line 414, in add_rule
+            #     if obj_cat_value_dict[_relation][sub_object_category] \
+            # KeyError: u'action'
+            # """
             for sub_object_category in self.metadata.get_meta_rule()["sub_meta_rules"][_relation]["object_categories"]:
                 if obj_cat_value_dict[_relation][sub_object_category] \
                         in self.configuration.get_object_category_values()[sub_object_category]:
@@ -391,6 +444,12 @@ class Extension:
                 return "[Error] Add Rule: Rule Exists"
             else:
                 self.configuration.get_rules()[_relation].append(_sub_rule)
+                return {
+                    sub_cat_value_dict.keys()[0]: ({
+                        "sub_cat_value": copy.deepcopy(sub_cat_value_dict),
+                        "obj_cat_value": copy.deepcopy(obj_cat_value_dict)
+                    }, )
+                }
         return self.configuration.get_rules()
 
     def del_rule(self, sub_cat_value_dict, obj_cat_value_dict):

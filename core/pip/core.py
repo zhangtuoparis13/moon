@@ -28,8 +28,9 @@ class PIP:
             ncreds = get_nova_creds()
             self.nclient = nova_client.Client("1.1", **ncreds)
 
-    def set_creds_for_tenant(self, tenant_name="admin", tenant_uuid=None):
-        tenant = self.get_tenants(name=tenant_name, uuid=tenant_uuid).next()
+    def set_creds_for_tenant(self, tenant=None, tenant_name="admin", tenant_uuid=None):
+        if not tenant:
+            tenant = self.get_tenants(name=tenant_name, uuid=tenant_uuid).next()
         from keystoneclient.v3 import client as keystone_client
         kcreds = get_keystone_creds()
         #WORKAROUND: if in version 2.0, Keystone connection doesn't work
@@ -117,6 +118,19 @@ class PIP:
     def get_objects(self, tenant=None, object_uuid=None):
         s = dict()
         #TODO: need to send the token in parameter of all functions in PIP
+        print("pip.get_objects tenant={}, object_uuid={}".format(tenant, object_uuid))
+        if tenant:
+            try:
+                __tenant = self.get_tenants(uuid=tenant).next()
+                self.set_creds_for_tenant(tenant=__tenant)
+            except StopIteration:
+                __tenant = self.get_tenants(name=tenant).next()
+                self.set_creds_for_tenant(tenant=__tenant)
+            # if __tenant:
+            #     print("\ttenant defined {}".format(__tenant))
+            #     self.set_creds_for_tenant(tenant_name=__tenant.next()["name"])
+            # else:
+            #     self.set_creds_for_tenant(tenant_name=tenant)
         for server in self.nclient.servers.list():
             o = dict()
             o["name"] = server.name
@@ -136,7 +150,13 @@ class PIP:
             elif not object_uuid:
                 yield o
 
-    def add_object(self, name, image_name="Cirros3.2", flavor_name="m1.nano"):
+    def add_object(self, name, tenant, image_name="Cirros3.2", flavor_name="m1.nano"):
+        if tenant:
+            __tenant = self.get_tenants(uuid=tenant)
+            if __tenant:
+                self.set_creds_for_tenant(tenant_name=__tenant.next()["name"])
+            else:
+                self.set_creds_for_tenant(tenant_name=tenant)
         import time
         image = self.nclient.images.find(name=image_name)
         flavor = self.nclient.flavors.find(name=flavor_name)
@@ -152,7 +172,13 @@ class PIP:
                 return
         return instance.id
 
-    def del_object(self, uuid):
+    def del_object(self, uuid, tenant):
+        if tenant:
+            __tenant = self.get_tenants(uuid=tenant)
+            if __tenant:
+                self.set_creds_for_tenant(tenant_name=__tenant.next()["name"])
+            else:
+                self.set_creds_for_tenant(tenant_name=tenant)
         instance = self.nclient.servers.find(id=uuid)
         instance.delete()
         cpt = 0
@@ -347,7 +373,7 @@ class PIP:
                 continue
             yield t
 
-    def add_tenant(self, tenant):
+    def add_tenant(self, tenant, user=None):
         """Add a new tenant
 
         :param tenant: dictionary describing the tenant
@@ -370,6 +396,15 @@ class PIP:
             description=tenant["description"],
             enabled=tenant["enabled"]
         )
+        roles = self.get_roles(project_uuid=tenant.id)
+        if user:
+            for _role in roles:
+                if _role["value"] in ("admin", "member", "_Member_"):
+                    self.add_users_roles_assignment(
+                        project_uuid=tenant.id,
+                        user_uuid=user,
+                        role_uuid=_role["uuid"]
+                    )
         return tenant.id
 
     def del_tenant(self, tenant_uuid):

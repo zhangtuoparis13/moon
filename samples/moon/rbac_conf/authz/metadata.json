@@ -15,10 +15,10 @@
 
     "meta_rule": {
         "sub_meta_rules": {
-            "relation_super": {
+            "permission": {
                 "subject_categories": ["role"],
                 "object_categories": ["id", "action"],
-                "relation": "relation_super"
+                "relation": "permission"
             }
         },
         "aggregation": "and_true_aggregation"

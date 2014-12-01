@@ -2,7 +2,8 @@
 	"moon": {
 	    "global": {
 	    	"applicationName": "Moon",
-	        "404": "Page not found"
+	        "404": "Page not found",
+	        "error": "A global error occurs: {{stacktrace}}"
 	    },
 	    "compatibility": {
 	    	"label": "Browsers compatibility",
@@ -14,6 +15,9 @@
 	    	"tenant": "Tenants",
 	    	"intraExtension": "Intra Extensions",
 	    	"interExtension": "Inter Extensions"
+	    },
+	    "logout": {
+	    	"title": "Logout"
 	    },
 	    "tenant": {
 	    	"title": "Tenants",
@@ -40,8 +44,8 @@
 		    		"detail": "Consult",
 		    		"delete": "Delete",
 		    		"add": "Add Tenant",
-		    		"map": "map with an Intra Extension",
-		    		"unmap": "unmap"
+		    		"map": "Map with an Intra Extension",
+		    		"unmap": "Unmap"
 		    	},
 		    	"error": "Unable to retrieve Tenants"
 	    	},
@@ -234,10 +238,8 @@
 	    			"back": "Back to Intra Extensions"
 	    		},
 	    		"subject": {
+	    			"panelTitle": "Subjects configuration",
 	    			"title": "Subjects",
-	    			"category": {
-	    				"title": "Categories"
-	    			},
 	    			"add": {
 	    				"title": "Add new Subject",
 	    				"form": {
@@ -278,13 +280,89 @@
 			    		},
 			    		"error": "Unable to delete Subject `{{subjectName}}`",
 			    		"success": "Subject `{{subjectName}}` successfully deleted"
+	    			},
+	    			"category": {
+	    				"title": "Categories",
+	    				"add": {
+		    				"title": "Add new Category",
+		    				"form": {
+			    				"name": "Name"
+							},
+							"action": {
+								"cancel": "Cancel",
+								"add": "Add Category"
+							},
+				    		"check": {
+				    			"name": {
+				    				"required": "Name is required"
+				    			}
+				    		},
+				    		"error": "Unable to add Subject Category `{{categoryName}}`",
+				    		"success": "Subject Category `{{categoryName}}` successfully added"
+		    			},
+		    			"remove": {
+		    				"title": "Delete Category",
+				    		"content": "Are you sure you want to delete `{{categoryName}}` subject category of `{{intraExtensionName}}` Intra Extension ?",
+				    		"action": {
+				    			"cancel": "Cancel",
+				    			"delete": "Delete"
+				    		},
+				    		"error": "Unable to delete Subject Category `{{categoryName}}`",
+				    		"success": "Subject Category `{{categoryName}}` successfully deleted"
+		    			}
+	    			},
+	    			"categoryValue": {
+	    				"title": "Values",
+	    				"add": {
+		    				"title": "Add new Value",
+		    				"form": {
+			    				"value": "Value"
+							},
+							"action": {
+								"cancel": "Cancel",
+								"add": "Add Value"
+							},
+				    		"check": {
+				    			"value": {
+				    				"required": "Value is required"
+				    			}
+				    		},
+				    		"error": "Unable to add Subject Category Value`{{valueName}}`",
+				    		"success": "Subject Category Value `{{valueName}}` successfully added"
+		    			},
+		    			"remove": {
+		    				"title": "Delete Value",
+				    		"content": "Are you sure you want to delete `{{valueName}}` subject category value of `{{intraExtensionName}}` Intra Extension ?",
+				    		"action": {
+				    			"cancel": "Cancel",
+				    			"delete": "Delete"
+				    		},
+				    		"error": "Unable to delete Subject Category Value `{{valueName}}`",
+				    		"success": "Subject Category Value `{{valueName}}` successfully deleted"
+		    			}
+	    			},
+	    			"assignment": {
+	    				"title": "Subject Assignments",
+	    				"action": {
+	    					"assign": "Assign",
+	    					"unassign": "Unassign"
+	    				},
+	    				"list": {
+	    					"notFound": "There is no assignments"
+						},
+						"add": {
+							"error": "Unable to assign Subject `{{subjectName}}` / Category `{{categoryName}}` / Value `{{valueName}}`",
+				    		"success": "Subject `{{subjectName}}` / Category `{{categoryName}}` / Value `{{valueName}}` assignment successfully done"
+						},
+						"remove": {
+							"error": "Unable to unassign Subject `{{subjectName}}` / Category `{{categoryName}}` / Value `{{valueName}}`",
+				    		"success": "Subject `{{subjectName}}` / Category `{{categoryName}}` / Value `{{valueName}}` unassignment successfully done"
+						}
 	    			}
 	    		},
 	    		"object": {
+	    			"panelTitle": "Objects configuration",
 	    			"title": "Objects",
-	    			"category": {
-	    				"title": "Categories"
-	    			},
 	    			"add": {
 	    				"title": "Add new Object",
 	    				"form": {
@@ -319,11 +397,140 @@
 			    		},
 			    		"error": "Unable to delete Object `{{objectName}}`",
 			    		"success": "Object `{{objectName}}` successfully deleted"
+	    			},
+	    			"category": {
+	    				"title": "Categories",
+	    				"add": {
+		    				"title": "Add new Category",
+		    				"form": {
+			    				"name": "Name"
+							},
+							"action": {
+								"cancel": "Cancel",
+								"add": "Add Category"
+							},
+				    		"check": {
+				    			"name": {
+				    				"required": "Name is required"
+				    			}
+				    		},
+				    		"error": "Unable to add Object Category `{{categoryName}}`",
+				    		"success": "Object Category `{{categoryName}}` successfully added"
+		    			},
+		    			"remove": {
+		    				"title": "Delete Category",
+				    		"content": "Are you sure you want to delete `{{categoryName}}` object category of `{{intraExtensionName}}` Intra Extension ?",
+				    		"action": {
+				    			"cancel": "Cancel",
+				    			"delete": "Delete"
+				    		},
+				    		"error": "Unable to delete Object Category `{{categoryName}}`",
+				    		"success": "Object Category `{{categoryName}}` successfully deleted"
+		    			}
+	    			},
+	    			"categoryValue": {
+	    				"title": "Values",
+	    				"add": {
+		    				"title": "Add new Value",
+		    				"form": {
+			    				"value": "Value"
+							},
+							"action": {
+								"cancel": "Cancel",
+								"add": "Add Value"
+							},
+				    		"check": {
+				    			"value": {
+				    				"required": "Value is required"
+				    			}
+				    		},
+				    		"error": "Unable to add Object Category Value`{{valueName}}`",
+				    		"success": "Object Category Value `{{valueName}}` successfully added"
+		    			},
+		    			"remove": {
+		    				"title": "Delete Value",
+				    		"content": "Are you sure you want to delete `{{valueName}}` object category value of `{{intraExtensionName}}` Intra Extension ?",
+				    		"action": {
+				    			"cancel": "Cancel",
+				    			"delete": "Delete"
+				    		},
+				    		"error": "Unable to delete Object Category Value `{{valueName}}`",
+				    		"success": "Object Category Value `{{valueName}}` successfully deleted"
+		    			}
+	    			},
+	    			"assignment": {
+	    				"title": "Object Assignments",
+	    				"action": {
+	    					"assign": "Assign",
+	    					"unassign": "Unassign"
+	    				},
+	    				"list": {
+	    					"notFound": "There is no assignments"
+						},
+						"add": {
+							"error": "Unable to assign Object `{{objectName}}` / Category `{{categoryName}}` / Value `{{valueName}}`",
+				    		"success": "Object `{{objectName}}` / Category `{{categoryName}}` / Value `{{valueName}}` assignment successfully done"
+						},
+						"remove": {
+							"error": "Unable to unassign Object `{{ObjectName}}` / Category `{{categoryName}}` / Value `{{valueName}}`",
+				    		"success": "Object `{{objectName}}` / Category `{{categoryName}}` / Value `{{valueName}}` unassignment successfully done"
+						}
 	    			}
 	    		}    		
 	    	},
 	    	"rule": {
 	    		"title": "Intra Extension `{{intraExtensionName}}` rules",
+	    		"list": {
+	    			"table": {
+		    			"subject": "Subjects",
+		    			"object": "Objects",
+		    			"notFound": "There is no Rules"
+	    			},
+	    			"action": {
+	    				"title": "Actions",
+	    				"add": "Add Rule",
+	    				"delete": "Delete Rule"
+	    			}
+	    		},
+	    		"add": {
+	    			"title": "Add new Rule",
+	    			"action": {
+	    				"create": "Create Rule",
+	    				"cancel": "Cancel"
+	    			},
+	    			"form": {
+	    				"subject": {
+	    					"subject": "Subjects",
+	    					"category": "Categories",
+	    					"categoryValue": "Values",
+	    					"action": {
+	    						"add": "Add",
+	    						"delete": "Delete"
+	    					}
+	    				},
+	    				"object": {
+	    					"object": "Objects",
+	    					"category": "Categories",
+	    					"categoryValue": "Values",
+	    					"action": {
+	    						"add": "Add",
+	    						"delete": "Delete"
+	    					}
+	    				}
+	    			},
+	    			"success": "Rule successfully created",
+	    			"error": "Unable to create Rule"
+	    		},
+	    		"delete": {
+	    			"title": "Delete Rule",
+	    			"content": "Are you sure you want to delete rule `{{ruleJson}}` of `{{intraExtensionName}}` Intra Extension ?",
+	    			"action": {
+	    				"delete": "Delete Rule",
+	    				"cancel": "Cancel"
+	    			},
+					"error": "Unable to delete Rule `{{ruleJson}}`",
+				    "success": "Rule `{{ruleJson}}` successfully deleted"
+	    		},
 	    		"action": {
 	    			"back": "Back to Intra Extensions"
 	    		}   		

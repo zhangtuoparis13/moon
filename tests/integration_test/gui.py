@@ -14,7 +14,7 @@ MOON_SERVER_IP = {
 CREDENTIALS = {
     "login": "admin",
     "password": "P4ssw0rd",
-    "Cookie": "szeflpnhfqz23t1a7l6s6t33bblf3jjw"
+    "Cookie": "z6626bjfyjabpsuhw4i3vujq6cm1pyoo"
 }
 
 
@@ -62,12 +62,77 @@ class TestAdminInterface_IntraExtension(unittest.TestCase):
         # print(auth)
         # print("----------------------------\033[m")
         self.pip = get_pip()
+        self.policies = get_url("/json/intra-extensions/policies")
+        self.assertIsInstance(self.policies, dict)
+        my_policy = self.policies["policies"].keys()[1]
+        #Create first extension
+        self.new_ext1 = get_url(
+            "/json/intra-extensions/",
+            post_data={"policymodel": my_policy, "name": "Intra_Extension Policy 1"})
+        self.assertIsInstance(self.new_ext1, dict)
+        self.new_ext1_uuid = self.new_ext1["intra_extensions"]["_id"]
+        #Create second extension
+        self.new_ext2 = get_url(
+            "/json/intra-extensions/",
+            post_data={"policymodel": my_policy, "name": "Intra_Extension Policy 2"})
+        self.assertIsInstance(self.new_ext2, dict)
+        self.new_ext2_uuid = self.new_ext2["intra_extensions"]["_id"]
+        #Get Keystone tenants
+        self.tenants = get_url("/pip/projects/")
+        self.assertIsInstance(self.tenants, dict)
+        self.tenant_admin = None
+        self.tenant_demo = None
+        for tenant in self.tenants["projects"]:
+            if tenant["name"] == "admin":
+                self.tenant_admin = tenant["uuid"]
+            if tenant["name"] == "demo":
+                self.tenant_demo = tenant["uuid"]
+        #Create mapping between extensions and tenants
+        mapping = get_url(
+            "/json/super-extensions/".format(
+                self.tenant_admin,
+                self.new_ext1_uuid),
+            post_data={
+                "tenant_uuid": self.tenant_admin,
+                "intra_extension_uuid": self.new_ext2_uuid
+            }
+        )
+        mapping = get_url(
+            "/json/super-extensions/",
+            post_data={
+                "tenant_uuid": self.tenant_demo,
+                "intra_extension_uuid": self.new_ext2_uuid
+            }
+        )
 
     def tearDown(self):
-        pass
+        get_url("/json/intra-extensions/"+self.new_ext1_uuid+"/", method="DELETE")
+        get_url("/json/intra-extensions/"+self.new_ext2_uuid+"/", method="DELETE")
+
+    def test_errors(self):
+        data = get_url("/json/intra-extensions/")
+        self.assertIsInstance(data, dict)
+        user = {
+            "name": "TestUser"+str(uuid4()),
+            'domain': "default",
+            'enabled': True,
+            'project': "admin",
+            'password': "password",
+            'description': "Test user for integration tests"
+        }
+        tenants = get_url("/pip/projects/")
+        admin_tenant = filter(lambda x: x["name"] == "admin", tenants["projects"])
+        ext = data["intra_extensions"][0]
+        # ext_data = get_url("/json/intra-extension/"+ext+"/")
+        _data = get_url("/json/intra-extensions/"+ext+"/subjects/", post_data=user)
+        self.assertIsInstance(_data, dict)
+        self.assertIn("subjects", _data)
+        self.assertIsInstance(_data["subjects"], list)
+        self.assertEqual(len(_data["subjects"]) > 0, True)
+        _data = get_url("/json/intra-extensions/"+ext+"/subjects/", post_data=user)
 
     def test_intra_extensions(self):
-number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"])
+        number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"])
         #add an intra-extension
         self.policies = get_url("/json/intra-extensions/policies")
         self.assertIsInstance(self.policies, dict)
@@ -77,7 +142,6 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
             "/json/intra-extensions/",
             post_data={"policymodel": my_policy, "name": "Intra_Extension Test"})
         self.assertIsInstance(self.new_ext1, dict)
-        print(self.new_ext1["intra_extensions"])
         self.new_ext1_uuid = self.new_ext1["intra_extensions"]["_id"]
         self.assertEqual(number_of_intra_ext+1, len(get_url("/json/intra-extensions/")["intra_extensions"]))
         data = get_url("/json/intra-extensions/")
@@ -106,10 +170,11 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
                 self.tenant_demo = tenant["uuid"]
         #Create mapping between extensions and tenants
         mapping = get_url(
-            "/json/super-extensions/tenants/{}/intra_extensions/{}".format(
-                self.tenant_admin,
-                self.new_ext1_uuid),
-            method="POST"
+            "/json/super-extensions/",
+            post_data={
+                "tenant_uuid": self.tenant_admin,
+                "intra_extension_uuid": self.new_ext1_uuid
+            }
         )
         #delete an intra-extension
         get_url("/json/intra-extensions/"+self.new_ext1_uuid+"/", method="DELETE")
@@ -139,7 +204,7 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
         data = get_url("/json/intra-extensions/")
         self.assertIsInstance(data, dict)
         user = {
-            "name": "TestUser",
+            "name": "TestUser"+str(uuid4()),
             'domain': "default",
             'enabled': True,
             'project': "admin",
@@ -194,23 +259,25 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
         policies = get_url("/json/intra-extensions/policies")
         self.assertIsInstance(policies, dict)
         my_policy = policies["policies"].keys()[0]
-        new_ext = get_url("/json/intra-extensions/", post_data={"policymodel": my_policy})
+        new_ext = get_url("/json/intra-extensions/", post_data={"policymodel": my_policy, "name": "TestGUI_IntraExtension"})
         self.assertIsInstance(new_ext, dict)
         new_ext_uuid = new_ext["intra_extensions"]["_id"]
         tenants = get_url("/pip/projects/")
         self.assertIsInstance(tenants, dict)
         tenant_admin = None
         for tenant in tenants["projects"]:
-            tenant_admin = tenant["uuid"]
-            break
+            if tenant["name"] == "admin":
+                tenant_admin = tenant["uuid"]
+                break
         mapping = get_url(
-            "/json/super-extensions/tenants/{}/intra_extensions/{}".format(
-                tenant_admin,
-                new_ext_uuid),
-            method="POST"
+            "/json/super-extensions/",
+            post_data={
+                "tenant_uuid": tenant_admin,
+                "intra_extension_uuid": new_ext_uuid
+            }
         )
         #Add a new server
-        _data = get_url("/json/intra-extensions/"+new_ext_uuid+"/objects/", post_data={"object": new_vm})
+        _data = get_url("/json/intra-extensions/"+new_ext_uuid+"/objects/", post_data=new_vm)
         self.assertIsInstance(_data, dict)
         self.assertIn("objects", _data)
         self.assertIsInstance(_data["objects"], list)
@@ -300,10 +367,17 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
         data = get_url("/json/intra-extensions/")
         self.assertIsInstance(data, dict)
         for ext in data["intra_extensions"]:
+            _data = get_url("/json/intra-extensions/"+ext+"/subject_categories/", post_data={"category_id": "my_category"})
+            self.assertIsInstance(_data, dict)
+            self.assertIn("subject_categories", _data)
+            self.assertIsInstance(_data["subject_categories"], list)
+            self.assertEqual(len(_data["subject_categories"]) > 0, True)
+            self.assertIn("my_category", _data["subject_categories"])
             _data = get_url("/json/intra-extensions/"+ext+"/subject_category_values/")
             self.assertIsInstance(_data, dict)
             self.assertIn("subject_category_values", _data)
             self.assertIsInstance(_data["subject_category_values"], dict)
+            #Adding a value in a pre-existent category
             for val in [u'high', u'medium', u'low']:
                 self.assertIn(val, _data["subject_category_values"]["subject_security_level"])
             _data = get_url("/json/intra-extensions/"+ext+"/subject_category_values/",
@@ -311,6 +385,7 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
             self.assertIsInstance(_data, dict)
             self.assertIn("subject_category_values", _data)
             self.assertIsInstance(_data["subject_category_values"], dict)
+            #Deleting a value in a pre-existent category
             for val in [u'high', u'medium', u'low', u"ultra-low1"]:
                 self.assertIn(val, _data["subject_category_values"]["subject_security_level"])
             _data = get_url("/json/intra-extensions/"+ext+"/subject_category_values/subject_security_level/ultra-low1",
@@ -321,6 +396,36 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
             for val in [u'high', u'medium', u'low']:
                 self.assertIn(val, _data["subject_category_values"]["subject_security_level"])
             self.assertNotIn(u"ultra-low1", _data["subject_category_values"]["subject_security_level"])
+            #Adding a value in a new category
+            _data = get_url("/json/intra-extensions/"+ext+"/subject_category_values/",
+                            post_data={"category_id": "my_category", "value": "my_category_value1"})
+            _data = get_url("/json/intra-extensions/"+ext+"/subject_category_values/",
+                            post_data={"category_id": "my_category", "value": "my_category_value2"})
+            self.assertIsInstance(_data, dict)
+            self.assertIn("subject_category_values", _data)
+            self.assertIsInstance(_data["subject_category_values"], dict)
+            for val in [u'my_category_value1', u'my_category_value2']:
+                self.assertIn(val, _data["subject_category_values"]["my_category"])
+            #Deleting a value in a new category
+            for val in [u'my_category_value1', u'my_category_value2']:
+                self.assertIn(val, _data["subject_category_values"]["my_category"])
+            _data = get_url("/json/intra-extensions/"+ext+"/subject_category_values/my_category/my_category_value1",
+                            method="DELETE")
+            _data = get_url("/json/intra-extensions/"+ext+"/subject_category_values/my_category/my_category_value2",
+                            method="DELETE")
+            self.assertIsInstance(_data, dict)
+            self.assertIn("subject_category_values", _data)
+            self.assertIsInstance(_data["subject_category_values"], dict)
+            for val in [u'my_category_value1', u'my_category_value2']:
+                self.assertNotIn(val, _data["subject_category_values"]["my_category"])
+            #Deleting the new category
+            _data = get_url("/json/intra-extensions/"+ext+"/subject_categories/my_category",
+                            method="DELETE")
+            self.assertIsInstance(_data, dict)
+            self.assertIn("subject_categories", _data)
+            self.assertIsInstance(_data["subject_categories"], list)
+            self.assertEqual(len(_data["subject_categories"]) > 0, True)
+            self.assertNotIn("my_category", _data["subject_categories"])
 
     def test_object_category_values(self):
         data = get_url("/json/intra-extensions/")
@@ -339,10 +444,17 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
         data = get_url("/json/intra-extensions/")
         self.assertIsInstance(data, dict)
         for ext in data["intra_extensions"]:
+            _data = get_url("/json/intra-extensions/"+ext+"/object_categories/", post_data={"category_id": "my_category"})
+            self.assertIsInstance(_data, dict)
+            self.assertIn("object_categories", _data)
+            self.assertIsInstance(_data["object_categories"], list)
+            self.assertEqual(len(_data["object_categories"]) > 0, True)
+            self.assertIn("my_category", _data["object_categories"])
             _data = get_url("/json/intra-extensions/"+ext+"/object_category_values/")
             self.assertIsInstance(_data, dict)
             self.assertIn("object_category_values", _data)
             self.assertIsInstance(_data["object_category_values"], dict)
+            #Adding a value in a pre-existent category
             for val in [u'high', u'medium', u'low']:
                 self.assertIn(val, _data["object_category_values"]["object_security_level"])
             _data = get_url("/json/intra-extensions/"+ext+"/object_category_values/",
@@ -350,6 +462,7 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
             self.assertIsInstance(_data, dict)
             self.assertIn("object_category_values", _data)
             self.assertIsInstance(_data["object_category_values"], dict)
+            #Deleting a value in a pre-existent category
             for val in [u'high', u'medium', u'low', u"ultra-low"]:
                 self.assertIn(val, _data["object_category_values"]["object_security_level"])
             _data = get_url("/json/intra-extensions/"+ext+"/object_category_values/object_security_level/ultra-low",
@@ -360,6 +473,36 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
             for val in [u'high', u'medium', u'low']:
                 self.assertIn(val, _data["object_category_values"]["object_security_level"])
             self.assertNotIn(u"ultra-low", _data["object_category_values"]["object_security_level"])
+            #Adding a value in a new category
+            _data = get_url("/json/intra-extensions/"+ext+"/object_category_values/",
+                            post_data={"category_id": "my_category", "value": "my_category_value1"})
+            _data = get_url("/json/intra-extensions/"+ext+"/object_category_values/",
+                            post_data={"category_id": "my_category", "value": "my_category_value2"})
+            self.assertIsInstance(_data, dict)
+            self.assertIn("object_category_values", _data)
+            self.assertIsInstance(_data["object_category_values"], dict)
+            for val in [u'my_category_value1', u'my_category_value2']:
+                self.assertIn(val, _data["object_category_values"]["my_category"])
+            #Deleting a value in a new category
+            for val in [u'my_category_value1', u'my_category_value2']:
+                self.assertIn(val, _data["object_category_values"]["my_category"])
+            _data = get_url("/json/intra-extensions/"+ext+"/object_category_values/my_category/my_category_value1",
+                            method="DELETE")
+            _data = get_url("/json/intra-extensions/"+ext+"/object_category_values/my_category/my_category_value2",
+                            method="DELETE")
+            self.assertIsInstance(_data, dict)
+            self.assertIn("object_category_values", _data)
+            self.assertIsInstance(_data["object_category_values"], dict)
+            for val in [u'my_category_value1', u'my_category_value2']:
+                self.assertNotIn(val, _data["object_category_values"]["my_category"])
+            #Deleting the new category
+            _data = get_url("/json/intra-extensions/"+ext+"/object_categories/my_category",
+                            method="DELETE")
+            self.assertIsInstance(_data, dict)
+            self.assertIn("object_categories", _data)
+            self.assertIsInstance(_data["object_categories"], list)
+            self.assertEqual(len(_data["object_categories"]) > 0, True)
+            self.assertNotIn("my_category", _data["object_categories"])
 
     def test_subject_assignments(self):
         data = get_url("/json/intra-extensions/")
@@ -411,8 +554,9 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
             self.assertIn("ultra-low2", _data["subject_assignments"]["subject_security_level"][user])
             #Delete the last assignment
             _data = get_url(
-                "/json/intra-extensions/"+ext+"/subject_assignments/subject_security_level/"+user+"/ultra-low2/",
-                method="DELETE")
+                "/json/intra-extensions/"+ext+"/subject_assignments/"+user+"/subject_security_level/ultra-low2",
+                method="DELETE"
+            )
             self.assertIsInstance(_data, dict)
             self.assertIn("subject_assignments", _data)
             self.assertIsInstance(_data["subject_assignments"], dict)
@@ -421,6 +565,60 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
             self.assertIn(user, _data["subject_assignments"]["subject_security_level"])
             self.assertIsInstance(_data["subject_assignments"]["subject_security_level"][user], list)
             self.assertNotIn("ultra-low2", _data["subject_assignments"]["subject_security_level"][user])
+            #Adding a new category
+            _data = get_url("/json/intra-extensions/"+ext+"/subject_categories/", post_data={"category_id": "my_category"})
+            self.assertIsInstance(_data, dict)
+            self.assertIn("subject_categories", _data)
+            self.assertIsInstance(_data["subject_categories"], list)
+            self.assertEqual(len(_data["subject_categories"]) > 0, True)
+            self.assertIn("my_category", _data["subject_categories"])
+            #Adding a value in a new category
+            _data = get_url("/json/intra-extensions/"+ext+"/subject_category_values/",
+                            post_data={"category_id": "my_category", "value": "my_category_value1"})
+            _data = get_url("/json/intra-extensions/"+ext+"/subject_category_values/",
+                            post_data={"category_id": "my_category", "value": "my_category_value2"})
+            self.assertIsInstance(_data, dict)
+            self.assertIn("subject_category_values", _data)
+            self.assertIsInstance(_data["subject_category_values"], dict)
+            for val in [u'my_category_value1', u'my_category_value2']:
+                self.assertIn(val, _data["subject_category_values"]["my_category"])
+            #Adding a new assignment
+            assign = {
+                "subject_id": user,
+                "category_id": "my_category",
+                "value": "my_category_value2"
+            }
+            _data = get_url("/json/intra-extensions/"+ext+"/subject_assignments/",
+                            post_data=assign)
+            self.assertIsInstance(_data, dict)
+            self.assertIn("subject_assignments", _data)
+            self.assertIsInstance(_data["subject_assignments"], dict)
+            self.assertIn("my_category", _data["subject_assignments"])
+            self.assertIsInstance(_data["subject_assignments"]["my_category"], dict)
+            self.assertIn(user, _data["subject_assignments"]["my_category"])
+            self.assertIsInstance(_data["subject_assignments"]["my_category"][user], list)
+            self.assertIn("my_category_value2", _data["subject_assignments"]["my_category"][user])
+            #Deleting a value in a new category
+            _data = get_url("/json/intra-extensions/"+ext+"/subject_category_values/")
+            for val in [u'my_category_value1', u'my_category_value2']:
+                self.assertIn(val, _data["subject_category_values"]["my_category"])
+            _data = get_url("/json/intra-extensions/"+ext+"/subject_category_values/my_category/my_category_value1",
+                            method="DELETE")
+            _data = get_url("/json/intra-extensions/"+ext+"/subject_category_values/my_category/my_category_value2",
+                            method="DELETE")
+            self.assertIsInstance(_data, dict)
+            self.assertIn("subject_category_values", _data)
+            self.assertIsInstance(_data["subject_category_values"], dict)
+            for val in [u'my_category_value1', u'my_category_value2']:
+                self.assertNotIn(val, _data["subject_category_values"]["my_category"])
+            #Deleting the new category
+            _data = get_url("/json/intra-extensions/"+ext+"/subject_categories/my_category",
+                            method="DELETE")
+            self.assertIsInstance(_data, dict)
+            self.assertIn("subject_categories", _data)
+            self.assertIsInstance(_data["subject_categories"], list)
+            self.assertEqual(len(_data["subject_categories"]) > 0, True)
+            self.assertNotIn("my_category", _data["subject_categories"])
 
     def test_object_assignments(self):
         data = get_url("/json/intra-extensions/")
@@ -472,8 +670,9 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
             self.assertIn("ultra-low2", _data["object_assignments"]["object_security_level"][obj])
             #Delete the last assignment
             _data = get_url(
-                "/json/intra-extensions/"+ext+"/object_assignments/object_security_level/"+obj+"/ultra-low2/",
-                method="DELETE")
+                "/json/intra-extensions/"+ext+"/object_assignments/"+obj+"/object_security_level/ultra-low2",
+                method="DELETE"
+            )
             self.assertIsInstance(_data, dict)
             self.assertIn("object_assignments", _data)
             self.assertIsInstance(_data["object_assignments"], dict)
@@ -482,6 +681,60 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
             self.assertIn(obj, _data["object_assignments"]["object_security_level"])
             self.assertIsInstance(_data["object_assignments"]["object_security_level"][obj], list)
             self.assertNotIn("ultra-low2", _data["object_assignments"]["object_security_level"][obj])
+            #Adding a new category
+            _data = get_url("/json/intra-extensions/"+ext+"/object_categories/", post_data={"category_id": "my_category"})
+            self.assertIsInstance(_data, dict)
+            self.assertIn("object_categories", _data)
+            self.assertIsInstance(_data["object_categories"], list)
+            self.assertEqual(len(_data["object_categories"]) > 0, True)
+            self.assertIn("my_category", _data["object_categories"])
+            #Adding a value in a new category
+            _data = get_url("/json/intra-extensions/"+ext+"/object_category_values/",
+                            post_data={"category_id": "my_category", "value": "my_category_value1"})
+            _data = get_url("/json/intra-extensions/"+ext+"/object_category_values/",
+                            post_data={"category_id": "my_category", "value": "my_category_value2"})
+            self.assertIsInstance(_data, dict)
+            self.assertIn("object_category_values", _data)
+            self.assertIsInstance(_data["object_category_values"], dict)
+            for val in [u'my_category_value1', u'my_category_value2']:
+                self.assertIn(val, _data["object_category_values"]["my_category"])
+            #Adding a new assignment
+            assign = {
+                "object_id": obj,
+                "category_id": "my_category",
+                "value": "my_category_value2"
+            }
+            _data = get_url("/json/intra-extensions/"+ext+"/object_assignments/",
+                            post_data=assign)
+            self.assertIsInstance(_data, dict)
+            self.assertIn("object_assignments", _data)
+            self.assertIsInstance(_data["object_assignments"], dict)
+            self.assertIn("my_category", _data["object_assignments"])
+            self.assertIsInstance(_data["object_assignments"]["my_category"], dict)
+            self.assertIn(obj, _data["object_assignments"]["my_category"])
+            self.assertIsInstance(_data["object_assignments"]["my_category"][obj], list)
+            self.assertIn("my_category_value2", _data["object_assignments"]["my_category"][obj])
+            #Deleting a value in a new category
+            _data = get_url("/json/intra-extensions/"+ext+"/object_category_values/")
+            for val in [u'my_category_value1', u'my_category_value2']:
+                self.assertIn(val, _data["object_category_values"]["my_category"])
+            _data = get_url("/json/intra-extensions/"+ext+"/object_category_values/my_category/my_category_value1",
+                            method="DELETE")
+            _data = get_url("/json/intra-extensions/"+ext+"/object_category_values/my_category/my_category_value2",
+                            method="DELETE")
+            self.assertIsInstance(_data, dict)
+            self.assertIn("object_category_values", _data)
+            self.assertIsInstance(_data["object_category_values"], dict)
+            for val in [u'my_category_value1', u'my_category_value2']:
+                self.assertNotIn(val, _data["object_category_values"]["my_category"])
+            #Deleting the new category
+            _data = get_url("/json/intra-extensions/"+ext+"/object_categories/my_category",
+                            method="DELETE")
+            self.assertIsInstance(_data, dict)
+            self.assertIn("object_categories", _data)
+            self.assertIsInstance(_data["object_categories"], list)
+            self.assertEqual(len(_data["object_categories"]) > 0, True)
+            self.assertNotIn("my_category", _data["object_categories"])
 
     def test_rules(self):
         data = get_url("/json/intra-extensions/")
@@ -492,6 +745,15 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
             self.assertIn("rules", _data)
             self.assertIsInstance(_data["rules"], dict)
 
+    def test_meta_rules(self):
+        data = get_url("/json/intra-extensions/")
+        self.assertIsInstance(data, dict)
+        for ext in data["intra_extensions"]:
+            _data = get_url("/json/intra-extensions/"+ext+"/meta_rules/")
+            self.assertIsInstance(_data, dict)
+            self.assertIn("meta_rules", _data)
+            self.assertIsInstance(_data["meta_rules"], dict)
+
     def test_rule(self):
         data = get_url("/json/intra-extensions/")
         self.assertIsInstance(data, dict)
@@ -500,33 +762,34 @@ number_of_intra_ext = len(get_url("/json/intra-extensions/")["intra_extensions"]
             self.assertIsInstance(_data, dict)
             self.assertIn("rules", _data)
             self.assertIsInstance(_data["rules"], dict)
+            post_data = {
+                "sub_cat_value":
+                    {"relation_super": {"subject_security_level": "high"}},
+                "obj_cat_value":
+                    {"relation_super": {"object_security_level": "low", "action": "write"}}
+            }
             _data = get_url(
                 "/json/intra-extensions/"+ext+"/rules/",
-                post_data={
-                    "relation_super": {
-                        "sub_cat_value": {"subject_security_level": "high"},
-                        "obj_cat_value": {"object_security_level": "low", "action": "write"}
-                    }
-                }
+                post_data=post_data
             )
             self.assertIsInstance(_data, dict)
             self.assertIn("rules", _data)
             self.assertIsInstance(_data["rules"], dict)
-            self.assertNotIn(_data["rules"], ["high", "write", "low"])
+            self.assertIn(post_data, _data["rules"]["relation_super"])
             _data = get_url(
                 "/json/intra-extensions/"+ext+"/rules/",
                 delete_data={
-                    "relation_super": {
-                        "sub_cat_value": {"subject_security_level": "high"},
-                        "obj_cat_value": {"object_security_level": "low", "action": "write"}
-                    }
+                    "sub_cat_value":
+                        {"relation_super": {"subject_security_level": "high"}},
+                    "obj_cat_value":
+                        {"relation_super": {"object_security_level": "low", "action": "write"}}
                 }
             )
             self.assertIsInstance(_data, dict)
             self.assertIn("rules", _data)
             self.assertIsInstance(_data["rules"], dict)
             self.assertIsInstance(_data["rules"]["relation_super"], list)
-            self.assertNotIn(_data["rules"]["relation_super"], ["high", "write", "low"])
+            self.assertNotIn(post_data, _data["rules"]["relation_super"])
 
 
 class TestAdminInterface_InterExtension(unittest.TestCase):
@@ -546,8 +809,8 @@ class TestAdminInterface_InterExtension(unittest.TestCase):
         self.new_ext2 = get_url(
             "/json/intra-extensions/",
             post_data={"policymodel": my_policy, "name": "Intra_Extension Policy 2"})
-        self.assertIsInstance(self.new_ext1, dict)
-        self.new_ext2_uuid = self.new_ext1["intra_extensions"]["_id"]
+        self.assertIsInstance(self.new_ext2, dict)
+        self.new_ext2_uuid = self.new_ext2["intra_extensions"]["_id"]
         #Get Keystone tenants
         self.tenants = get_url("/pip/projects/")
         self.assertIsInstance(self.tenants, dict)
@@ -560,16 +823,18 @@ class TestAdminInterface_InterExtension(unittest.TestCase):
                 self.tenant_demo = tenant["uuid"]
         #Create mapping between extensions and tenants
         mapping = get_url(
-            "/json/super-extensions/tenants/{}/intra_extensions/{}".format(
-                self.tenant_admin,
-                self.new_ext1_uuid),
-            method="POST"
+            "/json/super-extensions/",
+            post_data={
+                "tenant_uuid": self.tenant_admin,
+                "intra_extension_uuid": self.new_ext1_uuid
+            }
         )
         mapping = get_url(
-            "/json/super-extensions/tenants/{}/intra_extensions/{}".format(
-                self.tenant_demo,
-                self.new_ext2_uuid),
-            method="POST"
+            "/json/super-extensions/",
+            post_data={
+                "tenant_uuid": self.tenant_demo,
+                "intra_extension_uuid": self.new_ext2_uuid
+            }
         )
 
     def tearDown(self):
@@ -691,6 +956,8 @@ class TestPIPInterface(unittest.TestCase):
         self.assertIn("projects", data)
         self.assertIs(len(data["projects"]) > 0, True)
         for tenant in data["projects"]:
+            if tenant["name"] not in ("admin", "demo"):
+                continue
             data = get_url("/pip/projects/{}/objects/".format(tenant["uuid"]))
             self.assertIsInstance(data, dict)
             self.assertIn("objects", data)
@@ -794,7 +1061,6 @@ class TestPIPInterface(unittest.TestCase):
             self.assertIsInstance(flavor, dict)
             self.assertIn("name", flavor)
             self.assertIn("uuid", flavor)
-
 
 
 if __name__ == '__main__':
