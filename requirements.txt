@@ -1,5 +1,0 @@
-# Moon Core Requirements
-Django>=1.4,<1.7
-django_compressor>=1.3
-django_openstack_auth>=1.1.4
-sqlalchemy
