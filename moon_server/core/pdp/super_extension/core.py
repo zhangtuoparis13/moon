@@ -18,8 +18,11 @@ class SuperExtension:
         self.__tenant_uuid = ""
         # self.__intra_extensions = get_intra_extensions()
         self.__super_extension = Extension()
-        _sample_path = 'core/pdp/super_extension/policy'
-        _policy_abs_dir = pkg_resources.resource_filename('moon', _sample_path)
+        _policy_abs_dir = '/etc/moon/super_extension/policy'
+        import os
+        if os.path.isdir('core/pdp/super_extension/policy'):
+            _sample_path = 'core/pdp/super_extension/policy'
+            _policy_abs_dir = pkg_resources.resource_filename('moon_server', _sample_path)
         self.__super_extension.load_from_json(_policy_abs_dir)
 
     def admin(self, sub, obj, act):
