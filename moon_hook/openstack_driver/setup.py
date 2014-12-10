@@ -6,12 +6,12 @@ from pkg_resources import resource_filename
 confdir = resource_filename(__name__, "conf/moon")
 
 setup(
-    name='Moon-hook',
+    name='Moon_hook',
     version='0.1.2',
     packages=find_packages(),
     author='DThom',
     author_email="thomas.duval@orange.com",
-    url="http://www.github.com/waitwaitwait/moon",
+    url="https://github.com/rebirthmonkey/moon",
     license='Apache License, Version 2.0',
     long_description=open('README.md').read(),
     # test_suite="tests",

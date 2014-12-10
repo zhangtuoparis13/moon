@@ -28,17 +28,6 @@ def save_auth(function):
         except exceptions.Unauthorized:
             # Token is not valid, user must re-authenticate
             pass
-        # try:
-        #     username = args[0].session['user_id']
-        #     globals()["username"] = username
-        # except AttributeError:
-        #     username = globals().get("username")
-        # except IndexError:
-        #     username = globals().get("username")
-        # except KeyError:
-        #     #When authenticating, username is not set
-        #     username = ""
-        # print("\033[32mCalling {}({})\033[m".format(function.__name__, username))
         result = None
         # try:
         result = function(*args, **kwargs)

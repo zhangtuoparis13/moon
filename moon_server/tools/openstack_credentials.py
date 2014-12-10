@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-from moon import settings
+from moon_server import settings
 
 
 def get_keystone_creds(admin_token=False):

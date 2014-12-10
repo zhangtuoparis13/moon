@@ -1,0 +1,3 @@
+include README.md
+recursive-include moon_server/samples *
+recursive-include moon_server/gui *

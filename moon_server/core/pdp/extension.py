@@ -3,7 +3,7 @@ import copy
 import json
 import itertools
 from uuid import uuid4
-from moon_server.tools.log import get_authz_logger
+from moon_server.tools.log.core import get_authz_logger
 
 
 authz_logger = get_authz_logger()

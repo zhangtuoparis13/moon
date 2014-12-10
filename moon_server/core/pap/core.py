@@ -2,13 +2,13 @@
 """
 import os
 import json
-from moon_server.core.pdp import get_intra_extensions
+import sys
 from moon_server.core.pdp import get_inter_extensions
+from moon_server.core.pdp import get_intra_extensions
 from moon_server.core.pdp import get_super_extension
 from moon_server.core.pdp import get_tenant_intra_extension_mapping
 from moon_server.core.pip import get_pip
 from moon_server.tools.log import get_sys_logger
-from moon_server.core.pdp import pdp_admin
 
 sys_logger = get_sys_logger()
 
@@ -112,19 +112,19 @@ class PAP:
             if extension_setting_name:
                 extension_setting_dir = self.policies[extension_setting_name]["dir"]
             intra_ext_uuid = self.intra_extensions.install_intra_extension_from_json(extension_setting_dir, name=name)
-            #Add the real UUID of admin in admin extension
+            # Add the real UUID of admin in admin extension
             self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_subject(self.__admin_uuid)
             self.intra_extensions[intra_ext_uuid].intra_extension_admin.add_subject_assignment(
                 "role", self.__admin_uuid, "admin"
             )
-            #Change "__uuid_of_admin__" into the real UUID od admin
+            # Change "__uuid_of_admin__" into the real UUID od admin
             str_lookup = "__uuid_of_admin__"
-            #Modify subjects
+            # Modify subjects
             for subject in self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_subjects():
                 if subject == str_lookup:
                     self.intra_extensions[intra_ext_uuid].intra_extension_authz.add_subject(self.__admin_uuid)
                     break
-            #Modify subject assignments
+            # Modify subject assignments
             for cat in self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_subject_categories():
                 assignments = dict(self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_subject_assignments(cat))
                 for key in assignments:
@@ -140,7 +140,7 @@ class PAP:
                                 str_lookup,
                                 value
                             )
-            #Modify object assignments
+            # Modify object assignments
             for cat in self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_object_categories():
                 assignments = dict(self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_object_assignments(cat))
                 for key in assignments:
@@ -202,7 +202,7 @@ class PAP:
                 k_subjects = get_pip().get_subjects()
                 for sbj in k_subjects:
                     if sbj["uuid"] not in self.intra_extensions[extension_uuid].intra_extension_authz.get_subjects():
-                        #Can abort because the user (user_uuid) may not have the rights to do that
+                        # Can abort because the user (user_uuid) may not have the rights to do that
                         if self.intra_extensions[extension_uuid].admin(user_uuid, "subjects", "write") == "OK":
                             self.intra_extensions[extension_uuid].intra_extension_authz.add_subject(sbj["uuid"])
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_subjects()
@@ -245,7 +245,7 @@ class PAP:
                 servers = get_pip().get_objects(tenant=self.intra_extensions[extension_uuid].get_tenant_uuid())
                 for server in servers:
                     if server["uuid"] not in self.intra_extensions[extension_uuid].intra_extension_authz.get_objects():
-                        #Can abort because the user (user_uuid) may not have the rights to do that
+                        # Can abort because the user (user_uuid) may not have the rights to do that
                         if self.intra_extensions[extension_uuid].admin(user_uuid, "objects", "write") == "OK":
                             self.intra_extensions[extension_uuid].intra_extension_authz.add_object(server["uuid"])
                 return self.intra_extensions[extension_uuid].intra_extension_authz.get_objects()

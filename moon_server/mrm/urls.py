@@ -5,6 +5,6 @@ admin.autodiscover()
 
 
 urlpatterns = patterns(
-    'mrm.views',
+    'moon_server.mrm.views',
     url(r'authz', 'mrm_authz'),
 )

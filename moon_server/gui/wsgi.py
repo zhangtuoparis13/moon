@@ -8,7 +8,6 @@ https://docs.djangoproject.com/en/1.6/howto/deployment/wsgi/
 """
 
 import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gi.settings")
-
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "moon_server.settings")
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()

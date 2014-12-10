@@ -6,7 +6,7 @@ OPENSTACK_SERVER="<set an IP here>"
 #if necessary, set a proxy
 #export http_proxy="http://login:pass@proxy:3128";
 #export https_proxy="http://login:pass@proxy:3128";
-#export no_proxy="127.0.0.1"
+#export no_proxy="127.0.0.1,$OPENSTACK_SERVER"
 
 apt-get update
 #if you need other language
@@ -63,8 +63,8 @@ echo cd /moon/gui/
 echo bower install
 
 #Hack to simplify the installation and development process
-ln -s /moon/ /usr/local/lib/python2.7/dist-packages/moon
-ln -s /moon/samples/moon /etc/moon
+ln -s /moon/moon_server /usr/local/lib/python2.7/dist-packages/moon_server
+ln -s /moon/moon_server/samples/moon /etc/moon
 
 mysql -uroot -p$MySQLPASSWD <<EOF
 create database user_db;
@@ -92,5 +92,5 @@ EOF
 echo -e "\n$OPENSTACK_SERVER openstackserver" >> /etc/hosts
 
 echo Before running the server you must execute :
-echo python -m moon.moon_server --run "syncdb"
+echo python -m moon_server.moon_server --run "syncdb"
 

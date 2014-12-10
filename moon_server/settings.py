@@ -7,12 +7,11 @@ https://docs.djangoproject.com/en/1.6/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
-# import mongoengine
 import os
 
 MOON_DATABASES = {
     'intra-extensions': {
-        'ENGINE': 'moon.tools.driver.mongodb',
+        'ENGINE': 'moon_server.tools.driver.mongodb',
         'NAME': "moon",
         'USER': "",
         'PASSWORD': "",
@@ -20,7 +19,7 @@ MOON_DATABASES = {
         'PORT': "27017"
     },
     'inter-extensions': {
-        'ENGINE': 'moon.tools.driver.mongodb',
+        'ENGINE': 'moon_server.tools.driver.mongodb',
         'NAME': "moon",
         'USER': "",
         'PASSWORD': "",
@@ -28,7 +27,7 @@ MOON_DATABASES = {
         'PORT': "27017"
     },
     'log': {
-        'ENGINE': 'moon.tools.driver.shelve',
+        'ENGINE': 'moon_server.tools.driver.shelve',
         'NAME': "/var/log/moon/log.db",
         'USER': "",
         'PASSWORD': "",
@@ -37,29 +36,18 @@ MOON_DATABASES = {
     }
 }
 
-DEFAULT_EXTENSION_TABLE = "/etc/moon/policy/intra_ext_example.json"
-
 OPENSTACK_KEYSTONE_URL = "http://openstackserver:5000/v3"
-
-OPENSTACK_API = "/etc/moon/api.json"
 
 CNX_PASSWORD = "P4ssw0rd"
 
 BLOCK_UNKNOWN_TENANT = False
 
-SYNC_CONF_FILENAME = "/etc/moon/tenants.json"
-
 UNMANAGED_OBJECTS = ("", "token", )
 
-APPEND_SLASH = False
-
 OS_USERNAME = "admin"
-OS_PASSWORD = "P4ssw0rd"
+OS_PASSWORD = "P@ssw0rd"
 OS_TENANT_NAME = "admin"
 OS_AUTH_URL = "http://openstackserver:5000/v2.0/"
-#OS_SERVICE_ENDPOINT = "http://openstackserver:35357/v3/"
-#OS_SERVICE_TOKEN = "set a password here"
-#OS_REGION_NAME = "regionOne"
 
 
 #########################################################
@@ -69,30 +57,15 @@ OS_AUTH_URL = "http://openstackserver:5000/v2.0/"
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 TEMPLATE_DIRS = (BASE_DIR, os.path.join(BASE_DIR, 'gui/templates'))
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '<select id>'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
-
-
-# Application definition
-#
-# INSTALLED_APPS = (
-#     'django.contrib.admin',
-#     'django.contrib.auth',
-#     'django.contrib.contenttypes',
-#     'django.contrib.sessions',
-#     'django.contrib.messages',
-#     'django.contrib.staticfiles',
-# )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -103,45 +76,23 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'moon.gui.urls'
+ROOT_URLCONF = 'moon_server.gui.urls'
 
-WSGI_APPLICATION = 'moon.gui.wsgi.application'
+WSGI_APPLICATION = 'moon_server.gui.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
-# MONGODB_DATABASES = {
-#     'default': {'name': 'moon'}
-# }
-# DJANGO_MONGOENGINE_OVERRIDE_ADMIN = True
-#TODO: change MySQL to MongoDB
-
 DATABASES = dict()
 DATABASES['default'] = {
     'ENGINE': 'django.db.backends.mysql',
-    #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     'NAME': "moon",
     'USER': "moonuser",
-    'PASSWORD': "P4ssw0rd",
+    'PASSWORD': "nomoresecrete",
     'HOST': "",
     'PORT': ""
 }
-
-# SESSION_ENGINE = 'mongoengine.django.sessions'
-
-# _MONGODB_USER = ''
-# _MONGODB_PASSWD = ''
-# _MONGODB_HOST = '127.0.0.1'
-# _MONGODB_NAME = 'moon'
-# _MONGODB_DATABASE_HOST = \
-#     'mongodb://%s/%s' \
-#     % (_MONGODB_HOST, _MONGODB_NAME)
-# _MONGODB_DATABASE_HOST = \
-#     'mongodb://%s:%s@%s/%s' \
-#     % (_MONGODB_USER, _MONGODB_PASSWD, _MONGODB_HOST, _MONGODB_NAME)
-
-# mongoengine.connect(_MONGODB_NAME, host=_MONGODB_DATABASE_HOST)
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -163,7 +114,7 @@ SITE_ID = 1
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "moon/gui/static"),
+    os.path.join(BASE_DIR, "moon_server/gui/static"),
 )
 
 INSTALLED_APPS = (
@@ -178,23 +129,13 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    "moon.gui",
-    "moon.mrm",
-    #"repositery",,
-    # 'mongoengine.django.debug_toolbar',
-    # 'mongoengine.django.auth',
-    # 'mongoengine.django.admin.sites',
-    # 'mongoengine.django.admin',
+    "moon_server.gui",
+    "moon_server.mrm",
 )
-
-# OPENSTACK_KEYSTONE_URL = getattr(moon_settings, "OPENSTACK_KEYSTONE_URL")
 
 AUTHENTICATION_BACKENDS = (
     'openstack_auth.backend.KeystoneBackend',
-    # 'mongoengine.django.auth.MongoEngineBackend',
 )
-
-#ROOT_URLCONF = 'openstack_auth.tests.urls'
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = "/auth/login/"
