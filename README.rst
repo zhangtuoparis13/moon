@@ -4,8 +4,9 @@ Moon
 This is an authorization module for OpenStack
 
 How to install it
-----------------
-Download the code and install the Keystone and Nova hooks on your OpenStack server see [openstack_driver].
+-----------------
+Download the code and install the Keystone and Nova hooks on your OpenStack server see [moon_hook/README.rst].
+Download the code and install the Moon framework see [moon_server/README.rst].
 
 Install Vagrant [http://www.vagrantup.com/] in your system and start it:
 
