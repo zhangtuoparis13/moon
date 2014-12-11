@@ -7,3 +7,6 @@ jsonpatch
 jsonpointer
 python-keystoneclient
 python-novaclient
+pymongo
+oslo.config
+netifaces

@@ -92,10 +92,7 @@ com_crashlytics_export_strings.xml
 *.un~
 Session.vim
 .netrwhist
-*~
 
-tests/vagrant/.vagrant/
-tests/vagrant/.vagrant/machines/default/virtualbox/id
 ruan.note
 
 ## Eclipse
@@ -106,3 +103,6 @@ vendor
 
 ## Backup director
 .bak/
+
+## Vagrant
+.vagrant/
