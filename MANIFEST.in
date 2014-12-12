@@ -3,5 +3,6 @@ include README.rst
 include setup.cfg
 include setup.py
 include requirements.txt
-recursive-include *.json *.txt
+graft moon_server/gui/static/moon/vendor
+recursive-include *.json *.txt *.html, *.css, *.js *.ico *.gif *.png *.gzip *.map *.md *.ts
 global-exclude *.pyc *.sdx *.log *.db *.swp
