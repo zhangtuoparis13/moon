@@ -59,7 +59,7 @@ BLOCK_UNKNOWN_TENANT = False
 UNMANAGED_OBJECTS = ("", "token", )
 
 OS_USERNAME = "admin"
-OS_PASSWORD = "P@ssw0rd"
+OS_PASSWORD = "nomoresecrete"
 OS_TENANT_NAME = "admin"
 OS_AUTH_URL = "http://openstackserver:5000/v2.0/"
 
