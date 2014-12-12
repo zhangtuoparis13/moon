@@ -91,8 +91,8 @@ class IntraExtensions:
                     return 'OK'
                 else:
                     return 'KO'
-            else:
-                return 'NoExtension'
+        else:
+            return 'NoExtension'
 
     def admin(self, sub, obj, act):
         for _intra_extension in self.__installed_intra_extensions.values():
@@ -246,6 +246,8 @@ def pdp_authz(sub, obj, act, requesting_tenant_uuid=None, requested_tenant_uuid=
 """
 
 def pdp_authz(sub, obj, act, requesting_tenant_uuid=None, requested_tenant_uuid=None):
+    requesting_intra_extension_uuid = None
+    requested_intra_extension_uuid = None
     if requesting_tenant_uuid and requested_tenant_uuid:
         if requesting_tenant_uuid == requested_tenant_uuid:
             return intra_extensions.authz_for_tenant(requesting_tenant_uuid, sub, obj, act)
@@ -261,7 +263,7 @@ def pdp_authz(sub, obj, act, requesting_tenant_uuid=None, requested_tenant_uuid=
                 inter_extensions.authz(requesting_intra_extension_uuid, requested_intra_extension_uuid, sub, obj, act)
             else:
                 # raise Error unknow tenant uuid
-                pass
+                print("one extension is missing", requesting_intra_extension_uuid, requested_intra_extension_uuid)
     else:
         return intra_extensions.authz(sub, obj, act)
 
