@@ -38,6 +38,8 @@ formatter = logging.Formatter('%(asctime)s ------ %(message)s')
 fh.setFormatter(formatter)
 sys_logger.addHandler(fh)
 
+urllib3_logger = logging.getLogger('urllib3')
+urllib3_logger.setLevel(logging.CRITICAL)
 
 def get_sys_logger():
     return sys_logger
