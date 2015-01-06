@@ -106,3 +106,6 @@ vendor
 
 ## Vagrant
 .vagrant/
+
+#Tests
+.testrepository/
