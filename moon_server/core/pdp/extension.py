@@ -228,7 +228,7 @@ class Extension:
 
     def authz(self, sub, obj, act):
         authz_data = AuthzData(sub, obj, act)
-        authz_logger.warning('extension/authz request: [sub {}, obj {}, act {}]'.format(sub, obj, act))
+        # authz_logger.warning('extension/authz request: [sub {}, obj {}, act {}]'.format(sub, obj, act))
 
         if authz_data.subject in self.perimeter.get_subjects() and authz_data.object in self.perimeter.get_objects():
 
@@ -237,22 +237,22 @@ class Extension:
                     # self.assignment.get_subject_category_attr(subject_category, sub)
                     self.assignment.get_subject_category_assignments()[subject_category][sub]
                 )
-                authz_logger.warning('extension/authz subject attribute: [subject attr: {}]'.format(
-                    #self.assignment.get_subject_category_attr(subject_category, sub))
-                    self.assignment.get_subject_category_assignments()[subject_category][sub])
-                )
+                # authz_logger.warning('extension/authz subject attribute: [subject attr: {}]'.format(
+                #     #self.assignment.get_subject_category_attr(subject_category, sub))
+                #     self.assignment.get_subject_category_assignments()[subject_category][sub])
+                # )
 
             for object_category in self.metadata.get_object_categories():
                 if object_category == 'action':
                     authz_data.object_attrs[object_category] = [act]
-                    authz_logger.warning('extension/authz object attribute: [object attr: {}]'.format([act]))
+                    # authz_logger.warning('extension/authz object attribute: [object attr: {}]'.format([act]))
                 else:
                     authz_data.object_attrs[object_category] = copy.copy(
                         self.assignment.get_object_category_assignments()[object_category][obj]
                     )
-                    authz_logger.warning('extension/authz object attribute: [object attr: {}]'.format(
-                        self.assignment.get_object_category_assignments()[object_category][obj])
-                    )
+                    # authz_logger.warning('extension/authz object attribute: [object attr: {}]'.format(
+                    #     self.assignment.get_object_category_assignments()[object_category][obj])
+                    # )
 
             _aggregation_data = dict()
 
@@ -272,11 +272,11 @@ class Extension:
                     _aggregation_data['relation_super']['result'] = False
                     for _relation_arg in _relation_args:
                         if list(_relation_arg) in self.configuration.get_rules()[sub_meta_rule['relation']]:
-                            authz_logger.warning(
-                                'extension/authz relation super OK: [sub_sl: {}, obj_sl: {}, action: {}]'.format(
-                                    _relation_arg[0], _relation_arg[1], _relation_arg[2]
-                                )
-                            )
+                            # authz_logger.warning(
+                            #     'extension/authz relation super OK: [sub_sl: {}, obj_sl: {}, action: {}]'.format(
+                            #         _relation_arg[0], _relation_arg[1], _relation_arg[2]
+                            #     )
+                            # )
                             _aggregation_data['relation_super']['result'] = True
                             break
                     _aggregation_data['relation_super']['status'] = 'finished'
@@ -286,11 +286,11 @@ class Extension:
                     _aggregation_data['permission']['result'] = False
                     for _relation_arg in _relation_args:
                         if list(_relation_arg) in self.configuration.get_rules()[sub_meta_rule['relation']]:
-                            authz_logger.warning(
-                                'extension/authz relation permission OK: [role: {}, object: {}, action: {}]'.format(
-                                    _relation_arg[0], _relation_arg[1], _relation_arg[2]
-                                )
-                            )
+                            # authz_logger.warning(
+                            #     'extension/authz relation permission OK: [role: {}, object: {}, action: {}]'.format(
+                            #         _relation_arg[0], _relation_arg[1], _relation_arg[2]
+                            #     )
+                            # )
                             _aggregation_data['permission']['result'] = True
                             break
                     _aggregation_data['permission']['status'] = 'finished'
