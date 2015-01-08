@@ -115,12 +115,14 @@ results = {
             ]
         },
         "new_rules": {
-            "relation_super": [
-                ["high", "medium", "read"],
-                ["high", "low", "read"],
-                ["medium", "low", "read"],
-                ["low", "low", "write"]
-            ]
+            'obj_cat_value': {
+                u'relation_super':
+                    {u'action': 'write', u'object_security_level': 'low'}
+            },
+            'sub_cat_value': {
+                u'relation_super':
+                    {u'subject_security_level': 'low'}
+            }
         },
         "collaboration": {
             "requesting": {

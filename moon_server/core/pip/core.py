@@ -132,7 +132,7 @@ class PIP:
     def get_objects(self, tenant=None, object_uuid=None):
         s = dict()
         #TODO: need to send the token in parameter of all functions in PIP
-        print("pip.get_objects tenant={}, object_uuid={}".format(tenant, object_uuid))
+        # print("pip.get_objects tenant={}, object_uuid={}".format(tenant, object_uuid))
         if tenant:
             try:
                 __tenant = self.get_tenants(uuid=tenant).next()
@@ -166,11 +166,12 @@ class PIP:
 
     def add_object(self, name, tenant, image_name="Cirros3.2", flavor_name="m1.nano"):
         if tenant:
-            __tenant = self.get_tenants(uuid=tenant)
-            if __tenant:
-                self.set_creds_for_tenant(tenant_name=__tenant.next()["name"])
-            else:
-                self.set_creds_for_tenant(tenant_name=tenant)
+            try:
+                __tenant = self.get_tenants(uuid=tenant).next()
+                self.set_creds_for_tenant(tenant=__tenant)
+            except StopIteration:
+                __tenant = self.get_tenants(name=tenant).next()
+                self.set_creds_for_tenant(tenant=__tenant)
         import time
         image = self.nclient.images.find(name=image_name)
         flavor = self.nclient.flavors.find(name=flavor_name)
@@ -188,11 +189,12 @@ class PIP:
 
     def del_object(self, uuid, tenant):
         if tenant:
-            __tenant = self.get_tenants(uuid=tenant)
-            if __tenant:
-                self.set_creds_for_tenant(tenant_name=__tenant.next()["name"])
-            else:
-                self.set_creds_for_tenant(tenant_name=tenant)
+            try:
+                __tenant = self.get_tenants(uuid=tenant).next()
+                self.set_creds_for_tenant(tenant=__tenant)
+            except StopIteration:
+                __tenant = self.get_tenants(name=tenant).next()
+                self.set_creds_for_tenant(tenant=__tenant)
         instance = self.nclient.servers.find(id=uuid)
         instance.delete()
         cpt = 0

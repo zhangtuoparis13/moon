@@ -13,7 +13,7 @@
 # under the License.
 
 """
-unit test for moon/core/pap
+unit test for moon/core/pip
 """
 
 import unittest
@@ -25,6 +25,7 @@ class TestCorePIP(unittest.TestCase):
 
     def setUp(self):
         self.pip = get_pip()
+        self.pip.set_creds_for_tenant(tenant_name="admin")
 
     def tearDown(self):
         self.pip = None
@@ -93,7 +94,7 @@ class TestCorePIP(unittest.TestCase):
         for _img in images:
             if "irros" in _img:
                 image = _img
-        self.pip.add_object(name=vm_name, image_name=image)
+        self.pip.add_object(name=vm_name, tenant="admin", image_name=image)
         max_cpt = 0
         vm_names = list()
         vm_uuid = None
@@ -114,7 +115,7 @@ class TestCorePIP(unittest.TestCase):
         else:
             self.assertIn(vm_name, vm_names)
         self.assertIsNotNone(vm_uuid)
-        self.pip.del_object(uuid=vm_uuid)
+        self.pip.del_object(uuid=vm_uuid, tenant="admin")
         objects = self.pip.get_objects("admin")
         self.assertIsInstance(objects, types.GeneratorType)
         max_cpt = 0

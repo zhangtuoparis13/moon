@@ -1,0 +1,15 @@
+# Moon Server Requirements
+Django>=1.4
+django_compressor>=1.3
+django_openstack_auth>=1.1.4
+simplejson
+jsonpatch
+jsonpointer
+python-keystoneclient
+python-novaclient
+pymongo
+oslo.config
+netifaces
+MySQL-python
+
+testrepository

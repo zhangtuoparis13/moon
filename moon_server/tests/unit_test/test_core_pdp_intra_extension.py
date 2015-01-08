@@ -29,7 +29,7 @@ class TestCorePDPIntraExtension(unittest.TestCase):
     def setUp(self):
         _sample = 'mls001'
         _sample_path = os.path.join('samples', _sample)
-        intra_extension_setting_abs_dir = pkg_resources.resource_filename('moon', _sample_path)
+        intra_extension_setting_abs_dir = pkg_resources.resource_filename('moon_server', _sample_path)
         self.intra_extension = IntraExtension()
         self.intra_extension.load_from_json(intra_extension_setting_abs_dir)
         self._requests = requests
@@ -38,13 +38,13 @@ class TestCorePDPIntraExtension(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_get_uuid(self):
+    # def test_get_uuid(self):
         #self.assertIsInstance(self.intra_extension.get_uuid(), UUID)
-        print("[Get Uuid]---------------- OK ")
+        # print("[Get Uuid]---------------- OK ")
 
-    def test_get_tenant_uuid(self):
-        # self.assertIsInstance(self.intra_extension.get_tenant_uuid(), UUID)
-        print("[Get Tenant Uuid]---------------- OK ")
+    # def test_get_tenant_uuid(self):
+    #     self.assertIsInstance(self.intra_extension.get_tenant_uuid(), UUID)
+        # print("[Get Tenant Uuid]---------------- OK ")
 
     def test_authz(self):
         _genre = 'authz'
@@ -55,7 +55,7 @@ class TestCorePDPIntraExtension(unittest.TestCase):
             _result = requests[_genre][i]['_result']
             _description = requests[_genre][i]['_description']
             self.assertEqual(self.intra_extension.authz(_sub, _obj, _act), _result)
-            print("[Authz] ", _description, " ---------------- OK")
+            # print("[Authz] ", _description, " ---------------- OK")
 
     def test_admin(self):
         _genre = 'admin'
@@ -66,7 +66,7 @@ class TestCorePDPIntraExtension(unittest.TestCase):
             _result = requests[_genre][i]['_result']
             _description = requests[_genre][i]['_description']
             self.assertEqual(self.intra_extension.admin(_sub, _obj, _act), _result)
-            print("[Admin] ", _description, " ---------------- OK")
+            # print("[Admin] ", _description, " ---------------- OK")
 
     def test_create_destory_requesting_collaboration(self):
         for _type in ["trust", "coordinate"]:
@@ -99,7 +99,7 @@ class TestCorePDPIntraExtension(unittest.TestCase):
 
 """
     def test_get_data(self):
-        print("[test_get_data]----------------: ", self.intra_extension.get_data().keys())
+        # print("[test_get_data]----------------: ", self.intra_extension.get_data().keys())
         self.assertIsInstance(self.intra_extension.get_data(), dict)
 
     def test_set_data(self):
@@ -108,14 +108,14 @@ class TestCorePDPIntraExtension(unittest.TestCase):
         _intra_extension.load_from_json(intra_extension_setting_abs_dir)
         _data = _intra_extension.get_data()
         self.intra_extension.set_data(_data)
-        print("[test_set_data]----------------: ", self.intra_extension.get_data().keys())
+        # print("[test_set_data]----------------: ", self.intra_extension.get_data().keys())
         self.assertIsInstance(self.intra_extension.get_data(), dict)
 
     def test_set_to_db_and_get_from_db(self):
-        print("[test_set_to_db_and_get_from_db]----------------: ", self.intra_extension.get_data().keys())
+        # print("[test_set_to_db_and_get_from_db]----------------: ", self.intra_extension.get_data().keys())
         self.intra_extension.backup_intra_extension_to_db()
         self.intra_extension.get_intra_extension_from_db(self.intra_extension.get_uuid())
-        print("[test_set_to_db_and_get_from_db]----------------: ", self.intra_extension.get_data().keys())
+        # print("[test_set_to_db_and_get_from_db]----------------: ", self.intra_extension.get_data().keys())
 
 """
 

@@ -1,7 +1,6 @@
 {
     "subject_category_assignments": {
         "subject_security_level":{
-            "504de31b636c43bbb7c2dd1b76ee6cca": ["high"],
             "user1": ["high"],
             "user2": ["medium"]
         }

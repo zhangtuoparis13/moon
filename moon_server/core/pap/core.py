@@ -170,6 +170,7 @@ class PAP:
                             )
             self.intra_extensions[intra_ext_uuid].intra_extension_authz.del_subject(str_lookup)
             return intra_ext_uuid
+        raise Exception("Unable to install a new extension, permission denied!")
 
     @translate_uuid
     def list_mappings(self, user_id):
