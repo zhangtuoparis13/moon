@@ -50,6 +50,7 @@ class PIP:
         #WORKAROUND: if in version 2.0, Keystone connection doesn't work
         kcreds["auth_url"] = kcreds["auth_url"].replace("2.0", "3")
         kcreds["tenant_name"] = tenant["name"]
+        print(kcreds)
         self.kclient = keystone_client.Client(**kcreds)
         from novaclient import client as nova_client
         ncreds = get_nova_creds()
@@ -184,7 +185,7 @@ class PIP:
             status = instance.status
             max_cpt += 1
             if max_cpt > 12:
-                return
+                return instance.id
         return instance.id
 
     def del_object(self, uuid, tenant):
