@@ -134,6 +134,7 @@ class PAP:
             # Modify subjects
             for subject in self.intra_extensions[intra_ext_uuid].intra_extension_authz.get_subjects():
                 if subject == str_lookup:
+                    self.intra_extensions[intra_ext_uuid].intra_extension_authz.del_subject(str_lookup)
                     self.intra_extensions[intra_ext_uuid].intra_extension_authz.add_subject(self.__admin_uuid)
                     break
             # Modify subject assignments
@@ -142,12 +143,12 @@ class PAP:
                 for key in assignments:
                     if str_lookup == key:
                         for value in assignments[str_lookup]:
-                            print self.intra_extensions[intra_ext_uuid].intra_extension_authz.add_subject_assignment(
+                            self.intra_extensions[intra_ext_uuid].intra_extension_authz.add_subject_assignment(
                                 cat,
                                 self.__admin_uuid,
                                 value
                             )
-                            print self.intra_extensions[intra_ext_uuid].intra_extension_authz.del_subject_assignment(
+                            self.intra_extensions[intra_ext_uuid].intra_extension_authz.del_subject_assignment(
                                 cat,
                                 str_lookup,
                                 value
