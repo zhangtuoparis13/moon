@@ -54,6 +54,9 @@ class Metadata:
     def get_genre(self):
         return self.__genre
 
+    def get_model(self):
+        return self.__model
+
     def get_subject_categories(self):
         return self.__subject_categories
 
@@ -418,11 +421,15 @@ class Extension:
         for _relation in self.metadata.get_meta_rule()["sub_meta_rules"]:
             _sub_rule = list()
             for sub_subject_category in self.metadata.get_meta_rule()["sub_meta_rules"][_relation]["subject_categories"]:
-                if sub_cat_value_dict[_relation][sub_subject_category] \
-                        in self.configuration.get_subject_category_values()[sub_subject_category]:
-                    _sub_rule.append(sub_cat_value_dict[_relation][sub_subject_category])
-                else:
-                    return "[Error] Add Rule: Subject Category Value Unknown"
+                try:
+                    if sub_cat_value_dict[_relation][sub_subject_category] \
+                            in self.configuration.get_subject_category_values()[sub_subject_category]:
+                        _sub_rule.append(sub_cat_value_dict[_relation][sub_subject_category])
+                    else:
+                        return "[Error] Add Rule: Subject Category Value Unknown"
+                except KeyError as e:
+                    # DThom: sometimes relation attribute is buggy, I don't know why...
+                    print(e)
 
             #BUG: when adding a new category in rules despite it was previously adding
             # data = {
