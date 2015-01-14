@@ -65,16 +65,6 @@ urllib3_logger = logging.getLogger('urllib3')
 urllib3_logger.setLevel(logging.ERROR)
 
 
-def update_django_logs():
-    # Modifying Django logs
-    django_logger = logging.getLogger("django")
-    django_fh = logging.FileHandler('/var/log/moon/requests.log')
-    django_fh.setLevel(LOG_LEVEL)
-    formatter = logging.Formatter('%(asctime)s :: %(message)s')
-    django_fh.setFormatter(formatter)
-    django_logger.addHandler(django_fh)
-
-
 # Export authz and sys logger
 
 
@@ -85,6 +75,8 @@ def get_sys_logger():
 def get_authz_logger():
     return authz_logger
 
+
+# Decorator creation for Django views
 
 def log_request(function):
     """Decorator for logging request in sys_logger
