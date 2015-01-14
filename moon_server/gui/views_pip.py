@@ -20,9 +20,8 @@ from moon_server.gui.views import save_auth
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from moon_server.tools.log.core import log_request
 
-
-@log_request
 @csrf_exempt
+@log_request
 @login_required(login_url='/auth/login/')
 @save_auth
 def projects(request, project_uuid=None):
