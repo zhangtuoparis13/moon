@@ -14,32 +14,69 @@
 
 import logging
 
+
+class ColorFormatter(logging.Formatter):
+    def format(self, record):
+        format_orig = self._fmt
+        # Replace the original format with one customized by logging level
+        if record.levelno == logging.WARNING:
+            self._fmt = "\033[1;31m"+self._fmt+"\033[m"
+        elif record.levelno == logging.INFO:
+            self._fmt = "\033[1;32m"+self._fmt+"\033[m"
+        elif record.levelno == logging.ERROR:
+            self._fmt = "\033[1;41m"+self._fmt+"\033[m"
+        # Call the original formatter class to do the grunt work
+        result = logging.Formatter.format(self, record)
+        # Restore the original format configured by the user
+        self._fmt = format_orig
+        return result
+
 LOG_LEVEL = logging.INFO
 
-authz_logger = logging.getLogger('authz')
-authz_logger.setLevel(logging.WARNING)
-fh = logging.FileHandler('/var/log/moon/authz.log')
-fh.setLevel(logging.WARNING)
-formatter = logging.Formatter('%(asctime)s ------ %(message)s')
-fh.setFormatter(formatter)
-authz_logger.addHandler(fh)
+logger_root = logging.getLogger("moon")
+# Output configuration
+formatter_color = ColorFormatter("%(name)s :: %(levelname)s :: %(message)s")
+formatter_bw = logging.Formatter("%(asctime)s :: %(name)s :: %(levelname)s :: %(message)s")
 
-FORMAT = "%(name)s-%(levelname)s %(message)s\033[1;m"
-logging.basicConfig(format=FORMAT, level=LOG_LEVEL)
-logging.addLevelName(logging.INFO, "\033[1;32m%s" % logging.getLevelName(logging.INFO))
-logging.addLevelName(logging.WARNING, "\033[1;31m%s" % logging.getLevelName(logging.WARNING))
-logging.addLevelName(logging.ERROR, "\033[1;41m%s" % logging.getLevelName(logging.ERROR))
+# Logger for authz messages
+authz_logger = logging.getLogger('moon.authz')
+authz_logger.setLevel(LOG_LEVEL)
+authz_fh = logging.FileHandler('/var/log/moon/authz.log')
+authz_fh.setLevel(LOG_LEVEL)
+authz_fh.setFormatter(formatter_bw)
+authz_logger.addHandler(authz_fh)
+authz_st = logging.StreamHandler()
+authz_st.setFormatter(formatter_color)
+authz_logger.addHandler(authz_st)
 
-sys_logger = logging.getLogger('sys')
-sys_logger.setLevel(logging.WARNING)
-fh = logging.FileHandler('/var/log/moon/sys.log')
-fh.setLevel(logging.WARNING)
-formatter = logging.Formatter('%(asctime)s ------ %(message)s')
-fh.setFormatter(formatter)
-sys_logger.addHandler(fh)
+# Logger for messages from the framework
+sys_logger = logging.getLogger('moon.sys')
+sys_logger.setLevel(LOG_LEVEL)
+sys_fh = logging.FileHandler('/var/log/moon/system.log')
+sys_fh.setLevel(LOG_LEVEL)
+sys_fh.setFormatter(formatter_bw)
+sys_logger.addHandler(sys_fh)
+sys_st = logging.StreamHandler()
+sys_st.setFormatter(formatter_color)
+sys_logger.addHandler(sys_st)
 
+# Delete unneeded logs from URLLIB
 urllib3_logger = logging.getLogger('urllib3')
-urllib3_logger.setLevel(logging.CRITICAL)
+urllib3_logger.setLevel(logging.ERROR)
+
+
+def update_django_logs():
+    # Modifying Django logs
+    django_logger = logging.getLogger("django")
+    django_fh = logging.FileHandler('/var/log/moon/requests.log')
+    django_fh.setLevel(LOG_LEVEL)
+    formatter = logging.Formatter('%(asctime)s :: %(message)s')
+    django_fh.setFormatter(formatter)
+    django_logger.addHandler(django_fh)
+
+
+# Export authz and sys logger
+
 
 def get_sys_logger():
     return sys_logger
@@ -47,4 +84,17 @@ def get_sys_logger():
 
 def get_authz_logger():
     return authz_logger
+
+
+def log_request(function):
+    """Decorator for logging request in sys_logger
+
+    :param function:
+    :return:
+    """
+    def wrapped(*args, **kwargs):
+        sys_logger.info("{} {}".format(args[0].META.get("REQUEST_METHOD"), args[0].path))
+        result = function(*args, **kwargs)
+        return result
+    return wrapped
 

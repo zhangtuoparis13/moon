@@ -12,18 +12,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import logging
 from django.contrib.auth.decorators import login_required
 import json
 from django.http import HttpResponse
 from moon_server.core.pip import get_pip
 from moon_server.gui.views import save_auth
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from moon_server.tools.log.core import log_request
 
 
-logger = logging.getLogger("moon.django")
-
-
+@log_request
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
@@ -40,6 +38,7 @@ def projects(request, project_uuid=None):
     return HttpResponse(json.dumps({"projects": list(pip.get_tenants(uuid=project_uuid))}))
 
 
+@log_request
 @login_required(login_url='/auth/login/')
 @save_auth
 def users(request, project_uuid=None, user_uuid=None):
@@ -47,6 +46,7 @@ def users(request, project_uuid=None, user_uuid=None):
     return HttpResponse(json.dumps({"users": list(pip.get_subjects(tenant=project_uuid, user_uuid=user_uuid))}))
 
 
+@log_request
 @login_required(login_url='/auth/login/')
 @save_auth
 def objects(request, project_uuid=None, object_uuid=None):
@@ -54,6 +54,7 @@ def objects(request, project_uuid=None, object_uuid=None):
     return HttpResponse(json.dumps({"objects": list(pip.get_objects(tenant=project_uuid, object_uuid=object_uuid))}))
 
 
+@log_request
 @login_required(login_url='/auth/login/')
 @save_auth
 def roles(request, project_uuid=None, user_uuid=None):
@@ -61,6 +62,7 @@ def roles(request, project_uuid=None, user_uuid=None):
     return HttpResponse(json.dumps({"roles": list(pip.get_roles(project_uuid=project_uuid, user_uuid=user_uuid))}))
 
 
+@log_request
 @login_required(login_url='/auth/login/')
 @save_auth
 def groups(request, project_uuid=None, user_uuid=None):
@@ -68,6 +70,7 @@ def groups(request, project_uuid=None, user_uuid=None):
     return HttpResponse(json.dumps({"groups": list(pip.get_groups(project_uuid=project_uuid, user_uuid=user_uuid))}))
 
 
+@log_request
 @login_required(login_url='/auth/login/')
 @save_auth
 def role_assignments(request, project_uuid=None, user_uuid=None):
@@ -77,6 +80,7 @@ def role_assignments(request, project_uuid=None, user_uuid=None):
     ))
 
 
+@log_request
 @login_required(login_url='/auth/login/')
 @save_auth
 def group_assignments(request, project_uuid=None, user_uuid=None):
@@ -86,6 +90,7 @@ def group_assignments(request, project_uuid=None, user_uuid=None):
     ))
 
 
+@log_request
 @login_required(login_url='/auth/login/')
 @save_auth
 def images(request):
@@ -93,6 +98,7 @@ def images(request):
     return HttpResponse(json.dumps({"images": list(pip.get_images())}))
 
 
+@log_request
 @login_required(login_url='/auth/login/')
 @save_auth
 def flavors(request):

@@ -17,11 +17,8 @@ Policy information Point
 Information gathering from the infrastructure
 """
 from moon_server.tools.openstack_credentials import get_keystone_creds, get_nova_creds
-import logging
 from uuid import uuid4
 from keystoneclient.openstack.common.apiclient.exceptions import Unauthorized, Forbidden, Conflict, NotFound
-
-logger = logging.getLogger("moon.pip")
 
 
 class PIP:

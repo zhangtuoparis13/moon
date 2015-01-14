@@ -16,10 +16,8 @@
 Policy Decision Point
 """
 
-import logging
 import os
 from moon_server.core.pdp.inter_extension import InterExtension
-logger = logging.getLogger(__name__)
 import pkg_resources
 from moon_server.core.pdp.intra_extension import IntraExtension
 from moon_server.tools.sync_db import IntraExtensionsSyncer

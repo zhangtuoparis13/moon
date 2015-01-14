@@ -12,7 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import logging
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.template.defaultfilters import register
@@ -25,10 +24,9 @@ from django.http import HttpResponse
 # from moon.log_repository import get_log_manager
 from moon_server.core.pip import get_pip
 from moon_server.core.pap import get_pap
+from moon_server.tools.log.core import get_sys_logger
+from moon_server.tools.log.core import log_request
 
-
-logger = logging.getLogger("moon.django")
-# LOGS = get_log_manager()
 
 
 def save_auth(function):
@@ -74,7 +72,7 @@ def get_keystone_client(request):
 # Specific functions for GUI module
 ########################################################
 
-
+@log_request
 @save_auth
 @login_required(login_url='/auth/login/')
 def index(request):
@@ -97,6 +95,7 @@ def sync(request, uuid=None):
     sync_results = sync_results.replace("OK", "<span class=\"authorized\">OK</span>\n")
     return render(request, "moon/index.html", {"sync_results": mark_safe(sync_results)})
 
+@log_request
 @save_auth
 @login_required(login_url='/auth/login/')
 def tenants(request, uuid=None):
@@ -108,6 +107,7 @@ def tenants(request, uuid=None):
     return render(request, "moon/tenants.html", {"tenants": t})
 
 
+@log_request
 @save_auth
 @login_required(login_url='/auth/login/')
 def intra_extensions(request):
@@ -122,6 +122,7 @@ def intra_extensions(request):
     })
 
 
+@log_request
 @login_required(login_url='/auth/login/')
 @save_auth
 def intra_extension(request, uuid=None):
@@ -188,6 +189,7 @@ def intra_extension(request, uuid=None):
     })
 
 
+@log_request
 @login_required(login_url='/auth/login/')
 @save_auth
 def inter_extensions(request):
@@ -238,6 +240,7 @@ def inter_extensions(request):
     })
 
 
+@log_request
 @login_required(login_url='/auth/login/')
 @save_auth
 def inter_extension(request, uuid=None):
@@ -264,6 +267,7 @@ def inter_extension(request, uuid=None):
     })
 
 
+@log_request
 @login_required(login_url='/auth/login/')
 @save_auth
 def intra_extension_attributes(request, uuid=None, type=None):
@@ -323,6 +327,7 @@ def is_managed(tenant):
         return False
 
 
+@log_request
 @login_required(login_url='/auth/login/')
 @save_auth
 def logs_repository(request):
@@ -407,6 +412,7 @@ def has_subject_attribute(tenant, object_uuid=None):
     return ext.has_subject_attributes(uuid=object_uuid)
 
 
+@log_request
 @login_required(login_url='/auth/login/')
 @save_auth
 def roles(request, uuid=None):

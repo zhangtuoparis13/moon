@@ -12,7 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import logging
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.contrib.auth.decorators import login_required
 import json
@@ -22,11 +21,7 @@ from moon_server.core.pip import get_pip
 from moon_server.gui.views import save_auth
 from moon_server import settings
 import re
-
-
-logger = logging.getLogger("moon.django")
-# LOGS = get_log_manager()
-
+from moon_server.tools.log.core import log_request
 
 def catch_error(function):
     def wrapped(*args, **kwargs):
@@ -87,7 +82,7 @@ def send_error(code=500, message="", stacktrace=""):
 # Functions for getting information about intra-extensions
 ##########################################################
 
-
+@log_request
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
@@ -118,6 +113,7 @@ def intra_extensions(request, uuid=None):
     })
 
 
+@log_request
 @login_required(login_url='/auth/login/')
 @save_auth
 @catch_error
@@ -127,6 +123,7 @@ def tenant(request, uuid=None):
     return send_json({"tenant": extension.get_tenant_uuid()})
 
 
+@log_request
 @login_required(login_url='/auth/login/')
 @save_auth
 @catch_error
@@ -140,6 +137,7 @@ def policies(request):
 #####################################################
 
 
+@log_request
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
@@ -175,6 +173,7 @@ def subjects(request, uuid=None, subject_id=None):
 #####################################################
 
 
+@log_request
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
@@ -217,6 +216,7 @@ def objects(request, uuid=None, object_id=None):
 ###############################################################
 
 
+@log_request
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
@@ -244,6 +244,7 @@ def subject_categories(request, uuid=None, category_id=None):
 ###############################################################
 
 
+@log_request
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
@@ -272,6 +273,7 @@ def object_categories(request, uuid=None, category_id=None):
 ######################################################################
 
 
+@log_request
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
@@ -308,6 +310,7 @@ def subject_category_values(request, uuid=None, category_id=None, value=None):
 ######################################################################
 
 
+@log_request
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
@@ -344,6 +347,7 @@ def object_category_values(request, uuid=None, category_id=None, value=None):
 ######################################################################
 
 
+@log_request
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
@@ -378,6 +382,7 @@ def subject_assignments(request, uuid=None, subject_id=None, category_id=None, v
     return send_json({"subject_assignments": results})
 
 
+@log_request
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
@@ -416,6 +421,7 @@ def object_assignments(request, uuid=None, object_id=None, category_id=None, val
 ######################################################################
 
 
+@log_request
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
@@ -427,6 +433,7 @@ def meta_rules(request, uuid=None):
     )
 
 
+@log_request
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
@@ -465,6 +472,7 @@ def rules(request, uuid=None):
 ######################################################################
 
 
+@log_request
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
@@ -528,6 +536,7 @@ def inter_extensions(request, uuid=None):
 ######################################################################
 
 
+@log_request
 @csrf_exempt
 @login_required(login_url='/auth/login/')
 @save_auth
