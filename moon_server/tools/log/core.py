@@ -78,6 +78,7 @@ def get_authz_logger():
 
 # Decorator creation for Django views
 
+
 def log_request(function):
     """Decorator for logging request in sys_logger
 
