@@ -20,24 +20,25 @@ from sqlalchemy.dialects.mysql import INTEGER as Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from moon_server import settings
-# from moon.info_repository import models #noqa
-import logging
+from moon_server.tools.log import get_authz_logger
 
-logger = logging.getLogger('moon.mysql_driver')
 
-DataBases = getattr(settings, "DATABASES")
-if len(DataBases['user_db']['HOST']) == 0:
-    DataBases['user_db']['HOST'] = "127.0.0.1"
-if len(DataBases['user_db']['PORT']) == 0:
-    DataBases['user_db']['PORT'] = "3306"
+authz_logger = get_authz_logger()
 
-drivername = DataBases['user_db']['ENGINE']
+
+DataBases = getattr(settings, "MOON_DATABASES")
+if len(DataBases['intra-extensions']['HOST']) == 0:
+    DataBases['intra-extensions']['HOST'] = "127.0.0.1"
+if len(DataBases['intra-extensions']['PORT']) == 0:
+    DataBases['intra-extensions']['PORT'] = "3306"
+
+drivername = DataBases['intra-extensions']['ENGINE']
 engine_url = 'mysql://{user}:{password}@{host}:{port}/{table}'.format(
-    user=DataBases['user_db']['USER'],
-    password=DataBases['user_db']['PASSWORD'],
-    host=DataBases['user_db']['HOST'],
-    port=DataBases['user_db']['PORT'],
-    table=DataBases['user_db']['NAME']
+    user=DataBases['intra-extensions']['USER'],
+    password=DataBases['intra-extensions']['PASSWORD'],
+    host=DataBases['intra-extensions']['HOST'],
+    port=DataBases['intra-extensions']['PORT'],
+    table=DataBases['intra-extensions']['NAME']
 )
 
 engine_user_db = create_engine(
