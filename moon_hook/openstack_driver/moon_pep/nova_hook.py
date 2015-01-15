@@ -84,6 +84,7 @@ class NovaMoon(wsgi.Middleware):
             keystone_auth_context = request.environ.get("KEYSTONE_AUTH_CONTEXT", {})
             requested_tenant = self._moon_client.get_project(request.environ["PATH_INFO"])
             authz_request = {
+                'service': "nova",
                 'subject': request.environ.get("HTTP_X_USER_ID"),
                 'object': _object,
                 'object_type': _object_type,

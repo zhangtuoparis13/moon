@@ -85,6 +85,7 @@ class KeystoneMoon(wsgi.Middleware):
 
         if _object_type in MANAGED_OBJECTS:
             authz_request = {
+                'service': "keystone",
                 'subject': _user_id,
                 'object': _object,
                 'object_type': _object_type,

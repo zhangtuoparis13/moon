@@ -116,6 +116,7 @@ class MoonClient:
         }
         """
         post_request = dict()
+        post_request["service"] = authz_request["service"]
         post_request["requesting_tenant"] = authz_request["requesting_tenant"]
         post_request["requested_tenant"] = authz_request["requested_tenant"]
         post_request["subject"] = authz_request["subject"]

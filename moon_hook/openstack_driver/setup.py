@@ -21,7 +21,7 @@ confdir = resource_filename(__name__, "conf/moon")
 
 setup(
     name='Moon_hook',
-    version='0.1.2',
+    version='0.1.3',
     packages=find_packages(),
     author='DThom',
     author_email="thomas.duval@orange.com",
