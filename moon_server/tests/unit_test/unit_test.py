@@ -12,8 +12,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-execfile("core_pdp_extension.py")
-execfile("core_pdp_intra_extension.py")
-execfile("core_pdp_inter_extension.py")
-execfile("core_pap.py")
+# execfile("core_pdp_extension.py")
+# execfile("core_pdp_intra_extension.py")
+# execfile("core_pdp_inter_extension.py")
+# execfile("core_pap.py")
 
