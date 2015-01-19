@@ -10,4 +10,4 @@ python-novaclient
 pymongo
 oslo.config
 netifaces
-MySQL-python
+#MySQL-python
