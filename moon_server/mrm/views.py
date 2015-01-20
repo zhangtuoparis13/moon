@@ -18,12 +18,12 @@ from moon_server.core.pdp import pdp_authz
 import hashlib
 from moon_server import settings
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
-from moon_server.tools.log.core import get_authz_logger
+import logging
 
 # TODO: this must be authenticated/secured!!!
 # TODO: this must be CSRF protected!!!
 
-authz_logger = get_authz_logger()
+LOG = logging.getLogger("moon.authz")
 
 @csrf_exempt
 def mrm_authz(post_request):
@@ -46,7 +46,7 @@ def mrm_authz(post_request):
     try:
         if post_request.method == 'POST':
             data = json.loads(post_request.read())
-            authz_logger.info("request={}".format(data))
+            LOG.info("request={}".format(data))
             if "key" in data:
                 crypt_key = hashlib.sha256()
                 crypt_key.update(data["key"])
@@ -69,15 +69,15 @@ def mrm_authz(post_request):
     except:
         import sys
         import traceback
-        authz_logger.critical(sys.exc_info())
-        authz_logger.critical(traceback.print_exc())
+        LOG.critical(sys.exc_info())
+        LOG.critical(traceback.print_exc())
         if getattr(settings, "DEBUG"):
             authz_response["error"] = traceback.format_exc()
     finally:
         if authz_response["authz"] == "OK":
-            authz_logger.info("response={}".format(authz_response))
+            LOG.info("response={}".format(authz_response))
         elif authz_response["authz"] == "NoExtension":
-            authz_logger.warning("response={}".format(authz_response))
+            LOG.warning("response={}".format(authz_response))
         else:
-            authz_logger.error("response={}".format(authz_response))
+            LOG.error("response={}".format(authz_response))
         return HttpResponse(json.dumps(authz_response), content_type="application/json")

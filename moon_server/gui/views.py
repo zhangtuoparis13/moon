@@ -24,9 +24,7 @@ from django.http import HttpResponse
 # from moon.log_repository import get_log_manager
 from moon_server.core.pip import get_pip
 from moon_server.core.pap import get_pap
-from moon_server.tools.log.core import get_sys_logger
 from moon_server.tools.log.core import log_request
-
 
 
 def save_auth(function):

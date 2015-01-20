@@ -17,10 +17,9 @@ import copy
 import json
 import itertools
 from uuid import uuid4
-from moon_server.tools.log.core import get_authz_logger
+import logging
 
-
-authz_logger = get_authz_logger()
+LOG = logging.getLogger("moon.authz")
 
 
 class Metadata:

@@ -20,9 +20,9 @@ from moon_server.core.pdp import get_intra_extensions
 from moon_server.core.pdp import get_super_extension
 from moon_server.core.pdp import get_tenant_intra_extension_mapping
 from moon_server.core.pip import get_pip
-from moon_server.tools.log import get_sys_logger
+import logging
 
-sys_logger = get_sys_logger()
+LOG = logging.getLogger("moon.sys")
 
 
 def translate_uuid(function):

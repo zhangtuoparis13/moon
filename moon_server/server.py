@@ -18,11 +18,10 @@ import os
 import sys
 import argparse
 import logging
-from moon_server.tools.log.core import get_sys_logger
+import moon_server.tools.log.core #noqa
 
 
-sys_logger = get_sys_logger()
-# TODO: LOG_SYS = logging.getLogger('moon.sys')
+LOG = logging.getLogger('moon.sys')
 
 
 def start_django(args):
@@ -84,7 +83,7 @@ if __name__ == "__main__":
     if args.policies:
         pap.set_policies(args.policies)
     if args.run:
-        sys_logger.info("Starting application")
+        LOG.info("Starting application")
         d_args = [sys.argv[0]]
         d_args.extend(args.djangoargs)
         start_django(d_args)

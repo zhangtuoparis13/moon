@@ -20,10 +20,10 @@ from sqlalchemy.dialects.mysql import INTEGER as Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from moon_server import settings
-from moon_server.tools.log import get_authz_logger
+import logging
 
 
-authz_logger = get_authz_logger()
+LOG = logging.getLogger("moon.authz")
 
 
 DataBases = getattr(settings, "MOON_DATABASES")

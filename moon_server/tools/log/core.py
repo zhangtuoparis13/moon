@@ -65,17 +65,6 @@ urllib3_logger = logging.getLogger('urllib3')
 urllib3_logger.setLevel(logging.ERROR)
 
 
-# Export authz and sys logger
-
-
-def get_sys_logger():
-    return sys_logger
-
-
-def get_authz_logger():
-    return authz_logger
-
-
 # Decorator creation for Django views
 
 
