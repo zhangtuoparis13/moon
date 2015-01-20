@@ -17,10 +17,12 @@
 import os
 import sys
 import argparse
+import logging
 from moon_server.tools.log.core import get_sys_logger
 
 
 sys_logger = get_sys_logger()
+# TODO: LOG_SYS = logging.getLogger('moon.sys')
 
 
 def start_django(args):

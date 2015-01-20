@@ -41,7 +41,7 @@ formatter_bw = logging.Formatter("%(asctime)s :: %(name)s :: %(levelname)s :: %(
 # Logger for authz messages
 authz_logger = logging.getLogger('moon.authz')
 authz_logger.setLevel(LOG_LEVEL)
-authz_fh = logging.FileHandler('/var/log/moon/authz.log')
+authz_fh = logging.FileHandler('/var/log/moon/authz.log')  # TODO: CONF to specify log file
 authz_fh.setLevel(LOG_LEVEL)
 authz_fh.setFormatter(formatter_bw)
 authz_logger.addHandler(authz_fh)
@@ -52,7 +52,7 @@ authz_logger.addHandler(authz_st)
 # Logger for messages from the framework
 sys_logger = logging.getLogger('moon.sys')
 sys_logger.setLevel(LOG_LEVEL)
-sys_fh = logging.FileHandler('/var/log/moon/system.log')
+sys_fh = logging.FileHandler('/var/log/moon/system.log')  # TODO: CONF to specify log file
 sys_fh.setLevel(LOG_LEVEL)
 sys_fh.setFormatter(formatter_bw)
 sys_logger.addHandler(sys_fh)
