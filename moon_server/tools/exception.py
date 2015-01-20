@@ -12,6 +12,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+
 class AuthzException(Exception):
     def __init__(self, message):
         self.__message = message
@@ -52,6 +53,22 @@ class ObjectAttributeNotFoundException(Exception):
         return self.__message
 
 
+class DuplicateSubjectException(Exception):
+    def __init__(self, message):
+        self.__message = message
+
+    def __str__(self):
+        return self.__message
+
+
+class DuplicateObjectException(Exception):
+    def __init__(self, message):
+        self.__message = message
+
+    def __str__(self):
+        return self.__message
+
+
 class SubjectAssignmentNotFoundException(Exception):
     def __init__(self, message):
         self.__message = message
@@ -68,30 +85,6 @@ class ObjectAssignmentNotFoundException(Exception):
         return self.__message
 
 
-class RuleNotFoundException(Exception):
-    def __init__(self, message):
-        self.__message = message
-
-    def __str__(self):
-        return self.__message
-
-
-class DuplicateObjectException(Exception):
-    def __init__(self, message):
-        self.__message = message
-
-    def __str__(self):
-        return self.__message
-
-
-class DuplicateSubjectException(Exception):
-    def __init__(self, message):
-        self.__message = message
-
-    def __str__(self):
-        return self.__message
-
-
 class DuplicateSubjectAttributeException(Exception):
     def __init__(self, message):
         self.__message = message
@@ -101,6 +94,14 @@ class DuplicateSubjectAttributeException(Exception):
 
 
 class DuplicateObjectAttributeException(Exception):
+    def __init__(self, message):
+        self.__message = message
+
+    def __str__(self):
+        return self.__message
+
+
+class RuleNotFoundException(Exception):
     def __init__(self, message):
         self.__message = message
 
