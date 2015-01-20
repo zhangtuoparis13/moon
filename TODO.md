@@ -59,10 +59,9 @@ Legend:
 ###GUI
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
-| Json interface      | Tom, WuKong |                   |               | 90%                |
-| LOG                 | Tom, WuKong |                   |               | 90%                |
-| inter-extension     | Tom, WuKong |                   |               | 90%                |
-| Json interface      | Tom, WuKong |                   |               | 90%                |
+| Json interface      | Tom         |                   |               | 40%                |
+| LOG                 | Tom, WuKong |                   |               | 0%                 |
+| inter-extension     | Tom, WuKong |                   |               | 0%                 |
 
 
 ###Package
