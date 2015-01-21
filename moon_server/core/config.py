@@ -11,29 +11,61 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+"""
+TODO: put the following code to the main file
+
+CONF = config.CONF
+config.configure()
+CONF(default_config_files=['/../../moon.conf'])
+"""
+
 
 from oslo.config import cfg
 from oslo import messaging
 
+
 FILE_OPTIONS = {
-    'openstack': [
-        cfg.StrOpt('OPENSTACK_KEYSTONE_URL', default='http://openstackserver:5000/v3',
-                   help='URL of the OpenStack server'),
-        cfg.StrOpt('OS_USERNAME', default='admin',
-                   help='Name of the OpenStack administrator'),
-        cfg.StrOpt('OS_PASSWORD', default='nomoresecrete',
-                   help='Password of the OpenStack administrator'),
-        cfg.StrOpt('OS_TENANT_NAME', default='admin',
-                   help='Tenant name of the OpenStack administrator'),
-        cfg.StrOpt('OS_AUTH_URL', default='http://openstackserver:5000/v3',
-                   help='URL of the OpenStack server'),
+    None: [
+        cfg.IntOpt('admin_workers', default=1,
+                   help='help xxx'),
+        cfg.IntOpt('max_token_size', default=16384,
+                   help='help xxx'),
+        cfg.StrOpt('logging_exception_prefix', default='%(process)d TRACE %(name)s %(instance)s',
+                   help='logging_exception_prefix'),
+        cfg.StrOpt('logging_debug_format_suffix', default='%(funcName)s %(pathname)s:%(lineno)d',
+                   help='logging_exception_prefix'),
+        cfg.StrOpt('logging_default_format_string',
+                   default='%(process)d %(levelname)s %(name)s [-] %(instance)s%(message)s',
+                   help='logging_exception_prefix'),
+        cfg.StrOpt('logging_context_format_string',
+                   default='%(process)d %(levelname)s %(name)s [%(request_id)s %(user_identity)s] %(instance)s%(message)s',
+                   help='logging_exception_prefix'),
+        cfg.BoolOpt('debug', default=True,
+                    help='debug'),
+        cfg.StrOpt('admin_token', default='password',
+                   help='admin_token'),
+        cfg.StrOpt('admin_bind_host', default='0.0.0.0',
+                   help='admin_bind_host'),
+        cfg.StrOpt('admin_endpoint', default='0.0.0.0:%(admin_port)s/',
+                   help='admin_bind_host'),
+        cfg.StrOpt('public_endpoint', default='0.0.0.0:%(public_port)s/',
+                   help='admin_bind_host'),
     ],
     'moon': [
-        cfg.StrOpt('CNX_PASSWORD', default='nomoresecrete',
+        cfg.StrOpt('keystone_admin_endpoint_v3', default='http://0.0.0.0:%(admin_port)s/v3',
+                   help='keystone_admin_endpoint_v3'),
+        cfg.StrOpt('kesytone_admin_endpoint_v2', default='http://0.0.0.0:%(admin_port)s/v22',
                    help='Connection password between OpenStack hooks and the Moon platform'),
-        cfg.BoolOpt('BLOCK_UNKNOWN_TENANT', default=False,
+        cfg.StrOpt('cnx_password', default='P4ssw0rd',
+                   help='Connection password between OpenStack hooks and the Moon platform'),
+        cfg.BoolOpt('block_unknown_tenant', default=False,
                     help='Does Moon block tenant that are not connected to a security extension'),
-
+        cfg.StrOpt('moon_tenant', default='admin',
+                   help='moon_tenant'),
+        cfg.StrOpt('keystone_admin', default='admin',
+                   help='keystone_admin'),
+        cfg.StrOpt('keystone_admin_password', default='nomoresecretenomoresecrete',
+                   help='keystone_admin_password'),
     ]
 }
 
