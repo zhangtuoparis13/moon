@@ -56,12 +56,25 @@ Legend:
 | Prolog interface    | Tom, WuKong |                   |               | 0%                 |
  
 
-###GUI
+### GUI
 | Title               | Actor       | Description       | Deadline      | Percentage of work |
 | ------------------- | ----------- | ----------------- | ------------- | ------------------ |
 | Json interface      | Tom         |                   |               | 40%                |
 | LOG                 | Tom, WuKong |                   |               | 0%                 |
 | inter-extension     | Tom, WuKong |                   |               | 0%                 |
+
+### K2K
+| Title               | Actor       | Description       | Deadline      | Percentage of work |
+| ------------------- | ----------- | ----------------- | ------------- | ------------------ |
+| LDAP support        | Tom, WuKong |                   |               | 0%                 |
+| Inter-connexion     | Tom, WuKong |                   |               | 0%                 |
+
+
+### Platform
+| Title               | Actor       | Description       | Deadline      | Percentage of work |
+| ------------------- | ----------- | ----------------- | ------------- | ------------------ |
+| get roles from      | Tom         |                   |               | 0%                 |
+| avoid remove module before unmap| Tom, WuKong |       |               | 0%                 |
 
 
 ###Package
