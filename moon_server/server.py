@@ -18,6 +18,7 @@ import os
 import sys
 import argparse
 import logging
+from moon_server import config
 from moon_server.tools.log.core import get_sys_logger
 
 
@@ -62,11 +63,17 @@ def find_admin_uuid():
 
 
 if __name__ == "__main__":
+    CONF = config.CONF
+    config.configure()
+    # CONF(default_config_files=['/../../moon.conf']) : # for reflection of options
+
     pid = os.getpid()
     try:
         open("/var/run/moon.pid", "w").write(str(pid))
     except IOError:
         open("/tmp/moon.pid", "w").write(str(pid))
+
+    # TODO: put the following arguments to the conf file
     parser = argparse.ArgumentParser()
     parser.add_argument("djangoargs", nargs='*', help="Set Django specific arguments")
     parser.add_argument("--policies", help="Set a directory containing policies")
