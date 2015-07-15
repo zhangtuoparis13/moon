@@ -139,6 +139,12 @@ echo == Lancement de devstack
 echo 	\* Rectification des droits du depot cloné de devstack ...
 chown -R vagrant:vagrant  $REP_REPO_DEVSTACK
 
-#Lancement de devstack
+#Launching devstack...
 echo 	\* Lancement de devstack en tant que Vagrant
+
+# Some explications:
+# - We use sudo tu impersonate the executaion of stack.sh
+# - "-n" force sudo not to be interactive
+# - sudo has one major drawback: it won't transfer the current execution environment to the launched program. That's why we call bash, set up environment variable and, then, execute .stack.sh
+# - export no_proxy=\$(hostname -I | sed \"s/ /,/g\")$no_proxy is a trick to define $no_proxy in the new execution context, and add all IP Adress of all interface in the $no_proxy variable, to prevent bugs with the keystone's configuration of each OpenStack module.
 sudo -n -u $DEVSTACK_USER bash -c "eval \"export USER=$DEVSTACK_USER && export HOME=~$DEVSTACK_USER && export http_proxy=$http_proxy && export https_proxy=$https_proxy && export ftp_proxy=$ftp_proxy && export no_proxy=\$(hostname -I | sed \"s/ /,/g\")$no_proxy && cd $REP_REPO_DEVSTACK && ./stack.sh \""
