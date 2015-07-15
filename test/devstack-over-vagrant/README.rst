@@ -22,7 +22,7 @@ Plus précisément, le script réalise les étapes suivantes:
 
 - mise à jour des paquets du système,
 
-- installation du SCM GIT,
+- installation du gestionnaire de version GIT,
 
 - configuration du support du proxy par ce dernier,
 
@@ -35,7 +35,7 @@ Plus précisément, le script réalise les étapes suivantes:
 - lancement de DevStack.
 
 
-Ce programme est composé de deux fichiers:
+Ce programme est composé de trois fichiers:
 
 - le fichier ``VagrantFile`` indiquant:
 
@@ -45,7 +45,9 @@ Ce programme est composé de deux fichiers:
 
 	+ le script de provisionning à amorcer;
 
-- le script de ``devstack.provision.sh`` servant à installer les dépendances de DevStack dans la VM conçue, à l'installer, à le configurer et à l'amorcer:
+- le script de ``devstack.provision.sh`` servant à installer les dépendances de DevStack dans la VM conçue, à l'installer, à le configurer et à l'amorcer,
+
+-le fichier local.conf.default, qui permet de définir des options de configuration supplémentaire dans le fichier local.conf employé.
 
 Configuration:
 --------------
