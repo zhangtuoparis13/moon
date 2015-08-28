@@ -18,11 +18,9 @@
 			
 			data: {
                  	   	
-				tenant: $resource('./pip/projects/:project_uuid', {}, {
-	     	   		query: { method: 'GET', isArray: false },
+				tenant: $resource('http://wazak.ddns.net:8888/tenant_db.json', {}, {
 	     	   		get: { method: 'GET', isArray: false },
-	     	   		create: { method: 'POST' },
-	     	   		remove: { method: 'DELETE' }
+	     	   		create: { method: 'POST' }
 	    	   	}),
 	    	   	
 	    	   	subject: $resource('./pip/projects/:project_uuid/users/:user_uuid', {}, {

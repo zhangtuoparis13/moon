@@ -20,7 +20,7 @@
 		 * 
 		 */
 		
-		list.tenants = tenants.projects;
+		list.tenants = tenants;
 		
 		list.getTenants = getTenants;
 		list.hasTenants = hasTenants;
@@ -54,7 +54,7 @@
 			 	   	  showModal: showViewModal };
 						
 		newTenantsTable();
-		resolveMappedIntraExtensions();
+		// resolveMappedIntraExtensions();
 		
 		/*
 		 * ---- events
