@@ -6,7 +6,7 @@
 # or at 'http://www.apache.org/licenses/LICENSE-2.0'.
 
 # Ce  script cherche à provisionner une machine Ubuntu Trusty avec une installation de Devstack.
-# Les étapes réaliser par ce script sont les suivantes:
+# Les étapes réalisées par ce script sont les suivantes:
 # 	* Configuration du support du proxy par la VM par APT et le script d'installation
 #	* MAJ des index des dépots APT
 #	* MAJ des paquets du système
@@ -31,7 +31,7 @@ APT_CONF=/etc/apt/apt.conf.d/20-proxy.conf
 	## Utilisateur allant executer Devstack
 DEVSTACK_USER=vagrant
 	## Branche de devstack à utiliser (master|stable/kilo|stable/juno etc.)
-BRANCH=master
+BRANCH=stable/kilo
 
 ## Devstack SRC
 	# Url d'où GIT doit cloner le dépot devstack
@@ -39,7 +39,7 @@ URL_DEVSTACK=https://github.com/openstack-dev/devstack.git
 	# Repertoire ou dépot devstack doit être cloné
 REP_REPO_DEVSTACK=~vagrant/devstack/
 
-## Devstack config
+## Configuration de Devstack
 FIXED_RANGE=10.254.1.0/24
 NETWORK_GATEWAY=10.254.1.1
 LOGDAY=1
@@ -50,9 +50,9 @@ DATABASE_PASSWORD=huJautBoyzfucomFicuvTagRo
 RABBIT_PASSWORD=wohodofNavfogJiercisGujEe
 SERVICE_PASSWORD=amenhoucterkajOsawquavdis
 SERVICE_TOKEN=9f2d78d4-e679-b158-9ab7-4d2e01613d7b
-CONF_FILE=~vagrant/devstack/local.conf
 STACK_USER=vagrant
-################################# Fin de la configuration ########################################
+CONF_FILE=~vagrant/devstack/local.conf
+################################ Fin de la configuration ########################################
 
 echo ====================== Début du provisonnement de devstack ========================
 echo 
@@ -121,7 +121,8 @@ echo == Configuration de l\'environement de Devstack - local.conf
 echo 	\* Rentre dans $REP_REPO_DEVSTACK
 cd $REP_REPO_DEVSTACK 
 echo 	\* Création fichier
-echo [[local\|localrc]] > $CONF_FILE
+cp /vagrant/local.conf.default $CONF_FILE
+#echo [[local\|localrc]] > $CONF_FILE
 for i in FIXED_RANGE NETWORK_GATEWAY LOGDAY LOGDIR LOGFILE ADMIN_PASSWORD DATABASE_PASSWORD RABBIT_PASSWORD SERVICE_PASSWORD SERVICE_TOKEN STACK_USER; do
 	echo $i=$(eval "echo \$$(echo $i)") >> $CONF_FILE
 	echo 	\* Configuration de $i=$(eval "echo \$$(echo $i)") 
@@ -138,7 +139,12 @@ echo == Lancement de devstack
 echo 	\* Rectification des droits du depot cloné de devstack ...
 chown -R vagrant:vagrant  $REP_REPO_DEVSTACK
 
-#Lancement de devstack
+#Launching devstack...
 echo 	\* Lancement de devstack en tant que Vagrant
-# sudo -n -u $DEVSTACK_USER bash -c export
+
+# Some explications:
+# - We use sudo tu impersonate the executaion of stack.sh
+# - "-n" force sudo not to be interactive
+# - sudo has one major drawback: it won't transfer the current execution environment to the launched program. That's why we call bash, set up environment variable and, then, execute .stack.sh
+# - export no_proxy=\$(hostname -I | sed \"s/ /,/g\")$no_proxy is a trick to define $no_proxy in the new execution context, and add all IP Adress of all interface in the $no_proxy variable, to prevent bugs with the keystone's configuration of each OpenStack module.
 sudo -n -u $DEVSTACK_USER bash -c "eval \"export USER=$DEVSTACK_USER && export HOME=~$DEVSTACK_USER && export http_proxy=$http_proxy && export https_proxy=$https_proxy && export ftp_proxy=$ftp_proxy && export no_proxy=\$(hostname -I | sed \"s/ /,/g\")$no_proxy && cd $REP_REPO_DEVSTACK && ./stack.sh \""
