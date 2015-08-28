@@ -10,9 +10,9 @@
 		.module('moon')
 			.controller('TenantListController', TenantListController);
 	
-	TenantListController.$inject = ['$rootScope', '$scope', '$filter', '$modal', '$translate', 'ngTableParams', 'alertService', 'intraExtensionService', 'tenants', 'superExtensions'];
+	TenantListController.$inject = ['$rootScope', '$scope', '$filter', '$modal', '$translate', 'ngTableParams', 'alertService', 'intraExtensionService', 'tenants'];
 	
-	function TenantListController($rootScope, $scope, $filter, $modal, $translate, ngTableParams, alertService, intraExtensionService, tenants, superExtensions) {
+	function TenantListController($rootScope, $scope, $filter, $modal, $translate, ngTableParams, alertService, intraExtensionService, tenants) {
 		
 		var list = this;
 		
@@ -186,7 +186,7 @@
 		function searchTenant(tenant){
 		    
 			if (tenant.name.indexOf(list.search.query) != -1 
-					|| tenant.domain.indexOf(list.search.query) != -1) {
+					|| tenant.description.indexOf(list.search.query) != -1) {
 				
 		        return true;
 		    

@@ -18,8 +18,8 @@
 			
 			data: {
                  	   	
-				tenant: $resource('http://wazak.ddns.net:8888/tenant_db.json', {}, {
-	     	   		get: { method: 'GET', isArray: false },
+				tenant: $resource('test/tenant_db.json', {}, {
+	     	   		query: { method: 'GET', isArray: true },
 	     	   		create: { method: 'POST' }
 	    	   	}),
 	    	   	

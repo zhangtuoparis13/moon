@@ -112,9 +112,9 @@
 				controller: 'TenantListController',
 				controllerAs: 'list',
 	            resolve: {
-	            	superExtensions: function(tenantService) {
+	            	/*superExtensions: function(tenantService) {
 	            		return tenantService.data.superExtention.query().$promise;
-	            	},
+	            	},*/
 	            	tenants: function(tenantService) {
 	            		return tenantService.data.tenant.query().$promise;
 	            	}
