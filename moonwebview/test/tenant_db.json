@@ -17,8 +17,9 @@
 	"id": "1234567892",
 	"name": "custom",
         "domain": "default",
-        "description": "I'm a custome tenant for testing stuff",
+        "description": "I'm a custom tenant for testing stuff",
         "intra_authz_extension_id": "1234567892",
-        "intra_admin_extension_id": "0987654323"
+        "intra_admin_extension_id": "0987654323",
+	"managed": true
     }
 ]

@@ -29,14 +29,14 @@
 	            <colgroup>
 	                <col class="col-md-2" />
 	                <col class="col-md-2" />
-	                <!--<col class="col-md-1" />
+	                <col class="col-md-1" />
 	                <col class="col-md-1" />
 	                <col class="col-md-2" />
-	                <col class="col-md-1" />-->
+	                <col class="col-md-1" />
 	            </colgroup>
 	            
 	            <thead>
-	            
+
 	                <tr>
 	                
 	                	<th class="customTables sortable"
@@ -51,7 +51,8 @@
 								<div translate="moon.tenant.list.table.domain">Domain</div>
 						</th>
 							
-						<!--<th class="customTables sortable"
+						<th class="customTables sortable"
+							
 							ng-class="{ 'sort-asc': list.table.isSortBy('managed', 'asc'), 'sort-desc': list.table.isSortBy('managed', 'desc') }"
 							ng-click="list.table.sorting('managed', list.table.isSortBy('managed', 'asc') ? 'desc' : 'asc')">
 								<div translate="moon.tenant.list.table.managed">Managed</div>
@@ -69,7 +70,7 @@
 						
 	                    <th class="customTables">
 							<div translate="moon.tenant.list.action.title">Actions</div>
-						</th>-->
+						</th>
 	                    
 	                </tr>
 	                
@@ -85,8 +86,8 @@
 	            
 		            <tr ng-repeat="aTenant in $data | filter:list.search.find | orderBy:sort:reverse">
 		                <td>{{aTenant.name}} </td>
-		               	<td>{{aTenant.description}}</td>
-		                 <!--<td>
+		               	<td>{{aTenant.domain}}</td>
+		                 <td>
 		                	<span ng-if="aTenant.managed" class="glyphicon glyphicon-ok"></span>
 		                </td>
 		                <td>
@@ -134,7 +135,7 @@
 			                            </li>
 			                       </ul>
 			               </div>
-		               </td>-->
+		               </td>
 		               
 		            </tr>
 		            
