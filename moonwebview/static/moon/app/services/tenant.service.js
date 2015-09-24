@@ -10,9 +10,9 @@
 		.module('moon')
 				.factory('tenantService', tenantService);
 	
-	tenantService.$inject = ['$q', '$resource'];
+	tenantService.$inject = ['$q', '$resource' , 'REST_URI' ];
 	
-	function tenantService($q, $resource,REST_URI) {
+	function tenantService($q, $resource, REST_URI) {
 	                                   	
 		return {
 			
@@ -76,6 +76,6 @@
         
         };
     
-    };
+    }
 	
 })();
