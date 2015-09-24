@@ -10,9 +10,9 @@
 		.module('moon')
 			.controller('IntraExtensionDeleteRuleController', IntraExtensionDeleteRuleController);
 	
-	IntraExtensionDeleteRuleController.$inject = ['$scope', '$http', '$translate', 'alertService', 'intraExtensionService'];
+	IntraExtensionDeleteRuleController.$inject = ['$scope', '$http', '$translate', 'alertService', 'intraExtensionService','REST_URI'];
 	
-	function IntraExtensionDeleteRuleController($scope, $http, $translate, alertService, intraExtensionService) {
+	function IntraExtensionDeleteRuleController($scope, $http, $translate, alertService, intraExtensionService, REST_URI) {
 		
 		var del = this;
 		
@@ -50,7 +50,7 @@
 			// intraExtensionService.data.rule.remove({ie_uuid: del.intraExtension._id}, rule, deleteSuccess, deleteError);
 			
 			// FIXME: do not send a body in a DELETE request
-			$http({url: './json/intra-extensions/' + del.intraExtension._id + '/rules', method: 'DELETE', data: rule}).then(deleteSuccess, deleteError);
+			$http({url: REST_URI.INTRAEXTENSION + del.intraExtension._id + '/rules', method: 'DELETE', data: rule}).then(deleteSuccess, deleteError);
 			
 			function deleteSuccess(data) {
 				

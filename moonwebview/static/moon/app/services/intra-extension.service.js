@@ -10,7 +10,7 @@
 		.module('moon')
 				.factory('intraExtensionService', intraExtensionService);
 	
-	intraExtensionService.$inject = ['$q', '$resource', 'INTRA_EXTENSION_CST'];
+	intraExtensionService.$inject = ['$q', '$resource', 'INTRA_EXTENSION_CST','REST_URI'];
 	
 	function intraExtensionService($q, $resource, INTRA_EXTENSION_CST, REST_URI) {
 		
