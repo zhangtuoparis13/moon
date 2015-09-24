@@ -50,9 +50,10 @@
 					ID_PREFIX: 'rule_'
 				}
 			})
-		.constant('TENANTS_REST_URI','test/tenant_db.json')
-		.constant('USERS_REST_URI','test/user_db.json')
-		.constant('INTRAEXTENSION_REST_URI','test/intraextension_db.json')
-		.constant('EXTRAEXTENTION_REST_URI','test/extraextension_db.json');
-
+		.constant('REST_URI', {
+			TENANTS : 'test/tenant_db.json',
+			USERS : 'test/user_db.json',
+			INTRAEXTENSION : 'test/intraextension_db.json',
+			EXTRAEXTENTION : 'test/extraextension_db.json'
+		});
 })();
