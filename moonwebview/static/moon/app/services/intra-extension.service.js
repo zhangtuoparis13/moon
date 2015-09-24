@@ -12,49 +12,49 @@
 	
 	intraExtensionService.$inject = ['$q', '$resource', 'INTRA_EXTENSION_CST'];
 	
-	function intraExtensionService($q, $resource, INTRA_EXTENSION_CST) {
+	function intraExtensionService($q, $resource, INTRA_EXTENSION_CST, REST_URI) {
 		
 		return {
 			
 			data: {
 			
-				intraExtension: $resource('./json/intra-extensions/:ie_uuid', {}, {
+				intraExtension: $resource(REST_URI.INTRAEXTENSION + '/:ie_uuid', {}, {
 	     	   		query: { method: 'GET', isArray: false },
 	     	   		get: { method: 'GET', isArray: false },
 	     	   		create: { method: 'POST' },
 	     	   		remove: { method: 'DELETE' }
 	    	   	}),
 	    	   	    	   	
-	    	   	tenant: $resource('./json/intra-extensions/:ie_uuid/tenant', {}, {
+	    	   	tenant: $resource(REST_URI.INTRAEXTENSION + '/:ie_uuid/tenant', {}, {
 	     	   		query: { method: 'GET', isArray: false }
 	    	   	}),
 	     	   	
-				policy: $resource('./json/intra-extensions/policies', {}, {
+				policy: $resource(REST_URI.INTRAEXTENSION + '/policies', {}, {
 	     	   		query: { method: 'GET', isArray: false }
 	    	   	}),
 	    	   	
 	    	   	subject: {
 	    	   		
-	    	   		subject: $resource('./json/intra-extensions/:ie_uuid/subjects/:subject_uuid', {}, {
+	    	   		subject: $resource(REST_URI.INTRAEXTENSION + '/:ie_uuid/subjects/:subject_uuid', {}, {
 		    	   		query: { method: 'GET', isArray: false },
 		     	   		get: { method: 'GET', isArray: false },
 		     	   		create: { method: 'POST' },
 		     	   		remove: { method: 'DELETE' }
 		    	   	}),
 		    	   	
-		    	   	category: $resource('./json/intra-extensions/:ie_uuid/subject_categories/:category_name', {}, {
+		    	   	category: $resource(REST_URI.INTRAEXTENSION + '/:ie_uuid/subject_categories/:category_name', {}, {
 		    	   		query: { method: 'GET', isArray: false },
 		    	   		create: { method: 'POST' },
 		    	   		remove: { method: 'DELETE' }
 		    	   	}),
 		    	   	
-		    	   	categoryValue: $resource('./json/intra-extensions/:ie_uuid/subject_category_values/:category/:value', {}, {
+		    	   	categoryValue: $resource(REST_URI.INTRAEXTENSION + '/:ie_uuid/subject_category_values/:category/:value', {}, {
 		    	   		query: { method: 'GET', isArray: false },
 		    	   		create: { method: 'POST' },
 		    	   		remove: { method: 'DELETE' }
 		    	   	}),
 		    	   	
-		    	   	assignment: $resource('./json/intra-extensions/:ie_uuid/subject_assignments/:subject_id/:category_id/:value', {}, {
+		    	   	assignment: $resource(REST_URI.INTRAEXTENSION + '/:ie_uuid/subject_assignments/:subject_id/:category_id/:value', {}, {
 		    	   		query: { method: 'GET', isArray: false },
 		    	   		create: { method: 'POST' },
 		    	   		remove: { method: 'DELETE' }
@@ -64,26 +64,26 @@
 	    	   	
 	    	   	object: {
 	    	   		
-	    	   		object: $resource('./json/intra-extensions/:ie_uuid/objects/:object_uuid', {}, {
+	    	   		object: $resource(REST_URI.INTRAEXTENSION + '/:ie_uuid/objects/:object_uuid', {}, {
 		    	   		query: { method: 'GET', isArray: false },
 		     	   		get: { method: 'GET', isArray: false },
 		     	   		create: { method: 'POST' },
 		     	   		remove: { method: 'DELETE' }
 		    	   	}),
 		    	   	
-		    	   	category: $resource('./json/intra-extensions/:ie_uuid/object_categories/:category_name', {}, {
+		    	   	category: $resource(REST_URI.INTRAEXTENSION + '/:ie_uuid/object_categories/:category_name', {}, {
 		    	   		query: { method: 'GET', isArray: false },
 		    	   		create: { method: 'POST' },
 		    	   		remove: { method: 'DELETE' }
 		    	   	}),
 		    	   	
-		    	   	categoryValue: $resource('./json/intra-extensions/:ie_uuid/object_category_values/:category/:value', {}, {
+		    	   	categoryValue: $resource(REST_URI.INTRAEXTENSION + '/:ie_uuid/object_category_values/:category/:value', {}, {
 		    	   		query: { method: 'GET', isArray: false },
 		    	   		create: { method: 'POST' },
 		    	   		remove: { method: 'DELETE' }
 		    	   	}),		    	   	
 		    	   	
-		    	   	assignment: $resource('./json/intra-extensions/:ie_uuid/object_assignments/:object_id/:category_id/:value', {}, {
+		    	   	assignment: $resource(REST_URI.INTRAEXTENSION + '/:ie_uuid/object_assignments/:object_id/:category_id/:value', {}, {
 		    	   		query: { method: 'GET', isArray: false },
 		    	   		create: { method: 'POST' },
 		    	   		remove: { method: 'DELETE' }
@@ -91,7 +91,7 @@
 	    	   		
 	    	   	},
 	    	   	
-	    	   	rule: $resource('./json/intra-extensions/:ie_uuid/rules', {}, {
+	    	   	rule: $resource(REST_URI.INTRAEXTENSION + '/:ie_uuid/rules', {}, {
 	     	   		query: { method: 'GET', isArray: false },
 	     	   		create: { method: 'POST' },
 	     	   		remove: { method: 'DELETE' }
@@ -335,7 +335,7 @@
 	   						currentCategory.values = _(currentCategory.values).reject(function(aValue) {
 	   							return aValue === value;
 	   						})
-	   						
+
 	   						if(_.size(currentCategory.values) == 0) {
 	   							
 	   							currentAssignment.categories = _(currentAssignment.categories).reject(function(aCategory) {

@@ -12,13 +12,13 @@
 	
 	tenantService.$inject = ['$q', '$resource'];
 	
-	function tenantService($q, $resource) { 
+	function tenantService($q, $resource,REST_URI) {
 	                                   	
 		return {
 			
 			data: {
                  	   	
-				tenant: $resource('test/tenant_db.json', {}, {
+				tenant: $resource(REST_URI.TENANTS, {}, {
 	     	   		query: { method: 'GET', isArray: true },
 	     	   		create: { method: 'POST' }
 	    	   	}),
@@ -64,7 +64,7 @@
 	    	   		remove: { method: 'DELETE' }
 	    	   	}),
 	    	   	
-	    	   	superExtention: $resource('./json/super-extensions', {}, {
+	    	   	superExtention: $resource(REST_URI.SUPEREXTENTION, {}, {
 	    	   		query: { method: 'GET' }
 	    	   	})
     	   	
