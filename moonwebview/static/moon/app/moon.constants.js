@@ -53,7 +53,7 @@
 			.constant('REST_URI', {
 				TENANTS : '/test/tenant_db.json',
 				USERS : '/test/user_db.json',
-				INTRAEXTENSION : '/test/intraextension_db.json',
+				INTRAEXTENSION : '/test/intraextension_db/',
 				EXTRAEXTENTION : '/test/extraextension_db.json',
 				SUPEREXTENTION : './json/super-extensions/'
 			});

@@ -1,0 +1,13 @@
+{
+  "intra_extensions": {
+    "1" : {
+      "id": "0",
+      "description": "0 sample test",
+      "tenant": "1234567890",
+      "model": "",
+      "genre": "",
+      "authz": {},
+      "admin": {}
+    }
+  }
+}
