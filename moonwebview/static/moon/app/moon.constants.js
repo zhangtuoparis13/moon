@@ -54,7 +54,7 @@
 				TENANTS : '/test/tenant_db.json',
 				USERS : '/test/user_db.json',
 				INTRAEXTENSION : '/test/intraextension_db/',
-				EXTRAEXTENTION : '/test/extraextension_db.json',
+				EXTRAEXTENTION : '/test/extraextension_db/',
 				SUPEREXTENTION : './json/super-extensions/'
 			});
 })();

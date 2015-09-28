@@ -1,0 +1,10 @@
+{
+	"inter_extensions" : {
+		"id" : 0,
+		"description" : "A simple inter_extension",
+		"requesting_intra_extension_uuid" : "0",
+		"requested_intra_extension_uuid" : "0",
+		"genre" : "trust",
+		"virtual_entity_uuid" : "1"
+	}
+}

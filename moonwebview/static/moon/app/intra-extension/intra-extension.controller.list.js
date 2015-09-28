@@ -11,7 +11,7 @@
 			.controller('IntraExtensionListController', IntraExtensionListController);
 	
 	IntraExtensionListController.$inject = ['$q', '$rootScope', '$scope', '$filter', '$modal', '$translate', 'ngTableParams', 'alertService', 'intraExtensionService', 'tenantService', 'intraExtensions'];
-	
+
 	function IntraExtensionListController($q, $rootScope, $scope, $filter, $modal, $translate, ngTableParams, alertService, intraExtensionService, tenantService, intraExtensions) {
 		
 		var list = this;
@@ -109,11 +109,11 @@
 		function getMappedTenantName(intraExtension) {
 			return intraExtension.tenant.name;
 		};
-		
+
 		function getIntraExtensionName(intraExtension) {
 			return _.first(intraExtension.name);
 		};
-		
+
 		function hasMappedTenant(intraExtension) {
 			return intraExtension.tenant_uuid != "" && intraExtension.tenant_uuid != null;
 		};
