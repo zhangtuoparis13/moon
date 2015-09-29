@@ -111,7 +111,8 @@
 		};
 
 		function getIntraExtensionName(intraExtension) {
-			return _.first(intraExtension.name);
+			window.alert(JSON.stringify(intraExtension));
+			return _.first(intraExtension).name;
 		};
 
 		function hasMappedTenant(intraExtension) {
@@ -172,8 +173,7 @@
 		 */
 		
 		function searchIntraExtension(intraExtension){
-		    
-			if (list.getIntraExtensionName(intraExtension).indexOf(list.search.query) != -1 
+			if (list.getIntraExtensionName(intraExtension).indexOf(list.search.query) != -1
 					|| intraExtension.authz.metadata.model.indexOf(list.search.query) != -1) {
 				
 		        return true;

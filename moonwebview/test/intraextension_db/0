@@ -1,8 +1,9 @@
 {
   "intra_extensions": {
-    "1" : {
+    "0" : {
       "id": "0",
       "description": "0 sample test",
+      "name" : "Sample",
       "tenant": "1234567890",
       "model": "",
       "genre": "",
