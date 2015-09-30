@@ -111,7 +111,6 @@
 		};
 
 		function getIntraExtensionName(intraExtension) {
-			window.alert(JSON.stringify(intraExtension));
 			return _.first(intraExtension).name;
 		};
 

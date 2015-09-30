@@ -73,12 +73,12 @@
 		                <td ng-bind="list.getIntraExtensionName(intraExtension)"></td>
 		                <td>{{intraExtension.authz.metadata.model}}</td>
 						<td>
+							<!--<div>{{intraExtension}}</div>-->
 							<div ng-if="list.hasMappedTenant(intraExtension)">
-		                	
 		                		<div ng-if="intraExtension.tenant == null">
 			                		<img src="static/moon/img/ajax-loader.gif" /> <em translate="moon.intraExtension.list.table.loading.tenant">Loading Tenant</em>
 		                		</div>
-		                	
+
 		                		<div ng-if="intraExtension.tenant != null">
 			                		{{intraExtension.tenant.name}}
 		                		</div>
