@@ -4,7 +4,6 @@
       "id": "0",
       "description": "0 sample test",
       "name" : "Sample",
-      "tenant_uuid": "1234567890",
       "tenant": "1234567890",
       "model": "",
       "genre": "",
