@@ -71,7 +71,7 @@
 	            
 		            <tr ng-repeat="intraExtension in $data | filter:list.search.find | orderBy:sort:reverse">
 		                <td ng-bind="list.getIntraExtensionName(intraExtension)"></td>
-		                <td>{{intraExtension.authz.metadata.model}}</td>
+		                <td>{{list.getModelFromIntraExtension(intraExtension)}}</td>
 						<td>
 							<!--<div>{{intraExtension}}</div>-->
 							<div ng-if="list.hasMappedTenant(intraExtension)">
@@ -82,7 +82,7 @@
 		                		<div ng-if="intraExtension.tenant != null">
 			                		{{intraExtension.tenant.name}}
 		                		</div>
-		                		
+
 		                	</div>
 						</td>
 		                <td>

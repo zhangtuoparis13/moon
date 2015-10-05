@@ -35,7 +35,7 @@
 		list.updateIntraExtensions = updateIntraExtensions;
 		
 		list.getMappedTenantName = getMappedTenantName;
-		
+		list.getModelFromIntraExtension = getModelFromIntraExtension;
 		list.search = { query: '', 
 						find: searchIntraExtension, 
 						reset: searchReset };
@@ -172,17 +172,27 @@
 		 */
 		
 		function searchIntraExtension(intraExtension){
+			//window.alert(JSON.stringify(_.first(intraExtension).authz.metadata.model));
 			if (list.getIntraExtensionName(intraExtension).indexOf(list.search.query) != -1
 					|| intraExtension.authz.metadata.model.indexOf(list.search.query) != -1) {
 				
 		        return true;
-		    
+
 			}
 		    
 			return false;
 		        
 		};
-		
+
+		/**
+		 * Retrieve the model name from an Intra extension
+		 * @param intraextension Value of intra-extension
+		 * @return A string containing the name of the associated model
+		 */
+		function getModelFromIntraExtension(intraextension){
+			return _.first(intraextension).authz.metadata.model;
+		}
+
 		function searchReset() {
 			list.search.query = '';
 		};
