@@ -26,6 +26,7 @@
 		list.hasIntraExtensions = hasIntraExtensions;
 		list.getIntraExtensionName = getIntraExtensionName;
 		list.hasMappedTenant = hasMappedTenant;
+		list.getTenantFromIntraExtension = getTenantFromIntraExtension;
 		
 		list.table = {};
 		
@@ -115,8 +116,13 @@
 		};
 
 		function hasMappedTenant(intraExtension) {
-			return intraExtension.tenant_uuid != "" && intraExtension.tenant_uuid != null;
+			//window.alert(JSON.stringify(_.first(intraExtension))); //@debug
+			return _.first(intraExtension).tenant_uuid != "" && _.first(intraExtension).tenant_uuid != null;
 		};
+
+		function getTenantFromIntraExtension(intraExtension) {
+			return _.first(intraExtension).tenant;
+		}
 		
 		function newIntraExtensionsTable() {
 			
@@ -145,26 +151,26 @@
 			
 		};
 		
-		/*
-		 * 
+		/**
+		 * Do the mapping between Intraextension Obkect and their tenant.
+		 *
 		 */
-		
 		function resolveMappedTenants() {
-			
+			// For each intra extnesion in in intraextension list,
 			_(list.intraExtensions).each(function(anIntraExtension) {
-				
-				anIntraExtension.tenant = null;
-				
-				if(anIntraExtension.tenant_uuid) {
-					
+				// We reset to null the tenant,
+				//window.alert(JSON.stringify(_.first(anIntraExtension))); //@debug
+				_.first(anIntraExtension).tenant = null;
+				// If a tenant (uu)id is correctly specified,
+				if(_.first(anIntraExtension).tenant_uuid) {
+					// We ask the tenant service to get the corresponding tenant
 					tenantService.findOne(anIntraExtension.tenant_uuid).then(function(tenant) {
-						anIntraExtension.tenant = _.first(tenant.projects);
-					});
-					
+					//	window.alert(JSON.stringify(tenant)); //@debug
+					anIntraExtension.tenant = _.first(tenant.projects);
+					}
+				);
 				}
-				
 			});
-			
 		};
 		
 		/*
@@ -172,14 +178,10 @@
 		 */
 		
 		function searchIntraExtension(intraExtension){
-			//window.alert(JSON.stringify(_.first(intraExtension).authz.metadata.model));
 			if (list.getIntraExtensionName(intraExtension).indexOf(list.search.query) != -1
 					|| intraExtension.authz.metadata.model.indexOf(list.search.query) != -1) {
-				
 		        return true;
-
 			}
-		    
 			return false;
 		        
 		};
@@ -223,10 +225,8 @@
          */
         
         function showDeleteModal(intraExtension) {
-        	
         	list.del.modal.$scope.intraExtension = intraExtension;
         	list.del.modal.$promise.then(list.del.modal.show);
-        	
         };
         
         function intraExtensionDeletedSuccess(event, intraExtension) {

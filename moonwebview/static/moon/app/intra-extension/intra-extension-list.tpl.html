@@ -75,12 +75,12 @@
 						<td>
 							<!--<div>{{intraExtension}}</div>-->
 							<div ng-if="list.hasMappedTenant(intraExtension)">
-		                		<div ng-if="intraExtension.tenant == null">
+		                		<div ng-if="list.getTenantFromIntraExtension(intraExtension) == null">
 			                		<img src="static/moon/img/ajax-loader.gif" /> <em translate="moon.intraExtension.list.table.loading.tenant">Loading Tenant</em>
 		                		</div>
 
-		                		<div ng-if="intraExtension.tenant != null">
-			                		{{intraExtension.tenant.name}}
+		                		<div ng-if="list.getTenantFromIntraExtension(intraExtension) != null">
+			                		{{list.getTenantFromIntraExtension(intraExtension).name}}
 		                		</div>
 
 		                	</div>
