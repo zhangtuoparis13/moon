@@ -1,0 +1,7 @@
+{
+	"id": "1234567890",
+	"name": "admin",
+	"description": "admin tenant",
+	"intra_authz_extension_id": "1234567890",
+	"intra_admin_extension_id": "0987654321"
+}

@@ -20,6 +20,7 @@
                  	   	
 				tenant: $resource(REST_URI.TENANTS, {}, {
 	     	   		query: { method: 'GET', isArray: true },
+					get: { method: 'GET', isArray: true },
 	     	   		create: { method: 'POST' }
 	    	   	}),
 	    	   	
@@ -71,7 +72,8 @@
 			},
 			
 			findOne: function(uuid) {
-	   			return this.data.tenant.get({project_uuid: uuid}).$promise;
+				//window.alert("" +uuid + JSON.stringify(this.data.tenant.get({project_uuid: uuid})));
+	   			return this.data.tenant.get({id: uuid}).$promise; //project_uu
 	   		}
         
         };
