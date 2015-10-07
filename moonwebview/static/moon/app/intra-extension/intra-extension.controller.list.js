@@ -166,7 +166,7 @@
 					// We ask the tenant service to get the corresponding tenant
 					tenantService.findOne(_.first(anIntraExtension).tenant_uuid).then(function(tenant) {
 							window.alert(JSON.stringify(tenant)); //@debug
-							_.first(anIntraExtension).tenant = _.first(tenant.projects);
+							_.first(anIntraExtension).tenant = tenant;//.projects
 					}
 				);
 				}
