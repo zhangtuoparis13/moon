@@ -165,7 +165,7 @@
 				if(_.first(anIntraExtension).tenant_uuid) {
 					// We ask the tenant service to get the corresponding tenant
 					tenantService.findOne(_.first(anIntraExtension).tenant_uuid).then(function(tenant) {
-							window.alert(JSON.stringify(tenant)); //@debug
+							//window.alert(JSON.stringify(tenant)); //@debug
 							_.first(anIntraExtension).tenant = tenant;//.projects
 					}
 				);
@@ -176,7 +176,12 @@
 		/*
 		 * --- search
 		 */
-		
+
+		/**
+		 * Indicate if an intra-extension having a specified name exists
+		 * @param intraExtension Searched name
+		 * @returns {boolean} True if a corresponding intra-extension is found, false otherwise
+		 */
 		function searchIntraExtension(intraExtension){
 			if (list.getIntraExtensionName(intraExtension).indexOf(list.search.query) != -1
 					|| intraExtension.authz.metadata.model.indexOf(list.search.query) != -1) {
