@@ -94,13 +94,13 @@
 			                        </button>
 			                        <ul class="dropdown-menu" role="menu">
 			                        	<li ng-if="list.hasMappedTenant(intraExtension)">
-				                            <a href="" ui-sref="moon.intraExtension.edit.configuration({uuid: intraExtension._id})">
+				                            <a href="" ui-sref="moon.intraExtension.edit.configuration({uuid: getidFromIntraExtension(intraExtension)})">
 				                            	<span class="glyphicon glyphicon-cog"></span>
 				                            	<medium for="rule" class="control-label"  translate="moon.intraExtension.list.action.configure">Configure</medium>
 				                            </a>
 			                            </li>
 										<li>
-				                            <a href="" ui-sref="moon.intraExtension.edit.rule({uuid: intraExtension._id})">
+				                            <a href="" ui-sref="moon.intraExtension.edit.rule({uuid: intraExtension.id})">
 				                            	<span class="glyphicon glyphicon-list-alt"></span>
 				                            	<medium for="rule" class="control-label"  translate="moon.intraExtension.list.action.rule">Rules</medium>
 				                            </a>

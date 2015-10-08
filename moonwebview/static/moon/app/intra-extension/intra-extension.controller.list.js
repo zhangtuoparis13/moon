@@ -27,6 +27,7 @@
 		list.getIntraExtensionName = getIntraExtensionName;
 		list.hasMappedTenant = hasMappedTenant;
 		list.getTenantFromIntraExtension = getTenantFromIntraExtension;
+		list.getidFromIntraExtension = getidFromIntraExtension;
 		
 		list.table = {};
 		
@@ -106,6 +107,10 @@
 			return list.intraExtensions;
 			
 		};
+
+		function getidFromIntraExtension(intraExtension) {
+			return _.first(intraExtension).id;
+		};
 		
 		function getMappedTenantName(intraExtension) {
 			return intraExtension.tenant.name;
@@ -120,10 +125,19 @@
 			return _.first(intraExtension).tenant_uuid != "" && _.first(intraExtension).tenant_uuid != null;
 		};
 
+		/**
+		 * Get a tenant from an intra-extension
+		 * @param intraExtension An intra extension
+		 * @returns {*|null|resolve.tenant|Function} The requiered tenant object
+		 */
 		function getTenantFromIntraExtension(intraExtension) {
 			return _.first(intraExtension).tenant;
 		}
-		
+
+		/**
+		 * Generate a table item, directly usable by the rendering engine
+		 * @returns {{}|*} the table
+		 */
 		function newIntraExtensionsTable() {
 			
 			list.table = new ngTableParams({
