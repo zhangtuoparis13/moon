@@ -1,4 +1,5 @@
 /**
+ * Service providing access to the tenants
  * @author arnaud marhin<arnaud.marhin@orange.com>
  */
 
@@ -74,7 +75,11 @@
 			findOne: function(uuid) {
 				//window.alert("" +uuid + JSON.stringify(this.data.tenant.get({project_uuid: uuid})));
 	   			return this.data.tenant.get({tenant_uuid: uuid}).$promise; //project_uu
-	   		}
+	   		},
+
+			findMany: function() {
+				return this.data.tenant.query({tenant_uuid: ''}).$promise;
+			}
         
         };
     

@@ -1,4 +1,5 @@
 /**
+ * Controller for the intra-extensition configuration dialog.
  * @author arnaud marhin<arnaud.marhin@orange.com>
  */
 
