@@ -152,6 +152,7 @@
 		        template: '<div ui-view></div>',
 		        resolve: {
 					intraExtension: function($stateParams, intraExtensionService) {
+						//@todo: We've to get the intraextension's uuid which is beeing inspected.
 						return intraExtensionService.data.intraExtension.get({ie_uuid: $stateParams.uuid}).$promise;
 					},
 					tenant: function(tenantService, intraExtension) {

@@ -94,7 +94,7 @@
 			                        </button>
 			                        <ul class="dropdown-menu" role="menu">
 			                        	<li ng-if="list.hasMappedTenant(intraExtension)">
-				                            <a href="" ui-sref="moon.intraExtension.edit.configuration({uuid: getidFromIntraExtension(intraExtension)})">
+				                            <a href="" ui-sref="moon.intraExtension.edit.configuration({uuid: list.getidFromIntraExtension(intraExtension)})">
 				                            	<span class="glyphicon glyphicon-cog"></span>
 				                            	<medium for="rule" class="control-label"  translate="moon.intraExtension.list.action.configure">Configure</medium>
 				                            </a>
