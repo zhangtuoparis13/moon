@@ -1,6 +1,6 @@
 /**
  * Controller for the intra-extensition configuration dialog.
- * @author arnaud marhin<arnaud.marhin@orange.com>
+ * @author arnaud marhin <arnaud.marhin@orange.com>
  */
 
 (function() {
@@ -148,10 +148,10 @@
 					}
 				}
 		};
-		
-		resolveSubjects(subjects).then(function(subjectList) {
-			resolveSubjectAssignments(subjectList, subjectAssignments);
-		});
+        //window.alert(JSON.stringify(subjects));
+		//resolveSubjects(subjects).then(function(subjectList) {
+		//	resolveSubjectAssignments(subjectList, subjectAssignments);
+		//});
 		
 		resolveObjects(objects, objectAssignments).then(function(objectList) {
 			resolveObjectAssignments(objectList, objectAssignments);
@@ -241,7 +241,7 @@
 		 */
 		
 		function resolveSubjects(subjects) {
-			
+
 			var promises = [];
 			
 			_(subjects.subjects).each(function(subjectId) {
