@@ -148,10 +148,10 @@
 					}
 				}
 		};
-        //window.alert(JSON.stringify(subjects));
-		//resolveSubjects(subjects).then(function(subjectList) {
-		//	resolveSubjectAssignments(subjectList, subjectAssignments);
-		//});
+        window.alert(JSON.stringify(subjects));
+		resolveSubjects(subjects).then(function(subjectList) {
+			resolveSubjectAssignments(subjectList, subjectAssignments);
+		});
 		
 		resolveObjects(objects, objectAssignments).then(function(objectList) {
 			resolveObjectAssignments(objectList, objectAssignments);

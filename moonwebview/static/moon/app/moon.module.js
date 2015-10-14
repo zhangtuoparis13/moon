@@ -152,35 +152,42 @@
 		        template: '<div ui-view></div>',
 		        resolve: {
 					intraExtension: function($stateParams, intraExtensionService) {
-						//@todo: We've to get the intraextension's uuid which is beeing inspected.
 						return intraExtensionService.data.intraExtension.get({ie_uuid: $stateParams.uuid}).$promise;
 					},
 					tenant: function(tenantService, intraExtension) {
 						return tenantService.findMany();//findOne(intraExtension.intra_extensions.tenant_uuid);
 					},
 					subjects: function(intraExtensionService, intraExtension) {
-						return intraExtensionService.data.subject.subject.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+						//@todo: UPDT query
+						return intraExtensionService.data.subject.subject.query({ie_uuid: _.first(intraExtension.intra_extensions).id, subject_uuid: 0 }).$promise;
 					},
 					subjectCategories: function(intraExtensionService, intraExtension) {
-						return intraExtensionService.data.subject.category.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+						//@todo: UPDT query
+						return intraExtensionService.data.subject.category.query({ie_uuid: _.first(intraExtension.intra_extensions).id, category_name: 0}).$promise;
 					},
 					subjectCategoryValues: function(intraExtensionService, intraExtension) {
-						return intraExtensionService.data.subject.categoryValue.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+						//@todo: UPDT query
+						return intraExtensionService.data.subject.categoryValue.query({ie_uuid: _.first(intraExtension.intra_extensions).id,  category: 0, value: 0}).$promise;
 					},
 					subjectAssignments: function(intraExtensionService, intraExtension) {
-						return intraExtensionService.data.subject.assignment.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+						//@todo: UPDT query
+						return intraExtensionService.data.subject.assignment.query({ie_uuid: _.first(intraExtension.intra_extensions).id, subject_id: 0, category_id: 0, value: 0 }).$promise;
 					},
 					objects: function(intraExtensionService, intraExtension) {
-						return intraExtensionService.data.object.object.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+						//@todo: UPDT query
+						return intraExtensionService.data.object.object.query({ie_uuid: _.first(intraExtension.intra_extensions).id, object_uuid: 0 }).$promise;
 					},
 					objectCategories: function(intraExtensionService, intraExtension) {
-						return intraExtensionService.data.object.category.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+						//@todo: UPDT query
+						return intraExtensionService.data.object.category.query({ie_uuid: _.first(intraExtension.intra_extensions).id, category_name:0 }).$promise;
 					},
 					objectCategoryValues: function(intraExtensionService, intraExtension) {
-						return intraExtensionService.data.object.categoryValue.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+						//@todo: UPDT query
+						return intraExtensionService.data.object.categoryValue.query({ie_uuid: _.first(intraExtension.intra_extensions).id, category: 0, value: 0 }).$promise;
 					},
 					objectAssignments: function(intraExtensionService, intraExtension) {
-						return intraExtensionService.data.object.assignment.query({ie_uuid: intraExtension.intra_extensions._id }).$promise;
+						//@todo: UPDT query
+						return intraExtensionService.data.object.assignment.query({ie_uuid: _.first(intraExtension.intra_extensions).id, category_id: 0, value: 0}).$promise;
 					}
 				}
 		    })
