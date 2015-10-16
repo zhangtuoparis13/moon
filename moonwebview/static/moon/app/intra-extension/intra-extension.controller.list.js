@@ -108,6 +108,11 @@
 			
 		};
 
+		/**
+		 * Get the id from an Intra Extension
+		 * @param intraExtension The inspected intra-extension
+		 * @returns {*} Its UUID
+		 */
 		function getidFromIntraExtension(intraExtension) {
 			return _.first(intraExtension).id;
 		};
@@ -116,12 +121,16 @@
 			return intraExtension.tenant.name;
 		};
 
+		/**
+		 * Get the name of the Intra-Extension
+		 * @param intraExtension The IntraExtension to inspect
+		 * @returns {*} Its name.
+		 */
 		function getIntraExtensionName(intraExtension) {
 			return _.first(intraExtension).name;
 		};
 
 		function hasMappedTenant(intraExtension) {
-			//window.alert(JSON.stringify(_.first(intraExtension))); //@debug
 			return _.first(intraExtension).tenant_uuid != "" && _.first(intraExtension).tenant_uuid != null;
 		};
 
@@ -173,13 +182,11 @@
 			// For each intra extnesion in in intraextension list,
 			_(list.intraExtensions).each(function(anIntraExtension) {
 				// We reset to null the tenant,
-				//window.alert(JSON.stringify(_.first(anIntraExtension))); //@debug
 				_.first(anIntraExtension).tenant = null;
 				// If a tenant (uu)id is correctly specified,
 				if(_.first(anIntraExtension).tenant_uuid) {
 					// We ask the tenant service to get the corresponding tenant
 					tenantService.findOne(_.first(anIntraExtension).tenant_uuid).then(function(tenant) {
-							//window.alert(JSON.stringify(tenant)); //@debug
 							_.first(anIntraExtension).tenant = tenant;//.projects
 					}
 				);
@@ -214,6 +221,9 @@
 			return _.first(intraextension).authz.metadata.model;
 		}
 
+		/**
+		 * Blank the search field
+		 */
 		function searchReset() {
 			list.search.query = '';
 		};

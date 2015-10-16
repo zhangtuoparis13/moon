@@ -148,7 +148,7 @@
 					}
 				}
 		};
-        window.alert(JSON.stringify(subjects));
+        //window.alert(JSON.stringify(subjects));
 		resolveSubjects(subjects).then(function(subjectList) {
 			resolveSubjectAssignments(subjectList, subjectAssignments);
 		});
@@ -297,7 +297,7 @@
 		};
 		
 		function resolveSubjectCategoriesAndValues(subjectCategories, subjectCategoryValues) {
-			
+			window.alert(JSON.stringify(subjectCategories) + '<-->' + JSON.stringify(subjectCategoryValues));
 			conf.subjectCategory.list = intraExtensionService.transform.category.getCategoriesFromRaw(subjectCategories.subject_categories,subjectCategoryValues.subject_category_values);
 			conf.subjectCategory.loading = false;
 			

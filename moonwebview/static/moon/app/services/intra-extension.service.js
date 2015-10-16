@@ -158,9 +158,10 @@
 	   		transform: {
 	   			
 	   			category: {
-	   				
+	   				//@todo: understand what's up whith this function
+
 	   				getCategoriesFromRaw: function(rawCategories, rawCategoriesValues) {
-	   					
+	   					window.alert(JSON.stringify(rawCategories) + '<-->' + JSON.stringify(rawCategoriesValues));
 	   					var categories = _(rawCategories).map(function(aCategory) {
 	   						
 	   						var catValues = rawCategoriesValues[aCategory];
