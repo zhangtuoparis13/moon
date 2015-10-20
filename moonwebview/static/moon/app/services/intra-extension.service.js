@@ -1,4 +1,5 @@
 /**
+ * service allowing the client to interact with intra-extension 
  * @author arnaud marhin<arnaud.marhin@orange.com>
  */
 
@@ -159,9 +160,10 @@
 	   			
 	   			category: {
 	   				//@todo: understand what's up whith this function
-
 	   				getCategoriesFromRaw: function(rawCategories, rawCategoriesValues) {
-	   					window.alert(JSON.stringify(rawCategories) + '<-->' + JSON.stringify(rawCategoriesValues));
+	   					//window.alert(JSON.stringify(rawCategories) + '<-->' + JSON.stringify(rawCategoriesValues));
+						if (rawCategoriesValues == null )
+							rawCategoriesValues = []; //@todo: need to be improved
 	   					var categories = _(rawCategories).map(function(aCategory) {
 	   						
 	   						var catValues = rawCategoriesValues[aCategory];
@@ -196,6 +198,9 @@
 	   					
 	   				},
 	   				
+					/**
+					 * Get an assignement from it uuid
+					 */
 	   				getRawElementFromUuid: function(rawElements, uuid) {
 	   					
 	   					return _(rawElements).find(function(anElement) {
