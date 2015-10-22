@@ -304,16 +304,27 @@
 			return conf.subjectCategory.list; 
 			
 		};
-		
+
+		/**
+		 * Resolve an array containing an array of values indexed by their category name
+		 * @param objectCategories Obkect containing the objectect categories
+		 * @param objectCategoryValues Object containing object categories by values
+		 * @returns {Array} An array
+		 */
 		function resolveObjectCategoriesAndValues(objectCategories, objectCategoryValues) {
 			
 			conf.objectCategory.list = intraExtensionService.transform.category.getCategoriesFromRaw(objectCategories.object_categories, objectCategoryValues.object_category_values);
 			conf.objectCategory.loading = false;
-			
-			return conf.objectCategory.list; 
+			return conf.objectCategory.list;
 			
 		};
-				
+
+		/**
+		 * Construct a structure for subjects assignements
+		 * @param subjects Arrays of subjects givent by the API
+		 * @param subjectAssignments Array of subject assignements
+		 * @returns {Array}
+		 */
 		function resolveSubjectAssignments(subjects, subjectAssignments) {
 			
 			var assignedSubjects = intraExtensionService.transform.assigment.getElementsFromRaw(subjectAssignments.subject_assignments, subjects);

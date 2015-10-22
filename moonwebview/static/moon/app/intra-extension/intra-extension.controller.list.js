@@ -100,6 +100,7 @@
 			
 			_(list.intraExtensions).each(function(anIntraExtension) {
         		if(anIntraExtension._id === intraExtension._id) {
+					//@todo: Determine what this code should have been designed to do
         			anIntraExtension = _.clone(intraExtension); 
         		}
         	});
@@ -176,7 +177,6 @@
 		
 		/**
 		 * Do the mapping between Intraextension Obkect and their tenant.
-		 *
 		 */
 		function resolveMappedTenants() {
 			// For each intra extnesion in in intraextension list,
