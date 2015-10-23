@@ -1,0 +1,64 @@
+IntraExtension
+==============
+
+IntraExtensionSelect: GET /v3/OS-MOON/intra_extensions
+IntraExtensionCreate: POST /v3/OS-MOON/intra_extensions
+IntraExtensionList: GET /v3/OS-MOON/intra_extensions
+IntraExtensionDelete: DELETE /v3/OS-MOON/intra_extensions/{uuid}
+IntraExtensionShow: GET /v3/OS-MOON/intra_extensions/{uuid}
+
+Configuration
+=============
+
+TemplatesList: GET /v3/OS-MOON/configuration/templates
+AggregationAlgorithsList: GET /v3/OS-MOON/configuration/aggregation_algorithms
+SubMetaRuleAlgorithsList: GET /v3/OS-MOON/configuration/sub_meta_rule_algorithms 
+
+Action_Assignement
+==================
+
+__get_scope_from_id: GET /v3/OS-MOON/intra_extensions/{intraetension_id}/action_scopes/{action_category_id}
+ActionAssignementList: GET /v3/OS-MOON/intra_extensions/{intra_etensions id}/action_assignments/{action_id}/{action_category_id}
+ActionAssignementAdd: POST /v3/OS-MOON/intra_extensions/{parsed_args.intraextension}/action_assignments ({"action_id": parsed_args.action_id,"action_category_id": parsed_args.action_category_id, "action_scope_id": parsed_args.action_scope_id}) 
+ActionAssignmentsDelete: DELETE /v3/OS-MOON/intra_extensions/{intraetension id}/action_assignments/{action_id}/{action_category_id}/{action_scope_id} 
+
+Action category
+===============
+
+ActionCategoriesList:/v3/OS-MOON/intra_extensions/{intraextension id}/action_categories
+ActionCategoryAdd: /v3/OS-MOON/intra_extensions/{intraextension id}/action_categories
+ActionCategoriesDelete: DELETE /v3/OS-MOON/intra_extensions/{intraetension id}/action_categories/{action_category_id}
+
+Action category
+===============
+
+ActionScopesList: /v3/OS-MOON/intra_extensions/{intraetension id}/action_scopes/{action_category_id}
+ActionScopeAdd: POST /v3/OS-MOON/intra_extensions/{intraetension id}/action_scopes/{action_category_id} { "action_scope_name": parsed_args.action_scope_name, "action_scope_description": parsed_args.description, } 
+ ActionScopesDelete: DELETE /v3/OS-MOON/intra_extensions/{intraetension id}/action_scopes/{action_category_id}/{action_scope_id} 
+
+ActionsList
+===========
+
+ActionsList: GET /v3/OS-MOON/intra_extensions/{intra_etension id}/actions 
+ActionsAdd: POST /v3/OS-MOON/intra_extensions/{intraextension id}/actions/{action_id} post_data={ "action_name": parsed_args.action_name, "action_description": parsed_args.description}
+ActionsDelete
+
+Metarule
+========
+
+AggregationAlgorithmesList: GET /v3/OS-MOON/intra_extensions/{intra_extension}/aggregation_algorithm
+AggregationAlgorithmSet: POST/v3/OS-MOON/intra_extensions/{}/aggregation_algorithm  {"aggregation_algorithm_id": parsed_args.aggregation_algorithm_id,"aggregation_algorithm_description": parsed_args.description} 
+SubMetaRuleShow: /v3/OS-MOON/intra_extensions/{IntraExtension id}/sub_meta_rules 
+SubMetaRuleSet: POST /v3/OS-MOON/intra_extensions/{IntraExtension id}/sub_meta_rules/{sub_meta_rules_id} {"sub_meta_rule_name" :, "sub_meta_rule_algorithm":, "sub_meta_rule_subject_categories": id, "sub_meta_rule_object_categories", "sub_meta_rule_action_categories" }  
+
+Object Assignement
+==================
+
+ObjectAssignementsList: GET /v3/OS-MOON/intra_extensions/{IntraExtension id}/object_assignments/{object id}/{object category id}
+ObjectAssignementsAdd: POST /v3/OS-MOON/intra_extensions/{IntraExtension id}/object_assignments {object_id, object_category_id, object_scope_id} 
+ObjectAssignementsDelelte: DELETE /v3/OS-MOON/intra_extensions/{intraextension id}/object_assignments/{object id}/{object_category_id}/{object_scope_id} 
+
+Object Categories
+=================
+
+
