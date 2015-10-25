@@ -61,4 +61,32 @@ ObjectAssignementsDelelte: DELETE /v3/OS-MOON/intra_extensions/{intraextension i
 Object Categories
 =================
 
+ObjectCategoryList: GET /v3/OS-MOON/intra_extensions/{IntraExtension id}/object_categories
+ObjectCategoryAdd: POST /v3/OS-MOON/intra_extensions/{IntraExtension id}/object_categories <= { "object_category_name": parsed_args.object_category_name, "object_category_description": parsed_args.description} 
+objectCategoryDelete: DELETE /v3/OS-MOON/intra_extensions/{intraextension iintraextension idd}/object_categories/{Object_category_id}
+
+Object scope
+============
+
+ObjectScopeList: GET /v3/OS-MOON/intra_extensions/{Intraextension ID}/object_scopes/{Object_category_id} 
+ObjectScopeAd: POST /v3/OS-MOON/intra_extensions/{IntraExtension ID}/object_scopes/{Object category_id} <= { "object_scope_name": parsed_args.object_scope_name, "object_scope_description": parsed_args.description, }  
+ObjectScpeDelete: DELETE /v3/OS-MOON/intra_extensions/{IntraExtension id}/object_scopes/{Object_category id}/{ object_scope_id} 
+
+Object
+======
+
+ObjectsList : GET /v3/OS-MOON/intra_extensions/{IntraExtension id}/objects
+ObjectsAdd : POST /v3/OS-MOON/intra_extensions/{Intraextension id}/objects <= { "object_name": parsed_args.object_name, "object_description": parsed_args.description} 
+ObjectsDelete : DELETE /v3/OS-MOON/intra_extensions/{IntraExtension id}/objects/{Object id}
+
+Rules
+=====
+
+RulesList : GET /v3/OS-MOON/intra_extensions/{intra_extensions id}/sub_meta_rules
+RuleAdd : /v3/OS-MOON/intra_extensions/{IntraExtension id}/sub_meta_rules <= { "subject_categories": [], "object_categories": [], "action_categories": [], "enabled": True }
+RuleDelete : DELETE /v3/OS-MOON/intra_extensions/{intra_extensions_id}/rule/{submetarule_id}/{rule_id} 
+
+Subject Assignements
+====================
+
 
