@@ -89,4 +89,38 @@ RuleDelete : DELETE /v3/OS-MOON/intra_extensions/{intra_extensions_id}/rule/{sub
 Subject Assignements
 ====================
 
+SubjectAssignementsList: GET /v3/OS-MOON/intra_extensions/{IntraExtension id}/subject_assignments/{subject id}/{subject_category_id}
+SubjectAssignementsAdd: POST /v3/OS-MOON/intra_extensions/{IntraExtension id}/subject_assignments <= { "subject_id": parsed_args.subject_id, "subject_category_id": parsed_args.subject_category_id, "subject_scope_id": parsed_args.subject_scope_id}
+SubjectAssignementsDelete: DELETE /v3/OS-MOON/intra_extensions/{Intraextension id}/subject_assignments/{subject_id}/{subject_category_id}/{subject_scope_id}
 
+SubjectCategories
+=================
+
+SubjectsCategoriesList: GET /v3/OS-MOON/intra_extensions/{}/subject_categories
+SubjectCategoriesAdd: POST /v3/OS-MOON/intra_extensions/{}/subject_categories <= { "subject_category_name": parsed_args.subject_category_name, "subject_category_description": parsed_args.description} 
+SubjectCategoriesDelete: DELETE /v3/OS-MOON/intra_extensions/{Intraextension ID}/subject_categories/{subject_category_id} 
+
+SubjectScope
+============
+
+SubjectScopesList : GET /v3/OS-MOON/intra_extensions/{Intraextension id}/subject_scopes/{subject category id}
+SubjectCategoryAdd : POST /v3/OS-MOON/intra_extensions/{Intraextension id}/subject_scopes/{subject category id} <= { "subject_scope_name": parsed_args.subject_scope_name, "subject_scope_description": parsed_args.description,} 
+SubjectCategoriesDelete: DELETE /v3/OS-MOON/intra_extensions/{IntraExtension id}/subject_scopes/{subject category id}/{subject scope id}
+
+Subjects
+========
+
+SubjectList: GET /v3/OS-MOON/intra_extensions/{IntraExtension id}/subjects 
+SubjectAdd: POST /v3/OS-MOON/intra_extensions/{IntraExtension id}/subjects <= { "subject_name": parsed_args.subject_name, "subject_description": parsed_args.description, "subject_password": parsed_args.password, "subject_email": parsed_args.email } 
+SubjectsDelete: DELETE /v3/OS-MOON/intra_extensions/{Intraextension id}/subjects/{Subject id}
+
+Tenants
+=======
+
+TenantList: GET /v3/OS-MOON/tenants
+TenantAdd: POST /v3/OS-MOON/tenants <= {tenant_name, tenant_intra_authz_extension_id, tenant_intra_admin_extension_id, tenant_description}
+TenantShow: GET /v3/OS-MOON/tenants/{tenant_id}
+TenantSet: POST /v3/OS-MOON/tenants/{} <=  {tenant_name, tenant_intra_authz_extension_id, tenant_intra_admin_extension_id, tenant_description}
+TenantDelete: DELETE /v3/OS-MOON/tenants/{tenant id}
+
+TenantDelete: DELETE: 
