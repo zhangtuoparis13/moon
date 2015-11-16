@@ -51,10 +51,10 @@
 				}
 			})
 			.constant('REST_URI', {
-				TENANTS : 'http://localhost:8075/v3/OS-MOON/tenants',
+				TENANTS : '/test/tenant_db/',
 				USERS : '/test/user_db.json',
-				INTRAEXTENSION : 'http://localhost:8075/v3/OS-MOON/intra_extensions/',
-				EXTRAEXTENTION : 'http://localhost:8075/v3/OS-MOON/extraextensions/',
+				INTRAEXTENSION : '/test/intraextension_db/',
+				EXTRAEXTENTION : '/test/extraextension_db/',
 				SUPEREXTENTION : './json/super-extensions/'
 			});
 })();
