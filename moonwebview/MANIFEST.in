@@ -1,0 +1,6 @@
+include LICENSE
+include README.rst
+include setup.py
+graft templates/auth
+recursive-include static *
+recursive-include media *
