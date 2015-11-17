@@ -25,7 +25,7 @@
 	     	   		create: { method: 'POST' }
 	    	   	}),
 	    	   	
-	    	   	subject: $resource('./pip/projects/:project_uuid/users/:user_uuid', {}, {
+	    	   	subject: $resource( REST_URI.INTRAEXTENSION + '/:project_uuid/users/:user_uuid', {}, {
 	    	   		query: { method: 'GET', isArray: false },
 	     	   		get: { method: 'GET', isArray: false }    	   		
 	    	   	}),
