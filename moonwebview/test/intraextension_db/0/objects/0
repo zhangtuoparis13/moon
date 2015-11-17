@@ -1,3 +1,1 @@
-{
-	"objects" : ["1010","10101"]
-}
+{ "object_name": "NomObjet", "object_description": "Description de l'objet"} 
