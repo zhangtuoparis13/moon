@@ -30,33 +30,33 @@
 	     	   		get: { method: 'GET', isArray: false }    	   		
 	    	   	}),
 	    	   	
-	    	   	object: $resource('./pip/projects/:project_uuid/objects/:object_uuid', {}, {
+	    	   	object: $resource(REST_URI.INTRAEXTENSION + '/:project_uuid/objects/:object_uuid', {}, {
 	    	   		query: { method: 'GET', isArray: false },
 	     	   		get: { method: 'GET', isArray: false }    	   		
 	    	   	}),
 	    	   	
-	    	   	role: $resource('./pip/projects/:project_uuid/roles', {}, {
+	    	   	role: $resource(REST_URI.INTRAEXTENSION + '/:project_uuid/roles', {}, {
 	    	   		query: { method: 'GET', isArray: false }	
 	    	   	}),
 	    	   	
-	    	   	subjectRole: $resource('./pip/projects/:project_uuid/users/:user_uuid/roles', {}, {
+	    	   	subjectRole: $resource(REST_URI.INTRAEXTENSION + '/:project_uuid/users/:user_uuid/roles', {}, {
 	    	   		query: { method: 'GET', isArray: false }	
 	    	   	}),
 	    	   	
-	    	   	group: $resource('./pip/projects/:project_uuid/groups', {}, {
+	    	   	group: $resource(REST_URI.INTRAEXTENSION + '/:project_uuid/groups', {}, {
 	    	   		query: { method: 'GET', isArray: false }		
 	    	   	}),
 	    	   	
-	    	   	subjectGroup: $resource('./pip/projects/:project_uuid/users/:user_uuid/groups', {}, {
+	    	   	subjectGroup: $resource(REST_URI.INTRAEXTENSION + '/:project_uuid/users/:user_uuid/groups', {}, {
 	    	   		query: { method: 'GET', isArray: false }		
 	    	   	}),
 	    	   	
-	    	   	roleAssigment: $resource('./pip/projects/:project_uuid/assignments/roles/:user_uuid', {}, {
+	    	   	roleAssigment: $resource(REST_URI.INTRAEXTENSION + '/:project_uuid/assignments/roles/:user_uuid', {}, {
 	    	   		query: { method: 'GET', isArray: false },
 	     	   		get: { method: 'GET', isArray: false }    	   		
 	    	   	}),
 	    	   	
-	    	   	groupAssigment: $resource('./pip/projects/:project_uuid/assignments/groups/:user_uuid', {}, {
+	    	   	groupAssigment: $resource(REST_URI.INTRAEXTENSION + '/:project_uuid/assignments/groups/:user_uuid', {}, {
 	    	   		query: { method: 'GET', isArray: false },
 	     	   		get: { method: 'GET', isArray: false }    	   		
 	    	   	}),
