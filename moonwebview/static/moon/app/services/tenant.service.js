@@ -24,17 +24,21 @@
 					get: { method: 'GET', isArray: false },
 	     	   		create: { method: 'POST' }
 	    	   	}),
-	    	   	
-	    	   	subject: $resource( REST_URI.INTRAEXTENSION + '/:project_uuid/users/:user_uuid', {}, {
+
+				// /!\ Duplicated API here (see intraextension.service.js)
+				// /!\ ":user_uuid": deprecated variable naming, but still used in the by some calls
+	    	   	subject: $resource( REST_URI.INTRAEXTENSION + '/:project_uuid/subjects/:user_uuid', {}, {
 	    	   		query: { method: 'GET', isArray: false },
 	     	   		get: { method: 'GET', isArray: false }    	   		
 	    	   	}),
-	    	   	
+
+				// /!\ Duplicated API here (see intraextension.service.js)
 	    	   	object: $resource(REST_URI.INTRAEXTENSION + '/:project_uuid/objects/:object_uuid', {}, {
 	    	   		query: { method: 'GET', isArray: false },
 	     	   		get: { method: 'GET', isArray: false }    	   		
 	    	   	}),
-	    	   	
+
+				// /!\ Duplicated API here (see intraextension.service.js)
 	    	   	role: $resource(REST_URI.INTRAEXTENSION + '/:project_uuid/roles', {}, {
 	    	   		query: { method: 'GET', isArray: false }	
 	    	   	}),
@@ -61,7 +65,7 @@
 	     	   		get: { method: 'GET', isArray: false }    	   		
 	    	   	}),
 	    	   	
-	    	   	map: $resource('./json/super-extensions/tenants/:tenant_uuid/intra_extensions/:intra_extension_uuid', {}, {
+	    	   	map: $resource(REST_URI.SUPEREXTENTION +'/tenants/:tenant_uuid/intra_extensions/:intra_extension_uuid', {}, {
 	    	   		create: { method: 'POST' },
 	    	   		remove: { method: 'DELETE' }
 	    	   	}),
