@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Django settings for moonwebview project.
 
@@ -9,6 +10,12 @@ https://docs.djangoproject.com/en/1.8/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
+
+# Copyright 2015 Open Platform for NFV Project, Inc. and its contributors
+# This software is distributed under the terms and conditions of the 'Apache-2.0'
+# license which can be found in the file 'LICENSE' in this package distribution
+# or at 'http://www.apache.org/licenses/LICENSE-2.0'.
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
@@ -51,8 +58,6 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'moonwebview.server.urls'
-
-print(os.path.join(BASE_DIR, 'templates'))
 
 TEMPLATES = [
     {
@@ -103,7 +108,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
+
+#STATICFILES_DIRS = (
+#    os.path.join(BASE_DIR, 'static'),
+#)
 
 
 # OPENSTACK_AUTH
@@ -121,7 +131,7 @@ AUTHENTICATION_BACKENDS = (
     'openstack_auth.backend.KeystoneBackend',
 )
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/moon'
 LOGIN_URL = "/auth/login/"
 
 OPENSTACK_API_VERSIONS = {
