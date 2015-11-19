@@ -1,0 +1,60 @@
+/**
+# Copyright 2014 Orange
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+ */
+
+(function() {
+
+	'use strict';
+					
+	angular
+		.module('moon')
+			.constant('DEFAULT_CST', {
+				DOMAIN: {
+					DEFAULT: 'Default'
+				}
+			})
+			.constant('INTRA_EXTENSION_CST', { 
+				POLICY: {
+					RBAC: {
+						NAME: 'RBAC',
+						META_RULE: 'permission'
+					},
+					MLS: {
+						NAME: 'MLS',
+						META_RULE: 'relation_super'
+					}
+				},
+				OBJECT: {
+					SERVERS: {
+						category: "object",
+						description: "",
+						enabled: true,
+						name: "servers",
+						tenant: null,
+						uuid: "servers"
+					}
+				},
+				RULE: {
+					ID_PREFIX: 'rule_'
+				}
+			})
+			.constant('REST_URI', {
+				TENANTS : '/test/tenant_db/',
+				USERS : '/test/user_db.json',
+				INTRAEXTENSION : '/test/intraextension_db/',
+				EXTRAEXTENTION : '/test/extraextension_db/',
+				SUPEREXTENTION : './json/super-extensions/'
+			});
+})();

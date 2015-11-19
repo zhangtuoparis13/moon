@@ -1,0 +1,159 @@
+
+<div class="container">
+
+	<div>
+		<form class="form-inline pull-right">
+		    <div class="form-group">
+		        <div>
+		            <input id="searchTenant" data-ng-model="list.search.query" type="text" class="form-control" placeholder="{{'moon.tenant.list.search.placeholder' | translate}}" />
+		        </div>
+		    </div>
+		    <div class="form-group">
+		        <div>
+		            <button type="submit" class="btn btn-danger" data-ng-click="list.search.reset()" translate="moon.tenant.list.search.reset">Reset</button>
+		        </div>
+		    </div>
+		</form>
+	</div>
+	
+	<div>&nbsp;</div>
+	<div>&nbsp;</div>
+	<div>&nbsp;</div>
+	
+	<div class="row">
+	
+		<div class="table-responsive" role="table">
+		
+	        <table class="table table-striped table-hover" ng-table="list.table">
+	        
+	            <colgroup>
+	                <col class="col-md-2" />
+	                <col class="col-md-2" />
+	                <col class="col-md-1" />
+	                <col class="col-md-1" />
+	                <col class="col-md-2" />
+	                <col class="col-md-1" />
+	            </colgroup>
+	            
+	            <thead>
+
+	                <tr>
+	                
+	                	<th class="customTables sortable"
+							ng-class="{ 'sort-asc': list.table.isSortBy('name', 'asc'), 'sort-desc': list.table.isSortBy('name', 'desc') }"
+							ng-click="list.table.sorting('name', list.table.isSortBy('name', 'asc') ? 'desc' : 'asc')">
+								<div translate="moon.tenant.list.table.name">Name</div>
+						</th>
+	                
+						<th class="customTables sortable"
+							ng-class="{ 'sort-asc': list.table.isSortBy('domain', 'asc'), 'sort-desc': list.table.isSortBy('domain', 'desc') }"
+							ng-click="list.table.sorting('domain', list.table.isSortBy('domain', 'asc') ? 'desc' : 'asc')">
+								<div translate="moon.tenant.list.table.domain">Domain</div>
+						</th>
+							
+						<th class="customTables sortable"
+							
+							ng-class="{ 'sort-asc': list.table.isSortBy('managed', 'asc'), 'sort-desc': list.table.isSortBy('managed', 'desc') }"
+							ng-click="list.table.sorting('managed', list.table.isSortBy('managed', 'asc') ? 'desc' : 'asc')">
+								<div translate="moon.tenant.list.table.managed">Managed</div>
+						</th>
+						 
+	                    <th class="customTables sortable"
+							ng-class="{ 'sort-asc': list.table.isSortBy('enabled', 'asc'), 'sort-desc': list.table.isSortBy('enabled', 'desc') }"
+							ng-click="list.table.sorting('enabled', list.table.isSortBy('enabled', 'asc') ? 'desc' : 'asc')">
+								<div translate="moon.tenant.list.table.enabled">Enabled</div>
+						</th>
+						
+						<th class="customTables">
+							<div translate="moon.tenant.list.table.mapping">Mapping</div>
+						</th>
+						
+	                    <th class="customTables">
+							<div translate="moon.tenant.list.action.title">Actions</div>
+						</th>
+	                    
+	                </tr>
+	                
+	            </thead>
+	            	            
+	            <tbody ng-if="!list.hasTenants()">
+	            	<tr>
+	            		<td colspan="2"><span translate="moon.tenant.list.table.notFound">There is no Tenants</span></td>
+	            	</tr>
+	            </tbody>
+	            
+	            <tbody ng-if="list.hasTenants()">
+	            
+		            <tr ng-repeat="aTenant in $data | filter:list.search.find | orderBy:sort:reverse">
+		                <td>{{aTenant.name}} </td>
+		               	<td>{{aTenant.domain}}</td>
+		                 <td>
+		                	<span ng-if="aTenant.managed" class="glyphicon glyphicon-ok"></span>
+		                </td>
+		                <td>
+		                	<span ng-if="aTenant.enabled" class="glyphicon glyphicon-ok"></span>
+		                </td>
+		                <td>
+		                	<a href="" ng-if="aTenant.extensionUuid == null" ng-click="list.map.showModal(aTenant)">
+		                		<span class="glyphicon glyphicon-link"></span> <em translate="moon.tenant.list.action.map">map with an Intra Extension</em>
+		                	</a>
+		                	
+		                	<div ng-if="aTenant.extensionUuid != null">
+		                	
+		                		<div ng-if="aTenant.intraExtension == null">
+			                		<img src="static/moon/img/ajax-loader.gif" /> <em translate="moon.tenant.list.table.loading.intraExtension">Loading Intra Extension</em>
+		                		</div>
+		                	
+		                		<div ng-if="aTenant.intraExtension != null">
+			                		<span ng-bind="list.getMappedIntraExtensionName(aTenant)"></span> (<a href="" ng-click="list.unmap.showModal(aTenant)">
+			                			<span class="glyphicon glyphicon-transfer"></span> <em translate="moon.tenant.list.action.unmap">unmap with an Intra Extension</em>
+			                		</a>)
+		                		</div>
+		                		
+		                	</div>
+		                </td>
+		                <td>
+			                <div class="btn-group" dropdown>
+			                        <button type="button" class="btn btn-default" translate="moon.tenant.list.action.title">Actions</button>
+			                        <button type="button" class="btn btn-default dropdown-toggle">
+			                            <span class="caret"></span>
+			                            <span class="sr-only">Split Action button!</span>
+			                        </button>
+			                        <ul class="dropdown-menu" role="menu">
+			                            <li>
+				                            <a href="" ng-click="list.view.showModal(aTenant)">
+					                            <span class="glyphicon glyphicon-eye-open"></span>
+					                            <medium for="detail" class="control-label" translate="moon.tenant.list.action.detail">Detail</medium>	   
+				                            </a>
+										</li>
+										<li class="divider"></li>
+			                            <li>
+				                            <a href="" ng-click="list.del.showModal(aTenant)">
+				                            	<span class="glyphicon glyphicon-trash"></span>
+				                            	<medium for="delete" class="control-label"  translate="moon.tenant.list.action.delete">Delete</medium>
+				                            </a>
+			                            </li>
+			                       </ul>
+			               </div>
+		               </td>
+		               
+		            </tr>
+		            
+	            </tbody>
+	            
+	        </table>
+	        
+		</div>
+	
+	   	<div class="container">
+			<div class="form-inline form-group">
+	           	<a href="" ng-click="list.add.showModal()" class="btn btn-default">
+	            	<span class="glyphicon glyphicon-plus-sign"></span>
+	                <span translate="moon.tenant.list.action.add">Add Tenant</span>
+				</a>
+			</div>
+	    </div>
+	    
+	</div>
+
+</div>
