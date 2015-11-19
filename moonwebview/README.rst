@@ -8,7 +8,7 @@ How to install it
 Download the code and install the Keystone and Nova hooks on your OpenStack server see [moon_hook/README.rst].
 Download the code and install the Moon framework see [moon_server/README.rst].
 
-! First version
+### First version
 
 Install Vagrant [http://www.vagrantup.com/] in your system and start it:
 
@@ -34,21 +34,25 @@ You can also drop the database used by moon with:
 
     python -m moonwebview.server.server --dbdrop
 
-! Second version
+### Second version
 
 Copy /opt/stack/moonwebview/etc/moonwebview.conf into /etc/apache2/sites-available
 Link /etc/apache2/sites-available/moonwebview.conf to /etc/apache2/sites-enabled/moonwebview.conf
+
     sudo cp /opt/stack/moonwebview/etc/moonwebview.conf /etc/apache2/sites-available
     sudo ln -s /opt/stack/moonwebview/etc/moonwebview.conf /etc/apache2/sites-available
 
 Install Moonwebview
+
     cd /opt/stack/moonwebview/
     sudo python setup.py develop
 
 Restart Apache
+
     sudo service apache2 restart
 
 Add the link moon.server to your /etc/hosts :
+
     vi /etc/hosts
     #    127.0.0.1 localhost moon.server
 

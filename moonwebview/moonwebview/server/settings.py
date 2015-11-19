@@ -30,9 +30,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+    'openstack_auth',
     'django.contrib.admin',
     'django.contrib.auth',
-    'openstack_auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',

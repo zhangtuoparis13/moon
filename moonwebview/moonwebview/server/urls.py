@@ -17,12 +17,14 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from openstack_auth.utils import patch_middleware_get_user
 import moonwebview.passthru.urls
+import moonwebview.gui.urls
 
 # admin.autodiscover()
-patch_middleware_get_user()
+# patch_middleware_get_user()
 
 urlpatterns = [
     # url(r'^admin/', include(admin.site.urls)),
     url(r"^auth/", include('openstack_auth.urls')),
-    url(r'^moon/', include(moonwebview.passthru.urls)),
+    url(r'^moon/', include(moonwebview.gui.urls)),
+    url(r'^', include(moonwebview.passthru.urls)),
 ]

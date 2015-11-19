@@ -25,14 +25,14 @@
             <h2>Put your OpenStack credentials</h2>
 
             <input type="hidden" name='csrfmiddlewaretoken' value="{{ csrf_token }}"/>
-            <input type="hidden" name='auth_url' value="{{ auth_url }}"/>
+            <!--input type="hidden" name='auth_url' value="http://192.168.33.20:5000/v3"/-->
 
             {% verbatim %}
 
             <label for="id_username">User Name</label>
             <input autofocus="autofocus" id="id_username" name="username" type="text"  />
 
-            <input id="id_region" name="region" type="hidden" value="{{ auth_url }}" />
+            <!--input id="id_region" name="region" type="hidden" value="http://192.168.33.20:5000/v3" /-->
             <label for="id_password">Password</label>
             <input id="id_password" name="password" type="password" />
 
