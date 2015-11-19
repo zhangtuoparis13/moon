@@ -9,6 +9,5 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-   url(r'^index$', views.index, name='index'),
    url(r'^(?P<url>[\w_/\-]+)$', views.passthru, name='passthru'),
 ]
