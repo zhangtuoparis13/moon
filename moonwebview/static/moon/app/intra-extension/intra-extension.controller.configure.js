@@ -58,6 +58,8 @@
 		 */
 		
 		conf.intraExtension = intraExtension.intra_extensions;
+		//conf.intraExtension = intraExtension[0];
+		window.alert(JSON.stringify(conf.intraExtension))
 		conf.intraExtension.tenant = _.first(tenant.projects);
 				
 		conf.subject = { loading: true, list: [], selected: null };
@@ -149,8 +151,8 @@
 				}
 		};
         //
-        //window.alert(JSON.stringify(subjects.subjects));
 		resolveSubjects(subjects).then(function(subjectList) {
+			window.alert(JSON.stringify(subjectList));
 			resolveSubjectAssignments(subjectList, subjectAssignments);
 		});
 		
@@ -242,15 +244,18 @@
 		 */
 		
 		function resolveSubjects(subjects) {
-
+			// Subject est correctement défini ici ... jusqu'ici, tout va bien.
+			window.alert(JSON.stringify(subjects));
 			var promises = [];
-			window.alert(subjects);
 			_(subjects.subjects).each(function(subjectId) {
+				window.alert("subjectId: " + JSON.stringify(subjectId));
 				promises.push(tenantService.data.subject.get({ project_uuid: conf.intraExtension.tenant_uuid, user_uuid: subjectId }).$promise);
 			});
 			
 			return $q.all(promises).then(function(data) {
-				
+				//Ici, data est un tableau vide :-(
+				// Doit-être un array.
+				window.alert(JSON.stringify(data));
 				conf.subject.list = _(data).map(function(aSubject){
 					return _.first(aSubject.users);
 				});
