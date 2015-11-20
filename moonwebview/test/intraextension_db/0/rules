@@ -1,0 +1,8 @@
+{
+	"sub_meta_rule": {
+		"subject_categories": ["role"],
+		"action_ctegories": ["ie_action"],
+		"object_categories": ["id"],
+		"relation": "relation_super"
+	}
+}

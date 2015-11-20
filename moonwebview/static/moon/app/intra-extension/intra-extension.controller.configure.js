@@ -148,7 +148,8 @@
 					}
 				}
 		};
-        //window.alert(JSON.stringify(subjects));
+        //
+        //window.alert(JSON.stringify(subjects.subjects));
 		resolveSubjects(subjects).then(function(subjectList) {
 			resolveSubjectAssignments(subjectList, subjectAssignments);
 		});
@@ -243,7 +244,7 @@
 		function resolveSubjects(subjects) {
 
 			var promises = [];
-			
+			window.alert(subjects);
 			_(subjects.subjects).each(function(subjectId) {
 				promises.push(tenantService.data.subject.get({ project_uuid: conf.intraExtension.tenant_uuid, user_uuid: subjectId }).$promise);
 			});

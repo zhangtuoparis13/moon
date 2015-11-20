@@ -159,6 +159,7 @@
 					},
 					subjects: function(intraExtensionService, intraExtension) {
 						//@todo: UPDT query
+						//window.alert(_.first(intraExtension.intra_extensions).id);
 						return intraExtensionService.data.subject.subject.query({ie_uuid: _.first(intraExtension.intra_extensions).id, subject_uuid: 0 }).$promise;
 					},
 					subjectCategories: function(intraExtensionService, intraExtension) {
@@ -206,6 +207,7 @@
 				controllerAs: 'list',
 				resolve: {
 					rules: function($stateParams, intraExtensionService) {
+						// /!\ @todo: Watch out ! $stateParams.uuid can't be resolved !
 						return intraExtensionService.data.rule.query({ie_uuid: $stateParams.uuid}).$promise;
 					},
 					hasMLSPolicy: function(intraExtensionService, intraExtension) {
