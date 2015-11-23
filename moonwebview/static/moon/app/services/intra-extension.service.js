@@ -30,7 +30,7 @@
 	     	   		query: { method: 'GET', isArray: false }
 	    	   	}),
 	     	   	
-				policy: $resource(REST_URI.INTRAEXTENSION + '/policies', {}, {
+				policy: $resource(REST_URI.TEMPLATE, {}, {
 	     	   		query: { method: 'GET', isArray: false }
 	    	   	}),
 	    	   	

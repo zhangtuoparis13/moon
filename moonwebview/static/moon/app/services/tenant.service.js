@@ -20,8 +20,8 @@
 			data: {
                  	   	
 				tenant: $resource(REST_URI.TENANTS + "/:tenant_uuid", {}, {
-	     	   		query: { method: 'GET', isArray: true },
-					get: { method: 'GET', isArray: false },
+	     	   		query: { method: 'GET', isArray: false },
+				get: { method: 'GET', isArray: false },
 	     	   		create: { method: 'POST' }
 	    	   	}),
 

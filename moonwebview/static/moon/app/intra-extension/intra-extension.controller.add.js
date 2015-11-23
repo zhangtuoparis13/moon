@@ -31,16 +31,19 @@
 		resolvePolicies();
 		
 		/*
-		 * 
+		 *  
 		 */
 		
+		/**
+		 * This function return an array of all policies/template ids
+		 */
 		function resolvePolicies() {
 			
 			return intraExtensionService.data.policy.query().$promise.then(function(data) {
-				
 				// data policies are represented as a map				
-				add.policies = _.keys(data.policies);
-				
+				add.policies = _.keys(data);
+				//Dirty cleaning
+				add.policies = _.without(add.policies,"$promise","$resolved");
 				return add.policies;
 				
 			});

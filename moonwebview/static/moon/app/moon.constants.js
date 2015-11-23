@@ -55,6 +55,7 @@
 				USERS : '/test/user_db.json',
 				INTRAEXTENSION : '/v3/OS-MOON/intra_extensions/',
 				EXTRAEXTENTION : '/test/extraextension_db/',
+				TEMPLATE : '/v3/OS-MOON/configuration/templates',
 				SUPEREXTENTION : './json/super-extensions/'
 			});
 })();
