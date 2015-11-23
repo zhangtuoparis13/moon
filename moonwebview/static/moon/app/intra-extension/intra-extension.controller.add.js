@@ -58,7 +58,7 @@
         	        	
         	} else {
         	        		        		
-        		intraExtensionService.data.intraExtension.create({}, { name: intraExtension.name, policymodel: $scope.add.selectedPolicy }, createSuccess, createError);
+        		intraExtensionService.data.intraExtension.create({}, { intra_extensions_name: intraExtension.name, intra_extensions_model: $scope.add.selectedPolicy, intra_extensions_description: $scope.add.description}, createSuccess, createError);
         			        	        	
     		}
         	

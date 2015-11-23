@@ -205,7 +205,8 @@
 	    		"title": "Add new Intra Extension",
 	    		"form": {
 		    		"name": "Name",
-		    		"policy": "Policy"
+		    		"policy": "Policy",
+		    		"description": "Description"
 	    		},
 	    		"action": {
 		    		"create": "Create Intra Extension",

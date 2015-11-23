@@ -128,7 +128,7 @@
 		 * @returns {*} Its name.
 		 */
 		function getIntraExtensionName(intraExtension) {
-			return _.first(intraExtension).name;
+			return (intraExtension) ? _.first(intraExtension).name : "";
 		};
 
 		function hasMappedTenant(intraExtension) {
@@ -141,7 +141,7 @@
 		 * @returns {*|null|resolve.tenant|Function} The requiered tenant object
 		 */
 		function getTenantFromIntraExtension(intraExtension) {
-			return _.first(intraExtension).tenant;
+			return (intraExtension) ? _.first(intraExtension).tenant : null;
 		}
 
 		/**
