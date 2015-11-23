@@ -51,9 +51,9 @@
 				}
 			})
 			.constant('REST_URI', {
-				TENANTS : '/test/tenant_db/',
+				TENANTS : '/v3/OS-MOON/tenants/',
 				USERS : '/test/user_db.json',
-				INTRAEXTENSION : '/test/intraextension_db/',
+				INTRAEXTENSION : '/v3/OS-MOON/intra_extensions/',
 				EXTRAEXTENTION : '/test/extraextension_db/',
 				SUPEREXTENTION : './json/super-extensions/'
 			});
