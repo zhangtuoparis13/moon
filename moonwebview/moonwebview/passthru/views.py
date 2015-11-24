@@ -33,7 +33,7 @@ def __get_url(host, port, url, post_data=None, delete_data=None, method="GET", a
     if post_data:
         method = "POST"
         headers["Content-type"] = "application/json"
-        post_data = json.dumps(post_data)
+        # post_data = json.dumps(post_data)
         conn.request(method, url, post_data, headers=headers)
     elif delete_data:
         method = "DELETE"
