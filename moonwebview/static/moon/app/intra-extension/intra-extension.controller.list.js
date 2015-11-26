@@ -73,8 +73,23 @@
 		 * 
 		 */
 		
+		/**
+		 * Function getting an array of intraEtnesion JSON
+		 * @return An array of valid intraextension.
+		 */
 		function getIntraExtensions() {
-			return (list.intraExtensions) ? list.intraExtensions : [];
+			if (!list.intraExtensions)
+				return [];
+			var result = [];
+			var i;
+
+			console.log(JSON.stringify(list.intraExtensions));
+			for (i in list.intraExtensions) {
+				if (list.intraExtensions[i].id)
+					result.push(list.intraExtensions[i]);
+			}
+			return result;
+			//return (list.intraExtensions) ? _.values(list.intraExtensions) : [];
 		};
 		
 		function hasIntraExtensions() {
@@ -98,7 +113,7 @@
 		
 		function updateIntraExtensions(intraExtension) {
 			
-			_(list.intraExtensions).each(function(anIntraExtension) {
+			_(_.values(list.intraExtensions)).each(function(anIntraExtension) {
         		if(anIntraExtension._id === intraExtension._id) {
 					//@todo: Determine what this code should have been designed to do
         			anIntraExtension = _.clone(intraExtension); 

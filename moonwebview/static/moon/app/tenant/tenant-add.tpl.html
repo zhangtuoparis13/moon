@@ -19,7 +19,7 @@
 		            
 		                <div class="col-sm-6">
 		            
-		                    <input name="name" class="form-control" type="text" data-ng-model="add.tenant.name" required />
+		                    <input name="name" class="form-control" type="text" data-ng-model="add.tenant.tenant_name" required />
 		                                        
 		                    <div class="help-block" ng-show="add.form.name.$dirty && add.form.name.$invalid">
 		                    	<small class="error" ng-show="add.form.name.$error.required" translate="moon.tenant.add.check.name.required">Name is required</small>
@@ -31,7 +31,7 @@
 		            <div class="form-group">
 		                <label class="col-sm-3 control-label" translate="moon.tenant.add.form.description">Description</label>
 		                <div class="col-sm-6">
-		                    <textarea class="form-control" data-ng-model="add.tenant.description"></textarea>
+		                    <textarea class="form-control" data-ng-model="add.tenant.tenant_description"></textarea>
 		                </div>
 		            </div>
 		            

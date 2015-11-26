@@ -21,7 +21,8 @@
 		 */
 		
 		add.form = {};
-		add.tenant = { name: null, description: null, enabled: true, domain: DEFAULT_CST.DOMAIN.DEFAULT };
+		//@tofo: verifier si l'arg enable est prise en compte server-side
+		add.tenant = { tenant_name: null, tenant_description: null, enabled: true, domain: DEFAULT_CST.DOMAIN.DEFAULT };
 		add.create= createTenant;
 		
 		/*

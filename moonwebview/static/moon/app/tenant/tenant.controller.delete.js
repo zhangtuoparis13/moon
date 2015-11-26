@@ -29,7 +29,7 @@
 		
 		function deleteTenant() {
         	
-			tenantService.data.tenant.remove({project_uuid: del.tenant.uuid}, deleteSuccess, deleteError);
+			tenantService.data.tenant.remove({tenant_uuid: del.tenant.id}, deleteSuccess, deleteError);
 			
 			function deleteSuccess(data) {
         		

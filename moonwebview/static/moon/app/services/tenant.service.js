@@ -22,7 +22,8 @@
 				tenant: $resource(REST_URI.TENANTS + "/:tenant_uuid", {}, {
 	     	   		query: { method: 'GET', isArray: false },
 				get: { method: 'GET', isArray: false },
-	     	   		create: { method: 'POST' }
+	     	   		create: { method: 'POST' },
+	     	   		remove: { method: 'DELETE' }
 	    	   	}),
 
 				// /!\ Duplicated API here (see intraextension.service.js)

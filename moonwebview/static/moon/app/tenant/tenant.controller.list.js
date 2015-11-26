@@ -117,8 +117,20 @@
 			return list.getTenants().length > 0;
 		}
 				
+		/**
+		 * Get tenants array from the Keystone Moon.
+		 * @return an array containing tenants JSON
+		 */
 		function getTenants() {
-			 return list.tenants ? list.tenants : [];
+			if (!list.tenants)
+				return [];
+			var result = [];
+			var i;
+			for (i in list.tenants) {
+				if (list.tenants[i].id)
+					result.push(list.tenants[i]);
+			}
+			return result;
 		};
 		
 		function addTenant(tenant) {
@@ -184,7 +196,6 @@
 		 */
 		 			    	
 		function searchTenant(tenant){
-		    
 			if (tenant.name.indexOf(list.search.query) != -1 
 					|| tenant.description.indexOf(list.search.query) != -1) {
 				
