@@ -83,11 +83,12 @@
 			var result = [];
 			var i;
 
-			console.log(JSON.stringify(list.intraExtensions));
+			//console.log(JSON.stringify(list.intraExtensions));
 			for (i in list.intraExtensions) {
 				if (list.intraExtensions[i].id)
 					result.push(list.intraExtensions[i]);
 			}
+			console.log(JSON.stringify(result));
 			return result;
 			//return (list.intraExtensions) ? _.values(list.intraExtensions) : [];
 		};
@@ -130,7 +131,7 @@
 		 * @returns {*} Its UUID
 		 */
 		function getidFromIntraExtension(intraExtension) {
-			return _.first(intraExtension).id;
+			return intraExtension.id;
 		};
 		
 		function getMappedTenantName(intraExtension) {
@@ -143,11 +144,11 @@
 		 * @returns {*} Its name.
 		 */
 		function getIntraExtensionName(intraExtension) {
-			return (intraExtension) ? _.first(intraExtension).name : "";
+			return (intraExtension) ? intraExtension.name : "";
 		};
 
 		function hasMappedTenant(intraExtension) {
-			return _.first(intraExtension).tenant_uuid != "" && _.first(intraExtension).tenant_uuid != null;
+			return intraExtension.tenant_uuid != "" && intraExtension.tenant_uuid != null;
 		};
 
 		/**
@@ -156,7 +157,7 @@
 		 * @returns {*|null|resolve.tenant|Function} The requiered tenant object
 		 */
 		function getTenantFromIntraExtension(intraExtension) {
-			return (intraExtension) ? _.first(intraExtension).tenant : null;
+			return (intraExtension) ? intraExtension.tenant : null;
 		}
 
 		/**
@@ -194,8 +195,10 @@
 		 * Do the mapping between Intraextension Obkect and their tenant.
 		 */
 		function resolveMappedTenants() {
-			// For each intra extnesion in in intraextension list,
-			_(list.intraExtensions).each(function(anIntraExtension) {
+			return; // @todo: to be reimplemented
+
+			// For each intra extension in in intraextension list,
+			/* _(list.getIntraExtensions()).each(function(anIntraExtension) {
 				// We reset to null the tenant,
 				_.first(anIntraExtension).tenant = null;
 				// If a tenant (uu)id is correctly specified,
@@ -206,7 +209,7 @@
 					}
 				);
 				}
-			});
+			});*/
 		};
 		
 		/*
@@ -233,7 +236,8 @@
 		 * @return A string containing the name of the associated model
 		 */
 		function getModelFromIntraExtension(intraextension){
-			return _.first(intraextension).authz.metadata.model;
+			//Reinegrate authz in intraext.
+			return (intraextension.authz) ? intraextension.authz.metadata.model : null;
 		}
 
 		/**

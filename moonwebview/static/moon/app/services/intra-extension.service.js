@@ -18,7 +18,6 @@
 		return {
 			
 			data: {
-			
 				intraExtension: $resource(REST_URI.INTRAEXTENSION + '/:ie_uuid', {}, {
 	     	   		query: { method: 'GET', isArray: false },
 	     	   		get: { method: 'GET', isArray: false },
@@ -106,11 +105,11 @@
     	   		
     	   		return this.data.intraExtension.query().$promise.then(function(result) {
 
-    	   			return _.map(result.intra_extensions, function(uuid) {
+    	   			return result; /*_.map(result.intra_extensions, function(uuid) {
     	   				return _self.findOne(uuid);
-    	   			}); 
+    	   			}); */
 
-    	   		}).then(function(uuids) {
+    	   		});/*.then(function(uuids) {
 	   					    	   			
     	   			return $q.all(uuids).then(function(result) {
     	   				
@@ -118,9 +117,9 @@
     	   					return resource.intra_extensions;
     	   				});
     	   				    	   				    	   				
-    	   			});
+    	   			});*
 
-	   			});
+	   			});*/
 
 	   		},
 	   		
