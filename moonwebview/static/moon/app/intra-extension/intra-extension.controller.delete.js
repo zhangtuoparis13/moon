@@ -29,11 +29,11 @@
 		
 		function deleteIntraExtension() {
 			
-			intraExtensionService.data.intraExtension.remove({ie_uuid: del.intraExtension._id}, deleteSuccess, deleteError);
+			intraExtensionService.data.intraExtension.remove({ie_uuid: del.intraExtension.id}, deleteSuccess, deleteError);
 			
 			function deleteSuccess(data) {
 				
-				$translate('moon.intraExtension.remove.success', { intraExtensionName: _.first(del.intraExtension.name) }).then(function (translatedValue) {
+				$translate('moon.intraExtension.remove.success', { intraExtensionName: del.intraExtension.name }).then(function (translatedValue) {
         			alertService.alertSuccess(translatedValue);
                 });	
 				
@@ -43,7 +43,7 @@
 			
 			function deleteError(reason) {
 				
-				$translate('moon.intraExtension.remove.error', { intraExtensionName: _.first(del.intraExtension.name) }).then(function (translatedValue) {
+				$translate('moon.intraExtension.remove.error', { intraExtensionName: del.intraExtension.name }).then(function (translatedValue) {
         			alertService.alertError(translatedValue);
                 });
 				
