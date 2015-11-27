@@ -83,14 +83,12 @@
 			var result = [];
 			var i;
 
-			//console.log(JSON.stringify(list.intraExtensions));
 			for (i in list.intraExtensions) {
 				if (list.intraExtensions[i].id)
 					result.push(list.intraExtensions[i]);
 			}
 			console.log(JSON.stringify(result));
 			return result;
-			//return (list.intraExtensions) ? _.values(list.intraExtensions) : [];
 		};
 		
 		function hasIntraExtensions() {

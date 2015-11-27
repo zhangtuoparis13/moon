@@ -20,9 +20,9 @@
 		                <div class="col-sm-6">
 		                
 		                    <ui-select ng-model="map.selectedIntraExtension" name="intraExtension" required> 
-		                    	<ui-select-match placeholder="(None)" ng-bind="$select.selected.name[0]"></ui-select-match>
+		                    	<ui-select-match placeholder="(None)" ng-bind="$select.selected.name"></ui-select-match>
 		                    	<ui-select-choices repeat="intraExtension in map.intraExtensions">
-		                    		<div ng-bind="intraExtension.name[0]" ng-value="intraExtension"></div>
+		                    		<div ng-bind="intraExtension.name" ng-value="intraExtension"></div>
 	             				</ui-select-choices>
 		                    </ui-select>
 		                    

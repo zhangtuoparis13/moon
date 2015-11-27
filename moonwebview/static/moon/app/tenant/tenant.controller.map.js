@@ -41,12 +41,18 @@
 			
 			intraExtensionService.findAll().then(function(data) {
 				
+				/* Filtering:
+				 * --> Invalid intraExtnesion
+				 * --> non-free intraextensions
+				 */
 				map.intraExtensions = _(data).filter(function(intraExtension) {
+					return intraExtension.id != null;
+				}).filter(function(intraExtension) {
 					return intraExtension.tenant_uuid == "" || intraExtension.tenant_uuid == null;
 				});
 				
 				map.intraExtensionsLoading = false;
-				
+			console.log(JSON.stringify(map.intraExtensions));	
 				return map.intraExtensions;
 				
 			});

@@ -55,7 +55,7 @@
 		
 		function resolveObjects() {
 			
-			tenantService.data.object.query({project_uuid: view.tenant.uuid}).$promise.then(resolveSuccess, resolveError);
+			tenantService.data.object.query({project_uuid: view.tenant.id}).$promise.then(resolveSuccess, resolveError);
 			
 			function resolveSuccess(data) {
 				
