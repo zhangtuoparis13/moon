@@ -78,7 +78,7 @@
 		 * @return An array of valid intraextension.
 		 */
 		function getIntraExtensions() {
-			if (!list.intraExtensions)
+		/*	if (!list.intraExtensions)
 				return [];
 			var result = [];
 			var i;
@@ -87,11 +87,12 @@
 				if (list.intraExtensions[i].id)
 					result.push(list.intraExtensions[i]);
 			}
-			console.log(JSON.stringify(result));
-			return result;
+			return result;*/
+		       return (list.intraExtensions) ? list.intraExtensions : [];
 		};
 		
 		function hasIntraExtensions() {
+			console.log(JSON.stringify(list.getIntraExtensions()));
 			return list.getIntraExtensions().length > 0;
 		};
 		
@@ -112,8 +113,8 @@
 		
 		function updateIntraExtensions(intraExtension) {
 			
-			_(_.values(list.intraExtensions)).each(function(anIntraExtension) {
-        		if(anIntraExtension._id === intraExtension._id) {
+			_(_.values(list.getIntraExtensions())).each(function(anIntraExtension) {
+        		if(anIntraExtension.id === intraExtension.id) {
 					//@todo: Determine what this code should have been designed to do
         			anIntraExtension = _.clone(intraExtension); 
         		}

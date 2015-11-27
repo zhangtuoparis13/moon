@@ -103,9 +103,16 @@
 
     	   		var _self = this;
     	   		
-    	   		return this.data.intraExtension.query().$promise.then(function(result) {
-
-    	   			return result; /*_.map(result.intra_extensions, function(uuid) {
+    	   		return this.data.intraExtension.query().$promise.then(function(listIntraExtensions) {
+				var result = [];
+				var i;
+				for (i in listIntraExtensions) {
+					if (listIntraExtensions[i].id)
+						result.push(listIntraExtensions[i]);
+					}
+				return result;
+				/*
+    	   			return result; _.map(result.intra_extensions, function(uuid) {
     	   				return _self.findOne(uuid);
     	   			}); */
 
