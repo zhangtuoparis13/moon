@@ -71,6 +71,9 @@
 	    	   		remove: { method: 'DELETE' }
 	    	   	}),
 	    	   	
+			/*
+			 * Not yet implemented
+			 */
 	    	   	superExtention: $resource(REST_URI.SUPEREXTENTION, {}, {
 	    	   		query: { method: 'GET' }
 	    	   	})
