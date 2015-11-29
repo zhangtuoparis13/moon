@@ -54,6 +54,7 @@
 			 	   	  showModal: showViewModal };
 						
 		newTenantsTable();
+		//@todo: reactivate tenant mapping if still relevant.
 		// resolveMappedIntraExtensions();
 		
 		/*
@@ -122,15 +123,7 @@
 		 * @return an array containing tenants JSON
 		 */
 		function getTenants() {
-			if (!list.tenants)
-				return [];
-			var result = [];
-			var i;
-			for (i in list.tenants) {
-				if (list.tenants[i].id)
-					result.push(list.tenants[i]);
-			}
-			return result;
+			return (list.tenants) ? list.tenants : []; 
 		};
 		
 		function addTenant(tenant) {
@@ -139,6 +132,7 @@
 		
 		function deleteTenant(tenant) {
 			list.tenants = _.chain(list.tenants).reject({uuid: tenant.uuid}).value();
+
 		};
 		
 		function refreshTenants() {

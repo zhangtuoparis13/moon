@@ -116,7 +116,7 @@
 	            		return tenantService.data.superExtention.query().$promise;
 	            	},*/
 	            	tenants: function(tenantService) {
-	            		return tenantService.data.tenant.query().$promise;
+	            		return tenantService.findMany(); //tenant.query().$promise;
 	            	}
 	            }
 			});

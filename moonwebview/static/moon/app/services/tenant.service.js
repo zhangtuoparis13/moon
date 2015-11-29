@@ -81,13 +81,20 @@
 			},
 			
 			findOne: function(uuid) {
-				//window.alert("" +uuid + JSON.stringify(this.data.tenant.get({project_uuid: uuid})));
 	   			return this.data.tenant.get({tenant_uuid: uuid}).$promise; //project_uu
 	   		},
 
 			findMany: function() {
-				return this.data.tenant.query({tenant_uuid: ''}).$promise;
-			}
+				return this.data.tenant.query({tenant_uuid: ''}).$promise.then(function(listTenants) {
+				var result = [];
+				var i;
+				for (i in listTenants) {
+					if (listTenants[i].id)
+						result.push(listTenants[i]);
+				}
+				return result;
+				});
+							}
         
         };
     

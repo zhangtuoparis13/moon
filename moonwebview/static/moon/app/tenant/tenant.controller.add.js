@@ -43,6 +43,7 @@
         	
         	function createSuccess(data) {
         		
+			//@ todo: clarify projects notions
         		var created = _(data.projects).find(function(aTenant) {
         			return add.tenant.name === aTenant.name;
         		});
