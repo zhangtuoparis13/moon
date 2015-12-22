@@ -3,47 +3,61 @@
 <html>
 
     <head>
-
         <title>Moon Login</title>
-
-        {% load staticfiles %}
-
+	<LINK rel="stylesheet" href="/static/moon/styles/main.css"/>
+	<LINK rel="stylesheet" href="/static/moon/vendor/bootstrap/dist/css/bootstrap.css"/>
     </head>
 
     <body>
-        <div class="banner">
+	<div class="container">
+		<div class="banner">
+			<div class="row">
+				<div class="col-md-3 sub-banner">
+				    <img src="/static/img/logo-orange.gif" alt="Orange" />
+				    <img src="/static/img/logo-openstack.png" alt="OpenStack" />
+				</div>
+				<div class="col-md-6 center-block">
+				    <h1>Moon administration</h1>
+				 </div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="container">
+		<div class="row">
+			<form role="form" name="loginform" action="." method="POST" class="form form-horizontal">
 
-            <img src="/static/img/logo-orange.gif" alt="Orange" />
-            <img src="/static/img/logo-openstack.png" alt="OpenStack" />
+			    <h2>Put your OpenStack credentials</h2>
 
-            <h1>Moon administration</h1>
+			    <div class="form-group">
+				    <label for="id_username" class="col-md-5 control-label">User Name</label>
+				    <div class="col-md-3">
+					    <input autofocus="autofocus" id="id_username" name="username" type="text" class="form-control"/>
+				    </div>
+			    </div>
 
-        </div>
+			    <!-- Anti-CSRF Token management-->
+			    <input type="hidden" name='csrfmiddlewaretoken' value="{{ csrf_token }}"/>
 
-        <form role="form" name="loginform" action="." method="POST">
+			    <div class="form-group">
+				    <label for="id_password" class="col-md-5 control-label">Password</label>
+				    <div class="col-md-3">
+					    <input id="id_password" name="password" type="password" class="form-control"/>
+				    </div>
+			    </div>
 
-            <h2>Put your OpenStack credentials</h2>
+			    <div class="form-group">
+				<div class="text-center">
+				    <button type="submit" class="btn btn-warning">
+					    <span class="glyphicon glyphicon-login"></span>
+					    <span class="left05">Authenticate</span>
+				    </button>
+				</div>
+			    </div>
 
-            <input type="hidden" name='csrfmiddlewaretoken' value="{{ csrf_token }}"/>
-            <!--input type="hidden" name='auth_url' value="http://192.168.33.20:5000/v3"/-->
-
-            {% verbatim %}
-
-            <label for="id_username">User Name</label>
-            <input autofocus="autofocus" id="id_username" name="username" type="text"  />
-
-            <!--input id="id_region" name="region" type="hidden" value="http://192.168.33.20:5000/v3" /-->
-            <label for="id_password">Password</label>
-            <input id="id_password" name="password" type="password" />
-
-            <button type="submit">
-                Authenticate
-            </button>
-
-           {% endverbatim %}
-
-        </form>
-
+			</form>
+		</div>
+	</div>
     </body>
 
 </html>
