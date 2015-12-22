@@ -236,7 +236,8 @@
 		 */
 		function getModelFromIntraExtension(intraextension){
 			//Reinegrate authz in intraext.
-			return (intraextension.authz) ? intraextension.authz.metadata.model : null;
+			//window.alert(JSON.stringify(intraextension));
+			return (intraextension.model) ? intraextension.model : null;
 		}
 
 		/**
