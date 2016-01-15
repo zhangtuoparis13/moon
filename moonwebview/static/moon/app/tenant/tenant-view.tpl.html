@@ -20,11 +20,9 @@
 				</div>
 												
 				<div class="row top05">
-				
 					<div class="col-md-3"><label translate="moon.tenant.view.object.name">Name</label></div>
 					<div class="col-md-7"><label translate="moon.tenant.view.object.description">Description</label></div>
-	                <div class="col-md-2"><label translate="moon.tenant.view.object.enabled">Enabled</label></div>
-	                
+					<div class="col-md-2"><label translate="moon.tenant.view.object.enabled">Enabled</label></div>
 				</div>
 				
 				<div class="row" ng-if="view.objectsLoading">
@@ -36,14 +34,12 @@
 				</div>
 				
 				<div class="row" ng-if="!view.objectsLoading && view.hasObjects()" ng-repeat="object in view.objects">
-								
 					<div class="col-md-3">{{object.name}}</div> 
-                 	<div class="col-md-7">{{object.description}}</div>
-                 	<div class="col-md-2">
-                		<span ng-if="object.enabled" class="glyphicon glyphicon-ok"></span>
-                    </div>
-		                    	                                
-                </div>
+					<div class="col-md-7">{{object.description}}</div>
+					<div class="col-md-2">
+						<span ng-if="object.enabled" class="glyphicon glyphicon-ok"></span>
+					</div>
+				</div>
                 
 				<!-- subjects -->
 				
@@ -54,34 +50,30 @@
 				</div>
 												
 				<div class="row top05">
-				
 					<div class="col-md-3"><label translate="moon.tenant.view.subject.name">Name</label></div>
-	                <div class="col-md-3"><label translate="moon.tenant.view.subject.domain">Domain</label></div>
-	                <div class="col-md-4"><label translate="moon.tenant.view.subject.mail">Mail</label></div>
-	                <div class="col-md-2"><label translate="moon.tenant.view.subject.enabled">Enabled</label></div>
-	                
+					<div class="col-md-3"><label translate="moon.tenant.view.subject.domain">Domain</label></div>
+					<div class="col-md-4"><label translate="moon.tenant.view.subject.mail">Mail</label></div>
+					<div class="col-md-2"><label translate="moon.tenant.view.subject.enabled">Enabled</label></div>
 				</div>
 				
 				<div class="row">
-				
 					<div class="col-md-3">
 						<ui-select ng-model="view.selectedSubject" on-select="view.resolveRoles($item); view.resolveGroups($item)"> 
-	                    	<ui-select-match placeholder="(None)">{{$select.selected.name}}</ui-select-match>
-	                    	<ui-select-choices repeat="subject in view.subjects">
-	                    		<div ng-value="subject">{{subject.name}}</div>
-             				</ui-select-choices>
-	                    </ui-select>
-	                    <img ng-if="view.subjectsLoading" src="static/moon/img/ajax-loader.gif" />
+							<ui-select-match placeholder="(None)">{{$select.selected.name}}</ui-select-match>
+							<ui-select-choices repeat="subject in view.subjects">
+								<div ng-value="subject">{{subject.name}}</div>
+							</ui-select-choices>
+						</ui-select>
+						<img ng-if="view.subjectsLoading" src="static/moon/img/ajax-loader.gif" />
 					</div> 
-                 	<div class="col-md-3">{{view.selectedSubject.domain}}</div>
+					<div class="col-md-3">{{view.selectedSubject.domain}}</div>
 					<div class="col-md-4">{{view.selectedSubject.mail}}</div>
-                 	<div class="col-md-2">
-                 		<div ng-if="view.selectedSubject != null">
-	                		<span ng-if="view.selectedSubject.enabled" class="glyphicon glyphicon-ok"></span>
-                		</div>
-                    </div>
-		                    	                                
-                </div>
+					<div class="col-md-2">
+						<div ng-if="view.selectedSubject != null">
+							<span ng-if="view.selectedSubject.enabled" class="glyphicon glyphicon-ok"></span>
+						</div>
+					</div>
+				</div>
                 
                 <!-- roles -->
                 
