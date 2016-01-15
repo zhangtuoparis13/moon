@@ -118,7 +118,7 @@ STATIC_URL = '/static/'
 
 # OPENSTACK_AUTH
 
-OPENSTACK_KEYSTONE_URL = "http://192.168.33.20:5000/v3"
+OPENSTACK_KEYSTONE_URL = "http://127.0.0.1:5000/v3"
 # OS_USERNAME = "admin"
 # OS_PASSWORD = "nomoresecrete"
 # OS_TENANT_NAME = "admin"
